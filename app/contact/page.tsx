@@ -1,22 +1,22 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Breadcrumb from '@/components/Breadcrumb'
 import ContactForm from '@/components/ContactForm'
 
 export const metadata: Metadata = {
-  title: 'Contact | Heldonica',
+  title: 'Contact | Happy Humans',
   description:
-    "Un projet de voyage, une question, un audit hôtelier ? On lit tous les messages. On répond sous 48h.",
+    "Un sujet à explorer, une transition, un besoin d'accompagnement individuel ou collectif ? On lit tous les messages. On répond sous 48h.",
   alternates: {
-    canonical: 'https://heldonica.fr/contact',
+    canonical: 'https://happy-humans.org/contact',
   },
   openGraph: {
-    title: 'Contact | Heldonica',
+    title: 'Contact | Happy Humans',
     description:
-      "Un projet de voyage, une question, un audit hôtelier ? On lit tous les messages. On répond sous 48h.",
-    url: 'https://heldonica.fr/contact',
-    siteName: 'Heldonica',
+      "Coaching individuel, organisations, ateliers ou session découverte: on revient vers vous sous 48h.",
+    url: 'https://happy-humans.org/contact',
+    siteName: 'Happy Humans',
     locale: 'fr_FR',
   },
 }
@@ -33,12 +33,12 @@ export default function Contact() {
               On lit tous les messages. On répond.
             </p>
             <h1 className="mb-6 text-4xl font-serif font-light leading-tight text-stone-900 md:text-5xl">
-              Parle-nous de ce qui est vrai.
+              Commençons par ce qui est vivant, là, maintenant.
             </h1>
             <p className="max-w-2xl text-lg leading-relaxed text-stone-700">
-              Un départ qui coince, un hôtel à réaligner, une idée encore floue, un simple besoin de
-              remettre de l&apos;ordre dans le voyage : c&apos;est très bien comme ça. On préfère partir de
-              la vraie vie que d&apos;un brief lissé.
+              Une transition de carrière, un rôle qui pèse, une équipe à réaligner, une question de
+              sens, une envie de retrouver de l&apos;élan ou simplement le besoin de clarifier ce qui
+              se joue: c&apos;est très bien comme point de départ.
             </p>
           </div>
         </section>
@@ -48,14 +48,14 @@ export default function Contact() {
             <div className="md:col-span-2">
               <div className="mb-10 max-w-2xl">
                 <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-stone-400">
-                  Ce qui nous aide
+                  Ce qui aide
                 </p>
                 <h2 className="mb-4 text-3xl font-serif font-light leading-tight text-stone-900">
                   Quelques lignes suffisent pour commencer juste.
                 </h2>
                 <p className="text-base leading-relaxed text-stone-700">
-                  Où tu veux aller, ce que tu veux éviter, ce qui fatigue, ce qui compte vraiment,
-                  même en bas de chez toi. On reprend le fil à partir de là.
+                  Ce qui vous traverse, ce qui coince, ce que vous souhaitez faire évoluer, ce que
+                  vous voulez éviter de reproduire. On repart de là.
                 </p>
               </div>
               <ContactForm />
@@ -67,10 +67,10 @@ export default function Contact() {
                   Email direct
                 </p>
                 <a
-                  href="mailto:info@heldonica.fr"
+                  href="mailto:contactus@happy-humans.org"
                   className="text-lg font-semibold text-amber-800 transition-colors duration-200 hover:text-amber-700"
                 >
-                  info@heldonica.fr
+                  contactus@happy-humans.org
                 </a>
                 <p className="mt-2 text-sm leading-relaxed text-stone-600">
                   Réponse humaine sous 48h, sans tunnel automatique.
@@ -79,29 +79,24 @@ export default function Contact() {
 
               <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
                 <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-stone-400">
-                  Instagram
+                  Langues & format
                 </p>
-                <a
-                  href="https://www.instagram.com/heldonica/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-lg font-semibold text-amber-800 transition-colors duration-200 hover:text-amber-700"
-                >
-                  @heldonica
-                </a>
+                <p className="text-lg font-semibold text-amber-800">
+                  Français · English · Română
+                </p>
                 <p className="mt-2 text-sm leading-relaxed text-stone-600">
-                  Si c&apos;est plus simple pour toi, les DM restent ouverts.
+                  Accompagnements en ligne, et selon les formats en France ou en Europe.
                 </p>
               </div>
 
               <div className="rounded-3xl border border-amber-200 bg-amber-50 p-6">
                 <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-amber-800">
-                  Ce qu&apos;on fait
+                  Ce que l&apos;on accompagne
                 </p>
                 <ul className="space-y-3 text-sm leading-relaxed text-stone-700">
-                  <li>Voyages sur mesure construits à partir de contraintes réelles.</li>
-                  <li>Consulting hôtelier indépendant, vu depuis le terrain.</li>
-                  <li>Partenariats éditoriaux et collaborations alignées avec notre voix.</li>
+                  <li>Leadership, transitions, confiance et alignement personnel.</li>
+                  <li>Coaching de dirigeants, entrepreneurs et managers.</li>
+                  <li>Ateliers, séminaires et accompagnement des organisations.</li>
                 </ul>
               </div>
             </aside>

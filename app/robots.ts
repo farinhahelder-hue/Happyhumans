@@ -13,7 +13,7 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: 'https://heldonica.fr/sitemap.xml',
-    host: 'https://heldonica.fr',
+    sitemap: 'https://happy-humans.org/sitemap.xml',
+    host: 'https://happy-humans.org',
   };
 }

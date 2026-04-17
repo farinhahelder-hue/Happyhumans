@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -9,7 +9,7 @@ export default function Header() {
   const { user, loading } = useAuth()
 
   const accountHref = !loading && user ? '/dashboard' : '/auth/login'
-  const accountLabel = !loading && user ? 'Mon espace' : 'Connexion'
+  const accountLabel = !loading && user ? 'CMS' : 'Connexion'
 
   return (
     <>
@@ -18,7 +18,7 @@ export default function Header() {
           <Link
             href="/"
             className="flex items-center gap-2.5 text-amber-900 transition-colors duration-200 hover:text-amber-700"
-            aria-label="Heldonica accueil"
+            aria-label="Happy Humans accueil"
           >
             <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
               <circle cx="17" cy="17" r="16" stroke="currentColor" strokeWidth="1.2" />
@@ -42,18 +42,18 @@ export default function Header() {
                 opacity="0.6"
               />
             </svg>
-            <span className="text-xl font-serif font-bold tracking-tight">Heldonica</span>
+            <span className="text-xl font-serif font-bold tracking-tight">Happy Humans</span>
           </Link>
 
           <div className="hidden items-center gap-6 md:flex">
             <Link href="/a-propos" className="text-sm font-medium text-stone-600 transition-colors duration-200 hover:text-amber-900">
-              À propos
+              Monica
             </Link>
-            <Link href="/blog" className="text-sm font-medium text-stone-600 transition-colors duration-200 hover:text-amber-900">
-              Blog
+            <Link href="/coaching" className="text-sm font-medium text-stone-600 transition-colors duration-200 hover:text-amber-900">
+              Coaching
             </Link>
-            <Link href="/destinations" className="text-sm font-medium text-stone-600 transition-colors duration-200 hover:text-amber-900">
-              Destinations
+            <Link href="/entreprises" className="text-sm font-medium text-stone-600 transition-colors duration-200 hover:text-amber-900">
+              Entreprises
             </Link>
             <Link href="/contact" className="text-sm font-medium text-stone-600 transition-colors duration-200 hover:text-amber-900">
               Contact
@@ -62,16 +62,16 @@ export default function Header() {
               {accountLabel}
             </Link>
             <Link
-              href="/planifier"
+              href="/contact"
               className="rounded-full bg-amber-900 px-5 py-2 text-sm font-medium text-white shadow-sm transition-colors duration-200 hover:bg-amber-800"
             >
-              Planifier
+              Session découverte
             </Link>
           </div>
 
           <div className="flex items-center gap-3 md:hidden">
-            <Link href="/planifier" className="rounded-full bg-amber-900 px-4 py-2 text-xs font-semibold text-white shadow-sm">
-              Planifier
+            <Link href="/contact" className="rounded-full bg-amber-900 px-4 py-2 text-xs font-semibold text-white shadow-sm">
+              Découverte
             </Link>
             <button
               onClick={() => setOpen((value) => !value)}
@@ -118,54 +118,39 @@ export default function Header() {
                   <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                 </svg>
               </span>
-              À propos
+              Monica
             </Link>
 
             <Link
-              href="/blog"
+              href="/coaching"
               onClick={() => setOpen(false)}
               className="flex items-center gap-3 rounded-xl px-4 py-3 font-medium text-stone-700 transition-colors duration-200 hover:bg-amber-50 hover:text-amber-900"
             >
               <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-teal-200 bg-teal-50 text-teal-700">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                  <path d="M9 12h6" />
+                  <path d="M12 9v6" />
+                  <circle cx="12" cy="12" r="9" />
                 </svg>
               </span>
-              Blog
+              Coaching
             </Link>
 
             <Link
-              href="/destinations"
+              href="/entreprises"
               onClick={() => setOpen(false)}
               className="flex items-center gap-3 rounded-xl px-4 py-3 font-medium text-stone-700 transition-colors duration-200 hover:bg-amber-50 hover:text-amber-900"
             >
               <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
-              </span>
-              Destinations
-            </Link>
-
-            <Link
-              href="/hotel-consulting"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-3 rounded-xl px-4 py-3 font-medium text-stone-700 transition-colors duration-200 hover:bg-amber-50 hover:text-amber-900"
-            >
-              <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-sky-200 bg-sky-50 text-sky-700">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z" />
-                  <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
-                  <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
                   <path d="M10 6h4" />
                   <path d="M10 10h4" />
                   <path d="M10 14h4" />
                   <path d="M10 18h4" />
                 </svg>
               </span>
-              Consulting hôtelier
+              Entreprises
             </Link>
 
             <Link
@@ -198,7 +183,7 @@ export default function Header() {
 
             <div className="mt-2 border-t border-stone-100 pt-4">
               <Link
-                href="/planifier"
+                href="/contact"
                 onClick={() => setOpen(false)}
                 className="flex w-full items-center justify-center gap-2.5 rounded-xl bg-amber-900 px-4 py-4 text-base font-semibold text-white transition-colors duration-200 hover:bg-amber-800"
               >
@@ -206,7 +191,7 @@ export default function Header() {
                   <circle cx="12" cy="12" r="10" />
                   <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
                 </svg>
-                Planifier mon voyage
+                Réserver un échange
               </Link>
             </div>
           </div>

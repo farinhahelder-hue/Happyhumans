@@ -101,7 +101,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     ],
   },
   'travel-planning': {
-    label: 'Travel Planning',
+    label: 'Coaching',
     emoji: 'âœˆï¸',
     sections: [
       { key: 'hero_title',    label: 'Hero â€“ Titre',       type: 'text' },
@@ -119,7 +119,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     ],
   },
   'hotel-consulting': {
-    label: 'Hotel Consulting',
+    label: 'Entreprises',
     emoji: 'ðŸ¨',
     sections: [
       { key: 'page_title',  label: 'Titre de la page',      type: 'text' },
@@ -576,7 +576,7 @@ export default function CMSAdmin() {
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f3ef' }}>
       <div style={{ background: 'white', padding: '2.5rem', borderRadius: '1rem', boxShadow: '0 8px 32px rgba(0,0,0,.1)', width: '100%', maxWidth: 380, textAlign: 'center' }}>
         <div style={{ fontSize: '2.5rem', marginBottom: '.5rem' }}>...</div>
-        <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#6b2a1a' }}>Heldonica CMS</h1>
+        <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#6b2a1a' }}>Happy Humans CMS</h1>
         <p style={{ color: '#888', fontSize: '.9rem' }}>Verification de la session...</p>
       </div>
     </div>
@@ -587,7 +587,7 @@ export default function CMSAdmin() {
       <div style={{ background: 'white', padding: '2.5rem', borderRadius: '1rem', boxShadow: '0 8px 32px rgba(0,0,0,.1)', width: '100%', maxWidth: 380 }}>
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
           <div style={{ fontSize: '2.5rem', marginBottom: '.5rem' }}>ðŸŒ¿</div>
-          <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#6b2a1a' }}>Heldonica CMS</h1>
+          <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#6b2a1a' }}>Happy Humans CMS</h1>
           <p style={{ color: '#888', fontSize: '.9rem' }}>AccÃ¨s rÃ©servÃ©</p>
         </div>
         <input type="password" placeholder="Mot de passe" value={pwd}
@@ -609,7 +609,7 @@ export default function CMSAdmin() {
     { id: 'new',      label: 'âœï¸ Nouvel article', count: null },
     { id: 'blog',     label: 'âœ¨ GÃ©nÃ©rateur Blog IA', count: null },
     { id: 'pages',    label: 'ðŸ—‚ï¸ Pages', count: null },
-    { id: 'demandes', label: 'âœˆï¸ Travel Planning', count: demandes.length },
+    { id: 'demandes', label: 'âœˆï¸ Coaching', count: demandes.length },
     { id: 'media',    label: 'ðŸ–¼ï¸ MÃ©diathÃ¨que', count: null },
     { id: 'carousel', label: 'ðŸŽ  Carrousel', count: null },
     { id: 'settings', label: 'âš™ï¸ ParamÃ¨tres', count: null },
@@ -621,7 +621,7 @@ export default function CMSAdmin() {
       <div style={{ background: '#6b2a1a', color: 'white', padding: '1rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 2px 12px rgba(0,0,0,.15)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
           <span style={{ fontSize: '1.5rem' }}>ðŸŒ¿</span>
-          <span style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '.03em' }}>Heldonica CMS</span>
+          <span style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '.03em' }}>Happy Humans CMS</span>
           <span style={{ background: 'rgba(255,255,255,.18)', fontSize: '.72rem', padding: '.2rem .6rem', borderRadius: '9999px', fontWeight: 600 }}>Supabase</span>
         </div>
         <button onClick={logout} style={{ background: 'rgba(255,255,255,.15)', border: 'none', color: 'white', padding: '.4rem .9rem', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>DÃ©connexion</button>

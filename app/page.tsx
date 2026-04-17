@@ -1,33 +1,29 @@
-﻿import { getAllPosts, formatDate, BlogPost } from '@/lib/blog-supabase'
 import HomeClient from '@/components/HomeClient'
 import type { Metadata } from 'next'
 
-export const revalidate = 60
-
 export const metadata: Metadata = {
-  title: 'Heldonica — Slow travel vécu en duo, conçu pour toi',
+  title: 'Happy Humans - Coaching, leadership et transformation',
   description:
-    'Un duo Paris-Madère-Roumanie qui voyage lentement, documente vraiment et partage ce qu’il a vécu — pas ce qu’il a lu ailleurs.',
+    "Happy Humans accompagne les personnes et les organisations avec une approche melant executive coaching, philosophie et transformation humaine.",
   keywords: [
-    'slow travel couple',
-    'travel planning sur mesure',
-    'voyage hors sentiers battus',
-    'blog voyage écoresponsable',
-    'Madère',
-    'heldonica',
+    'Monica Schneider',
+    'executive coach',
+    'philo coaching',
+    'coaching leadership',
+    'Happy Humans',
   ],
   openGraph: {
-    title: 'Heldonica — Slow travel vécu en duo, conçu pour toi',
+    title: 'Happy Humans - Coaching, leadership et transformation',
     description:
-      'On ferme les ordis. On part. On revient avec des pépites qu’on n’avait pas cherchées.',
-    url: 'https://heldonica.fr',
-    siteName: 'Heldonica',
+      "Une approche pour retrouver clarte, confiance et alignement dans sa vie professionnelle comme dans les organisations.",
+    url: 'https://happy-humans.org',
+    siteName: 'Happy Humans',
     images: [
       {
-        url: 'https://heldonica.fr/og-image.jpg',
+        url: 'https://happy-humans.org/og-default.jpg',
         width: 1200,
         height: 630,
-        alt: 'Heldonica — Slow travel vécu en duo, conçu pour toi',
+        alt: 'Happy Humans - coaching et transformation avec Monica Schneider',
       },
     ],
     locale: 'fr_FR',
@@ -35,13 +31,13 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Heldonica — Slow travel vécu en duo, conçu pour toi',
+    title: 'Happy Humans - Coaching, leadership et transformation',
     description:
-      'Carnets terrain, pépites vécues et voyages sur mesure pour couples, solos, familles ou amis.',
-    images: ['https://heldonica.fr/og-image.jpg'],
+      'Executive coaching, philosophical counselling et accompagnement des equipes avec Monica Schneider.',
+    images: ['https://happy-humans.org/og-default.jpg'],
   },
   alternates: {
-    canonical: 'https://heldonica.fr',
+    canonical: 'https://happy-humans.org',
   },
   robots: {
     index: true,
@@ -55,33 +51,6 @@ export const metadata: Metadata = {
   },
 }
 
-function formatPosts(posts: BlogPost[]) {
-  return posts.map((post) => ({
-    ...post,
-    formattedDate: formatDate(post.published_at),
-  }))
-}
-
-export default async function Home() {
-  const allPosts = await getAllPosts()
-  const latestPosts = allPosts.slice(0, 6)
-  const travelPosts = formatPosts(allPosts.filter((p) => p.category === 'Carnets Voyage').slice(0, 3))
-  const foodPosts = formatPosts(
-    allPosts
-      .filter((p) => p.category === 'Découvertes Locales' || p.category === 'Guides Pratiques')
-      .slice(0, 3)
-  )
-  const featured = allPosts[0]
-    ? { ...allPosts[0], formattedDate: formatDate(allPosts[0].published_at) }
-    : null
-
-  return (
-    <HomeClient
-      featured={featured}
-      travelPosts={travelPosts}
-      foodPosts={foodPosts}
-      latestPosts={formatPosts(latestPosts)}
-      totalPosts={allPosts.length}
-    />
-  )
+export default function Home() {
+  return <HomeClient />
 }

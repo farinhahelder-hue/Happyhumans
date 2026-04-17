@@ -3,30 +3,29 @@ import './globals.css';
 import { AuthProvider } from '@/components/AuthProvider';
 import CookieConsentBanner from '@/components/CookieConsentBanner';
 
-const SITE_URL = 'https://heldonica.fr';
+const SITE_URL = 'https://happy-humans.org';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Heldonica | Slow Travel, Pépites & Voyages Hors des Sentiers Battus',
-    template: '%s | Heldonica',
+    default: 'Happy Humans | Coaching & transformation avec Monica Schneider',
+    template: '%s | Happy Humans',
   },
   description:
-    'Slow travel, pépites dénichées et voyages sur mesure hors des sentiers battus. On partage nos carnets de route et conçoit des itinéraires authentiques pour tous les explorateurs.',
+    "Executive coaching, philosophical counselling et accompagnement des organisations avec Monica Schneider. Une approche pour retrouver clarté, alignement et impact durable.",
   keywords: [
-    'slow travel',
-    'voyage hors sentiers battus',
-    'pépites voyage',
-    'écoresponsable',
-    'travel planning sur mesure',
-    'carnet de voyage',
-    'slow travel Europe',
-    'itinéraire slow travel',
-    'heldonica',
+    'executive coach',
+    'coaching dirigeant',
+    'philosophical counselling',
+    'coaching leadership',
+    'Monica Schneider',
+    'Happy Humans',
+    'coaching de carriere',
+    'transformation equipes',
   ],
-  authors: [{ name: 'Heldonica', url: SITE_URL }],
-  creator: 'Heldonica',
-  publisher: 'Heldonica',
+  authors: [{ name: 'Monica Schneider', url: SITE_URL }],
+  creator: 'Monica Schneider',
+  publisher: 'Happy Humans',
   robots: {
     index: true,
     follow: true,
@@ -45,61 +44,71 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'fr_FR',
     url: SITE_URL,
-    siteName: 'Heldonica',
-    title: 'Heldonica | Slow Travel, Pépites & Voyages Hors des Sentiers Battus',
+    siteName: 'Happy Humans',
+    title: 'Happy Humans | Coaching & transformation avec Monica Schneider',
     description:
-      'Carnets de voyage slow travel, pépites dénichées et conception de voyages sur mesure écoresponsables.',
+      "Accompagnement individuel et collectif pour managers, dirigeants et organisations en quete d'alignement, de clarte et de transformation durable.",
     images: [
       {
         url: '/og-default.jpg',
         width: 1200,
         height: 630,
-        alt: 'Heldonica — Slow Travel, pépites & voyages hors des sentiers battus',
+        alt: 'Happy Humans - coaching et transformation avec Monica Schneider',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Heldonica | Slow Travel, Pépites & Voyages Hors des Sentiers Battus',
+    title: 'Happy Humans | Coaching & transformation avec Monica Schneider',
     description:
-      'Carnets de voyage slow travel, pépites dénichées et conception de voyages sur mesure écoresponsables.',
+      'Executive coaching, philosophical counselling et accompagnement des organisations avec Monica Schneider.',
     images: ['/og-default.jpg'],
-    creator: '@heldonica',
   },
 };
 
 const schemaWebSite = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: 'Heldonica',
-  alternateName: 'Heldonica — Slow Travel en Couple',
+  name: 'Happy Humans',
+  alternateName: 'Happy Humans - Monica Schneider',
   url: SITE_URL,
-  description: 'Blog slow travel en couple, pépites dénichées et service de travel planning sur mesure écoresponsable.',
+  description: 'Plateforme de coaching et de transformation portee par Monica Schneider.',
   inLanguage: 'fr-FR',
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: {
-      '@type': 'EntryPoint',
-      urlTemplate: `${SITE_URL}/blog?q={search_term_string}`,
-    },
-    'query-input': 'required name=search_term_string',
-  },
 };
 
 const schemaOrganization = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: 'Heldonica',
+  name: 'Happy Humans',
   url: SITE_URL,
-  logo: `${SITE_URL}/logo.png`,
+  logo: `${SITE_URL}/favicon.svg`,
   sameAs: [
-    'https://www.instagram.com/heldonica',
+    'https://fr.linkedin.com/in/monica-schneider-philo-coaching',
+    'https://monicaschneider.me/',
   ],
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'customer service',
-    email: 'contact@heldonica.fr',
-    availableLanguage: 'French',
+    email: 'contactus@happy-humans.org',
+    availableLanguage: ['French', 'English', 'Romanian'],
+  },
+};
+
+const schemaPerson = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Monica Schneider',
+  jobTitle: 'Executive Coach',
+  url: SITE_URL,
+  image: `${SITE_URL}/og-default.jpg`,
+  sameAs: [
+    'https://fr.linkedin.com/in/monica-schneider-philo-coaching',
+    'https://monicaschneider.me/',
+  ],
+  knowsLanguage: ['fr', 'en', 'ro'],
+  worksFor: {
+    '@type': 'Organization',
+    name: 'Happy Humans',
   },
 };
 
@@ -121,6 +130,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaOrganization) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaPerson) }}
         />
       </head>
       <body>

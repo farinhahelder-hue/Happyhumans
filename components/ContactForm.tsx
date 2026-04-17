@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -42,7 +42,7 @@ export default function ContactForm() {
       setTimeout(() => setSubmitted(false), 5000)
     } catch (error) {
       console.error('Erreur envoi formulaire:', error)
-      setSubmitError("Le message n'a pas pu partir. Réessaie ici ou écris-nous directement à info@heldonica.fr.")
+      setSubmitError("Le message n'a pas pu partir. Réessaie ici ou écris-nous directement à contactus@happy-humans.org.")
     } finally {
       setLoading(false)
     }
@@ -97,9 +97,10 @@ export default function ContactForm() {
           className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-3 text-stone-700 outline-none transition-all duration-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-100"
         >
           <option value="">Choisir un sujet</option>
-          <option value="travel-planning">Voyage sur mesure</option>
-          <option value="hotel-consulting">Consulting hôtelier</option>
-          <option value="partnership">Partenariat / média</option>
+          <option value="coaching">Coaching individuel</option>
+          <option value="companies">Organisation / équipe</option>
+          <option value="discovery">Session découverte</option>
+          <option value="speaking">Atelier / intervention</option>
           <option value="other">Autre</option>
         </select>
         {errors.subject && <p className="mt-1 text-sm text-red-600">{errors.subject.message}</p>}
@@ -111,7 +112,7 @@ export default function ContactForm() {
           {...register('message', { required: 'Le message est requis.' })}
           rows={6}
           className="w-full rounded-3xl border border-stone-200 bg-white px-4 py-3 text-stone-700 outline-none transition-all duration-200 focus:border-amber-400 focus:ring-2 focus:ring-amber-100"
-          placeholder="Raconte-nous le contexte: destination, timing, budget, énergie du moment, ce que tu veux éviter."
+          placeholder="Raconte le contexte: rôle, enjeu, transition, tension actuelle, objectif ou question que tu veux explorer."
         />
         {errors.message && <p className="mt-1 text-sm text-red-600">{errors.message.message}</p>}
       </div>

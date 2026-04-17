@@ -1,26 +1,26 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Notre histoire — Heldonica | Duo slow travel, service ouvert à tous',
+  title: 'À propos de Monica Schneider',
   description:
-    "Un duo né entre Madère, la Roumanie et Paris. Notre point de vue vient du terrain vécu à deux, et notre exigence sert aujourd'hui les solos, couples, familles et groupes d'amis.",
+    "Le parcours de Monica Schneider, executive coach, entre leadership, branding, transformation et philosophical counselling.",
   alternates: {
-    canonical: 'https://heldonica.fr/a-propos',
+    canonical: 'https://happy-humans.org/a-propos',
   },
   openGraph: {
-    url: 'https://heldonica.fr/a-propos',
-    title: 'Notre histoire — Heldonica | Duo slow travel, service ouvert à tous',
+    url: 'https://happy-humans.org/a-propos',
+    title: 'À propos de Monica Schneider',
     description:
-      "Un duo né entre Madère, la Roumanie et Paris. Notre point de vue vient du terrain vécu à deux, et notre exigence sert aujourd'hui les solos, couples, familles et groupes d'amis.",
+      "Executive coach certifiée, formée au philosophical counselling, Monica Schneider accompagne les personnes et les organisations dans leurs transitions et leurs transformations.",
     images: [
       {
-        url: 'https://heldonica.fr/og-default.jpg',
+        url: 'https://happy-humans.org/og-default.jpg',
         width: 1200,
         height: 630,
-        alt: 'Heldonica — Slow travel, pépites et voyages hors des sentiers battus',
+        alt: 'Monica Schneider - Happy Humans',
       },
     ],
     locale: 'fr_FR',
@@ -33,65 +33,75 @@ export default function AProposPage() {
     <>
       <Header />
       <main>
-        <section className="relative h-[55vh] md:h-[65vh] bg-stone-900 flex items-end overflow-hidden">
+        <section className="relative flex h-[55vh] items-end overflow-hidden bg-stone-900 md:h-[65vh]">
           <img
-            src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1400&q=85"
-            alt="Heldonica — duo de voyageurs slow travel"
-            className="absolute inset-0 w-full h-full object-cover opacity-40"
+            src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=1400&q=85"
+            alt="Portrait lifestyle évoquant le coaching et la présence"
+            className="absolute inset-0 h-full w-full object-cover opacity-40"
             width={1400}
             height={900}
             loading="eager"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-          <div className="relative z-10 px-6 md:px-16 pb-14 md:pb-24 max-w-3xl">
-            <p className="text-amber-300 text-xs font-bold tracking-[0.2em] uppercase mb-4">Notre histoire</p>
-            <h1 className="text-4xl md:text-6xl font-serif font-light text-white leading-[1.1] mb-5">
-              Une histoire
+          <div className="relative z-10 max-w-3xl px-6 pb-14 md:px-16 md:pb-24">
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-amber-300">À propos</p>
+            <h1 className="mb-5 text-4xl font-serif font-light leading-[1.1] text-white md:text-6xl">
+              Monica Schneider
               <br />
-              <em className="text-amber-300">qui s&apos;écrit sur le terrain</em>
+              <em className="text-amber-300">leadership, coaching et profondeur</em>
             </h1>
-            <p className="text-gray-300 text-base md:text-lg leading-relaxed max-w-xl">
-              Madère. Roumanie. Paris. Notre point de vue est né en duo ; notre service s&apos;ouvre à tous ceux qui veulent voyager plus lentement, plus sincèrement et plus loin des sentiers balisés.
+            <p className="max-w-xl text-base leading-relaxed text-gray-300 md:text-lg">
+              Une pratique née au croisement de l&apos;entreprise, du branding, de la transformation
+              humaine et du philosophical counselling.
             </p>
           </div>
         </section>
 
-        <section className="py-20 md:py-28 bg-white">
-          <div className="max-w-5xl mx-auto px-6 md:px-10">
-            <div className="grid md:grid-cols-5 gap-12 md:gap-20 items-center">
-              <div className="md:col-span-3 space-y-5">
-                <p className="text-amber-800 text-xs font-bold tracking-[0.2em] uppercase">Pas vraiment classiques</p>
-                <h2 className="text-3xl md:text-4xl font-serif font-light text-stone-900 leading-tight">
-                  On s&apos;est rencontrés sur une appli,
+        <section className="bg-white py-20 md:py-28">
+          <div className="mx-auto max-w-5xl px-6 md:px-10">
+            <div className="grid items-center gap-12 md:grid-cols-5 md:gap-20">
+              <div className="space-y-5 md:col-span-3">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Le parcours</p>
+                <h2 className="text-3xl font-serif font-light leading-tight text-stone-900 md:text-4xl">
+                  Une trajectoire
                   <br />
-                  <span className="italic text-stone-500">sans être du même pays.</span>
+                  <span className="italic text-stone-500">entre direction, marque et accompagnement.</span>
                 </h2>
-                <p className="text-base text-stone-600 leading-relaxed">
-                  Et si nos univers diffèrent, c&apos;est précisément là que tout a commencé. L&apos;un vient de Madère, l&apos;autre de Roumanie, et c&apos;est à Paris qu&apos;on s&apos;est trouvés.
+                <p className="text-base leading-relaxed text-stone-600">
+                  Monica Schneider a d&apos;abord évolué pendant plus de dix ans dans des univers
+                  exigeants de marketing, product development et branding. Elle a contribué à créer
+                  des produits, des expériences et des marques fortes tout en accompagnant des
+                  équipes à travers des transformations parfois intenses.
                 </p>
-                <p className="text-base text-stone-600 leading-relaxed">
-                  Deux trajectoires opposées, une même manie : ralentir, regarder, revenir. On aime les villes à contre-courant, les chemins qui s&apos;écartent, les tables qui sentent vraiment quelque chose.
+                <p className="text-base leading-relaxed text-stone-600">
+                  Cette expérience l&apos;a menée jusqu&apos;à des fonctions de direction. Mais c&apos;est dans
+                  l&apos;accompagnement du développement des personnes que quelque chose de plus profond
+                  s&apos;est imposé.
                 </p>
-                <p className="text-base text-stone-600 leading-relaxed">
-                  Ce qu&apos;on partage ici, ce n&apos;est pas une envie de voyage. C&apos;est ce qu&apos;on a vécu. Nos itinéraires, on les a faits. Nos adresses, on les a testées. Et quand on se trompe, on revient jusqu&apos;à comprendre.
+                <p className="text-base leading-relaxed text-stone-600">
+                  En 2020, elle se tourne pleinement vers le coaching. Depuis, elle accompagne des
+                  managers, dirigeants, entrepreneurs et organisations pour faire émerger plus de
+                  clarté, de présence, d&apos;alignement et de confiance.
                 </p>
-                <p className="text-base text-stone-600 leading-relaxed">
-                  Heldonica parle depuis le duo, parce que c&apos;est notre laboratoire et notre filtre. Mais quand on conçoit un voyage, cette même exigence terrain sert aussi les solos, les familles curieuses et les groupes d&apos;amis.
+                <p className="text-base leading-relaxed text-stone-600">
+                  Son travail s&apos;appuie aujourd&apos;hui sur le coaching exécutif, mais aussi sur la
+                  philosophie, la psychologie positive, la pleine conscience, le gestalt et des
+                  approches centrées sur les solutions.
                 </p>
               </div>
               <div className="md:col-span-2">
                 <div className="relative">
                   <img
-                    src="https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=700&q=85"
-                    alt="Voyage en couple — silhouettes Heldonica"
-                    className="rounded-2xl w-full aspect-[3/4] object-cover shadow-lg"
+                    src="https://images.unsplash.com/photo-1515169067868-5387ec356754?w=700&q=85"
+                    alt="Femme en réflexion dans un environnement apaisé"
+                    className="aspect-[3/4] w-full rounded-2xl object-cover shadow-lg"
                     width={500}
                     height={667}
                     loading="lazy"
                   />
-                  <div className="absolute -bottom-5 -left-5 bg-amber-800 text-white px-5 py-4 rounded-xl shadow-lg hidden md:block">
-                    <p className="text-xs font-bold tracking-wider uppercase mb-1">Ensemble depuis</p>
-                    <p className="text-2xl font-serif font-light">Paris, 2015</p>
+                  <div className="absolute -bottom-5 -left-5 hidden rounded-xl bg-amber-800 px-5 py-4 text-white shadow-lg md:block">
+                    <p className="mb-1 text-xs font-bold uppercase tracking-wider">Aujourd&apos;hui</p>
+                    <p className="text-2xl font-serif font-light">France · Europe · Online</p>
                   </div>
                 </div>
               </div>
@@ -99,108 +109,115 @@ export default function AProposPage() {
           </div>
         </section>
 
-        <section className="py-14 bg-stone-50">
-          <div className="max-w-5xl mx-auto px-6 md:px-10">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <section className="bg-stone-50 py-14">
+          <div className="mx-auto max-w-5xl px-6 md:px-10">
+            <div className="grid grid-cols-2 gap-6 text-center md:grid-cols-4">
               {[
-                { chiffre: '10+', label: 'ans de terrain en duo' },
-                { chiffre: '17+', label: 'carnets publiés' },
-                { chiffre: '7', label: 'pays habités' },
-                { chiffre: '100+', label: 'adresses vécues' },
+                { chiffre: '10+', label: "ans d'expérience en leadership" },
+                { chiffre: '2020', label: 'bascule vers le coaching' },
+                { chiffre: '5', label: 'pays vécus' },
+                { chiffre: '3', label: 'langues de travail' },
               ].map((item) => (
                 <div key={item.label} className="py-6">
-                  <p className="text-4xl md:text-5xl font-serif font-light text-amber-800 mb-2">{item.chiffre}</p>
-                  <p className="text-xs text-stone-500 leading-snug uppercase tracking-wider">{item.label}</p>
+                  <p className="mb-2 text-4xl font-serif font-light text-amber-800 md:text-5xl">{item.chiffre}</p>
+                  <p className="text-xs uppercase tracking-wider text-stone-500">{item.label}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="py-20 md:py-28 bg-white">
-          <div className="max-w-5xl mx-auto px-6 md:px-10">
-            <p className="text-amber-800 text-xs font-bold tracking-[0.2em] uppercase mb-12 text-center">Le duo derrière Heldonica</p>
-            <div className="grid md:grid-cols-2 gap-10 md:gap-16">
+        <section className="bg-white py-20 md:py-28">
+          <div className="mx-auto max-w-5xl px-6 md:px-10">
+            <p className="mb-12 text-center text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Repères</p>
+            <div className="grid gap-10 md:grid-cols-2 md:gap-16">
               <div className="group">
                 <div className="relative mb-6 overflow-hidden rounded-2xl">
                   <img
-                    src="https://images.unsplash.com/photo-1539635278303-d4002c07eae3?w=700&q=80"
-                    alt="Madère — falaises et océan Atlantique"
-                    className="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-700"
+                    src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=700&q=80"
+                    alt="Session de travail en petit groupe"
+                    className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     width={600}
                     height={450}
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <span className="absolute bottom-4 left-4 text-white text-xs font-bold tracking-[0.15em] uppercase">Lui — Madère</span>
+                  <span className="absolute bottom-4 left-4 text-xs font-bold uppercase tracking-[0.15em] text-white">Certifications</span>
                 </div>
-                <h3 className="text-2xl font-serif font-light text-stone-900 mb-3">L&apos;insulaire de l&apos;âme</h3>
-                <p className="text-stone-600 text-sm leading-relaxed mb-3">
-                  Il est né à Madère, entre l&apos;Atlantique et des falaises que les cartes n&apos;ont pas encore toutes nommées. Il part là où les guides s&apos;arrêtent.
+                <h3 className="mb-3 text-2xl font-serif font-light text-stone-900">Un cadre solide</h3>
+                <p className="mb-3 text-sm leading-relaxed text-stone-600">
+                  Monica Schneider est formée à l&apos;Academy of Executive Coaching et accréditée EMCC
+                  au niveau Practitioner.
                 </p>
-                <p className="text-stone-600 text-sm leading-relaxed">
-                  Et quand il rentre, il aide les hôtels à mieux raconter ce qu&apos;ils sont. Pas ce qu&apos;ils aimeraient paraître, ce qu&apos;ils sont vraiment.
+                <p className="text-sm leading-relaxed text-stone-600">
+                  Elle complète cette base avec un Master en Philosophical Counselling and
+                  Consultancy pour travailler les transformations avec davantage de profondeur.
                 </p>
               </div>
 
               <div className="group">
                 <div className="relative mb-6 overflow-hidden rounded-2xl">
                   <img
-                    src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=700&q=80"
-                    alt="Roumanie — paysages des Carpates"
-                    className="w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-700"
+                    src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=700&q=80"
+                    alt="Réunion d'équipe et leadership"
+                    className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     width={600}
                     height={450}
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <span className="absolute bottom-4 left-4 text-white text-xs font-bold tracking-[0.15em] uppercase">Elle — Roumanie</span>
+                  <span className="absolute bottom-4 left-4 text-xs font-bold uppercase tracking-[0.15em] text-white">Vision</span>
                 </div>
-                <h3 className="text-2xl font-serif font-light text-stone-900 mb-3">La lectrice de villes</h3>
-                <p className="text-stone-600 text-sm leading-relaxed mb-3">
-                  Elle lit une ville comme un poème. Sept pays habités. Pas visités — habités. C&apos;est différent.
+                <h3 className="mb-3 text-2xl font-serif font-light text-stone-900">Aller vers plus de justesse</h3>
+                <p className="mb-3 text-sm leading-relaxed text-stone-600">
+                  Le travail ne consiste pas seulement à performer davantage. Il s&apos;agit aussi de
+                  retrouver sa voix, sa capacité d&apos;agir et une façon plus juste d&apos;habiter son rôle.
                 </p>
-                <p className="text-stone-600 text-sm leading-relaxed">
-                  Elle tient la plume, affine les itinéraires et garde le niveau d&apos;exigence là où beaucoup s&apos;arrêtent à une jolie image.
+                <p className="text-sm leading-relaxed text-stone-600">
+                  Happy Humans donne un cadre à cette ambition: aider des humains et des
+                  organisations à se transformer sans se trahir.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="py-20 md:py-28 bg-stone-50">
-          <div className="max-w-4xl mx-auto px-6 md:px-10">
+        <section className="bg-stone-50 py-20 md:py-28">
+          <div className="mx-auto max-w-4xl px-6 md:px-10">
             <div className="mb-14">
-              <p className="text-amber-800 text-xs font-bold tracking-[0.2em] uppercase mb-4">Ce qu&apos;on défend</p>
-              <h2 className="text-3xl md:text-4xl font-serif font-light text-stone-900 leading-tight">
-                Heldonica, c&apos;est notre manière de raconter
+              <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Ce qui guide la pratique</p>
+              <h2 className="text-3xl font-serif font-light leading-tight text-stone-900 md:text-4xl">
+                Une approche qui cherche moins à lisser
                 <br />
-                <em className="text-amber-800">le monde sans le lisser</em>
+                <em className="text-amber-800">qu&apos;à faire émerger le vrai.</em>
               </h2>
             </div>
             <div className="space-y-10">
               {[
                 {
                   num: '01',
-                  titre: 'Vécu, jamais récupéré',
-                  texte: 'Chaque adresse qu\'on recommande, on l\'a testée. Pas récupérée sur un listicle. Pas recopiée ailleurs. Le vrai goût des choses, ça se vérifie.',
+                  titre: 'Présence et authenticité',
+                  texte:
+                    "Le coaching sert à retrouver une posture vivante et crédible, pas à ajouter une couche de discours sur une fatigue déjà présente.",
                 },
                 {
                   num: '02',
-                  titre: 'Lenteur & profondeur',
-                  texte: 'On ne voyage pas pour cocher. On voyage pour ressentir, rencontrer, comprendre et savoir quand il vaut mieux rester une heure de plus.',
+                  titre: 'Profondeur praticable',
+                  texte:
+                    "La philosophie aide à clarifier les tensions, les croyances et les contradictions. Le coaching transforme cette clarté en mouvement praticable.",
                 },
                 {
                   num: '03',
-                  titre: 'Notre POV = duo, notre service = tous',
-                  texte: 'Dénicheurs de pépites, même en bas de chez toi, on teste, on affine et on raconte d\'abord à deux. Ensuite, on met cette même obsession du rythme juste au service d\'un solo, d\'une famille ou d\'un groupe d\'amis.',
+                  titre: 'Transformation durable',
+                  texte:
+                    "L'objectif n'est pas seulement de résoudre un sujet immédiat, mais d'installer un changement plus conscient, plus stable et plus aligné.",
                 },
               ].map((item) => (
-                <div key={item.num} className="grid md:grid-cols-[80px_1fr] gap-6 items-start">
-                  <span className="text-5xl font-serif font-light text-stone-200 leading-none select-none">{item.num}</span>
+                <div key={item.num} className="grid items-start gap-6 md:grid-cols-[80px_1fr]">
+                  <span className="select-none text-5xl font-serif font-light leading-none text-stone-200">{item.num}</span>
                   <div>
-                    <h3 className="font-semibold text-stone-900 text-base mb-2">{item.titre}</h3>
-                    <p className="text-stone-500 text-sm leading-relaxed">{item.texte}</p>
+                    <h3 className="mb-2 text-base font-semibold text-stone-900">{item.titre}</h3>
+                    <p className="text-sm leading-relaxed text-stone-500">{item.texte}</p>
                   </div>
                 </div>
               ))}
@@ -208,48 +225,48 @@ export default function AProposPage() {
           </div>
         </section>
 
-        <section className="py-20 bg-stone-900">
-          <div className="max-w-3xl mx-auto px-6 text-center">
-            <p className="text-amber-300 text-xs font-bold tracking-[0.2em] uppercase mb-8">Notre conviction</p>
-            <blockquote className="text-2xl md:text-4xl font-serif font-light text-white leading-relaxed">
-              &ldquo;On ne raconte bien que ce qu&apos;on a vraiment vécu.&rdquo;
+        <section className="bg-stone-900 py-20">
+          <div className="mx-auto max-w-3xl px-6 text-center">
+            <p className="mb-8 text-xs font-bold uppercase tracking-[0.2em] text-amber-300">Conviction</p>
+            <blockquote className="text-2xl font-serif font-light leading-relaxed text-white md:text-4xl">
+              &ldquo;La clarté ne naît pas d&apos;une réponse toute faite, mais d&apos;un espace où l&apos;on peut enfin penser, sentir et choisir autrement.&rdquo;
             </blockquote>
-            <p className="text-stone-500 text-sm mt-8">Heldonica — Paris</p>
+            <p className="mt-8 text-sm text-stone-500">Monica Schneider</p>
           </div>
         </section>
 
-        <section className="py-20 md:py-28 bg-[#f7f6f2]">
-          <div className="max-w-5xl mx-auto px-6 md:px-10">
-            <p className="text-amber-800 text-xs font-bold tracking-[0.2em] uppercase mb-8 text-center">Et maintenant ?</p>
-            <div className="grid md:grid-cols-2 gap-6">
+        <section className="bg-[#f7f6f2] py-20 md:py-28">
+          <div className="mx-auto max-w-5xl px-6 md:px-10">
+            <p className="mb-8 text-center text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Et maintenant ?</p>
+            <div className="grid gap-6 md:grid-cols-2">
               <Link
-                href="/blog"
-                className="group block bg-white rounded-2xl p-8 shadow-sm hover:shadow-md border border-stone-100 hover:border-amber-200 transition-all"
+                href="/coaching"
+                className="group block rounded-2xl border border-stone-100 bg-white p-8 shadow-sm transition-all hover:border-amber-200 hover:shadow-md"
               >
-                <p className="text-xs text-amber-800 font-bold tracking-widest uppercase mb-3">Blog Slow Travel</p>
-                <h3 className="text-2xl font-serif font-light text-stone-900 mb-3 group-hover:text-amber-800 transition-colors">
-                  Nos carnets de voyage
+                <p className="mb-3 text-xs font-bold uppercase tracking-widest text-amber-800">Coaching</p>
+                <h3 className="mb-3 text-2xl font-serif font-light text-stone-900 transition-colors group-hover:text-amber-800">
+                  Accompagnement individuel
                 </h3>
-                <p className="text-stone-500 text-sm leading-relaxed mb-5">
-                  Itinéraires vécus, retours de terrain, adresses qu&apos;on aurait aimé trouver avant de partir.
+                <p className="mb-5 text-sm leading-relaxed text-stone-500">
+                  Leadership, transitions, confiance, carrière, créativité, alignement et sens.
                 </p>
-                <span className="text-amber-800 font-semibold text-sm group-hover:gap-3 transition-all inline-flex items-center gap-2">
-                  Lire le carnet →
+                <span className="inline-flex items-center gap-2 text-sm font-semibold text-amber-800 transition-all group-hover:gap-3">
+                  Voir le coaching →
                 </span>
               </Link>
               <Link
-                href="/travel-planning-form"
-                className="group block bg-white rounded-2xl p-8 shadow-sm hover:shadow-md border border-stone-100 hover:border-amber-200 transition-all"
+                href="/entreprises"
+                className="group block rounded-2xl border border-stone-100 bg-white p-8 shadow-sm transition-all hover:border-amber-200 hover:shadow-md"
               >
-                <p className="text-xs text-amber-800 font-bold tracking-widest uppercase mb-3">Travel Planning</p>
-                <h3 className="text-2xl font-serif font-light text-stone-900 mb-3 group-hover:text-amber-800 transition-colors">
-                  Ton voyage, pensé juste
+                <p className="mb-3 text-xs font-bold uppercase tracking-widest text-amber-800">Entreprises</p>
+                <h3 className="mb-3 text-2xl font-serif font-light text-stone-900 transition-colors group-hover:text-amber-800">
+                  Leadership, ateliers et transformation
                 </h3>
-                <p className="text-stone-500 text-sm leading-relaxed mb-5">
-                  On part de tes vraies contraintes, pas d&apos;un modèle générique. Et on construit à partir du terrain, pas d&apos;un tableau Pinterest.
+                <p className="mb-5 text-sm leading-relaxed text-stone-500">
+                  Un cadre pour accompagner les dirigeants, les équipes et les cultures en mouvement.
                 </p>
-                <span className="text-amber-800 font-semibold text-sm group-hover:gap-3 transition-all inline-flex items-center gap-2">
-                  Nous écrire →
+                <span className="inline-flex items-center gap-2 text-sm font-semibold text-amber-800 transition-all group-hover:gap-3">
+                  Explorer les offres →
                 </span>
               </Link>
             </div>

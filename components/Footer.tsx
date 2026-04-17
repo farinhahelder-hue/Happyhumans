@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import Link from 'next/link'
 
@@ -11,25 +11,23 @@ export default function Footer() {
         <div className="mb-12 grid grid-cols-1 gap-12 md:grid-cols-4">
           <div>
             <div className="mb-4">
-              <h3 className="mb-2 text-2xl font-serif font-bold text-white">Heldonica</h3>
-              <p className="text-sm text-amber-200">Slow travel vécu, conçu juste.</p>
+              <h3 className="mb-2 text-2xl font-serif font-bold text-white">Happy Humans</h3>
+              <p className="text-sm text-amber-200">Coaching & transformation avec Monica Schneider.</p>
             </div>
             <p className="text-sm leading-relaxed text-stone-300">
-              On voyage lentement, on teste vraiment, on partage ce qui tient sur le terrain.
-              Dénicheurs de pépites, même en bas de chez toi.
+              Une pratique de coaching qui relie leadership, authenticité, philosophie et
+              transformation humaine, pour les personnes comme pour les organisations.
             </p>
             <div className="mt-6">
               <a
-                href="https://www.instagram.com/heldonica/"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="https://fr.linkedin.com/in/monica-schneider-philo-coaching"
                 className="inline-flex items-center gap-2 text-stone-300 transition-colors duration-200 hover:text-white"
-                title="Suivez-nous sur Instagram"
+                title="Voir le profil LinkedIn de Monica Schneider"
               >
                 <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1 1 12.324 0 6.162 6.162 0 0 1-12.324 0zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm4.965-10.322a1.44 1.44 0 1 1 2.881.001 1.44 1.44 0 0 1-2.881-.001z" />
+                  <path d="M4.98 3.5C4.98 4.88 3.86 6 2.49 6S0 4.88 0 3.5 1.12 1 2.49 1s2.49 1.12 2.49 2.5zM.5 8h4V24h-4V8zm7 0h3.8v2.2h.1c.53-1 1.82-2.2 3.75-2.2 4.01 0 4.75 2.64 4.75 6.07V24h-4v-8.1c0-1.93-.03-4.42-2.69-4.42-2.7 0-3.11 2.1-3.11 4.28V24h-4V8z" />
                 </svg>
-                <span className="text-sm font-medium">@heldonica</span>
+                <span className="text-sm font-medium">LinkedIn</span>
               </a>
             </div>
           </div>
@@ -44,56 +42,63 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/a-propos" className="text-stone-300 transition-colors duration-200 hover:text-white">
-                  À propos
+                  Monica
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="text-stone-300 transition-colors duration-200 hover:text-white">
-                  Blog
+                <Link href="/coaching" className="text-stone-300 transition-colors duration-200 hover:text-white">
+                  Coaching
                 </Link>
               </li>
               <li>
-                <Link href="/destinations" className="text-stone-300 transition-colors duration-200 hover:text-white">
-                  Destinations
-                </Link>
-              </li>
-              <li>
-                <Link href="/planifier" className="text-stone-300 transition-colors duration-200 hover:text-white">
-                  Planifier
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="mb-6 text-lg font-serif font-bold text-white">Services</h4>
-            <ul className="space-y-3 text-sm">
-              <li>
-                <Link href="/travel-planning" className="text-stone-300 transition-colors duration-200 hover:text-white">
-                  Travel planning
-                </Link>
-              </li>
-              <li>
-                <Link href="/slow-travel" className="text-stone-300 transition-colors duration-200 hover:text-white">
-                  Slow travel
-                </Link>
-              </li>
-              <li>
-                <Link href="/hotel-consulting" className="text-stone-300 transition-colors duration-200 hover:text-white">
-                  Consulting hôtelier
+                <Link href="/entreprises" className="text-stone-300 transition-colors duration-200 hover:text-white">
+                  Entreprises
                 </Link>
               </li>
               <li>
                 <Link href="/contact" className="text-stone-300 transition-colors duration-200 hover:text-white">
-                  Nous écrire
+                  Contact
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="mb-6 text-lg font-serif font-bold text-white">Légal & contact</h4>
+            <h4 className="mb-6 text-lg font-serif font-bold text-white">Accompagnements</h4>
             <ul className="space-y-3 text-sm">
+              <li>
+                <Link href="/coaching" className="text-stone-300 transition-colors duration-200 hover:text-white">
+                  Coaching individuel
+                </Link>
+              </li>
+              <li>
+                <Link href="/entreprises" className="text-stone-300 transition-colors duration-200 hover:text-white">
+                  Leadership & équipes
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="text-stone-300 transition-colors duration-200 hover:text-white">
+                  Session découverte
+                </Link>
+              </li>
+              <li>
+                <a href="https://monicaschneider.me/" className="text-stone-300 transition-colors duration-200 hover:text-white">
+                  À propos de Monica
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="mb-6 text-lg font-serif font-bold text-white">Infos</h4>
+            <ul className="space-y-3 text-sm">
+              <li className="text-stone-300">France · En ligne · Europe</li>
+              <li className="text-stone-300">Français · English · Română</li>
+              <li>
+                <a href="mailto:contactus@happy-humans.org" className="text-stone-300 transition-colors duration-200 hover:text-white">
+                  contactus@happy-humans.org
+                </a>
+              </li>
               <li>
                 <Link href="/mentions-legales" className="text-stone-300 transition-colors duration-200 hover:text-white">
                   Mentions légales
@@ -104,20 +109,14 @@ export default function Footer() {
                   Politique de confidentialité
                 </Link>
               </li>
-              <li>
-                <a href="mailto:info@heldonica.fr" className="text-stone-300 transition-colors duration-200 hover:text-white">
-                  info@heldonica.fr
-                </a>
-              </li>
-              <li className="text-stone-400">France</li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-stone-800 pt-8">
           <div className="flex flex-col items-center justify-between gap-4 text-sm text-stone-400 md:flex-row">
-            <p>© {currentYear} Heldonica. Tous droits réservés.</p>
-            <p className="text-xs">Photos © Heldonica. Tous droits d&apos;auteur réservés.</p>
+            <p>© {currentYear} Happy Humans. Tous droits réservés.</p>
+            <p className="text-xs">Monica Schneider · Happy Humans</p>
           </div>
         </div>
       </div>

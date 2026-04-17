@@ -27,7 +27,7 @@ const securityHeaders = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
       "style-src 'self' 'unsafe-inline' https://api.fontshare.com https://fonts.googleapis.com",
-      "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co https://heldonica.fr https://www.heldonica.fr https://behold.pictures https://cdn2.behold.pictures",
+      "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co https://heldonica.fr https://www.heldonica.fr https://happy-humans.org https://www.happy-humans.org https://behold.pictures https://cdn2.behold.pictures",
       "font-src 'self' https://api.fontshare.com https://fonts.gstatic.com",
       "connect-src 'self' https://*.supabase.co https://api.perplexity.ai https://api.unsplash.com https://api.bufferapp.com",
       "frame-ancestors 'none'",
@@ -64,6 +64,14 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'happy-humans.org',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.happy-humans.org',
+      },
+      {
+        protocol: 'https',
         hostname: 'images.unsplash.com',
       },
       {
@@ -77,7 +85,6 @@ const nextConfig = {
     ],
   },
   compress: true,
-  // Lint + typecheck déjà réactivés (sprint 10 avril)
   eslint: { ignoreDuringBuilds: false },
   typescript: { ignoreBuildErrors: false },
   experimental: {
@@ -94,38 +101,31 @@ const nextConfig = {
     ]
   },
 
-  // ── Redirections permanentes (legacy WordPress + anciens slugs) ──
   async redirects() {
     return [
-      // Admin redirect
       { source: '/admin', destination: '/cms-admin', permanent: true },
       { source: '/admin/:path*', destination: '/cms-admin/:path*', permanent: true },
-      // Zurich
-      { source: '/zurich', destination: '/destinations/zurich', permanent: true },
-      { source: '/zurich/', destination: '/destinations/zurich', permanent: true },
-      // Suisse
-      { source: '/suisse', destination: '/destinations/suisse', permanent: true },
-      { source: '/suisse/', destination: '/destinations/suisse', permanent: true },
-      // Roumanie
-      { source: '/roumanie', destination: '/destinations/roumanie', permanent: true },
-      { source: '/roumanie/', destination: '/destinations/roumanie', permanent: true },
-      // Madère
-      { source: '/madere', destination: '/destinations/madere', permanent: true },
-      { source: '/madere/', destination: '/destinations/madere', permanent: true },
-      // Paris
-      { source: '/paris', destination: '/destinations/paris', permanent: true },
-      { source: '/paris/', destination: '/destinations/paris', permanent: true },
-      // Stoos Ridge — ancien slug -2 indexé par Google
-      { source: '/stoos-ridge-notre-aventure-sur-la-crete-panoramique-2', destination: '/blog/stoos-ridge-notre-aventure-sur-la-crete-panoramique', permanent: true },
-      // Legacy WordPress — URLs encore indexées par Google
-      { source: '/travel-planner', destination: '/travel-planning', permanent: true },
-      { source: '/travel-planner/', destination: '/travel-planning', permanent: true },
-      { source: '/nos-services', destination: '/travel-planning', permanent: true },
-      { source: '/nos-services/', destination: '/travel-planning', permanent: true },
-      { source: '/sujets/bons-plans', destination: '/blog', permanent: true },
-      { source: '/sujets/bons-plans/', destination: '/blog', permanent: true },
-      { source: '/sujets/:slug', destination: '/blog', permanent: true },
-      { source: '/etiquettes/:slug', destination: '/blog', permanent: true },
+      { source: '/planifier', destination: '/coaching', permanent: true },
+      { source: '/travel-planning', destination: '/coaching', permanent: true },
+      { source: '/travel-planning-form', destination: '/contact', permanent: true },
+      { source: '/hotel-consulting', destination: '/entreprises', permanent: true },
+      { source: '/ai-hotellerie', destination: '/entreprises', permanent: true },
+      { source: '/etudes-de-cas', destination: '/entreprises', permanent: true },
+      { source: '/blog', destination: '/', permanent: true },
+      { source: '/blog/:path*', destination: '/', permanent: true },
+      { source: '/destinations', destination: '/', permanent: true },
+      { source: '/destinations/:path*', destination: '/', permanent: true },
+      { source: '/slow-travel', destination: '/', permanent: true },
+      { source: '/temoignages', destination: '/coaching', permanent: true },
+      { source: '/travel-planner', destination: '/coaching', permanent: true },
+      { source: '/travel-planner/', destination: '/coaching', permanent: true },
+      { source: '/nos-services', destination: '/coaching', permanent: true },
+      { source: '/nos-services/', destination: '/coaching', permanent: true },
+      { source: '/sujets/bons-plans', destination: '/', permanent: true },
+      { source: '/sujets/bons-plans/', destination: '/', permanent: true },
+      { source: '/sujets/:slug', destination: '/', permanent: true },
+      { source: '/etiquettes/:slug', destination: '/', permanent: true },
+      { source: '/stoos-ridge-notre-aventure-sur-la-crete-panoramique-2', destination: '/', permanent: true },
     ];
   },
 }
