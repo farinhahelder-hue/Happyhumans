@@ -2,7 +2,7 @@ import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { NextResponse } from 'next/server';
 
 const SESSION_DURATION_SECONDS = 60 * 60 * 8;
-export const CMS_SESSION_COOKIE = 'heldonica_cms_session';
+export const CMS_SESSION_COOKIE = 'happyhumans_cms_session';
 
 type CmsAuthStatus = 'ok' | 'unauthorized' | 'misconfigured';
 

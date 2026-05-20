@@ -1,33 +1,29 @@
 ﻿import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Voyage sur mesure hors sentiers | Heldonica',
+  title: 'Voyage sur mesure | Happy Humans - Coaching',
   description:
     'On ne fait pas des itinéraires. On fait le tien. Slow travel vécu, adresses testées et séquence pensée pour couples, solos, familles ou amis.',
   keywords: [
-    'travel planning sur mesure',
-    'voyage en couple',
-    'slow travel',
-    'itinéraire personnalisé',
-    'voyage écoresponsable',
-    'heldonica',
-    'conception voyage',
+    'coaching',
+    'happy humans',
+    'monica schneider',
   ],
   alternates: {
-    canonical: 'https://heldonica.fr/travel-planning',
+    canonical: 'https://happy-humans.org/coaching',
   },
   openGraph: {
-    title: 'Voyage sur mesure hors sentiers — Heldonica',
+    title: 'Coaching — Happy Humans',
     description:
       'Adresses testées, rythme juste et vraie séquence de terrain pour couples, solos, familles ou amis.',
-    url: 'https://heldonica.fr/travel-planning',
-    siteName: 'Heldonica',
+    url: 'https://happy-humans.org/coaching',
+    siteName: 'Happy Humans',
     images: [
       {
         url: 'https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=1200&q=85',
         width: 1200,
         height: 630,
-        alt: 'Heldonica — voyage sur mesure hors sentiers',
+        alt: 'Happy Humans — Coaching',
       },
     ],
     type: 'website',
@@ -35,7 +31,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Voyage sur mesure hors sentiers | Heldonica',
+    title: 'Coaching | Happy Humans',
     description:
       'On part de tes contraintes réelles pour construire un voyage qui tient sur le terrain.',
     images: ['https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=1200&q=85'],

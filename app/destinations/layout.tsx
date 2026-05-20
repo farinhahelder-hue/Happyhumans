@@ -1,17 +1,17 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Destinations Slow Travel | Voyages Hors des Sentiers Battus | Heldonica',
-  description: 'Explorez nos destinations slow travel : Madère, Zurich, Portugal, Alpes... Des itinéraires authentiques pour voyager en couple hors des sentiers battus, testés sur le terrain.',
-  keywords: ['destinations slow travel', 'voyages hors sentiers battus', 'voyage en couple', 'madère', 'zurich', 'portugal', 'itinéraire authentique', 'heldonica'],
+  title: 'Coaching | Happy Humans - Monica Schneider',
+  description: 'Executive coaching et philosophical counselling avec Monica Schneider. Reprenez le pouvoir sur votre parcours professionnel et personnel.',
+  keywords: ['coaching', 'executive coaching', 'monica schneider', 'happy humans', 'leadership'],
   alternates: {
-    canonical: 'https://heldonica.fr/destinations',
+    canonical: 'https://happy-humans.org/coaching',
   },
   openGraph: {
-    title: 'Destinations Slow Travel — Pépites Dénichées par Heldonica',
-    description: 'Nos destinations slow travel testées sur le terrain : pépites cachées, hébergements authentiques, tables de locaux. Voyager autrement en couple.',
-    url: 'https://heldonica.fr/destinations',
-    siteName: 'Heldonica',
+    title: 'Coaching — Happy Humans',
+    description: 'Executive coaching et philosophical counselling avec Monica Schneider.',
+    url: 'https://happy-humans.org/coaching',
+    siteName: 'Happy Humans',
     type: 'website',
     locale: 'fr_FR',
   },

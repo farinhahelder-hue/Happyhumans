@@ -29,6 +29,36 @@ const approach = [
   'Psychologie positive & mindfulness',
 ]
 
+const packages = [
+  {
+    name: 'Échange découverte',
+    price: 'Gratuit',
+    duration: '30 min',
+    description: 'Un premier échange pour clarify votre enjeu et voir si le feeling passe.',
+    features: ['Visioconférence ou téléphone', 'Sans engagement', 'Points clairs identifiés'],
+    cta: 'Réserver',
+    highlighted: false,
+  },
+  {
+    name: 'Parcours coaching',
+    price: '350€',
+    duration: '3 mois',
+    description: 'Un accompagnement structuré pour une transformation durable.',
+    features: ['6 sessions de 1h', 'Entretiens illimités par email', 'Support entre sessions', 'Bilan final'],
+    cta: 'Réserver',
+    highlighted: true,
+  },
+  {
+    name: 'Session unique',
+    price: '120€',
+    duration: '1h',
+    description: 'Une session pour gagner en clarté sur une situation précise.',
+    features: ['1 session de 1h', 'Visioconférence', 'Compte-rendu écrit', 'Suite possible'],
+    cta: 'Réserver',
+    highlighted: false,
+  },
+]
+
 export const metadata: Metadata = {
   title: 'Coaching individuel',
   description:
@@ -129,7 +159,7 @@ export default function CoachingPage() {
         <section className="bg-white py-20 md:py-24">
           <div className="mx-auto max-w-4xl px-6 text-center md:px-10">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
-              Modalité
+              Modalités
             </p>
             <h2 className="text-3xl font-serif font-light text-stone-900 md:text-4xl">
               Un premier échange de découverte pour voir si c&apos;est le bon cadre.
@@ -145,6 +175,62 @@ export default function CoachingPage() {
             >
               Nous écrire →
             </Link>
+          </div>
+        </section>
+
+        <section className="bg-gradient-to-br from-[#f7f2e9] via-white to-[#eef5f3] py-20 md:py-24">
+          <div className="mx-auto max-w-6xl px-6 md:px-10">
+            <div className="mb-12 text-center">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#8d5d2f]">
+                Tarifs
+              </p>
+              <h2 className="text-3xl font-serif font-light text-stone-900 md:text-4xl">
+                Investissez dans votre développement
+              </h2>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {packages.map((pkg) => (
+                <article 
+                  key={pkg.name} 
+                  className={`rounded-[1.75rem] p-7 ${
+                    pkg.highlighted 
+                      ? 'bg-[#2f6b61] text-white ring-2 ring-[#2f6b61]' 
+                      : 'border border-stone-200 bg-white'
+                  }`}
+                >
+                  <p className="text-xs font-semibold uppercase tracking-[0.15em] opacity-70">
+                    {pkg.duration}
+                  </p>
+                  <h3 className="mt-2 text-xl font-serif font-light">{pkg.name}</h3>
+                  <p className={`mt-3 text-3xl font-serif ${pkg.highlighted ? 'text-white' : 'text-stone-900'}`}>
+                    {pkg.price}
+                  </p>
+                  <p className={`mt-4 text-sm leading-relaxed ${pkg.highlighted ? 'text-white/80' : 'text-stone-600'}`}>
+                    {pkg.description}
+                  </p>
+                  <ul className="mt-6 space-y-2">
+                    {pkg.features.map((feature) => (
+                      <li key={feature} className="flex items-center gap-2 text-sm">
+                        <span className={`text-lg ${pkg.highlighted ? 'text-white' : 'text-[#2f6b61]'}`}>✓</span>
+                        <span className={pkg.highlighted ? 'text-white/90' : 'text-stone-600'}>
+                          {feature}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href="/contact?package=coaching"
+                    className={`mt-8 block rounded-full px-6 py-3 text-center text-sm font-semibold transition-colors ${
+                      pkg.highlighted
+                        ? 'bg-white text-[#2f6b61] hover:bg-stone-100'
+                        : 'bg-[#2f6b61] text-white hover:bg-[#275a52]'
+                    }`}
+                  >
+                    {pkg.cta}
+                  </Link>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
       </main>

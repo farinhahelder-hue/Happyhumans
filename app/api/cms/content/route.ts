@@ -2,13 +2,25 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { requireCmsAuth } from '@/lib/cms-auth';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Lazy initialization to avoid build failures without credentials
+function getSupabaseClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
+  if (!url || !key) {
+    return null;
+  }
+  
+  return createClient(url, key);
+}
 
 // GET /api/cms/content?page=home
 export async function GET(req: NextRequest) {
+  const supabase = getSupabaseClient();
+  if (!supabase) {
+    return NextResponse.json({ error: 'Supabase non configuré' }, { status: 503 });
+  }
+  
   const authError = requireCmsAuth(req);
   if (authError) return authError;
 
@@ -23,8 +35,13 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ content: data });
 }
 
-// PUT /api/cms/content  body: { page, block_key, value }
+// PUT /api/cms/content body: { page, block_key, value }
 export async function PUT(req: NextRequest) {
+  const supabase = getSupabaseClient();
+  if (!supabase) {
+    return NextResponse.json({ error: 'Supabase non configuré' }, { status: 503 });
+  }
+  
   const authError = requireCmsAuth(req);
   if (authError) return authError;
 

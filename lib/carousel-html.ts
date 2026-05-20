@@ -27,7 +27,7 @@ export function buildCarouselHtml(inputUrls: string[]) {
     .map((url, index) => {
       const safeUrl = escapeHtmlAttr(url);
       return `
-        <figure class="heldonica-carousel__slide${index === 0 ? ' is-active' : ''}" data-carousel-slide="true">
+        <figure class="happyhumans-carousel__slide${index === 0 ? ' is-active' : ''}" data-carousel-slide="true">
           <img src="${safeUrl}" alt="Photo ${index + 1} du carrousel" loading="lazy" />
         </figure>
       `;
@@ -39,7 +39,7 @@ export function buildCarouselHtml(inputUrls: string[]) {
       (_, index) => `
         <button
           type="button"
-          class="heldonica-carousel__dot${index === 0 ? ' is-active' : ''}"
+          class="happyhumans-carousel__dot${index === 0 ? ' is-active' : ''}"
           data-carousel-dot="${index}"
           aria-label="Aller à l'image ${index + 1}"
         ></button>
@@ -48,16 +48,16 @@ export function buildCarouselHtml(inputUrls: string[]) {
     .join('');
 
   return `
-    <div class="heldonica-carousel not-prose" data-heldonica-carousel="true" data-carousel-count="${urls.length}">
-      <div class="heldonica-carousel__viewport">
+    <div class="happyhumans-carousel not-prose" data-happyhumans-carousel="true" data-carousel-count="${urls.length}">
+      <div class="happyhumans-carousel__viewport">
         ${slides}
       </div>
-      <div class="heldonica-carousel__controls">
-        <button type="button" class="heldonica-carousel__button" data-carousel-prev="true" aria-label="Image précédente">‹</button>
-        <div class="heldonica-carousel__dots">
+      <div class="happyhumans-carousel__controls">
+        <button type="button" class="happyhumans-carousel__button" data-carousel-prev="true" aria-label="Image précédente">‹</button>
+        <div class="happyhumans-carousel__dots">
           ${dots}
         </div>
-        <button type="button" class="heldonica-carousel__button" data-carousel-next="true" aria-label="Image suivante">›</button>
+        <button type="button" class="happyhumans-carousel__button" data-carousel-next="true" aria-label="Image suivante">›</button>
       </div>
     </div>
     <p></p>

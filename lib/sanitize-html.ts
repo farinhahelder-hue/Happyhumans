@@ -6,7 +6,7 @@ const SANITIZE_OPTIONS = {
   ADD_TAGS: ['button'],
   ADD_ATTR: [
     'class',
-    'data-heldonica-carousel',
+    'data-happyhumans-carousel',
     'data-carousel-count',
     'data-carousel-slide',
     'data-carousel-prev',

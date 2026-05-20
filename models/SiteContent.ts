@@ -4,7 +4,7 @@ const SiteContentSchema = new mongoose.Schema({
   // Site Settings
   site: {
     logo: String,
-    title: { type: String, default: 'Heldonica' },
+    title: { type: String, default: 'Happy Humans' },
     tagline: String,
     description: String,
     primaryColor: { type: String, default: '#8B4513' },

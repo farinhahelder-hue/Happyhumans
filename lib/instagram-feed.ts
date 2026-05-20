@@ -1,5 +1,5 @@
 /**
- * Instagram Feed Integration for Heldonica
+ * Instagram Feed Integration for Happy Humans
  * 
  * Fetches Instagram posts without requiring complex API permissions.
  * Uses free third-party services to fetch the feed.
@@ -27,7 +27,7 @@ export interface InstagramFeedPost {
  */
 function getInstagramUsername(): string {
   // Add your Instagram username here or in .env.local
-  return process.env.INSTAGRAM_USERNAME || 'heldonica';
+  return process.env.INSTAGRAM_USERNAME || 'happyhumans';
 }
 
 /**

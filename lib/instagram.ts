@@ -1,5 +1,5 @@
 /**
- * Instagram Graph API Integration for Heldonica
+ * Instagram Graph API Integration for Happy Humans
  * 
  * This module provides functionality to publish content to Instagram via the Meta Graph API.
  * 

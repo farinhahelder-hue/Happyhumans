@@ -1,5 +1,5 @@
-export const COOKIE_CONSENT_KEY = 'heldonica_cookie_consent_v1';
-export const COOKIE_CONSENT_EVENT = 'heldonica-cookie-consent-updated';
+export const COOKIE_CONSENT_KEY = 'happyhumans_cookie_consent_v1';
+export const COOKIE_CONSENT_EVENT = 'happyhumans-cookie-consent-updated';
 
 export type CookieConsentValue = 'accepted' | 'rejected';
 
