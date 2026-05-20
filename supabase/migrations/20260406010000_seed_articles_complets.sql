@@ -1,4 +1,4 @@
--- Seed 6 articles Heldonica — migration Supabase
+-- Seed 6 articles Monica Schneider — migration Supabase
 
 
 INSERT INTO cms_blog_posts (slug, title, excerpt, content, category, tags, featured_image, author, published, published_at, updated_at)
@@ -64,17 +64,17 @@ VALUES (
   <li><strong>Vol :</strong> Vol direct Paris-Funchal en 3h. Compense en choisissant des hébergements certifiés écotourisme.</li>
 </ul>
 
-<h2>✦ Verdict Heldonica</h2>
+<h2>✦ Verdict Monica Schneider</h2>
 <blockquote>
 <p>Madère est l''une des rares destinations en Europe où le slow travel n''est pas un choix — c''est une contrainte imposée par la géographie elle-même. Ses routes tortueuses, ses levadas millénaires et ses villages suspendus entre l''Atlantique et les nuages t''obligent à ralentir, à regarder, à sentir. On y est retournés trois fois. On y retournera.</p>
-<p><em>— Heldonica, testés sur place en mars 2026, octobre 2025, novembre 2024</em></p>
+<p><em>— Monica Schneider, testés sur place en mars 2026, octobre 2025, novembre 2024</em></p>
 </blockquote>
 
 </article>',
   'Carnets Voyage',
   ARRAY['madère','slow travel','éco-luxe','portugal','levadas']::text[],
   'https://images.unsplash.com/photo-1555117343-8b28e6f14895?w=1200&q=85',
-  'Heldonica',
+  'Monica Schneider',
   true,
   '2026-03-21 09:00:00+00',
   now()
@@ -146,17 +146,17 @@ VALUES (
   <li><strong>Négliger les jours "sans" :</strong> Une matinée à ne rien faire dans un café avec le journal local, c''est aussi du voyage.</li>
 </ul>
 
-<h2>✦ Verdict Heldonica</h2>
+<h2>✦ Verdict Monica Schneider</h2>
 <blockquote>
 <p>Le slow travel en duo n''est pas un mode de voyage plus lent — c''est un mode de voyage plus honnête. Il t''oblige à choisir ce que tu veux vraiment vivre plutôt que ce que tu dois avoir vu. Et quelquefois, ce que tu veux vraiment vivre, c''est juste cette terrasse, ce verre de vin local, et cette conversation qui n''en finit pas.</p>
-<p><em>— Heldonica, appris sur la route depuis 2015</em></p>
+<p><em>— Monica Schneider, appris sur la route depuis 2015</em></p>
 </blockquote>
 
 </article>',
   'Guides Pratiques',
   ARRAY['slow travel','duo','conseils','débutants','voyage en couple']::text[],
   'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1200&q=85',
-  'Heldonica',
+  'Monica Schneider',
   true,
   '2026-03-20 09:00:00+00',
   now()
@@ -229,17 +229,17 @@ VALUES (
 
 <p>C''est dans ces heures qu''on a trouvé nos meilleures pépites parisiennes : une boulangerie tenue par un Japonais rue des Martyrs qui fait les meilleurs croissants de la ville, un square caché derrière l''église Saint-Merri peuplé d''artistes à l''aube, un marché d''antiquaires informel sous le pont de Bercy chaque dimanche matin.</p>
 
-<h2>✦ Verdict Heldonica</h2>
+<h2>✦ Verdict Monica Schneider</h2>
 <blockquote>
 <p>L''urbex slow, c''est explorer la ville avec les yeux d''un archéologue du quotidien. Paris n''est pas un musée à consommer — c''est une ville vivante avec des couches d''histoires superposées. La prochaine fois que tu la traverses en ligne droite d''un monument à l''autre, essaie de dévier de 50 mètres. La pépite est souvent juste au coin.</p>
-<p><em>— Heldonica, Parisiens depuis 2018, toujours en train de découvrir</em></p>
+<p><em>— Monica Schneider, Parisiens depuis 2018, toujours en train de découvrir</em></p>
 </blockquote>
 
 </article>',
   'Découvertes Locales',
   ARRAY['paris','urbex','slow travel','duo','lieux insolites']::text[],
   'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&q=85',
-  'Heldonica',
+  'Monica Schneider',
   true,
   '2026-03-15 09:00:00+00',
   now()
@@ -299,17 +299,17 @@ VALUES (
 
 <p>Le bulletin météo de Funchal ne représente pas Madère. On l''a appris à nos dépens : soleil annoncé, brouillard épais à Fanal. Conseil : <strong>consulte webcamtaxi.com/madeira</strong> pour voir en temps réel les webcams réparties sur l''île — indispensable pour planifier les randonnées en altitude.</p>
 
-<h2>✦ Verdict Heldonica</h2>
+<h2>✦ Verdict Monica Schneider</h2>
 <blockquote>
 <p>Il n''y a pas de mauvaise saison à Madère — il y a des saisons différentes. Mars-avril pour la douceur et les fleurs. Octobre pour la lumière et la tranquillité. Évite juillet-août si tu veux vivre l''île plutôt que la subir. Et quelle que soit la saison : lève-toi tôt.</p>
-<p><em>— Heldonica, trois saisons testées sur place</em></p>
+<p><em>— Monica Schneider, trois saisons testées sur place</em></p>
 </blockquote>
 
 </article>',
   'Guides Pratiques',
   ARRAY['madère','météo','saisons','quand partir','portugal']::text[],
   'https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?w=1200&q=85',
-  'Heldonica',
+  'Monica Schneider',
   true,
   '2026-03-05 09:00:00+00',
   now()
@@ -367,17 +367,17 @@ VALUES (
 
 <p>La route pour y descendre est une série de lacets vertigineux. En bas : un village hors du temps, une seule rue principale, des habitants qui cultivent encore leurs légumes sur des terrasses en pierre. Le restaurant local sert une soupe de châtaignes qui réchauffe l''âme.</p>
 
-<h2>✦ Verdict Heldonica</h2>
+<h2>✦ Verdict Monica Schneider</h2>
 <blockquote>
 <p>Madère cache ses meilleurs endroits à ceux qui prennent le temps de chercher. Aucune de ces pépites n''est sur les listes des «top 10 things to do». Toutes demandent une demi-heure de route de plus, un réveil plus tôt, ou simplement de s''éloigner du chemin balisé de 200 mètres. C''est là que l''île révèle son âme.</p>
-<p><em>— Heldonica, pépites dénichées lors de trois séjours à Madère</em></p>
+<p><em>— Monica Schneider, pépites dénichées lors de trois séjours à Madère</em></p>
 </blockquote>
 
 </article>',
   'Découvertes Locales',
   ARRAY['madère','lieux secrets','insolite','forêt','mystique']::text[],
   'https://images.unsplash.com/photo-1548690312-e3b507d8c110?w=1200&q=85',
-  'Heldonica',
+  'Monica Schneider',
   true,
   '2026-03-01 09:00:00+00',
   now()
@@ -454,17 +454,17 @@ VALUES (
   <li>Glisse le steak dans le pain. Mange immédiatement.</li>
 </ol>
 
-<h2>✦ Verdict Heldonica</h2>
+<h2>✦ Verdict Monica Schneider</h2>
 <blockquote>
 <p>Le prego no bolo do caco, c''est la quintessence de ce qu''on aime dans le slow travel alimentaire : une recette simple, des ingrédients locaux, un savoir-faire transmis de snack en snack depuis des générations. Ce n''est pas dans les guides gastronomiques. C''est dans les mains d''une femme qui cuit son pain sur une pierre depuis quarante ans.</p>
-<p><em>— Heldonica, recette reçue de la bouche de Maria, Câmara de Lobos, octobre 2025</em></p>
+<p><em>— Monica Schneider, recette reçue de la bouche de Maria, Câmara de Lobos, octobre 2025</em></p>
 </blockquote>
 
 </article>',
   'Découvertes Locales',
   ARRAY['madère','gastronomie','street food','prego','bolo do caco']::text[],
   'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&q=85',
-  'Heldonica',
+  'Monica Schneider',
   true,
   '2025-10-25 09:00:00+00',
   now()

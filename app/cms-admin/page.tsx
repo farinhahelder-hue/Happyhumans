@@ -800,7 +800,7 @@ export default function CMSAdmin() {
               <div style={{ gridColumn: '1/-1' }}>
                 <div style={{ border: '1px solid #ece3d8', borderRadius: '1rem', background: '#faf6f1', padding: '1rem 1.1rem', marginBottom: '1rem' }}>
                   <p style={{ margin: 0, fontSize: '.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.08em', color: '#8a7a70' }}>
-                    Guide voix Heldonica
+                    Guide voix Monica Schneider
                   </p>
                   <ul style={{ margin: '.75rem 0 0', paddingLeft: '1.1rem', color: '#6d625a', fontSize: '.88rem', lineHeight: 1.7 }}>
                     <li>Ouverture : un moment précis ou une observation concrète.</li>

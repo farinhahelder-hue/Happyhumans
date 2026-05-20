@@ -1,4 +1,4 @@
-# 🎯 Guide de Configuration du CMS Heldonica
+# 🎯 Guide de Configuration du CMS Monica Schneider
 
 ## **Étape 1 : Créer une Base de Données MongoDB Gratuite** 🗄️
 

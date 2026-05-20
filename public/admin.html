@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎨 CMS Heldonica - Gestion Complète du Site</title>
+    <title>🎨 CMS Monica Schneider - Gestion Complète du Site</title>
     <style>
         * {
             margin: 0;
@@ -228,7 +228,7 @@
 </head>
 <body>
     <div class="navbar">
-        <h1>🎨 CMS Heldonica</h1>
+        <h1>🎨 CMS Monica Schneider</h1>
         <p>Gestion complète de votre site - Modifiez tout en temps réel</p>
     </div>
 
@@ -567,7 +567,7 @@
 
         // ===== LOAD/SAVE DATA =====
         function loadData() {
-            const saved = localStorage.getItem('heldonicaCMS');
+            const saved = localStorage.getItem('monicaSchneiderCMS');
             if (saved) {
                 cmsData = JSON.parse(saved);
             }
@@ -575,7 +575,7 @@
         }
 
         function saveData() {
-            localStorage.setItem('heldonicaCMS', JSON.stringify(cmsData));
+            localStorage.setItem('monicaSchneiderCMS', JSON.stringify(cmsData));
         }
 
         // ===== TAB SWITCHING =====
@@ -901,7 +901,7 @@
             const url = URL.createObjectURL(dataBlob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = `heldonica-cms-backup-${new Date().toISOString().split('T')[0]}.json`;
+            link.download = `monica-schneider-cms-backup-${new Date().toISOString().split('T')[0]}.json`;
             link.click();
         }
 
