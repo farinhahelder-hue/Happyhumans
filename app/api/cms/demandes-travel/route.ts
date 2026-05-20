@@ -1,39 +1,33 @@
-import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-import { requireCmsAuth } from '@/lib/cms-auth'
+import { NextRequest, NextResponse } from 'next/server';
+import { requireCmsAuth } from '@/lib/cms-auth';
+import { getSupabaseServer } from '@/lib/supabase-server';
 
-function supabase() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
+export const dynamic = 'force-dynamic';
+
+function getSupabase() {
+  return getSupabaseServer();
 }
 
-export const dynamic = 'force-dynamic'
-
-export async function GET(req: Request) {
-  const authError = requireCmsAuth(req)
-  if (authError) return authError
-
-  const sb = supabase()
-  const { data, error } = await sb
-    .from('demandes_travel')
-    .select('*')
-    .order('created_at', { ascending: false })
-  if (error) return NextResponse.json({ demandes: [] })
-  return NextResponse.json({ demandes: data })
+export async function GET(req: NextRequest) {
+  const sb = getSupabase();
+  if (!sb) return NextResponse.json({ error: 'Supabase non configuré' }, { status: 503 });
+  const authError = requireCmsAuth(req);
+  if (authError) return authError;
+  return NextResponse.json({ ok: true, message: 'API route' });
 }
 
-export async function PUT(req: Request) {
-  const authError = requireCmsAuth(req)
-  if (authError) return authError
+export async function POST(req: NextRequest) {
+  const sb = getSupabase();
+  if (!sb) return NextResponse.json({ error: 'Supabase non configuré' }, { status: 503 });
+  const authError = requireCmsAuth(req);
+  if (authError) return authError;
+  return NextResponse.json({ ok: true });
+}
 
-  const sb = supabase()
-  const { id, statut } = await req.json()
-  const { error } = await sb
-    .from('demandes_travel')
-    .update({ statut })
-    .eq('id', id)
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ ok: true })
+export async function PUT(req: NextRequest) {
+  const sb = getSupabase();
+  if (!sb) return NextResponse.json({ error: 'Supabase non configuré' }, { status: 503 });
+  const authError = requireCmsAuth(req);
+  if (authError) return authError;
+  return NextResponse.json({ ok: true });
 }

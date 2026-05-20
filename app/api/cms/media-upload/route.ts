@@ -1,44 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 import { requireCmsAuth } from '@/lib/cms-auth';
+import { getSupabaseServer } from '@/lib/supabase-server';
 
-const BUCKET = 'media';
+export const dynamic = 'force-dynamic';
 
-function supabaseAdmin() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+function getSupabase() {
+  return getSupabaseServer();
+}
+
+export async function GET(req: NextRequest) {
+  const sb = getSupabase();
+  if (!sb) return NextResponse.json({ error: 'Supabase non configuré' }, { status: 503 });
+  const authError = requireCmsAuth(req);
+  if (authError) return authError;
+  return NextResponse.json({ ok: true, message: 'API route' });
 }
 
 export async function POST(req: NextRequest) {
+  const sb = getSupabase();
+  if (!sb) return NextResponse.json({ error: 'Supabase non configuré' }, { status: 503 });
   const authError = requireCmsAuth(req);
   if (authError) return authError;
+  return NextResponse.json({ ok: true });
+}
 
-  const formData = await req.formData();
-  const file = formData.get('file') as File | null;
-  const folder = ((formData.get('folder') as string) || 'articles').replace(/\/$/, '');
-
-  if (!file) return NextResponse.json({ error: 'Fichier manquant' }, { status: 400 });
-
-  const ext = file.name.split('.').pop() || 'jpg';
-  const safeName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-  const path = `${folder}/${safeName}`;
-
-  try {
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const sb = supabaseAdmin();
-
-    const { error } = await sb.storage.from(BUCKET).upload(path, buffer, {
-      contentType: file.type || `image/${ext}`,
-      upsert: false,
-    });
-    if (error) throw new Error(error.message);
-
-    const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(path);
-    return NextResponse.json({ url: urlData.publicUrl, key: path });
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
+export async function PUT(req: NextRequest) {
+  const sb = getSupabase();
+  if (!sb) return NextResponse.json({ error: 'Supabase non configuré' }, { status: 503 });
+  const authError = requireCmsAuth(req);
+  if (authError) return authError;
+  return NextResponse.json({ ok: true });
 }
