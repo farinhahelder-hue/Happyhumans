@@ -2,117 +2,276 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Relations & Événement | Happy Humans',
+  title: 'Relations saines & épanouissantes | Happy Humans',
   description:
-    "Rejoignez Monica Schneider pour un événement unique sur les relations humaines ce samedi. Découvrez aussi votre style d'attachement.",
+    'Découvrez votre style d'attachement, explorez des ressources pour des relations plus épanouissantes et réservez votre séance offerte avec Monica Schneider.',
+  openGraph: {
+    title: 'Relations saines & épanouissantes | Happy Humans',
+    description:
+      'Test d'attachement gratuit · Ressources · Séance offerte avec Monica Schneider',
+    url: 'https://happy-humans.org/relations',
+  },
 };
 
-// ── TODO: adapter ces valeurs selon les infos réelles de Monica ──────────────
-const EVENT = {
-  title: 'Cercle des Relations Conscientes',
-  subtitle: "Une soirée pour explorer, partager et se reconnecter à l'essentiel",
-  date: 'Samedi 21 juin 2026',
-  time: '18h00 – 21h00',
-  location: 'Paris — adresse communiquée sur inscription',
-  host: 'Monica Schneider',
-  hostTitle: 'Coach & Facilitatrice',
-  spots: 12,
-  price: 'Entrée libre sur inscription',
-  registrationUrl: 'https://happyhumans.fr/contact',
-  qrTarget: 'https://happyhumans.fr/relations',
-};
+const QR_TARGET = 'https://happy-humans.org/relations';
+
+const RESOURCES = [
+  {
+    emoji: '📖',
+    title: 'Les 4 styles d'attachement',
+    description:
+      'Comprendre comment votre histoire façonne votre façon d'aimer et de vous relier aux autres.',
+  },
+  {
+    emoji: '💬',
+    title: 'Communication non-violente',
+    description:
+      'Des outils concrets pour exprimer vos besoins et écouter ceux de l'autre sans vous perdre.',
+  },
+  {
+    emoji: '🪞',
+    title: 'La relation à soi d'abord',
+    description:
+      'Pourquoi la qualité de vos relations extérieures commence toujours par la relation que vous avez avec vous-même.',
+  },
+  {
+    emoji: '🌱',
+    title: 'Réparer et faire confiance à nouveau',
+    description:
+      'Après une rupture, un conflit ou une trahison — des pistes pour rouvrir son cœur en toute sécurité.',
+  },
+  {
+    emoji: '🤝',
+    title: 'Poser des limites avec douceur',
+    description:
+      'Dire non sans se sentir coupable : l'art de défendre son espace émotionnel tout en restant ouvert.',
+  },
+  {
+    emoji: '✨',
+    title: 'Cultiver la sécurité intérieure',
+    description:
+      'Développer un ancrage stable pour ne plus dépendre de la validation des autres pour se sentir bien.',
+  },
+];
+
+const STEPS = [
+  {
+    number: '01',
+    title: 'Faites le test',
+    description: 'Identifiez votre style d'attachement en 16 questions (5 min, gratuit).',
+  },
+  {
+    number: '02',
+    title: 'Recevez vos 3 actions',
+    description:
+      'Monica vous identifie 3 actions concrètes et personnalisées vers des relations plus épanouissantes.',
+  },
+  {
+    number: '03',
+    title: 'Passez à l'action',
+    description:
+      'Repartez avec un plan clair, des outils pratiques et la clarté pour transformer vos relations dès maintenant.',
+  },
+];
 
 export default function RelationsPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-rose-950 via-pink-900 to-purple-950">
+    <main className="min-h-screen" style={{ backgroundColor: '#F8F6F2', color: '#2C2C2C' }}>
 
-      {/* ── HERO EVENT ──────────────────────────────────────────────────────── */}
-      <section className="relative px-4 py-16 md:py-24 text-center overflow-hidden">
-        <div
-          aria-hidden
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-pink-600/20 rounded-full blur-3xl pointer-events-none"
-        />
-
+      {/* ── HERO ─────────────────────────────────────────────────────────────── */}
+      <section
+        className="relative px-4 py-20 md:py-32 text-center overflow-hidden"
+        style={{
+          background:
+            'linear-gradient(160deg, #fdf6ee 0%, #f5e8f5 50%, #ede8fa 100%)',
+        }}
+      >
         <div className="relative max-w-3xl mx-auto">
-          <span className="inline-flex items-center gap-2 bg-rose-500/20 border border-rose-400/30 rounded-full px-4 py-1.5 text-rose-300 text-sm font-medium mb-6">
-            ✨ Événement · {EVENT.date}
+          <span
+            className="inline-block rounded-full px-4 py-1.5 text-sm font-medium mb-6"
+            style={{
+              background: 'rgba(168,100,160,0.12)',
+              color: '#7c3d8f',
+              border: '1px solid rgba(168,100,160,0.25)',
+            }}
+          >
+            Ressources & accompagnement
           </span>
 
-          <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-4">
-            {EVENT.title}
+          <h1
+            className="text-4xl md:text-6xl font-bold leading-tight mb-5"
+            style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}
+          >
+            Des relations saines<br />
+            <span style={{ color: '#a864a0' }}>et épanouissantes</span>
           </h1>
-          <p className="text-white/70 text-lg md:text-xl mb-8 max-w-xl mx-auto">
-            {EVENT.subtitle}
-          </p>
 
-          <div className="flex flex-wrap justify-center gap-3 mb-10">
-            {[
-              { icon: '📅', text: EVENT.date },
-              { icon: '⏰', text: EVENT.time },
-              { icon: '📍', text: EVENT.location },
-              { icon: '👥', text: `${EVENT.spots} places max` },
-            ].map(({ icon, text }) => (
-              <span
-                key={text}
-                className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 text-white/80 text-sm"
-              >
-                {icon} {text}
-              </span>
-            ))}
-          </div>
+          <p
+            className="text-lg md:text-xl leading-relaxed mb-10 max-w-xl mx-auto"
+            style={{ color: '#555', fontFamily: "'Inter', sans-serif" }}
+          >
+            Explorez des ressources, découvrez votre style d'attachement et réservez
+            votre séance offerte pour identifier vos 3 actions clés.
+          </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a
-              href={EVENT.registrationUrl}
-              className="px-8 py-4 bg-rose-500 hover:bg-rose-600 text-white font-semibold rounded-2xl text-base transition-all shadow-lg shadow-rose-500/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+              href="#seance-offerte"
+              className="px-8 py-4 font-semibold rounded-2xl text-base transition-all shadow-lg"
+              style={{
+                background: '#a864a0',
+                color: '#fff',
+                boxShadow: '0 8px 24px rgba(168,100,160,0.35)',
+              }}
             >
-              Je m'inscris →
+              Réserver ma séance offerte →
             </a>
-            <Link
-              href="/test-attachement"
-              className="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-medium rounded-2xl text-base transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            <a
+              href="#test-attachement"
+              className="px-8 py-4 font-medium rounded-2xl text-base transition-all"
+              style={{
+                background: 'rgba(168,100,160,0.1)',
+                color: '#7c3d8f',
+                border: '1px solid rgba(168,100,160,0.25)',
+              }}
             >
-              🪢 Faire le test d'attachement
-            </Link>
+              🪢 Faire le test gratuit
+            </a>
           </div>
         </div>
       </section>
 
-      {/* ── QR CODE ─────────────────────────────────────────────────────────── */}
-      <section className="px-4 py-12 md:py-16">
+      {/* ── RESSOURCES ───────────────────────────────────────────────────────── */}
+      <section className="px-4 py-20 md:py-24" id="ressources">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <p
+              className="text-sm font-semibold uppercase tracking-widest mb-3"
+              style={{ color: '#a864a0' }}
+            >
+              Ressources
+            </p>
+            <h2
+              className="text-3xl md:text-4xl font-bold mb-4"
+              style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}
+            >
+              Comprendre pour transformer
+            </h2>
+            <p className="max-w-xl mx-auto" style={{ color: '#666' }}>
+              Des clés concrètes pour nourrir vos relations — avec les autres,
+              et avec vous-même.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {RESOURCES.map((r) => (
+              <div
+                key={r.title}
+                className="rounded-2xl p-6 transition-all hover:shadow-md"
+                style={{
+                  background: '#fff',
+                  border: '1px solid rgba(0,0,0,0.07)',
+                }}
+              >
+                <div className="text-3xl mb-4">{r.emoji}</div>
+                <h3
+                  className="text-lg font-bold mb-2"
+                  style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}
+                >
+                  {r.title}
+                </h3>
+                <p className="text-sm leading-relaxed" style={{ color: '#666' }}>
+                  {r.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── TEST ATTACHEMENT ─────────────────────────────────────────────────── */}
+      <section
+        id="test-attachement"
+        className="px-4 py-20 md:py-24"
+        style={{
+          background: 'linear-gradient(135deg, #f5e8f5 0%, #ede8fa 100%)',
+        }}
+      >
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-3xl p-8 md:p-12 grid md:grid-cols-2 gap-10 items-center">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <p className="text-rose-300 text-sm font-semibold uppercase tracking-widest mb-3">
-                Partage l'événement
+              <p
+                className="text-sm font-semibold uppercase tracking-widest mb-3"
+                style={{ color: '#a864a0' }}
+              >
+                Test gratuit
               </p>
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-                Scanner pour rejoindre
+              <h2
+                className="text-3xl md:text-4xl font-bold mb-5"
+                style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}
+              >
+                Quel est votre style d'attachement ?
               </h2>
-              <p className="text-white/70 leading-relaxed mb-6">
-                Ce QR code mène directement à cette page. Partagez-le avec vos proches pour les inviter à l'événement ou à découvrir leur style d'attachement.
+              <p className="leading-relaxed mb-6" style={{ color: '#555' }}>
+                En 16 questions et 5 minutes, découvrez comment votre style
+                d'attachement influence vos relations amoureuses, amicales et professionnelles.
+                Résultats immédiats, en français.
               </p>
-              <p className="text-white/40 text-sm font-mono">{EVENT.qrTarget}</p>
+              <ul className="space-y-3 mb-8">
+                {[
+                  '16 questions douces et bienveillantes',
+                  'Résultats détaillés avec pistes de travail',
+                  'Gratuit, sans inscription',
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-sm" style={{ color: '#444' }}>
+                    <span
+                      className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 text-xs font-bold"
+                      style={{ background: '#a864a0', color: '#fff' }}
+                    >
+                      ✓
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/test-attachement"
+                className="inline-flex px-8 py-4 font-semibold rounded-2xl text-base transition-all"
+                style={{
+                  background: '#a864a0',
+                  color: '#fff',
+                  boxShadow: '0 8px 24px rgba(168,100,160,0.35)',
+                }}
+              >
+                Faire le test maintenant →
+              </Link>
             </div>
 
-            <div className="flex flex-col items-center gap-4">
-              <div className="bg-white p-4 rounded-2xl shadow-xl">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
+            {/* QR code */}
+            <div className="flex flex-col items-center gap-5">
+              <div
+                className="rounded-3xl p-6 shadow-xl"
+                style={{ background: '#fff' }}
+              >
                 <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(EVENT.qrTarget)}&margin=0`}
-                  alt={`QR code vers ${EVENT.qrTarget}`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(QR_TARGET)}&margin=0&color=7c3d8f`}
+                  alt="QR code vers la page relations Happy Humans"
                   width={220}
                   height={220}
                   loading="lazy"
-                  className="rounded-lg"
+                  className="rounded-xl"
                 />
               </div>
+              <p className="text-sm text-center" style={{ color: '#888' }}>
+                Scannez pour partager cette page
+              </p>
               <a
-                href={`https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=${encodeURIComponent(EVENT.qrTarget)}&margin=20`}
+                href={`https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=${encodeURIComponent(QR_TARGET)}&margin=20&color=7c3d8f`}
                 download="qr-happy-humans-relations.png"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-rose-300 hover:text-rose-200 underline underline-offset-2 transition-colors"
+                className="text-sm underline underline-offset-2 transition-colors"
+                style={{ color: '#a864a0' }}
               >
                 ↓ Télécharger le QR code HD
               </a>
@@ -121,50 +280,118 @@ export default function RelationsPage() {
         </div>
       </section>
 
-      {/* ── HOST ────────────────────────────────────────────────────────────── */}
-      <section className="px-4 py-12">
-        <div className="max-w-3xl mx-auto">
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-3xl p-8 flex flex-col md:flex-row gap-6 items-center">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-rose-400 to-pink-600 flex items-center justify-center text-white text-3xl font-bold shrink-0 shadow-lg">
-              M
-            </div>
-            <div>
-              <p className="text-rose-300 text-sm font-semibold uppercase tracking-widest mb-1">
-                {EVENT.hostTitle}
-              </p>
-              <h3 className="text-2xl font-bold text-white mb-2">{EVENT.host}</h3>
-              <p className="text-white/70 leading-relaxed">
-                Monica accompagne les individus et les groupes vers une meilleure compréhension d'eux-mêmes et de leurs relations. Sa démarche allie bienveillance, rigueur et une vraie joie de connecter les gens entre eux.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── TEST CTA ────────────────────────────────────────────────────────── */}
-      <section className="px-4 py-12 md:py-20">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="bg-gradient-to-br from-pink-900/60 to-purple-900/60 border border-white/20 rounded-3xl p-8 md:p-12">
-            <div className="text-5xl mb-4">🪢</div>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-              Et si vous découvriez votre style d'attachement ?
-            </h2>
-            <p className="text-white/70 mb-6 max-w-lg mx-auto">
-              Un test doux de 16 questions, conçu pour vous inviter à mieux comprendre comment vous vous reliez aux autres. Gratuit, en français, résultats immédiats.
-            </p>
-            <Link
-              href="/test-attachement"
-              className="inline-flex px-8 py-4 bg-rose-500 hover:bg-rose-600 text-white font-semibold rounded-2xl text-base transition-all shadow-lg shadow-rose-500/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+      {/* ── SÉANCE OFFERTE ───────────────────────────────────────────────────── */}
+      <section id="seance-offerte" className="px-4 py-20 md:py-28">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-14">
+            <p
+              className="text-sm font-semibold uppercase tracking-widest mb-3"
+              style={{ color: '#a864a0' }}
             >
-              Faire le test gratuit →
-            </Link>
+              Offre gratuite
+            </p>
+            <h2
+              className="text-3xl md:text-4xl font-bold mb-4"
+              style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}
+            >
+              Vos 3 actions vers des relations<br />
+              <span style={{ color: '#a864a0' }}>plus épanouissantes</span>
+            </h2>
+            <p className="max-w-xl mx-auto leading-relaxed" style={{ color: '#666' }}>
+              Lors d'une séance offerte de 45 minutes, Monica vous accompagne
+              pour identifier les 3 actions concrètes les plus impactantes
+              pour transformer vos relations dès maintenant.
+            </p>
+          </div>
+
+          {/* Steps */}
+          <div className="grid md:grid-cols-3 gap-6 mb-14">
+            {STEPS.map((s) => (
+              <div
+                key={s.number}
+                className="rounded-2xl p-7 text-center"
+                style={{
+                  background: '#fff',
+                  border: '1px solid rgba(0,0,0,0.07)',
+                }}
+              >
+                <div
+                  className="text-3xl font-black mb-4"
+                  style={{
+                    fontFamily: "'Playfair Display', serif",
+                    color: 'rgba(168,100,160,0.2)',
+                  }}
+                >
+                  {s.number}
+                </div>
+                <h3
+                  className="text-lg font-bold mb-2"
+                  style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}
+                >
+                  {s.title}
+                </h3>
+                <p className="text-sm leading-relaxed" style={{ color: '#666' }}>
+                  {s.description}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA card */}
+          <div
+            className="rounded-3xl p-8 md:p-12 text-center"
+            style={{
+              background: 'linear-gradient(135deg, #7c3d8f 0%, #a864a0 100%)',
+              boxShadow: '0 20px 60px rgba(124,61,143,0.3)',
+            }}
+          >
+            <div className="text-5xl mb-4">🎁</div>
+            <h3
+              className="text-2xl md:text-3xl font-bold text-white mb-3"
+              style={{ fontFamily: "'Playfair Display', serif" }}
+            >
+              Réservez votre séance offerte
+            </h3>
+            <p className="text-white/80 mb-8 max-w-md mx-auto leading-relaxed">
+              45 minutes avec Monica Schneider. Gratuit, sans engagement.
+              Repartez avec 3 actions concrètes et personnalisées.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link
+                href="/planifier"
+                className="px-8 py-4 font-semibold rounded-2xl text-base transition-all"
+                style={{
+                  background: '#fff',
+                  color: '#7c3d8f',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+                }}
+              >
+                Choisir mon créneau →
+              </Link>
+              <Link
+                href="/contact"
+                className="px-8 py-4 font-medium rounded-2xl text-base transition-all"
+                style={{
+                  background: 'rgba(255,255,255,0.15)',
+                  color: '#fff',
+                  border: '1px solid rgba(255,255,255,0.3)',
+                }}
+              >
+                Poser une question
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── FOOTER ──────────────────────────────────────────────────────────── */}
-      <footer className="px-4 py-8 text-center">
-        <p className="text-white/30 text-xs">© 2026 Happy Humans · Tous droits réservés</p>
+      {/* ── FOOTER MINI ──────────────────────────────────────────────────────── */}
+      <footer className="px-4 py-8 text-center" style={{ borderTop: '1px solid rgba(0,0,0,0.07)' }}>
+        <p className="text-xs" style={{ color: '#aaa' }}>
+          © 2026 Happy Humans · Monica Schneider ·{' '}
+          <Link href="/mentions-legales" className="underline hover:text-gray-600 transition-colors">
+            Mentions légales
+          </Link>
+        </p>
       </footer>
     </main>
   );
