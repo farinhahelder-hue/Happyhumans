@@ -55,6 +55,9 @@ export default function Header() {
             <Link href="/entreprises" className="text-sm font-medium text-stone-600 transition-colors duration-200 hover:text-amber-900">
               Entreprises
             </Link>
+            <Link href="/relations" className="text-sm font-medium text-stone-600 transition-colors duration-200 hover:text-amber-900">
+              Relations
+            </Link>
             <Link href="/contact" className="text-sm font-medium text-stone-600 transition-colors duration-200 hover:text-amber-900">
               Contact
             </Link>
@@ -151,6 +154,19 @@ export default function Header() {
                 </svg>
               </span>
               Entreprises
+            </Link>
+
+            <Link
+              href="/relations"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 rounded-xl px-4 py-3 font-medium text-stone-700 transition-colors duration-200 hover:bg-amber-50 hover:text-amber-900"
+            >
+              <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-pink-200 bg-pink-50 text-pink-700">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 14c1.5-2.5 2-5 2-6.5A4.5 4.5 0 0 0 12 7a4.5 4.5 0 0 0-9 .5C3 9 3.5 11.5 5 14L12 22l7-8z" />
+                </svg>
+              </span>
+              Relations
             </Link>
 
             <Link
