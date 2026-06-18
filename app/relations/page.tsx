@@ -1,14 +1,15 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import StayInTouchForm from '@/components/StayInTouchForm';
 
 export const metadata: Metadata = {
   title: 'Relations saines & épanouissantes | Happy Humans',
   description:
-    'Découvrez votre style d'attachement, explorez des ressources pour des relations plus épanouissantes et réservez votre séance offerte avec Monica Schneider.',
+    "Découvrez votre style d'attachement, explorez des ressources pour des relations plus épanouissantes et réservez votre séance offerte avec Monica Schneider.",
   openGraph: {
     title: 'Relations saines & épanouissantes | Happy Humans',
     description:
-      'Test d'attachement gratuit · Ressources · Séance offerte avec Monica Schneider',
+      "Test d'attachement gratuit · Ressources · Séance offerte avec Monica Schneider",
     url: 'https://happy-humans.org/relations',
   },
 };
@@ -18,19 +19,19 @@ const QR_TARGET = 'https://happy-humans.org/relations';
 const RESOURCES = [
   {
     emoji: '📖',
-    title: 'Les 4 styles d'attachement',
+    title: "Les 4 styles d'attachement",
     description:
-      'Comprendre comment votre histoire façonne votre façon d'aimer et de vous relier aux autres.',
+      "Comprendre comment votre histoire façonne votre façon d'aimer et de vous relier aux autres.",
   },
   {
     emoji: '💬',
     title: 'Communication non-violente',
     description:
-      'Des outils concrets pour exprimer vos besoins et écouter ceux de l'autre sans vous perdre.',
+      "Des outils concrets pour exprimer vos besoins et écouter ceux de l'autre sans vous perdre.",
   },
   {
     emoji: '🪞',
-    title: 'La relation à soi d'abord',
+    title: "La relation à soi d'abord",
     description:
       'Pourquoi la qualité de vos relations extérieures commence toujours par la relation que vous avez avec vous-même.',
   },
@@ -44,7 +45,7 @@ const RESOURCES = [
     emoji: '🤝',
     title: 'Poser des limites avec douceur',
     description:
-      'Dire non sans se sentir coupable : l'art de défendre son espace émotionnel tout en restant ouvert.',
+      "Dire non sans se sentir coupable : l'art de défendre son espace émotionnel tout en restant ouvert.",
   },
   {
     emoji: '✨',
@@ -58,7 +59,7 @@ const STEPS = [
   {
     number: '01',
     title: 'Faites le test',
-    description: 'Identifiez votre style d'attachement en 16 questions (5 min, gratuit).',
+    description: "Identifiez votre style d'attachement en 16 questions (5 min, gratuit).",
   },
   {
     number: '02',
@@ -68,7 +69,7 @@ const STEPS = [
   },
   {
     number: '03',
-    title: 'Passez à l'action',
+    title: "Passez à l'action",
     description:
       'Repartez avec un plan clair, des outils pratiques et la clarté pour transformer vos relations dès maintenant.',
   },
@@ -383,6 +384,9 @@ export default function RelationsPage() {
           </div>
         </div>
       </section>
+
+      {/* ── RESTER EN CONTACT ────────────────────────────────────────────────── */}
+      <StayInTouchForm />
 
       {/* ── FOOTER MINI ──────────────────────────────────────────────────────── */}
       <footer className="px-4 py-8 text-center" style={{ borderTop: '1px solid rgba(0,0,0,0.07)' }}>

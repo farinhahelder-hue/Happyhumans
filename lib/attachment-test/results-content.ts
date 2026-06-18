@@ -70,7 +70,7 @@ export const profilesContent: Record<AttachmentProfile, ProfileContent> = {
       'Essayez de nommer une émotion difficile à une personne de confiance, même brièvement',
       'Observez ce qui déclenche votre réflexe de mise à distance',
       "Rappelez-vous que la vulnérabilité n'est pas une faiblesse, c'est un pont",
-      'Des pratiques de pleine conscience peuvent vous aider à rester dans l'instant',
+      "Des pratiques de pleine conscience peuvent vous aider à rester dans l'instant",
     ],
   },
   disorganized: {
