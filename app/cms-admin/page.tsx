@@ -606,7 +606,7 @@ export default function CMSAdmin() {
   // â”€â”€â”€ CMS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const TABS = [
     { id: 'articles', label: '📝 Articles', count: articles.length },
-    { id: 'new',      label: 'âœï¸ Nouvel article', count: null },
+    { id: 'new',      label: '✏️ Nouvel article', count: null },
     { id: 'blog',     label: '✨ Générateur Blog IA', count: null },
     { id: 'pages',    label: '🗂️ Pages', count: null },
     { id: 'demandes', label: '✈️ Coaching', count: demandes.length },
@@ -706,7 +706,7 @@ export default function CMSAdmin() {
                         {a.published ? '✅ Publié' : '📦 Brouillon'}
                       </span>
                       <div style={{ display: 'flex', gap: '.5rem' }}>
-                        <button onClick={() => openArticleEditor(a)} style={{ padding: '.35rem .8rem', border: '1px solid #ddd', borderRadius: '.4rem', background: 'white', cursor: 'pointer', fontSize: '.82rem' }}>âœï¸ Ã‰diter</button>
+                        <button onClick={() => openArticleEditor(a)} style={{ padding: '.35rem .8rem', border: '1px solid #ddd', borderRadius: '.4rem', background: 'white', cursor: 'pointer', fontSize: '.82rem' }}>✏️ Ã‰diter</button>
                         <button onClick={() => togglePublish(a)} style={{ padding: '.35rem .8rem', border: '1px solid #ddd', borderRadius: '.4rem', background: 'white', cursor: 'pointer', fontSize: '.82rem' }}>{a.published ? '📦 Dépublier' : '🚀 Publier'}</button>
                         <button onClick={() => deleteArticle(a.id)} style={{ padding: '.35rem .8rem', border: '1px solid #fcc', borderRadius: '.4rem', background: '#fff5f5', color: '#c0392b', cursor: 'pointer', fontSize: '.82rem' }}>🗑ï¸</button>
                       </div>
@@ -721,8 +721,8 @@ export default function CMSAdmin() {
         {tab === 'new' && (
           <div style={{ background: 'white', borderRadius: '1rem', padding: '2rem', boxShadow: '0 2px 12px rgba(0,0,0,.07)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem' }}>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#6b2a1a' }}>{editingArticle?.id ? `âœï¸ Modifier : ${editingArticle.title}` : 'âœï¸ Nouvel article'}</h2>
-              <button onClick={closeArticleEditor} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '1.3rem' }}>âœ•</button>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#6b2a1a' }}>{editingArticle?.id ? `✏️ Modifier : ${editingArticle.title}` : '✏️ Nouvel article'}</h2>
+              <button onClick={closeArticleEditor} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '1.3rem' }}>✕</button>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
               <button
@@ -778,7 +778,7 @@ export default function CMSAdmin() {
                     <div style={{ position: 'relative' }}>
                       <img src={editingArticle.featured_image} alt="" style={{ height: 80, borderRadius: '.5rem', objectFit: 'cover' }} />
                       <button onClick={() => setEditingArticle(p => ({ ...p, featured_image: '' }))}
-                        style={{ position: 'absolute', top: -6, right: -6, background: '#c0392b', color: 'white', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', fontSize: '.7rem' }}>âœ•</button>
+                        style={{ position: 'absolute', top: -6, right: -6, background: '#c0392b', color: 'white', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', fontSize: '.7rem' }}>✕</button>
                     </div>
                     <input value={editingArticle.featured_image}
                       onChange={e => setEditingArticle(p => ({ ...p, featured_image: e.target.value }))}
@@ -1035,7 +1035,7 @@ export default function CMSAdmin() {
             {loadingDemandes ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargementâ€¦</p>
               : demandes.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '4rem', color: '#aaa' }}>
-                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>âœ‰ï¸</div>
+                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✉️</div>
                   <p>Aucune demande pour le moment</p>
                 </div>
               ) : (
