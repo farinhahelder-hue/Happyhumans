@@ -559,7 +559,7 @@ export default function CMSAdmin() {
         const key = `${pageKey}__${section.key}`;
         const newVal = editedContent[key] ?? '';
         const existing = siteContent.find(c => c.page === pageKey && c.block_key === section.key);
-        if (!existing || newVal !== existing.value) {
+        if (!existing || newVal !== (existing.value ?? '')) {
           promises.push(fetch('/api/cms/content', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
