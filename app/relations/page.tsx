@@ -1,50 +1,42 @@
-'use client';
-import { useState } from 'react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import { useCmsContent } from '@/hooks/useCmsContent';
+'use client'
+import { useState } from 'react'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
+import { useCmsContent } from '@/hooks/useCmsContent'
 
 const DEFAULTS = {
   hero_image:   '',
-  page_title:   'Des relations saines et epanouissantes',
-  intro_text:   "Explorez des ressources, decouvrez votre style d'attachement et reservez votre seance offerte pour identifier vos 3 actions cles.",
-  cta_title:    'Vos 3 actions vers des relations plus epanouissantes',
-  cta_subtitle: "Lors d'une seance offerte de 45 minutes, Monica vous accompagne pour identifier les 3 actions concretes les plus impactantes pour transformer vos relations des maintenant.",
-};
+  page_title:   'Des relations saines et épanouissantes',
+  intro_text:   "Explorez des ressources, découvrez votre style d'attachement et réservez votre séance offerte pour identifier vos 3 actions clés.",
+  cta_title:    'Une séance offerte pour commencer',
+  cta_subtitle: "Un espace d'écoute et d'exploration, sans engagement.",
+}
 
-type Resource = {
-  id: string;
-  emoji: string;
-  title: string;
-  subtitle: string;
-  content: React.ReactNode;
-};
+const STEPS = [
+  { number: '01', title: 'Faites le test',     desc: "Identifiez votre style d'attachement en 16 questions — 5 min, gratuit." },
+  { number: '02', title: 'Session découverte', desc: "Monica vous identifie 3 actions concrètes et personnalisées vers des relations plus épanouissantes." },
+  { number: '03', title: "Passez à l'action",  desc: "Repartez avec un plan clair, des outils pratiques et la clarté pour transformer vos relations." },
+]
 
-const RESOURCES: Resource[] = [
+const RESOURCES = [
   {
     id: 'attached',
     emoji: '📖',
     title: 'ATTACHED',
     subtitle: "Comprendre son style d'attachement",
     content: (
-      <div className="space-y-6" style={{ color: '#444', lineHeight: 1.8 }}>
-        <p>Le livre ATTACHED applique la theorie de l'attachement, developpee a l'origine par John Bowlby et Mary Ainsworth, aux relations amoureuses adultes. Les auteurs montrent que la facon dont nous nous lions a un partenaire suit des schemas precis, determines par notre histoire emotionnelle precoce.</p>
-        <p>Ils identifient <strong>trois styles principaux</strong> : secur, anxieux et evitant.</p>
-        <ul className="list-disc pl-6 space-y-3">
-          <li><strong>Style secur :</strong> permet une intimite confiante et stable.</li>
-          <li><strong>Style anxieux :</strong> genere une peur constante de l'abandon, un besoin de reassertance et une hypervigilance aux signaux de l'autre.</li>
-          <li><strong>Style evitant :</strong> pousse a fuir la proximite, a valoriser l'independance a l'exces et a se sentir "etouffe" des que la relation devient serieuse.</li>
+      <div className="space-y-5 text-sm leading-relaxed text-stone-600">
+        <p>Le livre <em>ATTACHED</em> applique la théorie de l'attachement, développée par John Bowlby et Mary Ainsworth, aux relations amoureuses adultes. Les auteurs montrent que la façon dont nous nous lions à un partenaire suit des schémas précis, déterminés par notre histoire émotionnelle précoce.</p>
+        <p>Ils identifient <strong className="text-stone-800">trois styles principaux</strong> : sécure, anxieux et évitant.</p>
+        <ul className="space-y-3 pl-4 border-l-2 border-[#2f6b61]">
+          <li><strong className="text-stone-800">Style sécure :</strong> permet une intimité confiante et stable.</li>
+          <li><strong className="text-stone-800">Style anxieux :</strong> génère une peur constante de l'abandon, un besoin de réassurance et une hypervigilance aux signaux de l'autre.</li>
+          <li><strong className="text-stone-800">Style évitant :</strong> pousse à fuir la proximité, à valoriser l'indépendance à l'excès et à se sentir "étouffé" dès que la relation devient sérieuse.</li>
         </ul>
-        <p>Le livre propose des tests pour identifier son propre style, ainsi que celui de son partenaire, et des strategies concretes pour mieux communiquer ses besoins.</p>
-        <div className="mt-8 p-6 rounded-xl" style={{ background: 'rgba(168,100,160,0.08)' }}>
-          <h4 className="text-lg font-semibold mb-4" style={{ color: '#7c3d8f' }}>Comment ces styles se forment dans l'enfance</h4>
-          <div className="space-y-4" style={{ color: '#555' }}>
-            <p>Selon Bowlby, le nourrisson a un besoin biologique de proximite avec une figure d'attachement pour assurer sa survie. La facon dont ce parent repond faconne un modele inconscient de ce a quoi s'attendre des relations.</p>
-            <p><strong>Attachement secur :</strong> le parent est globalement disponible et rekuffrant — l'enfant apprend que ses besoins seront entendus.</p>
-            <p><strong>Attachement anxieux :</strong> les responses parentales sont incoherentes — l'enfant apprend a surveiller constamment la disponibilite de l'autre.</p>
-            <p><strong>Attachement evitant :</strong> le parent est distant et peu expressif — l'enfant apprend a minimiser ses besoins et a compter sur lui-meme.</p>
-            <p className="mt-4" style={{ fontStyle: 'italic' }}>Ces modeles, formes avant l'age de deux ans, continuent a orienter inconsciemment nos relations adultes.</p>
-          </div>
+        <div className="rounded-xl bg-[#f7f4ef] p-5">
+          <h4 className="mb-3 font-semibold text-stone-800">Comment ces styles se forment dans l'enfance</h4>
+          <p className="mb-2">Selon Bowlby, le nourrisson a un besoin biologique de proximité avec une figure d'attachement. La façon dont ce parent répond façonne un modèle inconscient de ce à quoi s'attendre des relations.</p>
+          <p><em className="text-stone-500">Ces modèles, formés avant l'âge de deux ans, continuent à orienter inconsciemment nos relations adultes.</em></p>
         </div>
       </div>
     ),
@@ -53,27 +45,19 @@ const RESOURCES: Resource[] = [
     id: 'rogers',
     emoji: '🪞',
     title: 'Carl Rogers',
-    subtitle: "Deconstruire l'amour conditionnel pour enfin s'aimer",
+    subtitle: "Déconstruire l'amour conditionnel pour enfin s'aimer",
     content: (
-      <div className="space-y-6" style={{ color: '#444', lineHeight: 1.8 }}>
-        <div>
-          <h4 className="text-lg font-semibold mb-3" style={{ color: '#7c3d8f' }}>Le concept de Carl Rogers sur l'amour inconditionnel</h4>
-          <div className="space-y-4">
-            <p>L'idee de Carl Rogers repose sur son concept de « regard positif inconditionnel » — accepter une autre personne pleinement, sans jugement ni condition, telle qu'elle est. Son intuition etait que nous ne pouvons offrir ce type de regard a quelqu'un d'autre que dans la mesure ou nous avons appris a nous l'offrir a nous-memes.</p>
-            <p>Rogers pensait que la plupart d'entre nous grandissons en interiorisant une acceptation conditionnelle : un amour qui dependait du fait d'etre gentil, performant, seduisant ou conciliant. Avec le temps, nous construisons un « concept de soi » faconne par ce que nous pensons avoir le droit d'etre, et nous cachons ou rejetons les parts de nous-memes qui n'ont pas obtenu l'approbation.</p>
-            <p>Le probleme : lorsque nous n'avons pas accepte ces parts en nous-memes, nous ne pouvons inconsciemment pas les tolerer chez un partenaire. Nous devenons anxieux, controllants ou critiques quand notre partenaire montre les qualites memes que nous avons repressees en nous.</p>
-            <p>Pour Rogers, une vraie intimite exige la <strong>congruence</strong> : etre authentique plutot que de jouer un role. Et la congruence n'est possible qu'une fois que l'on a fait la paix avec l'etendue entiere de qui l'on est.</p>
-          </div>
-        </div>
-        <div className="p-6 rounded-xl" style={{ background: 'rgba(168,100,160,0.06)' }}>
-          <h4 className="text-lg font-semibold mb-4" style={{ color: '#7c3d8f' }}>Comment faire la paix avec soi-meme selon Rogers</h4>
-          <div className="space-y-4" style={{ color: '#555' }}>
-            <p>Rogers ne voyait pas cela comme une technique unique, mais comme un processus continu qu'il appelait devenir une « personne pleinement fonctionnelle ». Quelques elements centraux :</p>
-            <p><strong>Abandonner les « conditions de valeur »</strong> — Remarquez les regles interieures que vous avez interiorisees. Distinguez qui vous etes reellement de qui vous avez appris que vous aviez le droit d'etre.</p>
-            <p><strong>Faire confiance a sa propre experience</strong> — Rogers appelait cela le « processus d'evaluation organismique » : ce sens interieur de ce qui est vrai ou necessaire pour soi, avant de le filtrer a travers ce que les autres attendent.</p>
-            <p><strong>Pratiquer le regard positif inconditionnel envers soi-meme</strong> — La meme chaleur que Rogers demandait aux therapeutes d'offrir, il pensait que chacun devait apprendre a se l'offrir — en particulier envers les parts jugees honteuses.</p>
-            <p><strong>Chercher des environnements ou l'on peut etre congruent</strong> — Etre pleinement vu par une autre personne accueillante nous apprend, par l'experience, que les parts jugees inacceptables sont supportables, et meme aimables.</p>
-          </div>
+      <div className="space-y-5 text-sm leading-relaxed text-stone-600">
+        <p>L'idée de Carl Rogers repose sur son concept de « regard positif inconditionnel » — accepter une autre personne pleinement, sans jugement ni condition, telle qu'elle est. Son intuition était que nous ne pouvons offrir ce type de regard à quelqu'un d'autre que dans la mesure où nous avons appris à nous l'offrir à nous-mêmes.</p>
+        <p>Rogers pensait que la plupart d'entre nous grandissons en intériorisant une acceptation conditionnelle : un amour qui dépendait du fait d'être gentil, performant, séduisant ou conciliant.</p>
+        <p>Pour Rogers, une vraie intimité exige la <strong className="text-stone-800">congruence</strong> : être authentique plutôt que de jouer un rôle. Et la congruence n'est possible qu'une fois que l'on a fait la paix avec l'étendue entière de qui l'on est.</p>
+        <div className="rounded-xl bg-[#f7f4ef] p-5">
+          <h4 className="mb-3 font-semibold text-stone-800">Comment faire la paix avec soi-même selon Rogers</h4>
+          <ul className="space-y-2 pl-4 border-l-2 border-[#2f6b61]">
+            <li><strong className="text-stone-800">Abandonner les « conditions de valeur »</strong> — Distinguez qui vous êtes réellement de qui vous avez appris que vous aviez le droit d'être.</li>
+            <li><strong className="text-stone-800">Faire confiance à son expérience</strong> — Rogers appelait cela le « processus d'évaluation organismique » : vos ressentis sont des données valides.</li>
+            <li><strong className="text-stone-800">Pratiquer l'auto-compassion</strong> — Traitez vos propres erreurs avec la même douceur que vous offririez à un ami cher.</li>
+          </ul>
         </div>
       </div>
     ),
@@ -82,177 +66,215 @@ const RESOURCES: Resource[] = [
     id: 'fromm',
     emoji: '💝',
     title: 'Erich Fromm',
-    subtitle: "Se preparer a l'amour mature",
+    subtitle: "L'art d'aimer : amour immature vs amour mature",
     content: (
-      <div className="space-y-6" style={{ color: '#444', lineHeight: 1.8 }}>
-        <p>Erich Fromm, dans <em>L'art d'aimer</em>, soutenait que la plupart des gens comprennent mal l'amour, le percevant comme quelque chose dans lequel on « tombe » plutot que comme quelque chose que l'on pratique. Il distinguait l'amour immature de l'amour mature.</p>
-        <div className="p-5 rounded-xl border-l-4" style={{ background: '#fff', borderColor: '#dc2626' }}>
-          <h4 className="font-semibold mb-2" style={{ color: '#dc2626' }}>Amour immature</h4>
-          <p className="italic mb-2">« Je t'aime parce que j'ai besoin de toi. »</p>
-          <p className="text-sm">Il est enracine dans la dependance — vous aimez quelqu'un parce qu'il comble un vide, apaise votre solitude, ou renforce votre estime de vous-meme. Fromm y voyait une forme de fusion, ou deux personnes se melent pour echapper a l'angoisse d'etre des individus separes. C'est intense et passionne, mais fragile et possessif.</p>
+      <div className="space-y-5 text-sm leading-relaxed text-stone-600">
+        <p>Dans <em>L'art d'aimer</em>, Erich Fromm soutient que l'amour n'est pas un sentiment qui arrive passivement — c'est une pratique active qui s'apprend et se cultive, comme n'importe quel art.</p>
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="rounded-xl bg-stone-100 p-4">
+            <h4 className="mb-2 font-semibold text-stone-800">Amour immature</h4>
+            <p className="text-xs text-stone-600">"J'aime parce que j'ai besoin de toi." Dépendance, fusion, peur de la perte. L'autre comble un vide.</p>
+          </div>
+          <div className="rounded-xl bg-[#eef4f3] p-4">
+            <h4 className="mb-2 font-semibold text-[#2f6b61]">Amour mature</h4>
+            <p className="text-xs text-stone-600">"J'ai besoin de toi parce que je t'aime." Choix libre, deux individualités entières qui se rejoignent.</p>
+          </div>
         </div>
-        <div className="p-5 rounded-xl border-l-4" style={{ background: '#fff', borderColor: '#166534' }}>
-          <h4 className="font-semibold mb-2" style={{ color: '#166534' }}>Amour mature</h4>
-          <p className="italic mb-2">« J'ai besoin de toi parce que je t'aime. »</p>
-          <p className="text-sm">Ici, l'amour est une capacite active — fondee sur le soin, la responsabilite, le respect et une connaissance veritable de l'autre. Fromm pensait que l'amour mature exige d'avoir deja un sens de soi solide et secur. Deux individus entiers se choisissent l'un l'autre.</p>
-        </div>
-        <div className="p-5 rounded-xl" style={{ background: 'rgba(168,100,160,0.08)' }}>
-          <p><strong>Pour Fromm,</strong> « trouver la bonne personne » importe moins que devenir une personne capable d'un amour mature — car l'amour immature reproduit les memes schemas, quel que soit le partenaire.</p>
+        <div className="rounded-xl bg-[#f7f4ef] p-5">
+          <h4 className="mb-3 font-semibold text-stone-800">Les 4 éléments de l'amour selon Fromm</h4>
+          <ul className="space-y-2 pl-4 border-l-2 border-[#2f6b61]">
+            <li><strong className="text-stone-800">Connaissance</strong> — voir l'autre tel qu'il est vraiment, pas tel qu'on le projette.</li>
+            <li><strong className="text-stone-800">Soin</strong> — s'investir activement dans le bien-être de l'autre.</li>
+            <li><strong className="text-stone-800">Respect</strong> — permettre à l'autre de grandir selon sa propre nature.</li>
+            <li><strong className="text-stone-800">Responsabilité</strong> — répondre aux besoins de l'autre comme à un acte délibéré.</li>
+          </ul>
         </div>
       </div>
     ),
   },
-];
+]
 
-const STEPS = [
-  { number: '01', title: 'Faites le test',       description: "Identifiez votre style d'attachement en 16 questions (5 min, gratuit)." },
-  { number: '02', title: 'Session decouverte', description: 'Monica vous identifie 3 actions concretes et personnalisees vers des relations plus epanouissantes.' },
-  { number: '03', title: "Passez a l'action",     description: 'Repartez avec un plan clair, des outils pratiques et la clarte pour transformer vos relations des maintenant.' },
-];
-
-const exercices = (
-  <div className="space-y-8">
-    <div className="p-6 rounded-xl" style={{ background: '#fff' }}>
-      <h3 className="text-lg font-semibold mb-4" style={{ color: '#a864a0' }}>Questions de reflexion</h3>
-      <ul className="space-y-3" style={{ color: '#555', lineHeight: 1.8 }}>
-        <li>Quels sont les modeles d'attachement que j'ai interiorises dans mon enfance ?</li>
-        <li>Quelles « conditions de valeur » est-ce que je me fixe pour me sentir acceptable ?</li>
-        <li>Est-ce que je cherche l'amour pour combler un vide ou pour partager une plenitude ?</li>
-        <li>Quelles parts de moi est-ce que je cache par peur du jugement ?</li>
-      </ul>
-    </div>
-    <div className="p-6 rounded-xl" style={{ background: '#fff' }}>
-      <h3 className="text-lg font-semibold mb-4" style={{ color: '#a864a0' }}>Exercices a faire dans le monde</h3>
-      <div className="grid sm:grid-cols-3 gap-6">
-        <div className="text-center">
-          <div className="text-4xl mb-3">🚶</div>
-          <h4 className="font-semibold mb-2">Marcher en flottant</h4>
-          <p className="text-sm" style={{ color: '#666' }}>Une promenade consciente, sans destination, pour contacter vos sensations.</p>
-        </div>
-        <div className="text-center">
-          <div className="text-4xl mb-3">💕</div>
-          <h4 className="font-semibold mb-2">S'emmener a des dates</h4>
-          <p className="text-sm" style={{ color: '#666' }}>Passez du temps avec vous-meme comme vous le feriez avec quelqu'un que vous aimez.</p>
-        </div>
-        <div className="text-center">
-          <div className="text-4xl mb-3">✨</div>
-          <h4 className="font-semibold mb-2">Faire ce qu'on a vraiment envie</h4>
-          <p className="text-sm" style={{ color: '#666' }}>Pleurer, rire, demander de l'aide — faites-le quand meme.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-);
+const EXERCICES_REFLEXION = [
+  "Quels sont les schémas d'attachement que j'ai intériorisés dans mon enfance ?",
+  "Quelles « conditions de valeur » est-ce que je me fixe pour me sentir acceptable ?",
+  "Dans quelles situations est-ce que je me retrouve à jouer un rôle plutôt qu'à être moi-même ?",
+  "Qu'est-ce que j'attends inconsciemment de mes relations que je n'arrive pas à m'offrir moi-même ?",
+]
 
 export default function RelationsPage() {
-  const c = useCmsContent('relations', DEFAULTS);
-  const [activeModal, setActiveModal] = useState<string | null>(null);
-  const activeResource = RESOURCES.find(r => r.id === activeModal);
+  const c = useCmsContent('relations', DEFAULTS)
+  const [activeModal, setActiveModal] = useState<string | null>(null)
+  const activeResource = RESOURCES.find(r => r.id === activeModal)
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: '#F8F6F2', color: '#2C2C2C' }}>
+    <>
       <Header />
-
-      <section className="relative px-4 py-20 md:py-32 text-center overflow-hidden"
-        style={{ background: c.hero_image ? 'none' : 'linear-gradient(160deg, #fdf6ee 0%, #f5e8f5 50%, #ede8fa 100%)' }}>
-        {c.hero_image && <img src={c.hero_image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-30" />}
-        <div className="relative max-w-3xl mx-auto">
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-5"
-            style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}>
-            {c.page_title || 'RESSOURCES'}
-          </h1>
-        </div>
-      </section>
-
-      <section className="px-4 py-16 md:py-24" style={{ background: 'linear-gradient(160deg, #fdf6ee 0%, #f5e8f5 50%, #ede8fa 100%)' }}>
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center" style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}>
-            Vos 3 actions vers des relations plus epanouissantes
-          </h2>
-          <p className="text-center mb-12 max-w-2xl mx-auto" style={{ color: '#666' }}>
-            Lors d'une seance offerte de 45 minutes, Monica vous accompagne pour identifier les 3 actions concretes les plus impactantes pour transformer vos relations des maintenant.
-          </p>
-          <div className="grid md:grid-cols-3 gap-8">
-            {STEPS.map((step) => (
-              <div key={step.number} className="text-center p-6">
-                <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold" style={{ background: '#a864a0', color: '#fff' }}>{step.number}</div>
-                <h3 className="text-xl font-bold mb-2" style={{ color: '#1a1a2e' }}>{step.title}</h3>
-                <p className="text-sm" style={{ color: '#666' }}>{step.description}</p>
-              </div>
-            ))}
+      <main>
+        {/* ── HERO ── */}
+        <section className="relative flex h-[45vh] items-end overflow-hidden bg-stone-900">
+          {c.hero_image && <img src={c.hero_image} alt="Photo de fond" className="absolute inset-0 h-full w-full object-cover opacity-40" />}
+          <div className="relative mx-auto w-full max-w-5xl px-6 pb-12 md:px-10">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-amber-400">Relations</p>
+            <h1 className="text-4xl font-serif font-light text-white md:text-5xl">{c.page_title}</h1>
+            <p className="mt-4 max-w-xl text-base text-stone-300">{c.intro_text}</p>
           </div>
-          <div className="text-center mt-10">
-            <a href="/contact" className="inline-block px-10 py-4 font-semibold rounded-2xl text-lg transition-all shadow-lg"
-              style={{ background: '#a864a0', color: '#fff', boxShadow: '0 8px 24px rgba(168,100,160,0.35)' }}>
-              Reserver ma seance offerte
+        </section>
+
+        {/* ── ANCRAGE PHILOSOPHIQUE ── */}
+        <section className="bg-white py-14 md:py-16">
+          <div className="mx-auto max-w-3xl px-6 md:px-10 text-center">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Une approche ancrée dans la philosophie</p>
+            <h2 className="mb-5 text-2xl font-serif font-light leading-tight text-stone-900 md:text-3xl">
+              Les relations comme terrain d&apos;exploration de soi
+            </h2>
+            <p className="mb-4 text-sm leading-relaxed text-stone-600 max-w-2xl mx-auto">
+              Le Philosophical Counselling — l&apos;une des pratiques au cœur de l&apos;accompagnement Happy Humans — considère les difficultés relationnelles non comme des défaillances, mais comme des invitations à mieux se connaître. Nos schémas d&apos;attachement, nos attentes implicites, nos croyances sur l&apos;autre : tout cela se révèle dans la relation.
+            </p>
+            <a href="/coaching" className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-[#2f6b61] hover:underline">
+              Découvrir le coaching individuel →
             </a>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="px-4 py-16 md:py-24">
-        <div className="max-w-4xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-8">
-            {RESOURCES.map((resource) => (
-              <button
-                key={resource.id}
-                onClick={() => setActiveModal(resource.id)}
-                className="text-left rounded-2xl p-8 transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer"
-                style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.08)' }}
-              >
-                <div className="text-5xl mb-4">{resource.emoji}</div>
-                <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}>{resource.title}</h2>
-                <p className="text-sm" style={{ color: '#666' }}>{resource.subtitle}</p>
-                <div className="mt-4 flex items-center gap-2" style={{ color: '#a864a0' }}>
-                  <span className="text-sm font-medium">Lire</span><span>→</span>
+        {/* ── VOS 3 ACTIONS ── */}
+        <section className="bg-[#f7f4ef] py-16 md:py-20">
+          <div className="mx-auto max-w-5xl px-6 md:px-10">
+            <div className="mb-12 text-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Votre parcours</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Vos 3 actions vers des relations plus épanouissantes</h2>
+              <p className="mt-3 max-w-xl mx-auto text-sm text-stone-500">{c.cta_subtitle}</p>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {STEPS.map(({ number, title, desc }) => (
+                <div key={number} className="rounded-2xl bg-white p-7 shadow-sm">
+                  <p className="mb-3 text-3xl font-serif font-light text-[#2f6b61] opacity-40">{number}</p>
+                  <h3 className="mb-2 font-semibold text-stone-900">{title}</h3>
+                  <p className="text-sm leading-relaxed text-stone-600">{desc}</p>
                 </div>
-              </button>
-            ))}
+              ))}
+            </div>
+            <div className="mt-8 text-center">
+              <a href="/booking" className="inline-block rounded-full bg-[#2f6b61] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#235249]">
+                Réserver ma séance offerte
+              </a>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="px-4 py-16 md:py-24" style={{ background: 'linear-gradient(135deg, #f5e8f5 0%, #ede8fa 100%)' }}>
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center" style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}>
-            Exercices a faire chez soi
-          </h2>
-          {exercices}
-        </div>
-      </section>
+        {/* ── RESSOURCES / CARTES MODALES ── */}
+        <section className="bg-white py-16 md:py-20">
+          <div className="mx-auto max-w-5xl px-6 md:px-10">
+            <div className="mb-10 text-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Pour aller plus loin</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">3 références qui éclairent les relations</h2>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {RESOURCES.map(r => (
+                <button
+                  key={r.id}
+                  onClick={() => setActiveModal(r.id)}
+                  className="group rounded-2xl bg-[#f7f4ef] p-7 text-left transition hover:shadow-md hover:-translate-y-0.5"
+                >
+                  <div className="mb-4 text-3xl">{r.emoji}</div>
+                  <h3 className="mb-1 font-semibold text-stone-900 group-hover:text-[#2f6b61] transition">{r.title}</h3>
+                  <p className="text-sm text-stone-500">{r.subtitle}</p>
+                  <p className="mt-4 text-xs font-semibold text-[#2f6b61]">Lire la synthèse →</p>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
 
-      <section id="seance-offerte" className="px-4 py-20 md:py-24" style={{ background: '#fff' }}>
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}>
-            Prete a transformer vos relations ?
-          </h2>
-          <p className="text-lg mb-8" style={{ color: '#666' }}>
-            Lors d'une seance offerte de 45 minutes, Monica vous accompagne pour identifier les axes concrets de transformation dans vos relations.
-          </p>
-          <a href="/contact" className="inline-block px-10 py-4 font-semibold rounded-2xl text-lg transition-all shadow-lg"
-            style={{ background: '#a864a0', color: '#fff', boxShadow: '0 8px 24px rgba(168,100,160,0.35)' }}>
-            Reserver ma seance offerte
-          </a>
-        </div>
-      </section>
+        {/* ── EXERCICES ── */}
+        <section className="bg-[#f7f4ef] py-16 md:py-20">
+          <div className="mx-auto max-w-4xl px-6 md:px-10">
+            <div className="mb-10 text-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Pratique</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Questions de réflexion</h2>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              {EXERCICES_REFLEXION.map((q, i) => (
+                <div key={i} className="rounded-2xl bg-white p-6">
+                  <p className="mb-2 text-xs font-bold text-[#2f6b61] opacity-50">{String(i + 1).padStart(2, '0')}</p>
+                  <p className="text-sm leading-relaxed text-stone-700 italic">&ldquo;{q}&rdquo;</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-10 grid gap-4 sm:grid-cols-3 text-center">
+              {[
+                { emoji: '🚶', title: 'Marcher sans destination', desc: 'Une promenade consciente pour contacter vos sensations.' },
+                { emoji: '💕', title: "S'emmener à des dates", desc: 'Passez du temps avec vous-même comme avec quelqu'un que vous aimez.' },
+                { emoji: '✨', title: 'Faire ce qu'on a envie', desc: 'Pleurer, rire, demander de l'aide — faites-le quand même.' },
+              ].map(({ emoji, title, desc }) => (
+                <div key={title} className="rounded-2xl bg-white p-6">
+                  <div className="mb-3 text-2xl">{emoji}</div>
+                  <h4 className="mb-2 text-sm font-semibold text-stone-900">{title}</h4>
+                  <p className="text-xs text-stone-500 leading-relaxed">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-      <Footer />
+        {/* ── TEST ATTACHEMENT ── */}
+        <section className="bg-white py-16 md:py-20" id="test-attachement">
+          <div className="mx-auto max-w-3xl px-6 md:px-10 text-center">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Test gratuit</p>
+            <h2 className="mb-4 text-2xl font-serif font-light text-stone-900 md:text-3xl">Quel est votre style d&apos;attachement ?</h2>
+            <p className="mb-8 text-sm leading-relaxed text-stone-600 max-w-xl mx-auto">
+              16 questions · 5 minutes · Résultat immédiat. Découvrez si vous êtes sécure, anxieux ou évitant — et ce que cela change dans vos relations.
+            </p>
+            <a href="/contact?type=relations" className="inline-block rounded-full bg-[#2f6b61] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#235249]">
+              Faire le test
+            </a>
+          </div>
+        </section>
 
-      {activeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.6)' }} onClick={() => setActiveModal(null)}>
-          <div className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl p-8" style={{ background: '#fff' }} onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setActiveModal(null)} className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center text-2xl" style={{ background: 'rgba(0,0,0,0.05)', color: '#666' }}>x</button>
-            {activeResource && (
-              <>
-                <div className="text-4xl mb-4">{activeResource.emoji}</div>
-                <h2 className="text-3xl font-bold mb-2" style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}>{activeResource.title}</h2>
-                <p className="text-lg mb-6" style={{ color: '#a864a0' }}>{activeResource.subtitle}</p>
-                <div className="border-t pt-6" style={{ borderColor: 'rgba(0,0,0,0.08)' }}>{activeResource.content}</div>
-              </>
-            )}
+        {/* ── SÉANCE OFFERTE CTA ── */}
+        <section className="bg-[#2f6b61] py-16 text-center">
+          <div className="mx-auto max-w-xl px-6">
+            <h2 className="mb-4 text-2xl font-serif font-light text-white">{c.cta_title}</h2>
+            <p className="mb-7 text-sm text-emerald-100">{c.cta_subtitle}</p>
+            <a href="/booking" className="inline-block rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[#2f6b61] shadow hover:bg-stone-50">
+              Réserver une séance offerte
+            </a>
+          </div>
+        </section>
+      </main>
+
+      {/* ── MODAL ── */}
+      {activeModal && activeResource && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm"
+          onClick={() => setActiveModal(null)}
+        >
+          <div
+            className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl bg-white p-8 shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setActiveModal(null)}
+              className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-full bg-stone-100 text-stone-500 hover:bg-stone-200"
+            >
+              ✕
+            </button>
+            <div className="mb-6">
+              <div className="mb-3 text-3xl">{activeResource.emoji}</div>
+              <h2 className="text-xl font-semibold text-stone-900">{activeResource.title}</h2>
+              <p className="text-sm text-stone-500">{activeResource.subtitle}</p>
+            </div>
+            {activeResource.content}
+            <div className="mt-8 border-t border-stone-100 pt-6 text-center">
+              <p className="mb-3 text-sm text-stone-600">Envie d&apos;explorer ces questions avec Monica ?</p>
+              <a href="/booking" className="inline-block rounded-full bg-[#2f6b61] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#235249]">
+                Réserver une séance offerte
+              </a>
+            </div>
           </div>
         </div>
       )}
-    </main>
-  );
+
+      <Footer />
+    </>
+  )
 }
