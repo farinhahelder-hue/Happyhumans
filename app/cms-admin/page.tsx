@@ -1207,9 +1207,36 @@ export default function CMSAdmin() {
                           {groupItems.map(s => (
                             <div key={s.key}>
                               <label style={lbl}>{s.label}</label>
-                              <input value={editedSettings[s.key] || ''}
-                                onChange={e => setEditedSettings(prev => ({ ...prev, [s.key]: e.target.value }))}
-                                style={inp} placeholder={s.label} />
+                              {s.type === 'image' ? (
+                                <div>
+                                  {editedSettings[s.key] && (
+                                    <div style={{ marginBottom: '.5rem' }}>
+                                      <img src={editedSettings[s.key]} alt="Logo" style={{ maxHeight: 80, maxWidth: 300, objectFit: 'contain', borderRadius: '.4rem', border: '1px solid #eee', padding: '.5rem', background: '#fafafa' }} />
+                                    </div>
+                                  )}
+                                  <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                                    <label style={{ padding: '.5rem 1rem', background: '#6b2a1a', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>
+                                      ⬆️ Upload logo
+                                      <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
+                                        const file = e.target.files?.[0];
+                                        if (!file) return;
+                                        const fd = new FormData();
+                                        fd.append('file', file);
+                                        const res = await fetch('/api/cms/upload', { method: 'POST', body: fd });
+                                        const data = await res.json();
+                                        if (data.url) setEditedSettings(prev => ({ ...prev, [s.key]: data.url }));
+                                      }} />
+                                    </label>
+                                    <input value={editedSettings[s.key] || ''} onChange={e => setEditedSettings(prev => ({ ...prev, [s.key]: e.target.value }))} style={{ ...inp, flex: 1 }} placeholder="Ou coller une URL..." />
+                                    {editedSettings[s.key] && <button onClick={() => setEditedSettings(prev => ({ ...prev, [s.key]: '' }))} style={{ padding: '.5rem .8rem', background: '#fee', color: '#c0392b', border: '1px solid #fcc', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>✕ Supprimer</button>}
+                                  </div>
+                                </div>
+                              ) : s.type === 'textarea' ? (
+                                <textarea value={editedSettings[s.key] || ''} onChange={e => setEditedSettings(prev => ({ ...prev, [s.key]: e.target.value }))} style={{ ...inp, height: 100, resize: 'vertical' }} placeholder={s.label} />
+                              ) : (
+                                <input value={editedSettings[s.key] || ''}
+                                  onChange={e => setEditedSettings(prev => ({ ...prev, [s.key]: e.target.value }))}
+                                  style={inp} placeholder={s.label} />
                             </div>
                           ))}
                           {groupItems.length === 0 && (
