@@ -1,41 +1,98 @@
 'use client'
+import { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import Link from 'next/link'
+import { createClient } from '@supabase/supabase-js'
 import { useCmsContent } from '@/hooks/useCmsContent'
+
+type Temoignage = { id: number; nom: string; role: string; texte: string; photo_url: string; note: number }
 
 const DEFAULTS = {
   hero_image:  '',
-  page_title:  'Ce que disent ceux qui ont osé ce pas.',
-  intro_text:  "Des témoignages de personnes et d'organisations accompagnées par Monica Schneider dans leurs transitions et transformations.",
+  page_title:  'Ils témoignent',
+  intro_text:  'Des parcours différents, une même expérience : retrouver de la clarté et avancer avec confiance.',
 }
+
+const STARS = (n: number) => '★'.repeat(n) + '☆'.repeat(5 - n)
 
 export default function TemoignagesPage() {
   const c = useCmsContent('temoignages', DEFAULTS)
+  const [items, setItems] = useState<Temoignage[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    if (!url || !key) { setLoading(false); return }
+    createClient(url, key)
+      .from('temoignages')
+      .select('id, nom, role, texte, photo_url, note')
+      .eq('visible', true)
+      .order('sort_order', { ascending: true })
+      .then(({ data }) => { setItems(data || []); setLoading(false) })
+  }, [])
+
   return (
     <>
       <Header />
       <main>
         {/* HERO */}
         <section className="relative flex h-[45vh] items-end overflow-hidden bg-stone-900">
-          {c.hero_image && (
-            <img src={c.hero_image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-40" />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-          <div className="relative z-10 max-w-3xl px-6 pb-14 md:px-16 md:pb-24">
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-amber-300">Témoignages</p>
-            <h1 className="mb-5 text-3xl font-serif font-light leading-[1.1] text-white md:text-5xl">{c.page_title}</h1>
-            <p className="max-w-xl text-sm leading-relaxed text-gray-300">{c.intro_text}</p>
+          {c.hero_image && <img src={c.hero_image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-40" />}
+          <div className="relative mx-auto w-full max-w-5xl px-6 pb-12 md:px-10">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-amber-400">Témoignages</p>
+            <h1 className="text-4xl font-serif font-light text-white md:text-5xl">{c.page_title}</h1>
+            <p className="mt-4 max-w-xl text-base text-stone-300">{c.intro_text}</p>
+          </div>
+        </section>
+
+        {/* GRILLE TÉMOIGNAGES */}
+        <section className="bg-[#f7f4ef] py-20 md:py-28">
+          <div className="mx-auto max-w-6xl px-6 md:px-10">
+            {loading ? (
+              <div className="flex justify-center py-20">
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#2f6b61] border-t-transparent" />
+              </div>
+            ) : items.length === 0 ? (
+              <p className="text-center text-stone-500 py-16">Les témoignages arrivent bientôt.</p>
+            ) : (
+              <div className="columns-1 gap-6 md:columns-2 lg:columns-3">
+                {items.map(t => (
+                  <div key={t.id} className="break-inside-avoid mb-6 rounded-2xl bg-white p-7 shadow-sm">
+                    {t.note > 0 && (
+                      <p className="mb-3 text-sm text-amber-500 tracking-wide">{STARS(t.note)}</p>
+                    )}
+                    <blockquote className="mb-5 text-sm leading-relaxed text-stone-700 italic">
+                      &ldquo;{t.texte}&rdquo;
+                    </blockquote>
+                    <div className="flex items-center gap-3">
+                      {t.photo_url ? (
+                        <img src={t.photo_url} alt={t.nom} className="h-10 w-10 rounded-full object-cover" />
+                      ) : (
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2f6b61] text-sm font-bold text-white">
+                          {t.nom.charAt(0)}
+                        </div>
+                      )}
+                      <div>
+                        <p className="text-sm font-semibold text-stone-900">{t.nom}</p>
+                        {t.role && <p className="text-xs text-stone-500">{t.role}</p>}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
         {/* CTA */}
-        <section className="bg-[#2f6b61] py-14 text-center">
+        <section className="bg-[#2f6b61] py-16 text-center">
           <div className="mx-auto max-w-xl px-6">
-            <h2 className="mb-4 text-xl font-serif font-light text-white">Prêt·e à commencer votre parcours ?</h2>
-            <Link href="/contact" className="rounded-full bg-white px-7 py-3 text-sm font-semibold text-[#2f6b61] hover:bg-amber-50 transition">
+            <h2 className="mb-4 text-2xl font-serif font-light text-white">Prêt·e à écrire votre propre histoire ?</h2>
+            <p className="mb-7 text-sm text-emerald-100">Réservez une séance découverte gratuite de 30 minutes.</p>
+            <a href="/contact" className="inline-block rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[#2f6b61] shadow hover:bg-stone-50">
               Prendre contact
-            </Link>
+            </a>
           </div>
         </section>
       </main>
