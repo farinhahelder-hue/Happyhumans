@@ -135,6 +135,17 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'intro_text',   label: 'Texte introduction',  type: 'textarea' },
     ],
   },
+  'relations': {
+    label: 'Relations',
+    emoji: '💝',
+    sections: [
+      { key: 'hero_image',    label: 'Image hero',              type: 'image' },
+      { key: 'page_title',    label: 'Titre de la page',        type: 'text' },
+      { key: 'intro_text',    label: "Texte d'introduction",    type: 'richtext' },
+      { key: 'cta_title',     label: 'Titre CTA',               type: 'text' },
+      { key: 'cta_subtitle', label: 'Sous-titre CTA',          type: 'textarea' },
+    ],
+  },
   'contact': {
     label: 'Contact',
     emoji: '📧',
