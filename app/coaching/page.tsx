@@ -144,7 +144,7 @@ export default function CoachingPage() {
                   <p className={`text-3xl font-serif font-semibold mb-0.5 ${highlight ? 'text-white' : 'text-stone-900'}`}>{price}</p>
                   <p className={`text-xs mb-4 ${highlight ? 'text-emerald-200' : 'text-stone-500'}`}>{unit}</p>
                   <p className={`text-sm leading-relaxed flex-1 mb-6 ${highlight ? 'text-emerald-100' : 'text-stone-600'}`}>{desc}</p>
-                  <a href="/contact" className={`rounded-full py-2.5 text-center text-sm font-semibold transition ${highlight ? 'bg-white text-[#2f6b61] hover:bg-stone-50' : 'bg-[#2f6b61] text-white hover:bg-[#235249]'}`}>
+                  <a href="/booking" className={`rounded-full py-2.5 text-center text-sm font-semibold transition ${highlight ? 'bg-white text-[#2f6b61] hover:bg-stone-50' : 'bg-[#2f6b61] text-white hover:bg-[#235249]'}`}>
                     {cta}
                   </a>
                 </div>
