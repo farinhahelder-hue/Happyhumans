@@ -237,16 +237,38 @@ export default function CMSAdmin() {
     setTab(nextTab);
   }, [confirmDiscardArticleChanges, openArticleEditor, tab]);
 
+  // Fetch avec timeout
+  const fetchWithTimeout = async (url: string, options: RequestInit = {}, timeout = 8000) => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+    try {
+      const res = await fetch(url, { ...options, signal: controller.signal });
+      clearTimeout(timeoutId);
+      return res;
+    } catch (err) {
+      clearTimeout(timeoutId);
+      if (err instanceof Error && err.name === 'AbortError') {
+        throw new Error('La connexion est trop lente. Vérifiez votre connexion.');
+      }
+      throw err;
+    }
+  };
+
   useEffect(() => {
     let active = true;
 
     const checkSession = async () => {
       try {
-        const res = await fetch('/api/cms/auth');
+        const res = await fetchWithTimeout('/api/cms/auth', {}, 10000);
         if (!active) return;
+        const data = await res.json().catch(() => ({ ok: false }));
+        if (res.status === 503) {
+          setAuthErr(data.error || 'CMS non configuré');
+        }
         setAuthed(res.ok);
-      } catch {
+      } catch (err) {
         if (!active) return;
+        setAuthErr(err instanceof Error ? err.message : 'Erreur de connexion');
         setAuthed(false);
       } finally {
         if (active) setCheckingSession(false);
@@ -266,20 +288,21 @@ export default function CMSAdmin() {
     setAuthErr('');
     setAuthLoading(true);
     try {
-      const res = await fetch('/api/cms/auth', {
+      const res = await fetchWithTimeout('/api/cms/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password: pwd }),
-      });
+      }, 10000);
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
         setAuthed(true);
         setPwd('');
+        setAuthErr('');
       } else {
         setAuthErr(data.error || 'Mot de passe incorrect');
       }
-    } catch {
-      setAuthErr('Impossible de contacter le CMS pour le moment.');
+    } catch (err) {
+      setAuthErr(err instanceof Error ? err.message : 'Impossible de contacter le CMS.');
     } finally {
       setAuthLoading(false);
     }
