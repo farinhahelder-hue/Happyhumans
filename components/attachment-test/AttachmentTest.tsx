@@ -10,7 +10,11 @@ import { ResultCard } from './ResultCard';
 
 type Phase = 'intro' | 'quiz' | 'result';
 
-export function AttachmentTest() {
+interface AttachmentTestProps {
+  onBook?: () => void;
+}
+
+export function AttachmentTest({ onBook }: AttachmentTestProps) {
   const [phase, setPhase] = useState<Phase>('intro');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<AttachmentAnswer[]>([]);
@@ -70,7 +74,7 @@ export function AttachmentTest() {
       <div className="text-center space-y-6 max-w-xl mx-auto">
         <div className="text-6xl mb-2">🪢</div>
         <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">
-          Quel est votre style d'attachement ?
+          Quel est votre style d&apos;attachement ?
         </h2>
         <p className="text-white/70 text-base md:text-lg leading-relaxed">
           Un outil de découverte douce pour mieux comprendre comment vous vous connectez aux autres — et à vous-même.
@@ -81,11 +85,11 @@ export function AttachmentTest() {
           <span className="bg-white/10 border border-white/20 rounded-full px-4 py-2 text-white/80">✨ Résultats immédiats</span>
         </div>
         <p className="text-white/50 text-sm italic">
-          Il n'y a pas de bonne ou de mauvaise réponse. Répondez en suivant votre ressenti spontané.
+          Il n&apos;y a pas de bonne ou de mauvaise réponse. Répondez en suivant votre ressenti spontané.
         </p>
         <button
           onClick={handleStart}
-          className="mt-4 w-full md:w-auto px-10 py-4 bg-rose-500 hover:bg-rose-600 active:bg-rose-700 text-white font-semibold rounded-2xl text-lg transition-all duration-200 shadow-lg shadow-rose-500/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+          className="mt-4 w-full md:w-auto px-10 py-4 bg-[#2f6b61] hover:bg-[#235249] text-white font-semibold rounded-2xl text-lg transition-all duration-200 shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
         >
           Commencer le test →
         </button>
@@ -97,7 +101,7 @@ export function AttachmentTest() {
   if (phase === 'result' && result) {
     return (
       <div className="max-w-2xl mx-auto">
-        <ResultCard result={result} onRestart={handleRestart} />
+        <ResultCard result={result} onRestart={handleRestart} onBook={onBook} />
       </div>
     );
   }
@@ -121,7 +125,7 @@ export function AttachmentTest() {
         {currentIndex > 0 && (
           <button
             onClick={handlePrev}
-            className="flex-1 py-4 rounded-2xl bg-white/10 border border-white/20 text-white font-medium hover:bg-white/20 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            className="flex-1 py-4 rounded-2xl bg-white/10 border border-white/20 text-white font-medium hover:bg-white/20 transition-colors"
           >
             ← Précédent
           </button>
@@ -129,9 +133,9 @@ export function AttachmentTest() {
         <button
           onClick={handleNext}
           disabled={!canProceed}
-          className={`flex-1 py-4 rounded-2xl font-semibold text-white transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 ${
+          className={`flex-1 py-4 rounded-2xl font-semibold text-white transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 ${
             canProceed
-              ? 'bg-rose-500 hover:bg-rose-600 active:bg-rose-700 shadow-lg shadow-rose-500/20'
+              ? 'bg-[#2f6b61] hover:bg-[#235249] shadow-lg'
               : 'bg-white/10 border border-white/20 opacity-50 cursor-not-allowed'
           }`}
         >
