@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
@@ -88,7 +88,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
   },
   'nos-services': {
     label: 'Nos services',
-    emoji: 'âœ¨',
+    emoji: '✨',
     sections: [
       { key: 'hero_title',    label: 'Hero –“ Titre',              type: 'text' },
       { key: 'hero_subtitle', label: 'Hero –“ Sous-titre',         type: 'textarea' },
@@ -102,7 +102,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
   },
   'travel-planning': {
     label: 'Coaching',
-    emoji: 'âœˆï¸',
+    emoji: '✈️',
     sections: [
       { key: 'hero_title',    label: 'Hero –“ Titre',       type: 'text' },
       { key: 'hero_subtitle', label: 'Hero –“ Sous-titre',  type: 'textarea' },
@@ -128,7 +128,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
   },
   'mentions-legales': {
     label: 'Mentions légales',
-    emoji: 'âš–ï¸',
+    emoji: '⚖️',
     sections: [
       { key: 'page_title', label: 'Titre de la page', type: 'text' },
     ],
@@ -206,7 +206,7 @@ export default function CMSAdmin() {
 
   const confirmDiscardArticleChanges = useCallback(() => {
     if (!isArticleDirty) return true;
-    return confirm('Tu as des modifications non sauvegardÃƒÂ©es. Les quitter ?');
+    return confirm('Tu as des modifications non sauvegardées. Les quitter ?');
   }, [isArticleDirty]);
 
   const openArticleEditor = useCallback((article?: Partial<Article>) => {
@@ -430,7 +430,7 @@ export default function CMSAdmin() {
 
       const responses = await Promise.all(promises);
       if (responses.some(res => handleUnauthorized(res))) return;
-      showToast('âœ… Paramètres sauvegardés !');
+      showToast('✅ Paramètres sauvegardés !');
       loadSettings();
     } catch {
       showToast('Impossible de sauvegarder les paramètres.');
@@ -467,7 +467,7 @@ export default function CMSAdmin() {
 
       const responses = await Promise.all(promises);
       if (responses.some(res => handleUnauthorized(res))) return;
-      showToast(`âœ… Page "${config.label}" sauvegardée !`);
+      showToast(`✅ Page "${config.label}" sauvegardée !`);
       loadSettings();
     } catch {
       showToast('Impossible de sauvegarder cette page.');
@@ -481,7 +481,7 @@ export default function CMSAdmin() {
     if (!editingArticle) return;
     if (savingArticle) return;
     if (!editingArticle.title?.trim()) {
-      showToast('Le titre est obligatoire avant d–™enregistrer.');
+      showToast('Le titre est obligatoire avant d'enregistrer.');
       return;
     }
 
@@ -503,13 +503,13 @@ export default function CMSAdmin() {
       });
       if (handleUnauthorized(res)) return;
       if (res.ok) {
-        showToast(isNew ? 'âœ… Article créé !' : 'âœ… Article mis Ã  jour !');
+        showToast(isNew ? '✅ Article créé !' : '✅ Article mis à jour !');
         setArticleBaseline(getArticleDraftSignature(payload));
         resetArticleEditor();
         loadArticles();
       } else {
         const d = await res.json();
-        showToast(`âŒ Erreur : ${d.error}`);
+        showToast(`❌ Erreur : ${d.error}`);
       }
     } catch {
       showToast('Impossible de sauvegarder cet article.');
@@ -542,9 +542,9 @@ export default function CMSAdmin() {
         }),
       });
       if (handleUnauthorized(res)) return;
-      if (res.ok) { showToast(!a.published ? 'âœ… Publié !' : '🌟“¦ Repassé en brouillon'); loadArticles(); }
+      if (res.ok) { showToast(!a.published ? '✅ Publié !' : '🌟“¦ Repassé en brouillon'); loadArticles(); }
     } catch {
-      showToast('Impossible de mettre Ã  jour le statut de publication.');
+      showToast('Impossible de mettre à jour le statut de publication.');
     }
   };
 
@@ -553,7 +553,7 @@ export default function CMSAdmin() {
     try {
       const res = await fetch(`/api/cms/articles/${id}`, { method: 'DELETE' });
       if (handleUnauthorized(res)) return;
-      if (res.ok) { showToast('🌟—‘ï¸ Article supprimé'); loadArticles(); }
+      if (res.ok) { showToast('🌟—‘️ Article supprimé'); loadArticles(); }
     } catch {
       showToast('Impossible de supprimer cet article.');
     }
@@ -575,12 +575,12 @@ export default function CMSAdmin() {
       const data = await res.json();
       if (data.url) {
         setEditingArticle(prev => prev ? { ...prev, featured_image: data.url } : prev);
-        showToast('âœ… Image uploadée sur Supabase !');
+        showToast('✅ Image uploadée sur Supabase !');
       } else {
-        showToast(`âŒ Upload échoué : ${data.error}`);
+        showToast(`❌ Upload échoué : ${data.error}`);
       }
     } catch {
-      showToast('Impossible d–™envoyer cette image.');
+      showToast('Impossible d'envoyer cette image.');
     } finally {
       setUploadingFeaturedImage(false);
       e.target.value = '';
@@ -596,9 +596,9 @@ export default function CMSAdmin() {
         body: JSON.stringify({ id, statut }),
       });
       if (handleUnauthorized(res)) return;
-      if (res.ok) { showToast('âœ… Statut mis Ã  jour'); loadDemandes(); }
+      if (res.ok) { showToast('✅ Statut mis à jour'); loadDemandes(); }
     } catch {
-      showToast('Impossible de mettre Ã  jour cette demande.');
+      showToast('Impossible de mettre à jour cette demande.');
     } finally {
       setUpdatingDemandeId(null);
     }
@@ -640,12 +640,12 @@ export default function CMSAdmin() {
   const TABS = [
     { id: 'articles', label: '🌟“ Articles', count: articles.length },
     { id: 'new',      label: 'âœï¸ Nouvel article', count: null },
-    { id: 'blog',     label: 'âœ¨ Générateur Blog IA', count: null },
-    { id: 'pages',    label: '🌟—‚ï¸ Pages', count: null },
-    { id: 'demandes', label: 'âœˆï¸ Coaching', count: demandes.length },
-    { id: 'media',    label: '🌟–¼ï¸ Médiathèque', count: null },
+    { id: 'blog',     label: '✨ Générateur Blog IA', count: null },
+    { id: 'pages',    label: '📋 Pages', count: null },
+    { id: 'demandes', label: '✈️ Coaching', count: demandes.length },
+    { id: 'media',    label: '🌟🖼️ Médiathèque', count: null },
     { id: 'carousel', label: '🌟Ž  Carrousel', count: null },
-    { id: 'settings', label: 'âš™ï¸ Paramètres', count: null },
+    { id: 'settings', label: '⚙️ Paramètres', count: null },
   ];
 
   return (
@@ -670,7 +670,7 @@ export default function CMSAdmin() {
           onClose={() => setShowMediaLibrary(false)}
           onSelect={(url) => {
             setEditingArticle(prev => prev ? { ...prev, featured_image: url } : prev);
-            showToast('âœ… Image sélectionnée depuis la médiathèque !');
+            showToast('✅ Image sélectionnée depuis la médiathèque !');
           }}
         />
       )}
@@ -736,12 +736,12 @@ export default function CMSAdmin() {
                         </div>
                       </div>
                       <span style={{ padding: '.3rem .8rem', borderRadius: '9999px', fontSize: '.78rem', fontWeight: 600, background: a.published ? '#d4edda' : '#fff3cd', color: a.published ? '#155724' : '#856404' }}>
-                        {a.published ? 'âœ… Publié' : '🌟“¦ Brouillon'}
+                        {a.published ? '✅ Publié' : '🌟“¦ Brouillon'}
                       </span>
                       <div style={{ display: 'flex', gap: '.5rem' }}>
-                        <button onClick={() => openArticleEditor(a)} style={{ padding: '.35rem .8rem', border: '1px solid #ddd', borderRadius: '.4rem', background: 'white', cursor: 'pointer', fontSize: '.82rem' }}>âœï¸ Ã‰diter</button>
+                        <button onClick={() => openArticleEditor(a)} style={{ padding: '.35rem .8rem', border: '1px solid #ddd', borderRadius: '.4rem', background: 'white', cursor: 'pointer', fontSize: '.82rem' }}>âœï¸ Éditer</button>
                         <button onClick={() => togglePublish(a)} style={{ padding: '.35rem .8rem', border: '1px solid #ddd', borderRadius: '.4rem', background: 'white', cursor: 'pointer', fontSize: '.82rem' }}>{a.published ? '🌟“¦ Dépublier' : '🌟š€ Publier'}</button>
-                        <button onClick={() => deleteArticle(a.id)} style={{ padding: '.35rem .8rem', border: '1px solid #fcc', borderRadius: '.4rem', background: '#fff5f5', color: '#c0392b', cursor: 'pointer', fontSize: '.82rem' }}>🌟—‘ï¸</button>
+                        <button onClick={() => deleteArticle(a.id)} style={{ padding: '.35rem .8rem', border: '1px solid #fcc', borderRadius: '.4rem', background: '#fff5f5', color: '#c0392b', cursor: 'pointer', fontSize: '.82rem' }}>🌟—‘️</button>
                       </div>
                     </div>
                   ))}
@@ -750,7 +750,7 @@ export default function CMSAdmin() {
           </div>
         )}
 
-        {/* â”€â”€ Ã‰DITEUR ARTICLE â”€â”€ */}
+        {/* â”€â”€ ÉDITEUR ARTICLE â”€â”€ */}
         {tab === 'new' && (
           <div style={{ background: 'white', borderRadius: '1rem', padding: '2rem', boxShadow: '0 2px 12px rgba(0,0,0,.07)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem' }}>
@@ -762,7 +762,7 @@ export default function CMSAdmin() {
                 onClick={() => setShowArticlePreview(prev => !prev)}
                 style={{ padding: '.5rem .95rem', border: '1px solid #ddd', borderRadius: '.5rem', background: 'white', color: '#6b2a1a', cursor: 'pointer', fontSize: '.82rem', fontWeight: 700 }}
               >
-                {showArticlePreview ? "Masquer l'aperÃ§u" : 'AperÃ§u live'}
+                {showArticlePreview ? "Masquer l'aperçu" : 'Aperçu live'}
               </button>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem' }}>
@@ -795,14 +795,14 @@ export default function CMSAdmin() {
                 </select>
               </div>
               <div style={{ gridColumn: '1/-1' }}>
-                <label style={lbl}>Image Ã  la une</label>
+                <label style={lbl}>Image à la une</label>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap', marginBottom: '.75rem' }}>
                   <button onClick={() => setShowMediaLibrary(true)}
                     style={{ padding: '.6rem 1.1rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.85rem', fontWeight: 600 }}
-                  >🌟–¼ï¸ Médiathèque Supabase</button>
+                  >🌟🖼️ Médiathèque Supabase</button>
                   <span style={{ color: '#aaa', fontSize: '.82rem' }}>ou</span>
                   <label style={{ padding: '.6rem 1rem', background: uploadingFeaturedImage ? '#8aa8a9' : '#01696f', color: 'white', borderRadius: '.5rem', cursor: uploadingFeaturedImage ? 'wait' : 'pointer', fontSize: '.85rem', fontWeight: 600 }}>
-                    {uploadingFeaturedImage ? 'â³ Upload...' : 'â¬†ï¸ Upload direct'}
+                    {uploadingFeaturedImage ? '⏳ Upload...' : '⬆️ Upload direct'}
                     <input type="file" accept="image/*" onChange={uploadFeaturedImage} style={{ display: 'none' }} disabled={uploadingFeaturedImage} />
                   </label>
                 </div>
@@ -881,12 +881,12 @@ export default function CMSAdmin() {
                     }}
                     style={{ background: '#10b981', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600 }}
                   >
-                    âœ¨ Generer avec IA
+                    ✨ Generer avec IA
                   </button>
                 </div>
                 <RichEditor value={editingArticle?.content || ''}
                   onChange={html => setEditingArticle(p => ({ ...p, content: html }))}
-                  placeholder="Commence Ã  écrire ton article ici..." />
+                  placeholder="Commence à écrire ton article ici..." />
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '.5rem', cursor: 'pointer', fontWeight: 600, color: '#444', fontSize: '.9rem' }}>
@@ -909,7 +909,7 @@ export default function CMSAdmin() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
                   <div>
                     <p style={{ margin: 0, fontSize: '.78rem', color: '#8a7a70', textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: 700 }}>Preview</p>
-                    <h3 style={{ margin: '.2rem 0 0', fontSize: '1.1rem', color: '#6b2a1a' }}>AperÃ§u public de l&apos;article</h3>
+                    <h3 style={{ margin: '.2rem 0 0', fontSize: '1.1rem', color: '#6b2a1a' }}>Aperçu public de l&apos;article</h3>
                   </div>
                   <span style={{ ...metaChip, background: '#e8f5f2', color: '#01696f' }}>HTML sanitizé comme sur le site</span>
                 </div>
@@ -917,7 +917,7 @@ export default function CMSAdmin() {
                   {editingArticle?.featured_image ? (
                     <img src={editingArticle.featured_image} alt="" style={{ width: '100%', maxHeight: 320, objectFit: 'cover', borderRadius: '.9rem', marginBottom: '1.5rem' }} />
                   ) : (
-                    <div style={previewImageFallback}>Ajoute une image Ã  la une pour prévisualiser le hero</div>
+                    <div style={previewImageFallback}>Ajoute une image à la une pour prévisualiser le hero</div>
                   )}
                   <div style={{ display: 'flex', gap: '.6rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
                     {editingArticle?.category && <span style={metaChip}>{editingArticle.category}</span>}
@@ -925,10 +925,10 @@ export default function CMSAdmin() {
                     <span style={metaChip}>/blog/{editingArticle?.slug || slug(editingArticle?.title || '') || 'nouvel-article'}</span>
                   </div>
                   <h1 style={{ margin: 0, fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', lineHeight: 1.1, color: '#1f1a17' }}>
-                    {editingArticle?.title || 'Titre de l–™article'}
+                    {editingArticle?.title || 'Titre de l'article'}
                   </h1>
                   <p style={{ margin: '1rem 0 1.5rem', color: '#6d625a', fontSize: '1rem', lineHeight: 1.7 }}>
-                    {editingArticle?.excerpt || 'Ton extrait apparaîtra ici pour donner envie d–™ouvrir l–™article.'}
+                    {editingArticle?.excerpt || 'Ton extrait apparaîtra ici pour donner envie d'ouvrir l'article.'}
                   </p>
                   {editingArticle?.voice_notes && (
                     <div style={{ margin: '0 0 1.5rem', padding: '1rem 1.1rem', background: '#f6f1eb', border: '1px solid #ece3d8', borderRadius: '1rem' }}>
@@ -944,7 +944,7 @@ export default function CMSAdmin() {
                     <EnhancedRichContent html={articlePreviewHtml} style={previewBody} />
                   ) : (
                     <p style={{ margin: 0, color: '#8a7a70', lineHeight: 1.7 }}>
-                      Commence Ã  écrire dans l–™éditeur pour voir le rendu du contenu ici.
+                      Commence à écrire dans l'éditeur pour voir le rendu du contenu ici.
                     </p>
                   )}
                 </div>
@@ -954,7 +954,7 @@ export default function CMSAdmin() {
               <button onClick={closeArticleEditor}
                 style={{ padding: '.7rem 1.5rem', border: '1.5px solid #ddd', borderRadius: '.5rem', background: 'white', cursor: 'pointer', fontSize: '.9rem' }}>Annuler</button>
               <button onClick={saveArticle} disabled={savingArticle}
-                style={{ padding: '.7rem 2rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: savingArticle ? 'wait' : 'pointer', fontSize: '.9rem', opacity: savingArticle ? .75 : 1 }}>{savingArticle ? 'â³ Enregistrement...' : '🌟’¾ Enregistrer'}</button>
+                style={{ padding: '.7rem 2rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: savingArticle ? 'wait' : 'pointer', fontSize: '.9rem', opacity: savingArticle ? .75 : 1 }}>{savingArticle ? '⏳ Enregistrement...' : '🌟’¾ Enregistrer'}</button>
             </div>
           </div>
         )}
@@ -977,7 +977,7 @@ export default function CMSAdmin() {
                   ))}
                 </div>
 
-                {/* Ã‰diteur de page */}
+                {/* Éditeur de page */}
                 <div style={{ background: 'white', borderRadius: '1rem', padding: '2rem', boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
                   {(() => {
                     const config = PAGES_CONFIG[activePage];
@@ -1029,7 +1029,7 @@ export default function CMSAdmin() {
                             disabled={savingSettings}
                             style={{ padding: '.75rem 2.25rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.95rem', opacity: savingSettings ? .7 : 1 }}
                           >
-                            {savingSettings ? 'â³ Sauvegarde...' : '🌟’¾ Sauvegarder la page'}
+                            {savingSettings ? '⏳ Sauvegarde...' : '🌟’¾ Sauvegarder la page'}
                           </button>
                         </div>
                       </div>
@@ -1041,11 +1041,11 @@ export default function CMSAdmin() {
           </div>
         )}
 
-        {/* â”€â”€ MÃ‰DIATHÃˆQUE â”€â”€ */}
+        {/* â”€â”€ MÉDIATHÃˆQUE â”€â”€ */}
         {tab === 'media' && (
           <div style={{ background: 'white', borderRadius: '1rem', padding: '2rem', boxShadow: '0 2px 12px rgba(0,0,0,.07)', minHeight: 400 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#6b2a1a' }}>🌟–¼ï¸ Médiathèque</h2>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#6b2a1a' }}>🌟🖼️ Médiathèque</h2>
               <p style={{ fontSize: '.85rem', color: '#888' }}>Supabase Storage</p>
             </div>
             <div style={{ background: '#faf8f5', borderRadius: '.75rem', padding: '2rem', textAlign: 'center', border: '2px dashed #e8e3dc' }}>
@@ -1053,7 +1053,7 @@ export default function CMSAdmin() {
               <p style={{ color: '#555', marginBottom: '1.25rem', lineHeight: 1.6 }}>Toutes tes images sont stockées sur <strong>Supabase Storage</strong>.</p>
               <button onClick={() => setShowMediaLibrary(true)}
                 style={{ padding: '.8rem 1.75rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.95rem' }}
-              >🌟–¼ï¸ Ouvrir la médiathèque</button>
+              >🌟🖼️ Ouvrir la médiathèque</button>
             </div>
           </div>
         )}
@@ -1062,13 +1062,13 @@ export default function CMSAdmin() {
         {tab === 'demandes' && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#6b2a1a' }}>âœˆï¸ Demandes Travel Planning</h2>
-              <button onClick={loadDemandes} disabled={loadingDemandes} style={{ padding: '.5rem 1rem', background: 'white', border: '1.5px solid #ddd', borderRadius: '.5rem', cursor: loadingDemandes ? 'wait' : 'pointer', fontSize: '.85rem', opacity: loadingDemandes ? .7 : 1 }}>{loadingDemandes ? 'â³ Actualisation...' : '🌟”„ Actualiser'}</button>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#6b2a1a' }}>✈️ Demandes Travel Planning</h2>
+              <button onClick={loadDemandes} disabled={loadingDemandes} style={{ padding: '.5rem 1rem', background: 'white', border: '1.5px solid #ddd', borderRadius: '.5rem', cursor: loadingDemandes ? 'wait' : 'pointer', fontSize: '.85rem', opacity: loadingDemandes ? .7 : 1 }}>{loadingDemandes ? '⏳ Actualisation...' : '🌟”„ Actualiser'}</button>
             </div>
             {loadingDemandes ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement...</p>
               : demandes.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '4rem', color: '#aaa' }}>
-                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>âœ‰ï¸</div>
+                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>âœ‰️</div>
                   <p>Aucune demande pour le moment</p>
                 </div>
               ) : (
@@ -1078,7 +1078,7 @@ export default function CMSAdmin() {
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '.75rem', flexWrap: 'wrap', gap: '.5rem' }}>
                         <div>
                           <div style={{ fontWeight: 700, fontSize: '1rem', color: '#1a1a1a' }}>{d.prenom} {d.nom}</div>
-                          <div style={{ fontSize: '.85rem', color: '#888' }}>{d.email} {d.telephone && `Â· ${d.telephone}`}</div>
+                          <div style={{ fontSize: '.85rem', color: '#888' }}>{d.email} {d.telephone && `· ${d.telephone}`}</div>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
                           <span style={{ fontSize: '.75rem', color: '#aaa' }}>{fmt(d.created_at)}</span>
@@ -1088,9 +1088,9 @@ export default function CMSAdmin() {
                             <option value="nouvelle">🌟†• Nouvelle</option>
                             <option value="en_cours">🌟”„ En cours</option>
                             <option value="devis_envoye">🌟“¨ Devis envoyé</option>
-                            <option value="accepte">âœ… Acceptée</option>
+                            <option value="accepte">✅ Acceptée</option>
                             <option value="terminee">🌟 Terminée</option>
-                            <option value="annulee">âŒ Annulée</option>
+                            <option value="annulee">❌ Annulée</option>
                           </select>
                         </div>
                       </div>
@@ -1134,7 +1134,7 @@ export default function CMSAdmin() {
                 category: 'Voyage',
                 published: false,
               });
-              showToast('âœ… Article généré ! Edite-le puis enregistre.');
+              showToast('✅ Article généré ! Edite-le puis enregistre.');
               setTab('new');
             }}
           />
@@ -1183,7 +1183,7 @@ export default function CMSAdmin() {
                         </div>
                         <button onClick={saveSettings} disabled={savingSettings}
                           style={{ marginTop: '1.75rem', padding: '.7rem 2rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.9rem', opacity: savingSettings ? .7 : 1 }}
-                        >{savingSettings ? 'â³ Sauvegarde...' : '🌟’¾ Sauvegarder'}</button>
+                        >{savingSettings ? '⏳ Sauvegarde...' : '🌟’¾ Sauvegarder'}</button>
                       </div>
                     );
                   })()}
