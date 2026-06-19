@@ -8,15 +8,15 @@ import { useCmsContent } from '@/hooks/useCmsContent'
 const DEFAULTS = {
   hero_image:         '',
   hero_title:         "Il y a des moments où il faut réapprendre à habiter son rôle.",
-  hero_subtitle:      "Monica Schneider accompagne des managers, dirigeants et personnes en transition qui veulent retrouver clarté, confiance et alignement.",
+  hero_subtitle:      "Executive Coach certifiée AoEC · EMCC Practitioner · Philosophical Counselling — Monica Schneider accompagne des managers, dirigeants et personnes en transition qui veulent retrouver clarté, confiance et une direction qui leur ressemble vraiment.",
   coaching_b2c_image: '',
   coaching_b2c_title: 'Coaching individuel',
-  coaching_b2c_text:  "Un espace pour ralentir, regarder ce qui se passe vraiment et construire un mouvement qui tient dans la durée.",
+  coaching_b2c_text:  "Un espace pour ralentir, regarder ce qui se passe vraiment — et construire un mouvement qui tient dans la durée.\n\nLe coaching que je propose n'est pas un conseil. C'est un accompagnement qui part de là où vous êtes vraiment : vos questionnements, vos tensions, vos ambitions telles que vous les vivez, pas comme elles devraient être.\n\nJe m'appuie sur les travaux de John Bowlby et Mary Ainsworth sur la théorie de l'attachement, sur les apports de Carl Rogers (regard positif inconditionnel), et sur la philosophie pratique pour travailler sur le sens et la clarté de vos directions.",
   coaching_b2b_image: '',
-  coaching_b2b_title: 'Pour les entreprises',
-  coaching_b2b_text:  "Coaching de dirigeants, ateliers de cohésion, accompagnement du changement et séminaires sur mesure.",
+  coaching_b2b_title: 'Pour les organisations',
+  coaching_b2b_text:  "Coaching de dirigeants, ateliers de cohésion, accompagnement du changement et séminaires sur mesure.\n\nQuand une équipe perd de sa cohérence, les résultats s'en ressentiront toujours. Je travaille avec les dirigeants et les organisations pour remettre de l'alignement — entre les personnes, entre les objectifs et les moyens, entre ce qu'on dit et ce qu'on fait.",
   form_intro:         'Décrivez votre enjeu ou posez une question — je vous répondrai sous 48h.',
-  reassurance:        '100% confidentiel · Sans engagement · Réponse sous 48h',
+  reassurance:        '100% confidentiel · Sans engagement · Réponse sous 48h · Séance découverte offerte',
 }
 
 export default function CoachingPage() {
@@ -164,11 +164,15 @@ export default function CoachingPage() {
             {[
               {
                 q: "Quelle est la durée d'un accompagnement ?",
-                a: "Un programme complet se déroule généralement sur 3 à 6 mois, avec des séances bimensuelles de 60 à 90 minutes. La durée est adaptée à votre objectif et à votre rythme.",
+                a: "Un programme complet se déroule généralement sur 3 à 6 mois, avec des séances bimensuelles de 60 à 90 minutes. La durée est adaptée à votre objectif et à votre rythme. Il n'y a pas de formule toute faite : chaque parcours commence là où vous en êtes.",
               },
               {
                 q: "Comment se passe la première séance ?",
-                a: "La première séance est une séance découverte de 30 minutes, offerte et sans engagement. Elle permet de clarifier votre situation, vos attentes et de voir si la relation de coaching vous convient.",
+                a: "La première séance est une séance découverte de 30 minutes, offerte et sans engagement. Elle permet de clarifier votre situation, vos attentes et de voir si le coaching — et si nous — c'est pour vous. Pas de programme caché, pas de pression.",
+              },
+              {
+                q: "En quoi le Philosophical Counselling est-il différent du coaching ?",
+                a: "Le Philosophical Counselling part des questionnements profonds : le sens, les valeurs, la façon dont vous vous représentez votre situation. Là où le coaching travaille sur des objectifs concrets, le philosophical counselling travaille sur ce qui vous empêche de voir clair — vos cadres de pensée, vos présupposés, vos récits sur vous-même.",
               },
               {
                 q: "Le coaching se fait en présentiel ou à distance ?",
@@ -179,12 +183,8 @@ export default function CoachingPage() {
                 a: "Toute annulation ou report doit être signalé au minimum 48h à l'avance. Au-delà de ce délai, la séance est due. La flexibilité est au cœur de la pratique, dans le respect mutuel.",
               },
               {
-                q: "Le coaching est-il remboursé ou déductible ?",
-                a: "Dans certains cas, le coaching peut être pris en charge dans le cadre d'un plan de développement professionnel (CPF, OPCO). N'hésitez pas à me contacter pour étudier les options disponibles.",
-              },
-              {
-                q: "Quelle différence entre coaching et thérapie ?",
-                a: "Le coaching est tourné vers l'action et le présent — il travaille sur des objectifs concrets, des transitions, des postures de leadership. La thérapie traite le passé et les blessures psychologiques. Je pratique également le Philosophical Counselling, qui travaille sur le sens et les représentations.",
+                q: "Le coaching est-il pris en charge ?",
+                a: "Dans certains cas, le coaching peut être financé via le CPF ou un OPCO dans le cadre d'un plan de développement professionnel. N'hésitez pas à me contacter pour étudier ensemble les options disponibles.",
               },
             ].map(({ q, a }, i) => (
               <details key={i} className="group border-b border-stone-100 py-5">
