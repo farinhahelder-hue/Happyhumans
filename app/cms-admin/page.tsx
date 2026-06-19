@@ -29,7 +29,7 @@ type Setting = { id: number; key: string; value: string; label: string; group_na
 type SiteContent = { id: number; page: string; block_key: string; value: string; label: string; type: string; };
 
 // â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const fmt = (d: string) => d ? new Date(d).toLocaleDateString('fr-FR') : 'â€”';
+const fmt = (d: string) => d ? new Date(d).toLocaleDateString('fr-FR') : '–”';
 const slug = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
@@ -65,22 +65,22 @@ function getReadTimeMinutes(content?: string) {
 const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { key: string; label: string; type: 'text' | 'textarea' }[] }> = {
   'home': {
     label: 'Accueil',
-    emoji: 'ðŸ ',
+    emoji: '🌟 ',
     sections: [
-      { key: 'hero_title',          label: 'Hero â€“ Titre',                     type: 'text' },
-      { key: 'hero_subtitle',       label: 'Hero â€“ Sous-titre',                type: 'textarea' },
-      { key: 'hero_cta',            label: 'Hero â€“ Bouton CTA',                type: 'text' },
-      { key: 'section_about_title', label: 'Section Ã€ propos â€“ Titre',         type: 'text' },
-      { key: 'section_about_text',  label: 'Section Ã€ propos â€“ Texte',         type: 'textarea' },
-      { key: 'services_title',      label: 'Section Services â€“ Titre',         type: 'text' },
-      { key: 'services_subtitle',   label: 'Section Services â€“ Sous-titre',    type: 'textarea' },
-      { key: 'newsletter_title',    label: 'Newsletter â€“ Titre',               type: 'text' },
-      { key: 'newsletter_subtitle', label: 'Newsletter â€“ Sous-titre',          type: 'textarea' },
+      { key: 'hero_title',          label: 'Hero –“ Titre',                     type: 'text' },
+      { key: 'hero_subtitle',       label: 'Hero –“ Sous-titre',                type: 'textarea' },
+      { key: 'hero_cta',            label: 'Hero –“ Bouton CTA',                type: 'text' },
+      { key: 'section_about_title', label: 'Section À propos –“ Titre',         type: 'text' },
+      { key: 'section_about_text',  label: 'Section À propos –“ Texte',         type: 'textarea' },
+      { key: 'services_title',      label: 'Section Services –“ Titre',         type: 'text' },
+      { key: 'services_subtitle',   label: 'Section Services –“ Sous-titre',    type: 'textarea' },
+      { key: 'newsletter_title',    label: 'Newsletter –“ Titre',               type: 'text' },
+      { key: 'newsletter_subtitle', label: 'Newsletter –“ Sous-titre',          type: 'textarea' },
     ],
   },
   'a-propos': {
-    label: 'Ã€ propos',
-    emoji: 'ðŸ‘‹',
+    label: 'À propos',
+    emoji: '🌟‘‹',
     sections: [
       { key: 'page_title',  label: 'Titre de la page',      type: 'text' },
       { key: 'intro_text',  label: 'Texte d\'introduction', type: 'textarea' },
@@ -90,29 +90,29 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Nos services',
     emoji: 'âœ¨',
     sections: [
-      { key: 'hero_title',    label: 'Hero â€“ Titre',              type: 'text' },
-      { key: 'hero_subtitle', label: 'Hero â€“ Sous-titre',         type: 'textarea' },
-      { key: 'b2c_title',     label: 'B2C â€“ Titre service',       type: 'text' },
-      { key: 'b2c_desc',      label: 'B2C â€“ Description',         type: 'textarea' },
-      { key: 'b2c_cta',       label: 'B2C â€“ Bouton CTA',          type: 'text' },
-      { key: 'b2b_title',     label: 'B2B â€“ Titre service',       type: 'text' },
-      { key: 'b2b_desc',      label: 'B2B â€“ Description',         type: 'textarea' },
-      { key: 'b2b_cta',       label: 'B2B â€“ Bouton CTA',          type: 'text' },
+      { key: 'hero_title',    label: 'Hero –“ Titre',              type: 'text' },
+      { key: 'hero_subtitle', label: 'Hero –“ Sous-titre',         type: 'textarea' },
+      { key: 'b2c_title',     label: 'B2C –“ Titre service',       type: 'text' },
+      { key: 'b2c_desc',      label: 'B2C –“ Description',         type: 'textarea' },
+      { key: 'b2c_cta',       label: 'B2C –“ Bouton CTA',          type: 'text' },
+      { key: 'b2b_title',     label: 'B2B –“ Titre service',       type: 'text' },
+      { key: 'b2b_desc',      label: 'B2B –“ Description',         type: 'textarea' },
+      { key: 'b2b_cta',       label: 'B2B –“ Bouton CTA',          type: 'text' },
     ],
   },
   'travel-planning': {
     label: 'Coaching',
     emoji: 'âœˆï¸',
     sections: [
-      { key: 'hero_title',    label: 'Hero â€“ Titre',       type: 'text' },
-      { key: 'hero_subtitle', label: 'Hero â€“ Sous-titre',  type: 'textarea' },
+      { key: 'hero_title',    label: 'Hero –“ Titre',       type: 'text' },
+      { key: 'hero_subtitle', label: 'Hero –“ Sous-titre',  type: 'textarea' },
       { key: 'form_intro',    label: 'Intro formulaire',   type: 'textarea' },
-      { key: 'reassurance',   label: 'Texte rÃ©assurance',  type: 'text' },
+      { key: 'reassurance',   label: 'Texte réassurance',  type: 'text' },
     ],
   },
   'contact': {
     label: 'Contact',
-    emoji: 'ðŸ“§',
+    emoji: '🌟“§',
     sections: [
       { key: 'page_title',  label: 'Titre de la page',      type: 'text' },
       { key: 'intro_text',  label: 'Texte d\'introduction', type: 'textarea' },
@@ -120,14 +120,14 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
   },
   'hotel-consulting': {
     label: 'Entreprises',
-    emoji: 'ðŸ¨',
+    emoji: '🌟¨',
     sections: [
       { key: 'page_title',  label: 'Titre de la page',      type: 'text' },
       { key: 'intro_text',  label: 'Texte d\'introduction', type: 'textarea' },
     ],
   },
   'mentions-legales': {
-    label: 'Mentions lÃ©gales',
+    label: 'Mentions légales',
     emoji: 'âš–ï¸',
     sections: [
       { key: 'page_title', label: 'Titre de la page', type: 'text' },
@@ -136,10 +136,10 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
 };
 
 const SETTINGS_GROUPS: Record<string, { label: string; emoji: string }> = {
-  general: { label: 'GÃ©nÃ©ral',         emoji: 'ðŸŒ' },
-  social:  { label: 'RÃ©seaux sociaux', emoji: 'ðŸ“±' },
-  seo:     { label: 'SEO',             emoji: 'ðŸ”' },
-  footer:  { label: 'Footer',          emoji: 'ðŸ“„' },
+  general: { label: 'Général',         emoji: '🌍' },
+  social:  { label: 'Réseaux sociaux', emoji: '🌟“±' },
+  seo:     { label: 'SEO',             emoji: '🌟”' },
+  footer:  { label: 'Footer',          emoji: '🌟“„' },
 };
 
 // â”€â”€â”€ Composant principal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -168,7 +168,7 @@ export default function CMSAdmin() {
   const [loadingDemandes, setLoadingDemandes] = useState(false);
   const [updatingDemandeId, setUpdatingDemandeId] = useState<string | null>(null);
 
-  // ParamÃ¨tres + Contenu pages
+  // Paramètres + Contenu pages
   const [settings, setSettings] = useState<Setting[]>([]);
   const [siteContent, setSiteContent] = useState<SiteContent[]>([]);
   const [loadingSettings, setLoadingSettings] = useState(false);
@@ -188,7 +188,7 @@ export default function CMSAdmin() {
     setToast(msg);
     setTimeout(() => setToast(''), 3500);
   }, []);
-  const handleUnauthorized = useCallback((res: Response, message = 'Session expirÃ©e. Merci de vous reconnecter.') => {
+  const handleUnauthorized = useCallback((res: Response, message = 'Session expirée. Merci de vous reconnecter.') => {
     if (res.status !== 401) return false;
     setAuthed(false);
     setPwd('');
@@ -391,22 +391,22 @@ export default function CMSAdmin() {
       });
 
       if (promises.length === 0) {
-        showToast('Aucune modification Ã  enregistrer.');
+        showToast('Aucune modification à enregistrer.');
         return;
       }
 
       const responses = await Promise.all(promises);
       if (responses.some(res => handleUnauthorized(res))) return;
-      showToast('âœ… ParamÃ¨tres sauvegardÃ©s !');
+      showToast('âœ… Paramètres sauvegardés !');
       loadSettings();
     } catch {
-      showToast('Impossible de sauvegarder les paramÃ¨tres.');
+      showToast('Impossible de sauvegarder les paramètres.');
     } finally {
       setSavingSettings(false);
     }
   };
 
-  // Save content pour une page donnÃ©e
+  // Save content pour une page donnée
   const savePageContent = async (pageKey: string) => {
     setSavingSettings(true);
     const config = PAGES_CONFIG[pageKey];
@@ -428,13 +428,13 @@ export default function CMSAdmin() {
       });
 
       if (promises.length === 0) {
-        showToast('Aucune modification Ã  enregistrer sur cette page.');
+        showToast('Aucune modification à enregistrer sur cette page.');
         return;
       }
 
       const responses = await Promise.all(promises);
       if (responses.some(res => handleUnauthorized(res))) return;
-      showToast(`âœ… Page "${config.label}" sauvegardÃ©e !`);
+      showToast(`âœ… Page "${config.label}" sauvegardée !`);
       loadSettings();
     } catch {
       showToast('Impossible de sauvegarder cette page.');
@@ -448,7 +448,7 @@ export default function CMSAdmin() {
     if (!editingArticle) return;
     if (savingArticle) return;
     if (!editingArticle.title?.trim()) {
-      showToast('Le titre est obligatoire avant dâ€™enregistrer.');
+      showToast('Le titre est obligatoire avant d–™enregistrer.');
       return;
     }
 
@@ -470,7 +470,7 @@ export default function CMSAdmin() {
       });
       if (handleUnauthorized(res)) return;
       if (res.ok) {
-        showToast(isNew ? 'âœ… Article crÃ©Ã© !' : 'âœ… Article mis Ã  jour !');
+        showToast(isNew ? 'âœ… Article créé !' : 'âœ… Article mis Ã  jour !');
         setArticleBaseline(getArticleDraftSignature(payload));
         resetArticleEditor();
         loadArticles();
@@ -509,7 +509,7 @@ export default function CMSAdmin() {
         }),
       });
       if (handleUnauthorized(res)) return;
-      if (res.ok) { showToast(!a.published ? 'âœ… PubliÃ© !' : 'ðŸ“¦ RepassÃ© en brouillon'); loadArticles(); }
+      if (res.ok) { showToast(!a.published ? 'âœ… Publié !' : '🌟“¦ Repassé en brouillon'); loadArticles(); }
     } catch {
       showToast('Impossible de mettre Ã  jour le statut de publication.');
     }
@@ -520,7 +520,7 @@ export default function CMSAdmin() {
     try {
       const res = await fetch(`/api/cms/articles/${id}`, { method: 'DELETE' });
       if (handleUnauthorized(res)) return;
-      if (res.ok) { showToast('ðŸ—‘ï¸ Article supprimÃ©'); loadArticles(); }
+      if (res.ok) { showToast('🌟—‘ï¸ Article supprimé'); loadArticles(); }
     } catch {
       showToast('Impossible de supprimer cet article.');
     }
@@ -542,12 +542,12 @@ export default function CMSAdmin() {
       const data = await res.json();
       if (data.url) {
         setEditingArticle(prev => prev ? { ...prev, featured_image: data.url } : prev);
-        showToast('âœ… Image uploadÃ©e sur Supabase !');
+        showToast('âœ… Image uploadée sur Supabase !');
       } else {
-        showToast(`âŒ Upload Ã©chouÃ© : ${data.error}`);
+        showToast(`âŒ Upload échoué : ${data.error}`);
       }
     } catch {
-      showToast('Impossible dâ€™envoyer cette image.');
+      showToast('Impossible d–™envoyer cette image.');
     } finally {
       setUploadingFeaturedImage(false);
       e.target.value = '';
@@ -586,7 +586,7 @@ export default function CMSAdmin() {
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f3ef' }}>
       <div style={{ background: 'white', padding: '2.5rem', borderRadius: '1rem', boxShadow: '0 8px 32px rgba(0,0,0,.1)', width: '100%', maxWidth: 380 }}>
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: '.5rem' }}>ðŸŒ¿</div>
+          <div style={{ fontSize: '2.5rem', marginBottom: '.5rem' }}>🌿</div>
           <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#6b2a1a' }}>Happy Humans CMS</h1>
           <p style={{ color: '#888', fontSize: '.9rem' }}>Accès réservé</p>
         </div>
@@ -598,21 +598,21 @@ export default function CMSAdmin() {
         {authErr && <p style={{ color: '#c0392b', fontSize: '.85rem', marginBottom: '.75rem' }}>{authErr}</p>}
         <button onClick={login} disabled={authLoading}
           style={{ width: '100%', padding: '.8rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, fontSize: '1rem', cursor: authLoading ? 'wait' : 'pointer', opacity: authLoading ? .7 : 1 }}
-        >{authLoading ? 'Connexionâ€¦' : 'Entrer'}</button>
+        >{authLoading ? 'Connexion en cours...' : 'Entrer'}</button>
       </div>
     </div>
   );
 
   // â”€â”€â”€ CMS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const TABS = [
-    { id: 'articles', label: 'ðŸ“ Articles', count: articles.length },
+    { id: 'articles', label: '🌟“ Articles', count: articles.length },
     { id: 'new',      label: 'âœï¸ Nouvel article', count: null },
-    { id: 'blog',     label: 'âœ¨ GÃ©nÃ©rateur Blog IA', count: null },
-    { id: 'pages',    label: 'ðŸ—‚ï¸ Pages', count: null },
+    { id: 'blog',     label: 'âœ¨ Générateur Blog IA', count: null },
+    { id: 'pages',    label: '🌟—‚ï¸ Pages', count: null },
     { id: 'demandes', label: 'âœˆï¸ Coaching', count: demandes.length },
-    { id: 'media',    label: 'ðŸ–¼ï¸ MÃ©diathÃ¨que', count: null },
-    { id: 'carousel', label: 'ðŸŽ  Carrousel', count: null },
-    { id: 'settings', label: 'âš™ï¸ ParamÃ¨tres', count: null },
+    { id: 'media',    label: '🌟–¼ï¸ Médiathèque', count: null },
+    { id: 'carousel', label: '🌟Ž  Carrousel', count: null },
+    { id: 'settings', label: 'âš™ï¸ Paramètres', count: null },
   ];
 
   return (
@@ -620,11 +620,11 @@ export default function CMSAdmin() {
       {/* Header */}
       <div style={{ background: '#6b2a1a', color: 'white', padding: '1rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 2px 12px rgba(0,0,0,.15)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
-          <span style={{ fontSize: '1.5rem' }}>ðŸŒ¿</span>
+          <span style={{ fontSize: '1.5rem' }}>🌿</span>
           <span style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '.03em' }}>Happy Humans CMS</span>
           <span style={{ background: 'rgba(255,255,255,.18)', fontSize: '.72rem', padding: '.2rem .6rem', borderRadius: '9999px', fontWeight: 600 }}>Supabase</span>
         </div>
-        <button onClick={logout} style={{ background: 'rgba(255,255,255,.15)', border: 'none', color: 'white', padding: '.4rem .9rem', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>DÃ©connexion</button>
+        <button onClick={logout} style={{ background: 'rgba(255,255,255,.15)', border: 'none', color: 'white', padding: '.4rem .9rem', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>Déconnexion</button>
       </div>
 
       {toast && (
@@ -637,7 +637,7 @@ export default function CMSAdmin() {
           onClose={() => setShowMediaLibrary(false)}
           onSelect={(url) => {
             setEditingArticle(prev => prev ? { ...prev, featured_image: url } : prev);
-            showToast('âœ… Image sÃ©lectionnÃ©e depuis la mÃ©diathÃ¨que !');
+            showToast('âœ… Image sélectionnée depuis la médiathèque !');
           }}
         />
       )}
@@ -678,17 +678,17 @@ export default function CMSAdmin() {
                 style={{ padding: '.6rem .9rem', border: '1.5px solid #ddd', borderRadius: '.5rem', fontSize: '.9rem' }}
               >
                 <option value="all">Tous</option>
-                <option value="published">PubliÃ©s</option>
+                <option value="published">Publiés</option>
                 <option value="draft">Brouillons</option>
               </select>
-              <button onClick={loadArticles} style={{ padding: '.6rem 1.2rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.9rem' }}>ðŸ”</button>
+              <button onClick={loadArticles} style={{ padding: '.6rem 1.2rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.9rem' }}>🌟”</button>
               <button onClick={() => openArticleEditor({})} style={{ padding: '.6rem 1.2rem', background: '#01696f', color: 'white', border: 'none', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.9rem' }}>+ Nouvel article</button>
             </div>
-            {loadingArticles ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargementâ€¦</p>
+            {loadingArticles ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement...</p>
               : articles.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '4rem', color: '#aaa' }}>
-                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>ðŸ“­</div>
-                  <p>Aucun article trouvÃ©</p>
+                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🌟“­</div>
+                  <p>Aucun article trouvé</p>
                 </div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
@@ -698,17 +698,17 @@ export default function CMSAdmin() {
                       <div style={{ flex: 1, minWidth: 200 }}>
                         <div style={{ fontWeight: 600, fontSize: '1rem', color: '#1a1a1a', marginBottom: '.2rem' }}>{a.title}</div>
                         <div style={{ fontSize: '.8rem', color: '#888', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                          <span>{a.category || 'â€”'}</span>
+                          <span>{a.category || '–”'}</span>
                           <span>{fmt(a.created_at)}</span>
                         </div>
                       </div>
                       <span style={{ padding: '.3rem .8rem', borderRadius: '9999px', fontSize: '.78rem', fontWeight: 600, background: a.published ? '#d4edda' : '#fff3cd', color: a.published ? '#155724' : '#856404' }}>
-                        {a.published ? 'âœ… PubliÃ©' : 'ðŸ“¦ Brouillon'}
+                        {a.published ? 'âœ… Publié' : '🌟“¦ Brouillon'}
                       </span>
                       <div style={{ display: 'flex', gap: '.5rem' }}>
                         <button onClick={() => openArticleEditor(a)} style={{ padding: '.35rem .8rem', border: '1px solid #ddd', borderRadius: '.4rem', background: 'white', cursor: 'pointer', fontSize: '.82rem' }}>âœï¸ Ã‰diter</button>
-                        <button onClick={() => togglePublish(a)} style={{ padding: '.35rem .8rem', border: '1px solid #ddd', borderRadius: '.4rem', background: 'white', cursor: 'pointer', fontSize: '.82rem' }}>{a.published ? 'ðŸ“¦ DÃ©publier' : 'ðŸš€ Publier'}</button>
-                        <button onClick={() => deleteArticle(a.id)} style={{ padding: '.35rem .8rem', border: '1px solid #fcc', borderRadius: '.4rem', background: '#fff5f5', color: '#c0392b', cursor: 'pointer', fontSize: '.82rem' }}>ðŸ—‘ï¸</button>
+                        <button onClick={() => togglePublish(a)} style={{ padding: '.35rem .8rem', border: '1px solid #ddd', borderRadius: '.4rem', background: 'white', cursor: 'pointer', fontSize: '.82rem' }}>{a.published ? '🌟“¦ Dépublier' : '🌟š€ Publier'}</button>
+                        <button onClick={() => deleteArticle(a.id)} style={{ padding: '.35rem .8rem', border: '1px solid #fcc', borderRadius: '.4rem', background: '#fff5f5', color: '#c0392b', cursor: 'pointer', fontSize: '.82rem' }}>🌟—‘ï¸</button>
                       </div>
                     </div>
                   ))}
@@ -746,12 +746,12 @@ export default function CMSAdmin() {
                   style={inp} placeholder="slug-auto-genere" />
               </div>
               <div>
-                <label style={lbl}>CatÃ©gorie</label>
+                <label style={lbl}>Catégorie</label>
                 <select value={editingArticle?.category || ''}
                   onChange={e => setEditingArticle(p => ({ ...p, category: e.target.value }))}
                   style={inp}
                 >
-                  <option value="">â€” Choisir â€”</option>
+                  <option value="">–” Choisir –”</option>
                   <option value="Slow Travel">Slow Travel</option>
                   <option value="Europe">Europe</option>
                   <option value="Escapades">Escapades</option>
@@ -766,10 +766,10 @@ export default function CMSAdmin() {
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap', marginBottom: '.75rem' }}>
                   <button onClick={() => setShowMediaLibrary(true)}
                     style={{ padding: '.6rem 1.1rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.85rem', fontWeight: 600 }}
-                  >ðŸ–¼ï¸ MÃ©diathÃ¨que Supabase</button>
+                  >🌟–¼ï¸ Médiathèque Supabase</button>
                   <span style={{ color: '#aaa', fontSize: '.82rem' }}>ou</span>
                   <label style={{ padding: '.6rem 1rem', background: uploadingFeaturedImage ? '#8aa8a9' : '#01696f', color: 'white', borderRadius: '.5rem', cursor: uploadingFeaturedImage ? 'wait' : 'pointer', fontSize: '.85rem', fontWeight: 600 }}>
-                    {uploadingFeaturedImage ? 'â³ Uploadâ€¦' : 'â¬†ï¸ Upload direct'}
+                    {uploadingFeaturedImage ? 'â³ Upload...' : 'â¬†ï¸ Upload direct'}
                     <input type="file" accept="image/*" onChange={uploadFeaturedImage} style={{ display: 'none' }} disabled={uploadingFeaturedImage} />
                   </label>
                 </div>
@@ -795,7 +795,7 @@ export default function CMSAdmin() {
                 <textarea value={editingArticle?.excerpt || ''}
                   onChange={e => setEditingArticle(p => ({ ...p, excerpt: e.target.value }))}
                   style={{ ...inp, height: 80, resize: 'vertical' }}
-                  placeholder="RÃ©sumÃ© accrocheur pour les cards du blogâ€¦" />
+                  placeholder="Résumé accrocheur pour les cards du blog..." />
               </div>
               <div style={{ gridColumn: '1/-1' }}>
                 <div style={{ border: '1px solid #ece3d8', borderRadius: '1rem', background: '#faf6f1', padding: '1rem 1.1rem', marginBottom: '1rem' }}>
@@ -853,14 +853,14 @@ export default function CMSAdmin() {
                 </div>
                 <RichEditor value={editingArticle?.content || ''}
                   onChange={html => setEditingArticle(p => ({ ...p, content: html }))}
-                  placeholder="Commence Ã  Ã©crire ton article iciâ€¦" />
+                  placeholder="Commence Ã  écrire ton article ici..." />
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '.5rem', cursor: 'pointer', fontWeight: 600, color: '#444', fontSize: '.9rem' }}>
                   <input type="checkbox" checked={!!editingArticle?.published}
                     onChange={e => setEditingArticle(p => ({ ...p, published: e.target.checked }))}
                     style={{ width: 18, height: 18 }} />
-                  Publier immÃ©diatement
+                  Publier immédiatement
                 </label>
               </div>
               <div style={{ gridColumn: '1/-1', display: 'flex', gap: '.6rem', flexWrap: 'wrap' }}>
@@ -868,7 +868,7 @@ export default function CMSAdmin() {
                 <span style={metaChip}>{articleWordCount} mots</span>
                 <span style={metaChip}>{articleReadTime} min de lecture</span>
                 <span style={metaChip}>Cmd/Ctrl+S pour enregistrer</span>
-                {isArticleDirty && <span style={{ ...metaChip, background: '#fff4db', color: '#8a5a00' }}>Brouillon non sauvegardÃ©</span>}
+                {isArticleDirty && <span style={{ ...metaChip, background: '#fff4db', color: '#8a5a00' }}>Brouillon non sauvegardé</span>}
               </div>
             </div>
             {showArticlePreview && (
@@ -878,24 +878,24 @@ export default function CMSAdmin() {
                     <p style={{ margin: 0, fontSize: '.78rem', color: '#8a7a70', textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: 700 }}>Preview</p>
                     <h3 style={{ margin: '.2rem 0 0', fontSize: '1.1rem', color: '#6b2a1a' }}>AperÃ§u public de l&apos;article</h3>
                   </div>
-                  <span style={{ ...metaChip, background: '#e8f5f2', color: '#01696f' }}>HTML sanitizÃ© comme sur le site</span>
+                  <span style={{ ...metaChip, background: '#e8f5f2', color: '#01696f' }}>HTML sanitizé comme sur le site</span>
                 </div>
                 <div style={previewFrame}>
                   {editingArticle?.featured_image ? (
                     <img src={editingArticle.featured_image} alt="" style={{ width: '100%', maxHeight: 320, objectFit: 'cover', borderRadius: '.9rem', marginBottom: '1.5rem' }} />
                   ) : (
-                    <div style={previewImageFallback}>Ajoute une image Ã  la une pour prÃ©visualiser le hero</div>
+                    <div style={previewImageFallback}>Ajoute une image Ã  la une pour prévisualiser le hero</div>
                   )}
                   <div style={{ display: 'flex', gap: '.6rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
                     {editingArticle?.category && <span style={metaChip}>{editingArticle.category}</span>}
-                    <span style={metaChip}>{editingArticle?.published ? 'Publication immÃ©diate' : 'Brouillon'}</span>
+                    <span style={metaChip}>{editingArticle?.published ? 'Publication immédiate' : 'Brouillon'}</span>
                     <span style={metaChip}>/blog/{editingArticle?.slug || slug(editingArticle?.title || '') || 'nouvel-article'}</span>
                   </div>
                   <h1 style={{ margin: 0, fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', lineHeight: 1.1, color: '#1f1a17' }}>
-                    {editingArticle?.title || 'Titre de lâ€™article'}
+                    {editingArticle?.title || 'Titre de l–™article'}
                   </h1>
                   <p style={{ margin: '1rem 0 1.5rem', color: '#6d625a', fontSize: '1rem', lineHeight: 1.7 }}>
-                    {editingArticle?.excerpt || 'Ton extrait apparaÃ®tra ici pour donner envie dâ€™ouvrir lâ€™article.'}
+                    {editingArticle?.excerpt || 'Ton extrait apparaîtra ici pour donner envie d–™ouvrir l–™article.'}
                   </p>
                   {editingArticle?.voice_notes && (
                     <div style={{ margin: '0 0 1.5rem', padding: '1rem 1.1rem', background: '#f6f1eb', border: '1px solid #ece3d8', borderRadius: '1rem' }}>
@@ -911,7 +911,7 @@ export default function CMSAdmin() {
                     <EnhancedRichContent html={articlePreviewHtml} style={previewBody} />
                   ) : (
                     <p style={{ margin: 0, color: '#8a7a70', lineHeight: 1.7 }}>
-                      Commence Ã  Ã©crire dans lâ€™Ã©diteur pour voir le rendu du contenu ici.
+                      Commence Ã  écrire dans l–™éditeur pour voir le rendu du contenu ici.
                     </p>
                   )}
                 </div>
@@ -921,7 +921,7 @@ export default function CMSAdmin() {
               <button onClick={closeArticleEditor}
                 style={{ padding: '.7rem 1.5rem', border: '1.5px solid #ddd', borderRadius: '.5rem', background: 'white', cursor: 'pointer', fontSize: '.9rem' }}>Annuler</button>
               <button onClick={saveArticle} disabled={savingArticle}
-                style={{ padding: '.7rem 2rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: savingArticle ? 'wait' : 'pointer', fontSize: '.9rem', opacity: savingArticle ? .75 : 1 }}>{savingArticle ? 'â³ Enregistrementâ€¦' : 'ðŸ’¾ Enregistrer'}</button>
+                style={{ padding: '.7rem 2rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: savingArticle ? 'wait' : 'pointer', fontSize: '.9rem', opacity: savingArticle ? .75 : 1 }}>{savingArticle ? 'â³ Enregistrement...' : '🌟’¾ Enregistrer'}</button>
             </div>
           </div>
         )}
@@ -929,7 +929,7 @@ export default function CMSAdmin() {
         {/* â”€â”€ PAGES â”€â”€ */}
         {tab === 'pages' && (
           <div>
-            {loadingSettings ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargementâ€¦</p> : (
+            {loadingSettings ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement...</p> : (
               <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '1.5rem', alignItems: 'start' }}>
 
                 {/* Sidebar pages */}
@@ -960,7 +960,7 @@ export default function CMSAdmin() {
                             target="_blank" rel="noopener noreferrer"
                             style={{ fontSize: '.82rem', color: '#01696f', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '.3rem' }}
                           >
-                            ðŸ”— Voir la page
+                            🌟”— Voir la page
                           </a>
                         </div>
 
@@ -996,7 +996,7 @@ export default function CMSAdmin() {
                             disabled={savingSettings}
                             style={{ padding: '.75rem 2.25rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.95rem', opacity: savingSettings ? .7 : 1 }}
                           >
-                            {savingSettings ? 'â³ Sauvegardeâ€¦' : 'ðŸ’¾ Sauvegarder la page'}
+                            {savingSettings ? 'â³ Sauvegarde...' : '🌟’¾ Sauvegarder la page'}
                           </button>
                         </div>
                       </div>
@@ -1012,15 +1012,15 @@ export default function CMSAdmin() {
         {tab === 'media' && (
           <div style={{ background: 'white', borderRadius: '1rem', padding: '2rem', boxShadow: '0 2px 12px rgba(0,0,0,.07)', minHeight: 400 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#6b2a1a' }}>ðŸ–¼ï¸ MÃ©diathÃ¨que</h2>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#6b2a1a' }}>🌟–¼ï¸ Médiathèque</h2>
               <p style={{ fontSize: '.85rem', color: '#888' }}>Supabase Storage</p>
             </div>
             <div style={{ background: '#faf8f5', borderRadius: '.75rem', padding: '2rem', textAlign: 'center', border: '2px dashed #e8e3dc' }}>
               <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>â˜ï¸</div>
-              <p style={{ color: '#555', marginBottom: '1.25rem', lineHeight: 1.6 }}>Toutes tes images sont stockÃ©es sur <strong>Supabase Storage</strong>.</p>
+              <p style={{ color: '#555', marginBottom: '1.25rem', lineHeight: 1.6 }}>Toutes tes images sont stockées sur <strong>Supabase Storage</strong>.</p>
               <button onClick={() => setShowMediaLibrary(true)}
                 style={{ padding: '.8rem 1.75rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.95rem' }}
-              >ðŸ–¼ï¸ Ouvrir la mÃ©diathÃ¨que</button>
+              >🌟–¼ï¸ Ouvrir la médiathèque</button>
             </div>
           </div>
         )}
@@ -1030,9 +1030,9 @@ export default function CMSAdmin() {
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#6b2a1a' }}>âœˆï¸ Demandes Travel Planning</h2>
-              <button onClick={loadDemandes} disabled={loadingDemandes} style={{ padding: '.5rem 1rem', background: 'white', border: '1.5px solid #ddd', borderRadius: '.5rem', cursor: loadingDemandes ? 'wait' : 'pointer', fontSize: '.85rem', opacity: loadingDemandes ? .7 : 1 }}>{loadingDemandes ? 'â³ Actualisationâ€¦' : 'ðŸ”„ Actualiser'}</button>
+              <button onClick={loadDemandes} disabled={loadingDemandes} style={{ padding: '.5rem 1rem', background: 'white', border: '1.5px solid #ddd', borderRadius: '.5rem', cursor: loadingDemandes ? 'wait' : 'pointer', fontSize: '.85rem', opacity: loadingDemandes ? .7 : 1 }}>{loadingDemandes ? 'â³ Actualisation...' : '🌟”„ Actualiser'}</button>
             </div>
-            {loadingDemandes ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargementâ€¦</p>
+            {loadingDemandes ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement...</p>
               : demandes.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '4rem', color: '#aaa' }}>
                   <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>âœ‰ï¸</div>
@@ -1052,25 +1052,25 @@ export default function CMSAdmin() {
                           <select value={d.statut || 'nouvelle'} onChange={e => updateStatut(d.id, e.target.value)} disabled={updatingDemandeId === d.id}
                             style={{ padding: '.3rem .7rem', border: '1.5px solid #ddd', borderRadius: '.4rem', fontSize: '.82rem', cursor: updatingDemandeId === d.id ? 'wait' : 'pointer', opacity: updatingDemandeId === d.id ? .7 : 1 }}
                           >
-                            <option value="nouvelle">ðŸ†• Nouvelle</option>
-                            <option value="en_cours">ðŸ”„ En cours</option>
-                            <option value="devis_envoye">ðŸ“¨ Devis envoyÃ©</option>
-                            <option value="accepte">âœ… AcceptÃ©e</option>
-                            <option value="terminee">ðŸ TerminÃ©e</option>
-                            <option value="annulee">âŒ AnnulÃ©e</option>
+                            <option value="nouvelle">🌟†• Nouvelle</option>
+                            <option value="en_cours">🌟”„ En cours</option>
+                            <option value="devis_envoye">🌟“¨ Devis envoyé</option>
+                            <option value="accepte">âœ… Acceptée</option>
+                            <option value="terminee">🌟 Terminée</option>
+                            <option value="annulee">âŒ Annulée</option>
                           </select>
                         </div>
                       </div>
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '.5rem .75rem', fontSize: '.85rem', color: '#555' }}>
-                        {d.destination && <span>ðŸ“ <strong>Destination :</strong> {d.destination}</span>}
-                        {d.style_voyage && <span>ðŸŒ¿ <strong>Style :</strong> {d.style_voyage}</span>}
-                        {d.duree_jours && <span>ðŸ“… <strong>DurÃ©e :</strong> {d.duree_jours} jours</span>}
-                        {d.mois_depart && <span>ðŸ—“ <strong>DÃ©part :</strong> {d.mois_depart}</span>}
-                        {d.budget_fourchette && <span>ðŸ’¶ <strong>Budget :</strong> {d.budget_fourchette}</span>}
-                        {d.nb_voyageurs && <span>ðŸ‘« <strong>Voyageurs :</strong> {d.nb_voyageurs}</span>}
+                        {d.destination && <span>🌟“ <strong>Destination :</strong> {d.destination}</span>}
+                        {d.style_voyage && <span>🌿 <strong>Style :</strong> {d.style_voyage}</span>}
+                        {d.duree_jours && <span>🌟“… <strong>Durée :</strong> {d.duree_jours} jours</span>}
+                        {d.mois_depart && <span>🌟—“ <strong>Départ :</strong> {d.mois_depart}</span>}
+                        {d.budget_fourchette && <span>🌟’¶ <strong>Budget :</strong> {d.budget_fourchette}</span>}
+                        {d.nb_voyageurs && <span>🌟‘« <strong>Voyageurs :</strong> {d.nb_voyageurs}</span>}
                       </div>
                       {d.notes && (
-                        <div style={{ marginTop: '.75rem', padding: '.75rem', background: '#faf8f5', borderRadius: '.5rem', fontSize: '.85rem', color: '#666', borderLeft: '3px solid #d4a88a' }}>ðŸ’¬ {d.notes}</div>
+                        <div style={{ marginTop: '.75rem', padding: '.75rem', background: '#faf8f5', borderRadius: '.5rem', fontSize: '.85rem', color: '#666', borderLeft: '3px solid #d4a88a' }}>🌟’¬ {d.notes}</div>
                       )}
                     </div>
                   ))}
@@ -1101,7 +1101,7 @@ export default function CMSAdmin() {
                 category: 'Voyage',
                 published: false,
               });
-              showToast('âœ… Article gÃ©nÃ©rÃ© ! Edite-le puis enregistre.');
+              showToast('âœ… Article généré ! Edite-le puis enregistre.');
               setTab('new');
             }}
           />
@@ -1110,12 +1110,12 @@ export default function CMSAdmin() {
         {/* â”€â”€ PARAMÃˆTRES â”€â”€ */}
         {tab === 'settings' && (
           <div>
-            {loadingSettings ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargementâ€¦</p> : (
+            {loadingSettings ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement...</p> : (
               <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '1.5rem', alignItems: 'start' }}>
 
                 {/* Sidebar settings */}
                 <div style={{ background: 'white', borderRadius: '1rem', padding: '1rem', boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
-                  <p style={{ fontSize: '.75rem', fontWeight: 700, color: '#aaa', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.75rem', padding: '0 .5rem' }}>ParamÃ¨tres globaux</p>
+                  <p style={{ fontSize: '.75rem', fontWeight: 700, color: '#aaa', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.75rem', padding: '0 .5rem' }}>Paramètres globaux</p>
                   {Object.entries(SETTINGS_GROUPS).map(([key, cfg]) => (
                     <button key={key} onClick={() => setSettingsGroup(key)}
                       style={{ display: 'flex', alignItems: 'center', gap: '.5rem', width: '100%', textAlign: 'left', padding: '.6rem .75rem', borderRadius: '.5rem', border: 'none', cursor: 'pointer', fontSize: '.88rem', fontWeight: settingsGroup === key ? 700 : 400, background: settingsGroup === key ? '#f0e8e4' : 'transparent', color: settingsGroup === key ? '#6b2a1a' : '#555', marginBottom: '.2rem' }}
@@ -1145,12 +1145,12 @@ export default function CMSAdmin() {
                             </div>
                           ))}
                           {groupItems.length === 0 && (
-                            <p style={{ color: '#aaa', fontSize: '.9rem', textAlign: 'center', padding: '2rem' }}>Aucun paramÃ¨tre dans ce groupe.</p>
+                            <p style={{ color: '#aaa', fontSize: '.9rem', textAlign: 'center', padding: '2rem' }}>Aucun paramètre dans ce groupe.</p>
                           )}
                         </div>
                         <button onClick={saveSettings} disabled={savingSettings}
                           style={{ marginTop: '1.75rem', padding: '.7rem 2rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.9rem', opacity: savingSettings ? .7 : 1 }}
-                        >{savingSettings ? 'â³ Sauvegardeâ€¦' : 'ðŸ’¾ Sauvegarder'}</button>
+                        >{savingSettings ? 'â³ Sauvegarde...' : '🌟’¾ Sauvegarder'}</button>
                       </div>
                     );
                   })()}
