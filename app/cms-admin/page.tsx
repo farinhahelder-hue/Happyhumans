@@ -588,7 +588,7 @@ export default function CMSAdmin() {
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
           <div style={{ fontSize: '2.5rem', marginBottom: '.5rem' }}>ðŸŒ¿</div>
           <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#6b2a1a' }}>Happy Humans CMS</h1>
-          <p style={{ color: '#888', fontSize: '.9rem' }}>AccÃ¨s rÃ©servÃ©</p>
+          <p style={{ color: '#888', fontSize: '.9rem' }}>Accès réservé</p>
         </div>
         <input type="password" placeholder="Mot de passe" value={pwd}
           onChange={e => setPwd(e.target.value)}
