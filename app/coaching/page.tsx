@@ -197,6 +197,12 @@ export default function CoachingPage() {
             ))}
           </div>
         </section>
+        {/* ── LIEN TEMOIGNAGES ── */}
+        <div className="bg-[#f7f4ef] py-3 text-center border-t border-stone-100">
+          <a href="/temoignages" className="text-sm font-semibold text-[#2f6b61] hover:underline">
+            Lire tous les témoignages →
+          </a>
+        </div>
         <TemoignagesWidget max={3} />
 
       </main>
