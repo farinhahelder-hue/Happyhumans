@@ -15,7 +15,7 @@ export default function ArticleForm({ articleId, onSave, onCancel }: ArticleForm
     excerpt: '',
     content: '',
     category: 'Travel',
-    author: 'Heldonica',
+    author: 'Monica Schneider',
     published: false,
     image: '',
     seo: {
