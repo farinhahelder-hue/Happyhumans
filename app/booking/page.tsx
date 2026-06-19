@@ -37,7 +37,7 @@ export default function BookingPage() {
               {[
                 { emoji: '🎁', title: 'Séance découverte gratuite', desc: '30 minutes sans engagement pour vous présenter et voir si le coaching vous correspond.' },
                 { emoji: '📅', title: 'Confirmation sous 48h', desc: 'Monica confirme chaque réservation manuellement et vous répond par email.' },
-                { emoji: '🔄', title: 'Annulation libre', desc: 'Vous pouvez reporter ou annuler jusqu'à 48h avant la séance, sans frais.' },
+                { emoji: '🔄', title: 'Annulation libre', desc: 'Vous pouvez reporter ou annuler jusqu\'à 48h avant la séance, sans frais.' },
               ].map(({ emoji, title, desc }) => (
                 <div key={title} className="rounded-2xl bg-[#f7f4ef] p-6">
                   <div className="text-2xl mb-3">{emoji}</div>
