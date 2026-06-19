@@ -11,7 +11,7 @@ import BlogGenerator from '@/components/admin/BlogGenerator';
 
 const RichEditor = dynamic(() => import('@/components/RichEditor'), { ssr: false });
 
-// â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Types ───────────────────────────────────────────────────
 type Article = {
   id: number; title: string; slug: string; category: string;
   published: boolean; published_at: string; created_at: string;
@@ -28,8 +28,8 @@ type Demande = {
 type Setting = { id: number; key: string; value: string; label: string; group_name: string; };
 type SiteContent = { id: number; page: string; block_key: string; value: string; label: string; type: string; };
 
-// â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const fmt = (d: string) => d ? new Date(d).toLocaleDateString('fr-FR') : 'â€”';
+// ─── Helpers ─────────────────────────────────────────────────
+const fmt = (d: string) => d ? new Date(d).toLocaleDateString('fr-FR') : '—';
 const slug = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
@@ -61,7 +61,7 @@ function getReadTimeMinutes(content?: string) {
   return words === 0 ? 0 : Math.max(1, Math.ceil(words / 200));
 }
 
-// â”€â”€â”€ Config pages CMS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Config pages CMS ─────────────────────────────────────────
 const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'richtext' }[] }> = {
   'home': {
     label: 'Accueil',
@@ -175,13 +175,14 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
 };
 
 const SETTINGS_GROUPS: Record<string, { label: string; emoji: string }> = {
-  general: { label: 'Général',         emoji: '🌍' },
-  social:  { label: 'Réseaux sociaux', emoji: '📱' },
-  seo:     { label: 'SEO',             emoji: '🔍' },
-  footer:  { label: 'Footer',          emoji: '📄' },
+  branding: { label: 'Logo & Identité',  emoji: '🎨' },
+  general:  { label: 'Général',          emoji: '🌍' },
+  social:   { label: 'Réseaux sociaux',  emoji: '📱' },
+  seo:      { label: 'SEO',              emoji: '🔍' },
+  footer:   { label: 'Footer',           emoji: '📄' },
 };
 
-// â”€â”€â”€ Composant principal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Composant principal ──────────────────────────────────────
 export default function CMSAdmin() {
   const [checkingSession, setCheckingSession] = useState(true);
   const [authed, setAuthed] = useState(false);
@@ -246,7 +247,7 @@ export default function CMSAdmin() {
 
   const confirmDiscardArticleChanges = useCallback(() => {
     if (!isArticleDirty) return true;
-    return confirm('Tu as des modifications non sauvegardÃƒÂ©es. Les quitter ?');
+    return confirm('Tu as des modifications non sauvegardées. Les quitter ?');
   }, [isArticleDirty]);
 
   const openArticleEditor = useCallback((article?: Partial<Article>) => {
@@ -488,7 +489,7 @@ export default function CMSAdmin() {
     if (!editingArticle) return;
     if (savingArticle) return;
     if (!editingArticle.title?.trim()) {
-      showToast('Le titre est obligatoire avant dâ€™enregistrer.');
+      showToast('Le titre est obligatoire avant d’enregistrer.');
       return;
     }
 
@@ -587,7 +588,7 @@ export default function CMSAdmin() {
         showToast(`âŒ Upload échoué : ${data.error}`);
       }
     } catch {
-      showToast('Impossible dâ€™envoyer cette image.');
+      showToast('Impossible d’envoyer cette image.');
     } finally {
       setUploadingFeaturedImage(false);
       e.target.value = '';
@@ -611,7 +612,7 @@ export default function CMSAdmin() {
     }
   };
 
-  // â”€â”€â”€ Login â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ─── Login ────────────────────────────────────────────────
   if (checkingSession) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f3ef' }}>
       <div style={{ background: 'white', padding: '2.5rem', borderRadius: '1rem', boxShadow: '0 8px 32px rgba(0,0,0,.1)', width: '100%', maxWidth: 380, textAlign: 'center' }}>
@@ -643,7 +644,7 @@ export default function CMSAdmin() {
     </div>
   );
 
-  // â”€â”€â”€ CMS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ─── CMS ──────────────────────────────────────────────────
   const TABS = [
     { id: 'articles', label: '📝 Articles', count: articles.length },
     { id: 'new',      label: '✏️ Nouvel article', count: null },
@@ -712,7 +713,7 @@ export default function CMSAdmin() {
 
       <div style={{ maxWidth: 1100, margin: '2rem auto', padding: '0 1.5rem' }}>
 
-        {/* â”€â”€ ARTICLES â”€â”€ */}
+        {/* ── ARTICLES ── */}
         {tab === 'articles' && (
           <div>
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -745,7 +746,7 @@ export default function CMSAdmin() {
                       <div style={{ flex: 1, minWidth: 200 }}>
                         <div style={{ fontWeight: 600, fontSize: '1rem', color: '#1a1a1a', marginBottom: '.2rem' }}>{a.title}</div>
                         <div style={{ fontSize: '.8rem', color: '#888', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                          <span>{a.category || 'â€”'}</span>
+                          <span>{a.category || '—'}</span>
                           <span>{fmt(a.created_at)}</span>
                         </div>
                       </div>
@@ -764,7 +765,7 @@ export default function CMSAdmin() {
           </div>
         )}
 
-        {/* â”€â”€ Ã‰DITEUR ARTICLE â”€â”€ */}
+        {/* ── Ã‰DITEUR ARTICLE ── */}
         {tab === 'new' && (
           <div style={{ background: 'white', borderRadius: '1rem', padding: '2rem', boxShadow: '0 2px 12px rgba(0,0,0,.07)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem' }}>
@@ -798,7 +799,7 @@ export default function CMSAdmin() {
                   onChange={e => setEditingArticle(p => ({ ...p, category: e.target.value }))}
                   style={inp}
                 >
-                  <option value="">â€” Choisir â€”</option>
+                  <option value="">— Choisir —</option>
                   <option value="Slow Travel">Slow Travel</option>
                   <option value="Europe">Europe</option>
                   <option value="Escapades">Escapades</option>
@@ -816,7 +817,7 @@ export default function CMSAdmin() {
                   >🖼️ Médiathèque Supabase</button>
                   <span style={{ color: '#aaa', fontSize: '.82rem' }}>ou</span>
                   <label style={{ padding: '.6rem 1rem', background: uploadingFeaturedImage ? '#8aa8a9' : '#01696f', color: 'white', borderRadius: '.5rem', cursor: uploadingFeaturedImage ? 'wait' : 'pointer', fontSize: '.85rem', fontWeight: 600 }}>
-                    {uploadingFeaturedImage ? '⏳ Uploadâ€¦' : '⬆️ Upload direct'}
+                    {uploadingFeaturedImage ? '⏳ Upload…' : '⬆️ Upload direct'}
                     <input type="file" accept="image/*" onChange={uploadFeaturedImage} style={{ display: 'none' }} disabled={uploadingFeaturedImage} />
                   </label>
                 </div>
@@ -842,7 +843,7 @@ export default function CMSAdmin() {
                 <textarea value={editingArticle?.excerpt || ''}
                   onChange={e => setEditingArticle(p => ({ ...p, excerpt: e.target.value }))}
                   style={{ ...inp, height: 80, resize: 'vertical' }}
-                  placeholder="Résumé accrocheur pour les cards du blogâ€¦" />
+                  placeholder="Résumé accrocheur pour les cards du blog…" />
               </div>
               <div style={{ gridColumn: '1/-1' }}>
                 <div style={{ border: '1px solid #ece3d8', borderRadius: '1rem', background: '#faf6f1', padding: '1rem 1.1rem', marginBottom: '1rem' }}>
@@ -900,7 +901,7 @@ export default function CMSAdmin() {
                 </div>
                 <RichEditor value={editingArticle?.content || ''}
                   onChange={html => setEditingArticle(p => ({ ...p, content: html }))}
-                  placeholder="Commence à écrire ton article iciâ€¦" />
+                  placeholder="Commence à écrire ton article ici…" />
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '.5rem', cursor: 'pointer', fontWeight: 600, color: '#444', fontSize: '.9rem' }}>
@@ -939,10 +940,10 @@ export default function CMSAdmin() {
                     <span style={metaChip}>/blog/{editingArticle?.slug || slug(editingArticle?.title || '') || 'nouvel-article'}</span>
                   </div>
                   <h1 style={{ margin: 0, fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', lineHeight: 1.1, color: '#1f1a17' }}>
-                    {editingArticle?.title || 'Titre de lâ€™article'}
+                    {editingArticle?.title || 'Titre de l’article'}
                   </h1>
                   <p style={{ margin: '1rem 0 1.5rem', color: '#6d625a', fontSize: '1rem', lineHeight: 1.7 }}>
-                    {editingArticle?.excerpt || 'Ton extrait apparaîtra ici pour donner envie dâ€™ouvrir lâ€™article.'}
+                    {editingArticle?.excerpt || 'Ton extrait apparaîtra ici pour donner envie d’ouvrir l’article.'}
                   </p>
                   {editingArticle?.voice_notes && (
                     <div style={{ margin: '0 0 1.5rem', padding: '1rem 1.1rem', background: '#f6f1eb', border: '1px solid #ece3d8', borderRadius: '1rem' }}>
@@ -958,7 +959,7 @@ export default function CMSAdmin() {
                     <EnhancedRichContent html={articlePreviewHtml} style={previewBody} />
                   ) : (
                     <p style={{ margin: 0, color: '#8a7a70', lineHeight: 1.7 }}>
-                      Commence à écrire dans lâ€™Ã©diteur pour voir le rendu du contenu ici.
+                      Commence à écrire dans l’éditeur pour voir le rendu du contenu ici.
                     </p>
                   )}
                 </div>
@@ -968,12 +969,12 @@ export default function CMSAdmin() {
               <button onClick={closeArticleEditor}
                 style={{ padding: '.7rem 1.5rem', border: '1.5px solid #ddd', borderRadius: '.5rem', background: 'white', cursor: 'pointer', fontSize: '.9rem' }}>Annuler</button>
               <button onClick={saveArticle} disabled={savingArticle}
-                style={{ padding: '.7rem 2rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: savingArticle ? 'wait' : 'pointer', fontSize: '.9rem', opacity: savingArticle ? .75 : 1 }}>{savingArticle ? '⏳ Enregistrementâ€¦' : '💾 Enregistrer'}</button>
+                style={{ padding: '.7rem 2rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: savingArticle ? 'wait' : 'pointer', fontSize: '.9rem', opacity: savingArticle ? .75 : 1 }}>{savingArticle ? '⏳ Enregistrement…' : '💾 Enregistrer'}</button>
             </div>
           </div>
         )}
 
-        {/* â”€â”€ PAGES â”€â”€ */}
+        {/* ── PAGES ── */}
         {tab === 'pages' && (
           <div>
             {loadingSettings ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement…</p> : (
@@ -991,7 +992,7 @@ export default function CMSAdmin() {
                   ))}
                 </div>
 
-                {/* Ã‰diteur de page */}
+                {/* Éditeur de page */}
                 <div style={{ background: 'white', borderRadius: '1rem', padding: '2rem', boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
                   {(() => {
                     const config = PAGES_CONFIG[activePage];
@@ -1087,7 +1088,7 @@ export default function CMSAdmin() {
           </div>
         )}
 
-        {/* â”€â”€ MÃ‰DIATHÃˆQUE â”€â”€ */}
+        {/* ── MÃ‰DIATHÃˆQUE ── */}
         {tab === 'media' && (
           <div style={{ background: 'white', borderRadius: '1rem', padding: '2rem', boxShadow: '0 2px 12px rgba(0,0,0,.07)', minHeight: 400 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
@@ -1104,12 +1105,12 @@ export default function CMSAdmin() {
           </div>
         )}
 
-        {/* â”€â”€ TRAVEL PLANNING â”€â”€ */}
+        {/* ── TRAVEL PLANNING ── */}
         {tab === 'demandes' && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#6b2a1a' }}>✈️ Demandes Travel Planning</h2>
-              <button onClick={loadDemandes} disabled={loadingDemandes} style={{ padding: '.5rem 1rem', background: 'white', border: '1.5px solid #ddd', borderRadius: '.5rem', cursor: loadingDemandes ? 'wait' : 'pointer', fontSize: '.85rem', opacity: loadingDemandes ? .7 : 1 }}>{loadingDemandes ? '⏳ Actualisationâ€¦' : '🔄 Actualiser'}</button>
+              <button onClick={loadDemandes} disabled={loadingDemandes} style={{ padding: '.5rem 1rem', background: 'white', border: '1.5px solid #ddd', borderRadius: '.5rem', cursor: loadingDemandes ? 'wait' : 'pointer', fontSize: '.85rem', opacity: loadingDemandes ? .7 : 1 }}>{loadingDemandes ? '⏳ Actualisation…' : '🔄 Actualiser'}</button>
             </div>
             {loadingDemandes ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement…</p>
               : demandes.length === 0 ? (
@@ -1158,7 +1159,7 @@ export default function CMSAdmin() {
           </div>
         )}
 
-        {/* â”€â”€ CAROUSEL â”€â”€ */}
+        {/* ── CAROUSEL ── */}
         {tab === 'carousel' && (
           <div className="space-y-6">
             <CarouselGenerator />
@@ -1166,7 +1167,7 @@ export default function CMSAdmin() {
           </div>
         )}
 
-        {/* â”€â”€ BLOG IA â”€â”€ */}
+        {/* ── BLOG IA ── */}
         {tab === 'blog' && (
           <BlogGenerator
             onGenerated={(data) => {
@@ -1186,7 +1187,7 @@ export default function CMSAdmin() {
           />
         )}
 
-        {/* â”€â”€ PARAMÃˆTRES â”€â”€ */}
+        {/* ── PARAMÃˆTRES ── */}
         {tab === 'settings' && (
           <div>
             {loadingSettings ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement…</p> : (
