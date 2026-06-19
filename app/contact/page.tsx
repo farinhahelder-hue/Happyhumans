@@ -1,6 +1,6 @@
 'use client'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+import MiniNav from '@/components/MiniNav'
+import MiniFooter from '@/components/MiniFooter'
 import { useCmsContent } from '@/hooks/useCmsContent'
 import { useState } from 'react'
 
@@ -34,7 +34,7 @@ export default function ContactPage() {
 
   return (
     <>
-      <Header />
+      <MiniNav />
       <main>
         {/* HERO */}
         <section className="relative flex h-[40vh] items-end overflow-hidden bg-stone-900">
@@ -117,7 +117,7 @@ export default function ContactPage() {
           </div>
         </section>
       </main>
-      <Footer />
+      <MiniFooter />
     </>
   )
 }
