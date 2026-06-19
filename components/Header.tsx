@@ -109,7 +109,8 @@ export default function Header() {
                 { href: '/relations', label: 'Relations' },
                 { href: '/temoignages', label: 'Témoignages' },
                 { href: '/blog', label: 'Blog' },
-                { href: '/contact', label: 'Contact' },
+                { href: '/booking', label: 'Réserver' },
+    { href: '/contact', label: 'Contact' },
               ].map(link => (
                 <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
                   className="text-sm font-medium text-stone-700 hover:text-amber-900 py-1">
