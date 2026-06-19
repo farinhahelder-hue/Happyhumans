@@ -70,7 +70,27 @@ export default function RelationsPage() {
         </div>
       </section>
 
-      {/* ── RESSOURCES ── */}
+      
+        {/* ── ANCRAGE PHILOSOPHIQUE ── */}
+        <section className="bg-white py-14 md:py-16">
+          <div className="mx-auto max-w-3xl px-6 md:px-10 text-center">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Une approche ancrée dans la philosophie</p>
+            <h2 className="mb-5 text-2xl font-serif font-light leading-tight text-stone-900 md:text-3xl">
+              Les relations comme terrain d&apos;exploration de soi
+            </h2>
+            <p className="mb-4 text-sm leading-relaxed text-stone-600 max-w-2xl mx-auto">
+              Le Philosophical Counselling — l&apos;une des pratiques au cœur de l&apos;accompagnement Happy Humans — considère les difficultés relationnelles non comme des défaillances, mais comme des invitations à mieux se connaître. Nos schémas d&apos;attachement, nos attentes implicites, nos croyances sur l&apos;autre : tout cela se révèle dans la relation.
+            </p>
+            <p className="text-sm leading-relaxed text-stone-600 max-w-2xl mx-auto">
+              Cette page vous propose des ressources gratuites et un premier espace d&apos;exploration. Pour aller plus loin, le coaching individuel ou les séances de Philosophical Counselling avec Monica offrent un accompagnement personnalisé et en profondeur.
+            </p>
+            <a href="/coaching" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#2f6b61] hover:underline">
+              Découvrir le coaching individuel →
+            </a>
+          </div>
+        </section>
+
+        {/* ── RESSOURCES ── */}
       <section className="px-4 py-20 md:py-24" id="ressources">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
