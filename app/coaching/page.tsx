@@ -1,5 +1,6 @@
 'use client'
 import Header from '@/components/Header'
+import TemoignagesWidget from '@/components/TemoignagesWidget'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 import { useCmsContent } from '@/hooks/useCmsContent'
@@ -102,6 +103,52 @@ export default function CoachingPage() {
             <p className="mt-4 text-xs text-emerald-200">{c.reassurance}</p>
           </div>
         </section>
+
+        {/* ── FAQ ── */}
+        <section className="bg-white py-16 md:py-20">
+          <div className="mx-auto max-w-3xl px-6 md:px-10">
+            <div className="mb-10 text-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Questions fréquentes</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Ce que vous vous demandez souvent</h2>
+            </div>
+            {[
+              {
+                q: "Quelle est la durée d'un accompagnement ?",
+                a: "Un programme complet se déroule généralement sur 3 à 6 mois, avec des séances bimensuelles de 60 à 90 minutes. La durée est adaptée à votre objectif et à votre rythme.",
+              },
+              {
+                q: "Comment se passe la première séance ?",
+                a: "La première séance est une séance découverte de 30 minutes, offerte et sans engagement. Elle permet de clarifier votre situation, vos attentes et de voir si la relation de coaching vous convient.",
+              },
+              {
+                q: "Le coaching se fait en présentiel ou à distance ?",
+                a: "Les deux sont possibles. La majorité des séances se déroulent en visioconférence (Zoom), ce qui offre une grande flexibilité. Des séances en présentiel peuvent être organisées selon votre localisation.",
+              },
+              {
+                q: "Comment annuler ou reporter une séance ?",
+                a: "Toute annulation ou report doit être signalé au minimum 48h à l'avance. Au-delà de ce délai, la séance est due. La flexibilité est au cœur de la pratique, dans le respect mutuel.",
+              },
+              {
+                q: "Le coaching est-il remboursé ou déductible ?",
+                a: "Dans certains cas, le coaching peut être pris en charge dans le cadre d'un plan de développement professionnel (CPF, OPCO). N'hésitez pas à me contacter pour étudier les options disponibles.",
+              },
+              {
+                q: "Quelle différence entre coaching et thérapie ?",
+                a: "Le coaching est tourné vers l'action et le présent — il travaille sur des objectifs concrets, des transitions, des postures de leadership. La thérapie traite le passé et les blessures psychologiques. Je pratique également le Philosophical Counselling, qui travaille sur le sens et les représentations.",
+              },
+            ].map(({ q, a }, i) => (
+              <details key={i} className="group border-b border-stone-100 py-5">
+                <summary className="flex cursor-pointer items-center justify-between text-sm font-semibold text-stone-900 hover:text-[#2f6b61] list-none">
+                  {q}
+                  <span className="ml-4 text-[#2f6b61] transition-transform group-open:rotate-45 text-lg">+</span>
+                </summary>
+                <p className="mt-3 text-sm leading-relaxed text-stone-600">{a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+        <TemoignagesWidget max={3} />
+
       </main>
       <Footer />
     </>
