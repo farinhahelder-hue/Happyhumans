@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { requireCmsAuth } from '@/lib/cms-auth';
 
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -8,40 +9,25 @@ function getSupabase() {
   return createClient(url, key);
 }
 
-function requireAuth(req: NextRequest) {
-  const token = req.headers.get('x-cms-token');
-  if (token !== process.env.CMS_SECRET_TOKEN) {
-    return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-  }
-  return null;
-}
-
 export async function GET(req: NextRequest) {
-  const authError = requireAuth(req);
+  const authError = requireCmsAuth(req);
   if (authError) return authError;
   const supabase = getSupabase();
   if (!supabase) return NextResponse.json({ error: 'Supabase non configuré' }, { status: 503 });
 
   const { data, error } = await supabase
     .from('booking_requests')
-    .select('*, booking_slots (slot_date, slot_time, slot_type, duration_minutes)')
+    .select(`
+      *,
+      booking_slots (
+        slot_date,
+        slot_time,
+        slot_type,
+        duration_minutes
+      )
+    `)
     .order('created_at', { ascending: false });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ requests: data || [] });
-}
-
-export async function DELETE(req: NextRequest) {
-  const authError = requireAuth(req);
-  if (authError) return authError;
-  const supabase = getSupabase();
-  if (!supabase) return NextResponse.json({ error: 'Supabase non configuré' }, { status: 503 });
-  
-  const { searchParams } = new URL(req.url);
-  const id = searchParams.get('id');
-  if (!id) return NextResponse.json({ error: 'ID requis' }, { status: 400 });
-
-  const { error } = await supabase.from('booking_requests').delete().eq('id', id);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ success: true });
 }
