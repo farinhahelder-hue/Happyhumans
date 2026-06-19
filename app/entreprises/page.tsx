@@ -1,5 +1,6 @@
 'use client'
 import Header from '@/components/Header'
+import TemoignagesWidget from '@/components/TemoignagesWidget'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 import { useCmsContent } from '@/hooks/useCmsContent'
@@ -68,6 +69,70 @@ export default function EntreprisesPage() {
             </Link>
           </div>
         </section>
+
+        {/* ── TARIFICATION ── */}
+        <section className="bg-white py-16 md:py-20">
+          <div className="mx-auto max-w-5xl px-6 md:px-10">
+            <div className="mb-10 text-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Investissement</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Des formules adaptées à votre organisation</h2>
+              <p className="mt-3 text-sm text-stone-500 max-w-xl mx-auto">Chaque engagement est construit sur mesure. Les fourchettes ci-dessous vous donnent un point de repère ; un devis précis est établi après échange.</p>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {[
+                {
+                  label: 'Coaching dirigeant',
+                  price: 'À partir de 350 €',
+                  unit: '/ séance',
+                  desc: 'Accompagnement individuel de dirigeants, managers et hauts potentiels. Programme sur 3 à 6 mois.',
+                  items: ['Bilan de départ et objectifs', 'Séances bimensuelles 90 min', 'Disponibilité inter-séances', 'Rapport de progression'],
+                  cta: 'Demander un devis',
+                  highlight: false,
+                },
+                {
+                  label: 'Programme équipe',
+                  price: 'Sur devis',
+                  unit: '',
+                  desc: 'Ateliers collectifs, séminaires de cohésion et accompagnement du changement pour vos équipes.',
+                  items: ['Diagnostic d'équipe', 'Ateliers sur mesure', 'Coaching de groupe', 'Suivi post-programme'],
+                  cta: 'Discutons-en',
+                  highlight: true,
+                },
+                {
+                  label: 'Conférence & formation',
+                  price: 'À partir de 1 500 €',
+                  unit: '/ demi-journée',
+                  desc: 'Interventions sur le leadership, la transformation, la qualité de présence et le philosophical counselling.',
+                  items: ['Format keynote ou atelier', 'Contenu personnalisé', 'Support de présentation', 'Session Q&R incluse'],
+                  cta: 'Voir les thèmes',
+                  highlight: false,
+                },
+              ].map(({ label, price, unit, desc, items, cta, highlight }) => (
+                <div key={label} className={`rounded-2xl p-7 flex flex-col ${highlight ? 'bg-[#2f6b61] text-white shadow-lg ring-2 ring-[#2f6b61]' : 'bg-[#f7f4ef] text-stone-900'}`}>
+                  <p className={`text-xs font-bold uppercase tracking-[0.2em] mb-3 ${highlight ? 'text-emerald-200' : 'text-amber-800'}`}>{label}</p>
+                  <div className="mb-1">
+                    <span className={`text-2xl font-serif font-semibold ${highlight ? 'text-white' : 'text-stone-900'}`}>{price}</span>
+                    {unit && <span className={`ml-1 text-xs ${highlight ? 'text-emerald-200' : 'text-stone-500'}`}>{unit}</span>}
+                  </div>
+                  <p className={`mb-5 text-sm leading-relaxed ${highlight ? 'text-emerald-100' : 'text-stone-600'}`}>{desc}</p>
+                  <ul className="mb-6 flex-1 space-y-2">
+                    {items.map(item => (
+                      <li key={item} className={`flex items-start gap-2 text-xs ${highlight ? 'text-emerald-100' : 'text-stone-600'}`}>
+                        <span className="mt-0.5 text-amber-400">✓</span>{item}
+                      </li>
+                    ))}
+                  </ul>
+                  <a href="/contact" className={`mt-auto rounded-full py-2.5 text-center text-sm font-semibold transition ${highlight ? 'bg-white text-[#2f6b61] hover:bg-stone-50' : 'bg-[#2f6b61] text-white hover:bg-[#235249]'}`}>
+                    {cta}
+                  </a>
+                </div>
+              ))}
+            </div>
+            <p className="mt-6 text-center text-xs text-stone-400">Prise en charge possible via OPCO selon éligibilité · Devis établi sous 48h</p>
+          </div>
+        </section>
+        <TemoignagesWidget max={3} />
+
       </main>
       <Footer />
     </>
