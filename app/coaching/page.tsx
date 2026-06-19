@@ -104,6 +104,56 @@ export default function CoachingPage() {
           </div>
         </section>
 
+
+        {/* ── TARIFS ── */}
+        <section className="bg-white py-16 md:py-20">
+          <div className="mx-auto max-w-5xl px-6 md:px-10">
+            <div className="mb-10 text-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Tarifs</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Un investissement transparent</h2>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {[
+                {
+                  label: 'Séance découverte',
+                  price: 'Gratuit',
+                  unit: '30 minutes',
+                  desc: 'Premier échange pour clarifier votre situation, vos attentes et voir si le coaching vous convient.',
+                  cta: 'Réserver maintenant',
+                  highlight: false,
+                },
+                {
+                  label: 'Séance individuelle',
+                  price: '120 €',
+                  unit: '60 minutes',
+                  desc: 'Séance ponctuelle pour travailler sur un sujet précis ou maintenir une dynamique engagée.',
+                  cta: 'Prendre rendez-vous',
+                  highlight: false,
+                },
+                {
+                  label: 'Programme complet',
+                  price: '350 €',
+                  unit: '/ séance · programme 3–6 mois',
+                  desc: 'Accompagnement en profondeur avec suivi entre séances, bilan intermédiaire et rapport de progression.',
+                  cta: 'Démarrer un programme',
+                  highlight: true,
+                },
+              ].map(({ label, price, unit, desc, cta, highlight }) => (
+                <div key={label} className={`rounded-2xl p-7 flex flex-col ${highlight ? 'bg-[#2f6b61] text-white shadow-lg' : 'bg-[#f7f4ef]'}`}>
+                  <p className={`text-xs font-bold uppercase tracking-[0.2em] mb-3 ${highlight ? 'text-emerald-200' : 'text-amber-800'}`}>{label}</p>
+                  <p className={`text-3xl font-serif font-semibold mb-0.5 ${highlight ? 'text-white' : 'text-stone-900'}`}>{price}</p>
+                  <p className={`text-xs mb-4 ${highlight ? 'text-emerald-200' : 'text-stone-500'}`}>{unit}</p>
+                  <p className={`text-sm leading-relaxed flex-1 mb-6 ${highlight ? 'text-emerald-100' : 'text-stone-600'}`}>{desc}</p>
+                  <a href="/contact" className={`rounded-full py-2.5 text-center text-sm font-semibold transition ${highlight ? 'bg-white text-[#2f6b61] hover:bg-stone-50' : 'bg-[#2f6b61] text-white hover:bg-[#235249]'}`}>
+                    {cta}
+                  </a>
+                </div>
+              ))}
+            </div>
+            <p className="mt-6 text-center text-xs text-stone-400">Prise en charge possible via CPF / OPCO selon éligibilité · Devis sur demande pour les programmes entreprises</p>
+          </div>
+        </section>
+
         {/* ── FAQ ── */}
         <section className="bg-white py-16 md:py-20">
           <div className="mx-auto max-w-3xl px-6 md:px-10">
