@@ -76,8 +76,8 @@ export default function AProposPage() {
               </div>
               {(c.photo_2 || c.photo_3) && (
                 <div className="grid grid-cols-2 gap-4">
-                  {c.photo_2 && <img src={c.photo_2} alt="" className="rounded-xl object-cover h-48 w-full" />}
-                  {c.photo_3 && <img src={c.photo_3} alt="" className="rounded-xl object-cover h-48 w-full" />}
+                  {c.photo_2 && <img src={c.photo_2} alt="Illustration" className="rounded-xl object-cover h-48 w-full" />}
+                  {c.photo_3 && <img src={c.photo_3} alt="Illustration" className="rounded-xl object-cover h-48 w-full" />}
                 </div>
               )}
             </div>
