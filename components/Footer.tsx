@@ -56,6 +56,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/relations" className="text-stone-300 transition-colors duration-200 hover:text-white">
+                  Relations
+                </Link>
+              </li>
+              <li>
                 <Link href="/contact" className="text-stone-300 transition-colors duration-200 hover:text-white">
                   Contact
                 </Link>

@@ -76,7 +76,7 @@ export default function RegisterPage() {
           <p className="text-xs tracking-[0.16em] uppercase text-eucalyptus mb-3">Espace client</p>
           <h1 className="text-3xl font-serif text-mahogany mb-2">Créer ton compte</h1>
           <p className="text-stone-600 mb-8">
-            Sauvegarde tes projets de voyage et récupère tes carnets confirmés.
+            Crée ton compte pour accéder à ton espace de suivi et aux ressources de coaching.
           </p>
 
           {!isConfigured && (

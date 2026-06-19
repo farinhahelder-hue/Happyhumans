@@ -69,7 +69,7 @@ export default function LoginPage() {
           <p className="text-xs tracking-[0.16em] uppercase text-eucalyptus mb-3">Espace client</p>
           <h1 className="text-3xl font-serif text-mahogany mb-2">Connexion</h1>
           <p className="text-stone-600 mb-8">
-            Retrouve tes voyages sauvegardés et tes carnets confirmés.
+            Accède à ton espace de suivi et à tes ressources de coaching.
           </p>
 
           {!isConfigured && (
