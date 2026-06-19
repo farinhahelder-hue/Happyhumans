@@ -94,7 +94,7 @@ export default function EntreprisesPage() {
                   price: 'Sur devis',
                   unit: '',
                   desc: 'Ateliers collectifs, séminaires de cohésion et accompagnement du changement pour vos équipes.',
-                  items: ['Diagnostic d'équipe', 'Ateliers sur mesure', 'Coaching de groupe', 'Suivi post-programme'],
+                  items: ['Diagnostic d\'équipe', 'Ateliers sur mesure', 'Coaching de groupe', 'Suivi post-programme'],
                   cta: 'Discutons-en',
                   highlight: true,
                 },
