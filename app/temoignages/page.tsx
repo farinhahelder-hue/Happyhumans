@@ -90,9 +90,14 @@ export default function TemoignagesPage() {
           <div className="mx-auto max-w-xl px-6">
             <h2 className="mb-4 text-2xl font-serif font-light text-white">Prêt·e à écrire votre propre histoire ?</h2>
             <p className="mb-7 text-sm text-emerald-100">Réservez une séance découverte gratuite de 30 minutes.</p>
-            <a href="/contact" className="inline-block rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[#2f6b61] shadow hover:bg-stone-50">
-              Prendre contact
-            </a>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <a href="/coaching" className="inline-block rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[#2f6b61] shadow hover:bg-stone-50">
+                Découvrir le coaching
+              </a>
+              <a href="/contact" className="inline-block rounded-full border border-white px-8 py-3.5 text-sm font-semibold text-white hover:bg-white/10">
+                Prendre contact
+              </a>
+            </div>
           </div>
         </section>
       </main>
