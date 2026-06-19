@@ -7,17 +7,17 @@ const focuses = [
   {
     title: 'Leadership & posture',
     description:
-      "Prendre sa place avec plus de justesse, de présence et de stabilité, sans forcer un rôle qui ne vous ressemble pas.",
+      "Retrouver une posture qui vous ressemble — ni trop en retrait, ni en sursis dans un rôle qui ne vous porte plus.",
   },
   {
     title: 'Transitions & bifurcations',
     description:
-      "Changement de poste, perte de repères, besoin de sens, envie d'une autre manière d'habiter son travail ou sa vie.",
+      "Quand quelque chose a changé — ou doit changer — et qu'il faut trouver un nouvel équilibre entre ce qui était et ce qui vient.",
   },
   {
-    title: 'Confiance & clarté',
+    title: 'Clarté & décision',
     description:
-      "Sortir du brouillard intérieur, nommer ce qui bloque, reprendre de la puissance d'action et de décision.",
+      "Quand le brouillard s'installe et qu'on a besoin de nommer ce qui compte vraiment pour avancer.",
   },
 ]
 
@@ -34,8 +34,8 @@ const packages = [
     name: 'Échange découverte',
     price: 'Gratuit',
     duration: '30 min',
-    description: 'Un premier échange pour clarify votre enjeu et voir si le feeling passe.',
-    features: ['Visioconférence ou téléphone', 'Sans engagement', 'Points clairs identifiés'],
+    description: 'Pour clarifier votre enjeu et sentir si le dialogue a du sens.',
+    features: ['Visioconférence ou téléphone', 'Sans engagement', 'Premier axe identifié'],
     cta: 'Réserver',
     highlighted: false,
   },
@@ -43,8 +43,8 @@ const packages = [
     name: 'Parcours coaching',
     price: '350€',
     duration: '3 mois',
-    description: 'Un accompagnement structuré pour une transformation durable.',
-    features: ['6 sessions de 1h', 'Entretiens illimités par email', 'Support entre sessions', 'Bilan final'],
+    description: 'Un accompagnement pour aller plus loin — là où une seule session ne suffit pas.',
+    features: ['6 sessions de 1h', 'Entretiens par email', 'Entre les sessions', 'Bilan de fin'],
     cta: 'Réserver',
     highlighted: true,
   },
@@ -52,7 +52,7 @@ const packages = [
     name: 'Session unique',
     price: '120€',
     duration: '1h',
-    description: 'Une session pour gagner en clarté sur une situation précise.',
+    description: 'Pour gagner en clarté sur un sujet précis — et voir la suite si le besoin s\'en ressent.',
     features: ['1 session de 1h', 'Visioconférence', 'Compte-rendu écrit', 'Suite possible'],
     cta: 'Réserver',
     highlighted: false,
@@ -79,13 +79,13 @@ export default function CoachingPage() {
               Coaching individuel
             </p>
             <h1 className="max-w-4xl text-4xl font-serif font-light leading-tight text-stone-900 md:text-6xl">
-              Un espace pour penser plus clair,
-              <span className="block italic text-[#2f6b61]">choisir plus juste et agir plus librement.</span>
+              Il y a des moments où il faut
+              <span className="block italic text-[#2f6b61]">réapprendre à habiter son rôle.</span>
             </h1>
             <p className="mt-7 max-w-3xl text-lg leading-relaxed text-stone-700">
-              Monica Schneider accompagne des managers, dirigeants, entrepreneurs et personnes en
-              transition qui veulent faire évoluer leur posture, traverser une période de doute ou
-              redonner du sens et du souffle à leur trajectoire.
+              Monica Schneider accompagne des managers, dirigeants, entrepreneurs et personnes en transition 
+              qui traversent une période de doute, de perte de repères ou de besoin de sens. 
+              Le travail ne vise pas à performer davantage, mais à retrouver une posture plus claire, plus stable — et plus alignée avec ce qui compte vraiment.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <Link
@@ -108,10 +108,10 @@ export default function CoachingPage() {
           <div className="mx-auto max-w-6xl px-6 md:px-10">
             <div className="mb-12 max-w-3xl">
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#8d5d2f]">
-                Quand ce coaching aide le plus
+                Ce qui vient le plus souvent
               </p>
               <h2 className="text-3xl font-serif font-light text-stone-900 md:text-4xl">
-                Quand quelque chose appelle à se réaligner.
+                Des questions qui n'ont pas de réponse évidente.
               </h2>
             </div>
             <div className="grid gap-6 md:grid-cols-3">
@@ -132,15 +132,12 @@ export default function CoachingPage() {
                 L&apos;approche
               </p>
               <h2 className="text-3xl font-serif font-light text-stone-900 md:text-4xl">
-                Coaching, philosophie et transformation humaine.
+                Un espace pour penser, pas pour optimiser.
               </h2>
             </div>
             <div>
               <p className="text-base leading-relaxed text-stone-700">
-                Le travail s&apos;ancre dans un dialogue exigeant et bienveillant. Il ne s&apos;agit pas
-                seulement de résoudre un problème immédiat, mais de faire émerger des appuis plus
-                solides: conscience de soi, clarté intérieure, meilleure qualité de choix et manière
-                plus habitée d&apos;exercer son rôle.
+                Le coaching ne consiste pas à trouver des solutions toutes faites. Il s&apos;agit plutôt de créer un espace où l&apos;on peut prendre du recul, clarifier ce qui compte vraiment, et retrouver une manière plus juste d&apos;habiter son rôle — dans le travail comme ailleurs.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 {approach.map((item) => (
@@ -159,21 +156,20 @@ export default function CoachingPage() {
         <section className="bg-white py-20 md:py-24">
           <div className="mx-auto max-w-4xl px-6 text-center md:px-10">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
-              Modalités
+              Comment ça commence
             </p>
             <h2 className="text-3xl font-serif font-light text-stone-900 md:text-4xl">
-              Un premier échange de découverte pour voir si c&apos;est le bon cadre.
+              Par un échange — sans engagement.
             </h2>
             <p className="mt-6 text-base leading-relaxed text-stone-700 md:text-lg">
-              Le premier rendez-vous permet de clarifier l&apos;enjeu, de sentir la qualité du dialogue
-              et de vérifier si l&apos;accompagnement a du sens pour vous. Ensuite, le format se construit
-              selon votre contexte.
+              Le premier rendez-vous permet de clarifier votre enjeu, de sentir comment travaille Monica, 
+              et de voir si l'accompagnement a du sens. Après, le format se construit ensemble, selon votre situation.
             </p>
             <Link
               href="/contact"
               className="mt-8 inline-flex rounded-full bg-amber-900 px-7 py-3 text-sm font-semibold text-white transition-colors hover:bg-amber-800"
             >
-              Nous écrire →
+              Prendre rendez-vous →
             </Link>
           </div>
         </section>
@@ -185,7 +181,7 @@ export default function CoachingPage() {
                 Tarifs
               </p>
               <h2 className="text-3xl font-serif font-light text-stone-900 md:text-4xl">
-                Investissez dans votre développement
+                Un accompagnement à votre main
               </h2>
             </div>
             <div className="grid gap-6 md:grid-cols-3">
