@@ -1,134 +1,70 @@
-import type { Metadata } from 'next'
-import Link from 'next/link'
+'use client'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import Link from 'next/link'
+import { useCmsContent } from '@/hooks/useCmsContent'
 
-const offers = [
-  {
-    title: 'Coaching de dirigeants et managers',
-    description:
-      "Pour soutenir la posture, la présence, les décisions et l'alignement dans des environnements en mouvement.",
-  },
-  {
-    title: 'Ateliers & séminaires',
-    description:
-      "Des formats pour remettre du lien, de la clarté et de la qualité de réflexion dans les équipes et les collectifs.",
-  },
-  {
-    title: 'Transformation culturelle',
-    description:
-      "Quand il faut accompagner un changement sans perdre l'humain, la confiance ni la cohérence.",
-  },
-]
-
-const principles = [
-  'People, planet and profit peuvent se tenir ensemble.',
-  "La transformation n'est durable que si elle est vécue, pas seulement annoncée.",
-  "Les équipes ont besoin de cadre, de sens et de qualité relationnelle pour retrouver de l'élan.",
-]
-
-export const metadata: Metadata = {
-  title: 'Entreprises & organisations',
-  description:
-    "Coaching, mentoring, ateliers et accompagnement de la transformation pour dirigeants, équipes et organisations.",
-  alternates: {
-    canonical: 'https://happy-humans.org/entreprises',
-  },
+const DEFAULTS = {
+  hero_image:    '',
+  page_title:    "Remettre de l'alignement et de l'élan dans vos équipes.",
+  intro_text:    "Happy Humans accompagne les organisations avec une approche qui combine coaching de leadership, philosophical counselling et design d'expériences collectives.",
+  section_image: '',
+  section_title: 'Ce que nous proposons',
+  section_text:  "Coaching de dirigeants et managers · Ateliers de cohésion · Accompagnement du changement · Séminaires sur mesure",
 }
 
 export default function EntreprisesPage() {
+  const c = useCmsContent('entreprises', DEFAULTS)
   return (
     <>
       <Header />
       <main>
-        <section className="bg-[#18312d] py-24 text-white md:py-32">
-          <div className="mx-auto max-w-6xl px-6 md:px-10">
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-[#d7c3a6]">
-              Entreprises & organisations
-            </p>
-            <h1 className="max-w-4xl text-4xl font-serif font-light leading-tight md:text-6xl">
-              Faire évoluer les personnes et les équipes,
-              <span className="block italic text-[#d7c3a6]">sans sacrifier l&apos;humain au passage.</span>
-            </h1>
-            <p className="mt-7 max-w-3xl text-lg leading-relaxed text-white/75">
-              Happy Humans accompagne les organisations qui veulent créer plus d&apos;alignement, de
-              qualité relationnelle et de leadership conscient dans leurs transformations.
-            </p>
-            <div className="mt-10 flex flex-wrap gap-4">
-              <Link
-                href="/contact"
-                className="rounded-full bg-white px-7 py-3 text-sm font-semibold text-[#18312d] transition-colors hover:bg-[#f4efe6]"
-              >
-                Parler de votre contexte
-              </Link>
-              <Link
-                href="/coaching"
-                className="rounded-full border border-white/20 px-7 py-3 text-sm font-semibold text-white transition-colors hover:border-white/40"
-              >
-                Voir le coaching individuel
-              </Link>
-            </div>
+        {/* HERO */}
+        <section className="relative flex h-[55vh] items-end overflow-hidden bg-stone-900 md:h-[65vh]">
+          <img
+            src={c.hero_image || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1400&q=80'}
+            alt="Entreprises"
+            className="absolute inset-0 h-full w-full object-cover opacity-40"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+          <div className="relative z-10 max-w-3xl px-6 pb-14 md:px-16 md:pb-24">
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-amber-300">Entreprises & organisations</p>
+            <h1 className="mb-5 text-4xl font-serif font-light leading-[1.1] text-white md:text-5xl">{c.page_title}</h1>
+            <p className="max-w-xl text-base leading-relaxed text-gray-300">{c.intro_text}</p>
           </div>
         </section>
 
-        <section className="bg-white py-20 md:py-24">
-          <div className="mx-auto max-w-6xl px-6 md:px-10">
-            <div className="mb-12 max-w-3xl">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#8d5d2f]">
-                Formats
-              </p>
-              <h2 className="text-3xl font-serif font-light text-stone-900 md:text-4xl">
-                Des interventions conçues pour être utiles, tenables et incarnées.
-              </h2>
-            </div>
-            <div className="grid gap-6 md:grid-cols-3">
-              {offers.map((item) => (
-                <article key={item.title} className="rounded-[1.75rem] border border-stone-200 p-7">
-                  <h3 className="text-xl font-serif font-light text-stone-900">{item.title}</h3>
-                  <p className="mt-4 text-sm leading-relaxed text-stone-600">{item.description}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-[#f7f5f0] py-20 md:py-24">
-          <div className="mx-auto grid max-w-6xl gap-10 px-6 md:grid-cols-[0.95fr_1.05fr] md:px-10">
-            <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#8d5d2f]">
-                Intention
-              </p>
-              <h2 className="text-3xl font-serif font-light text-stone-900 md:text-4xl">
-                Créer des environnements où la performance ne coupe pas du vivant.
-              </h2>
-            </div>
-            <div className="space-y-4">
-              {principles.map((item) => (
-                <div key={item} className="rounded-[1.5rem] border border-stone-200 bg-white p-5 text-sm leading-relaxed text-stone-700">
-                  {item}
+        {/* SECTION PRINCIPALE */}
+        <section className="bg-white py-20 md:py-28">
+          <div className="mx-auto max-w-5xl px-6 md:px-10">
+            <div className="grid gap-12 md:grid-cols-2 items-center">
+              <div className="space-y-5">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Offres</p>
+                <h2 className="text-3xl font-serif font-light leading-tight text-stone-900">{c.section_title}</h2>
+                <div className="text-base leading-relaxed text-stone-600 space-y-4">
+                  {c.section_text.split('\n').map((p, i) => <p key={i}>{p}</p>)}
                 </div>
-              ))}
+                <Link href="/contact" className="inline-flex items-center gap-2 text-sm font-semibold text-[#2f6b61] hover:underline mt-2">
+                  Discuter de votre projet →
+                </Link>
+              </div>
+              {c.section_image ? (
+                <img src={c.section_image} alt={c.section_title} className="rounded-2xl object-cover shadow-lg h-72 w-full" />
+              ) : (
+                <div className="rounded-2xl bg-gradient-to-br from-stone-100 to-stone-200 h-72 flex items-center justify-center">
+                  <span className="text-6xl opacity-20">🏢</span>
+                </div>
+              )}
             </div>
           </div>
         </section>
 
-        <section className="bg-white py-20 md:py-24">
-          <div className="mx-auto max-w-4xl px-6 text-center md:px-10">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-stone-400">
-              Collaboration
-            </p>
-            <h2 className="text-3xl font-serif font-light text-stone-900 md:text-4xl">
-              Un premier échange pour comprendre votre réalité avant de proposer un format.
-            </h2>
-            <p className="mt-6 text-base leading-relaxed text-stone-700 md:text-lg">
-              Chaque organisation a son contexte, son rythme, ses contraintes et sa culture. Le
-              travail commence donc par une lecture fine de ce qui se joue vraiment.
-            </p>
-            <Link
-              href="/contact"
-              className="mt-8 inline-flex rounded-full bg-amber-900 px-7 py-3 text-sm font-semibold text-white transition-colors hover:bg-amber-800"
-            >
-              Nous écrire →
+        {/* CTA */}
+        <section className="bg-[#2f6b61] py-16 text-center">
+          <div className="mx-auto max-w-xl px-6">
+            <h2 className="mb-4 text-2xl font-serif font-light text-white">Un projet ? Une question ?</h2>
+            <Link href="/contact" className="rounded-full bg-white px-8 py-3 text-sm font-semibold text-[#2f6b61] hover:bg-amber-50 transition">
+              Prendre contact
             </Link>
           </div>
         </section>
