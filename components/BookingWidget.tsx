@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react'
 type Slot = { id: string; slot_date: string; slot_time: string; slot_type: string; duration_minutes: number }
 
 const TYPE_LABELS: Record<string, string> = {
-  discovery: 'Séance découverte — Gratuit — 30 min',
-  coaching:  'Séance coaching — 120 € — 60 min',
+  discovery: 'Séance découverte — Gratuit — 45 min',
+  coaching:  'Séance coaching — 120 € — 45 min',
   enterprise: 'Coaching entreprises — sur devis',
 }
 
