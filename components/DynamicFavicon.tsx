@@ -8,7 +8,7 @@ export default function DynamicFavicon() {
     const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     if (!url || !key) return;
     const sb = createClient(url, key);
-    sb.from('cms_settings_kv')
+    sb.from('cms_settings')
       .select('key, value')
       .in('key', ['favicon_url'])
       .then(({ data }) => {
