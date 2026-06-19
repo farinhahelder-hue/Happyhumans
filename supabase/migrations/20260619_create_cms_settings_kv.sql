@@ -1,3 +1,7 @@
+-- NOTE: This migration is kept for reference only.
+-- The app now uses the existing 'cms_settings' table instead of cms_settings_kv.
+-- See: add_group_name_to_cms_settings_and_seed_happy_humans migration
+
 -- Create cms_settings_kv table for flexible key-value settings (logo, branding, etc.)
 CREATE TABLE IF NOT EXISTS cms_settings_kv (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
