@@ -40,3 +40,13 @@ export async function GET(req: Request) {
 export async function DELETE() {
   return clearCmsSessionResponse()
 }
+
+// Debug endpoint
+export async function PUT() {
+  const password = process.env.CMS_PASSWORD;
+  return NextResponse.json({ 
+    hasPassword: !!password,
+    passwordLength: password?.length || 0,
+    timestamp: new Date().toISOString()
+  });
+}

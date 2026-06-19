@@ -259,6 +259,16 @@ export default function CMSAdmin() {
 
     const checkSession = async () => {
       try {
+        // Test debug endpoint first
+        const debugRes = await fetchWithTimeout('/api/cms/auth', { method: 'PUT' }, 10000);
+        if (debugRes.ok) {
+          const debug = await debugRes.json().catch(() => ({}));
+          console.log('Debug:', debug);
+          if (!debug.hasPassword) {
+            setAuthErr('⚠️ CMS_PASSWORD non configuré sur Vercel');
+          }
+        }
+        
         const res = await fetchWithTimeout('/api/cms/auth', {}, 10000);
         if (!active) return;
         const data = await res.json().catch(() => ({ ok: false }));
