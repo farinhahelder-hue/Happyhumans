@@ -1,7 +1,6 @@
 'use client';
 
 import type { AttachmentResult } from '@/lib/attachment-test/types';
-import Link from 'next/link';
 
 interface ScoreBarProps {
   label: string;
@@ -29,9 +28,10 @@ function ScoreBar({ label, percent, color }: ScoreBarProps) {
 interface ResultCardProps {
   result: AttachmentResult;
   onRestart: () => void;
+  onBook?: () => void;
 }
 
-export function ResultCard({ result, onRestart }: ResultCardProps) {
+export function ResultCard({ result, onRestart, onBook }: ResultCardProps) {
   const handleCopy = () => {
     const text = `Mon style d'attachement : ${result.title}\nAnxiété : ${result.anxietyPercent}% | Évitement : ${result.avoidancePercent}%`;
     navigator.clipboard?.writeText(text);
@@ -45,19 +45,11 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
         <p className="text-white/80 text-base md:text-lg leading-relaxed">{result.summary}</p>
       </div>
 
-      {/* Scores visuels */}
+      {/* Scores */}
       <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-6 border border-white/20 space-y-4">
         <h3 className="text-sm font-semibold uppercase tracking-widest text-rose-300 mb-4">Vos scores</h3>
-        <ScoreBar
-          label="Anxiété d'attachement"
-          percent={result.anxietyPercent}
-          color="bg-gradient-to-r from-amber-400 to-orange-400"
-        />
-        <ScoreBar
-          label="Évitement de l'intimité"
-          percent={result.avoidancePercent}
-          color="bg-gradient-to-r from-sky-400 to-indigo-400"
-        />
+        <ScoreBar label="Anxiété d'attachement" percent={result.anxietyPercent} color="bg-gradient-to-r from-amber-400 to-orange-400" />
+        <ScoreBar label="Évitement de l'intimité" percent={result.avoidancePercent} color="bg-gradient-to-r from-sky-400 to-indigo-400" />
       </div>
 
       {/* Forces */}
@@ -86,7 +78,7 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
         </ul>
       </div>
 
-      {/* Conseils */}
+      {/* Pistes */}
       <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-6 border border-white/20">
         <h3 className="text-sm font-semibold uppercase tracking-widest text-pink-300 mb-4">🌱 Pistes de croissance</h3>
         <ul className="space-y-2">
@@ -107,26 +99,35 @@ export function ResultCard({ result, onRestart }: ResultCardProps) {
         </p>
       </div>
 
-      {/* CTA */}
-      <div className="grid gap-3 md:grid-cols-3">
+      {/* CTA BOOKING — mis en avant */}
+      <div className="bg-[#2f6b61]/80 border border-emerald-400/30 rounded-3xl p-6 md:p-8 text-center">
+        <div className="text-3xl mb-3">🗓</div>
+        <h3 className="text-xl font-semibold text-white mb-2">Passez à l&apos;étape suivante</h3>
+        <p className="text-emerald-100 text-sm mb-5 leading-relaxed">
+          Lors d&apos;une <strong>séance découverte offerte de 45 minutes</strong>, Monica vous accompagne pour identifier vos 3 actions concrètes vers des relations plus épanouissantes.
+        </p>
+        <button
+          onClick={onBook}
+          className="w-full md:w-auto rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[#2f6b61] shadow hover:bg-emerald-50 transition"
+        >
+          Réserver ma séance découverte gratuite →
+        </button>
+      </div>
+
+      {/* Actions secondaires */}
+      <div className="grid gap-3 md:grid-cols-2">
         <button
           onClick={onRestart}
-          className="w-full py-4 px-6 rounded-2xl bg-white/10 border border-white/20 text-white font-medium hover:bg-white/20 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          className="w-full py-3.5 px-6 rounded-2xl bg-white/10 border border-white/20 text-white font-medium hover:bg-white/20 transition-colors"
         >
-          🔄 Recommencer
+          🔄 Recommencer le test
         </button>
         <button
           onClick={handleCopy}
-          className="w-full py-4 px-6 rounded-2xl bg-white/10 border border-white/20 text-white font-medium hover:bg-white/20 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          className="w-full py-3.5 px-6 rounded-2xl bg-white/10 border border-white/20 text-white font-medium hover:bg-white/20 transition-colors"
         >
           📋 Copier mes résultats
         </button>
-        <Link
-          href="/relations"
-          className="w-full py-4 px-6 rounded-2xl bg-rose-500 border border-rose-400 text-white font-medium text-center hover:bg-rose-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
-        >
-          💌 En savoir plus
-        </Link>
       </div>
     </div>
   );
