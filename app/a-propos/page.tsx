@@ -12,6 +12,7 @@ const DEFAULTS = {
   bio_text:      "10+ ans de leadership en marketing et transformation. Executive Coach certifiée AoEC et EMCC Practitioner. Master en Philosophical Counselling and Consultancy. Accompagnement en français, anglais et roumain.",
   valeurs_title: 'Ce qui oriente la pratique',
   valeurs_text:  "Authenticité, rigueur intellectuelle, présence et transformation durable.",
+  photo:   '',
   photo_1: '',
   photo_2: '',
   photo_3: '',
