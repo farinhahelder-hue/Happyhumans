@@ -66,7 +66,7 @@ Contenu: ${s.content}
 `).join('\n')}
 
 ---
-Généré avec Heldonica CMS
+Généré avec Happy Humans CMS
 `;
       
       zip.file('contenu.txt', contentText);
