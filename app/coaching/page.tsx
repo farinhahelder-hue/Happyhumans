@@ -28,7 +28,7 @@ export default function CoachingPage() {
         {/* HERO */}
         <section className="relative bg-gradient-to-br from-[#f7f2e9] via-white to-[#eef5f3] py-24 md:py-32 overflow-hidden">
           {c.hero_image && (
-            <img src={c.hero_image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-15" />
+            <img src={c.hero_image} alt="Photo de fond" className="absolute inset-0 h-full w-full object-cover opacity-15" />
           )}
           <div className="relative mx-auto max-w-6xl px-6 md:px-10">
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-[#8d5d2f]">Coaching individuel</p>
