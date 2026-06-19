@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
   const supabase = getSupabase();
   if (!supabase) return NextResponse.json({ settings: DEFAULT_SETTINGS });
 
-  const { data } = await supabase.from('cms_settings_kv').select('key, value');
+  const { data } = await supabase.from('cms_settings').select('key, value');
   const dbMap: Record<string, string> = {};
   (data || []).forEach((r: { key: string; value: string }) => { dbMap[r.key] = r.value; });
 
@@ -64,7 +64,7 @@ export async function PUT(req: NextRequest) {
   for (const { key, value } of updates) {
     if (!key) continue;
     const { error } = await supabase
-      .from('cms_settings_kv')
+      .from('cms_settings')
       .upsert({ key, value: value ?? '', updated_at: new Date().toISOString() }, { onConflict: 'key' });
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   }
