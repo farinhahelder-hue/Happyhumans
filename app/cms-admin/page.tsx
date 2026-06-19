@@ -638,7 +638,7 @@ export default function CMSAdmin() {
         {authErr && <p style={{ color: '#c0392b', fontSize: '.85rem', marginBottom: '.75rem' }}>{authErr}</p>}
         <button onClick={login} disabled={authLoading}
           style={{ width: '100%', padding: '.8rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, fontSize: '1rem', cursor: authLoading ? 'wait' : 'pointer', opacity: authLoading ? .7 : 1 }}
-        >{authLoading ? 'Connexionâ€¦' : 'Entrer'}</button>
+        >{authLoading ? 'Connexion…' : 'Entrer'}</button>
       </div>
     </div>
   );
@@ -731,7 +731,7 @@ export default function CMSAdmin() {
               <button onClick={loadArticles} style={{ padding: '.6rem 1.2rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.9rem' }}>🔍</button>
               <button onClick={() => openArticleEditor({})} style={{ padding: '.6rem 1.2rem', background: '#01696f', color: 'white', border: 'none', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.9rem' }}>+ Nouvel article</button>
             </div>
-            {loadingArticles ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargementâ€¦</p>
+            {loadingArticles ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement…</p>
               : articles.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '4rem', color: '#aaa' }}>
                   <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📭</div>
@@ -976,7 +976,7 @@ export default function CMSAdmin() {
         {/* â”€â”€ PAGES â”€â”€ */}
         {tab === 'pages' && (
           <div>
-            {loadingSettings ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargementâ€¦</p> : (
+            {loadingSettings ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement…</p> : (
               <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '1.5rem', alignItems: 'start' }}>
 
                 {/* Sidebar pages */}
@@ -1075,7 +1075,7 @@ export default function CMSAdmin() {
                             disabled={savingSettings}
                             style={{ padding: '.75rem 2.25rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.95rem', opacity: savingSettings ? .7 : 1 }}
                           >
-                            {savingSettings ? '⏳ Sauvegardeâ€¦' : '💾 Sauvegarder la page'}
+                            {savingSettings ? '⏳ Sauvegarde…' : '💾 Sauvegarder la page'}
                           </button>
                         </div>
                       </div>
@@ -1111,7 +1111,7 @@ export default function CMSAdmin() {
               <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#6b2a1a' }}>✈️ Demandes Travel Planning</h2>
               <button onClick={loadDemandes} disabled={loadingDemandes} style={{ padding: '.5rem 1rem', background: 'white', border: '1.5px solid #ddd', borderRadius: '.5rem', cursor: loadingDemandes ? 'wait' : 'pointer', fontSize: '.85rem', opacity: loadingDemandes ? .7 : 1 }}>{loadingDemandes ? '⏳ Actualisationâ€¦' : '🔄 Actualiser'}</button>
             </div>
-            {loadingDemandes ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargementâ€¦</p>
+            {loadingDemandes ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement…</p>
               : demandes.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '4rem', color: '#aaa' }}>
                   <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✉️</div>
@@ -1189,7 +1189,7 @@ export default function CMSAdmin() {
         {/* â”€â”€ PARAMÃˆTRES â”€â”€ */}
         {tab === 'settings' && (
           <div>
-            {loadingSettings ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargementâ€¦</p> : (
+            {loadingSettings ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement…</p> : (
               <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '1.5rem', alignItems: 'start' }}>
 
                 {/* Sidebar settings */}
@@ -1248,6 +1248,7 @@ export default function CMSAdmin() {
                                 <input value={editedSettings[s.key] || ''}
                                   onChange={e => setEditedSettings(prev => ({ ...prev, [s.key]: e.target.value }))}
                                   style={inp} placeholder={s.label} />
+                              )}
                             </div>
                           ))}
                           {groupItems.length === 0 && (
@@ -1256,7 +1257,7 @@ export default function CMSAdmin() {
                         </div>
                         <button onClick={saveSettings} disabled={savingSettings}
                           style={{ marginTop: '1.75rem', padding: '.7rem 2rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.9rem', opacity: savingSettings ? .7 : 1 }}
-                        >{savingSettings ? '⏳ Sauvegardeâ€¦' : '💾 Sauvegarder'}</button>
+                        >{savingSettings ? '⏳ Sauvegarde…' : '💾 Sauvegarder'}</button>
                       </div>
                     );
                   })()}
