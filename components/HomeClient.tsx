@@ -4,19 +4,19 @@ import Footer from '@/components/Footer'
 import Link from 'next/link'
 import { useCmsContent } from '@/hooks/useCmsContent'
 
-const DEFAULTS = {
-  hero_title:        'Retrouver de la clarté,\nsans se perdre en route.',
-  hero_subtitle:     "Happy Humans accompagne les personnes et les organisations dans les moments où quelque chose doit bouger : posture de leadership, transition, perte d'élan, questionnement de sens ou besoin de réalignement.",
-  hero_cta:          'Découvrir le coaching',
-  hero_image:        '',
+const DEFAULTS: Record<string, string> = {
+  hero_title:          'Retrouver de la clarté, sans se perdre en route.',
+  hero_subtitle:       "Happy Humans accompagne les personnes et les organisations dans les moments où quelque chose doit bouger : posture de leadership, transition, perte d'élan, questionnement de sens ou besoin de réalignement.",
+  hero_cta:            'Découvrir le coaching',
+  hero_image:          '',
   section_about_image: '',
   section_about_title: 'Monica Schneider',
-  section_about_text:  "Executive Coach certifiée AoEC, EMCC Practitioner et formée au Philosophical Counselling. Une pratique née au croisement du leadership, du branding et de la transformation humaine.",
-  services_title:    'Un accompagnement pour deux contextes',
-  services_subtitle: 'Que vous soyez un individu en quête de clarté ou une organisation qui veut remettre de l'alignement dans ses équipes.',
-  services_image:    '',
+  section_about_text:  "Executive Coach certifiée AoEC, EMCC Practitioner et formée au Philosophical Counselling.",
+  services_title:      'Un accompagnement pour deux contextes',
+  services_subtitle:   "Que vous soyez un individu en quête de clarté ou une organisation qui veut remettre de l'alignement dans ses équipes.",
+  services_image:      '',
   newsletter_title:    'La lettre Happy Humans',
-  newsletter_subtitle: 'Réflexions sur le leadership, la transformation et la qualité de présence. Sans bruit, sans cadence forcée.',
+  newsletter_subtitle: 'Réflexions sur le leadership, la transformation et la qualité de présence.',
 }
 
 export default function HomeClient() {
@@ -26,7 +26,7 @@ export default function HomeClient() {
     <>
       <Header />
       <main>
-        {/* ─── HERO ─── */}
+        {/* HERO */}
         <section className="relative overflow-hidden bg-[#f4efe6]">
           {c.hero_image && (
             <img src={c.hero_image} alt="Hero" className="absolute inset-0 h-full w-full object-cover opacity-20" />
@@ -38,19 +38,14 @@ export default function HomeClient() {
                 Monica Schneider · Executive Coach · Happy Humans
               </p>
               <h1 className="max-w-4xl text-4xl font-serif font-light leading-[1.05] text-stone-900 md:text-6xl">
-                {c.hero_title.includes('\n')
-                  ? c.hero_title.split('\n').map((line, i) =>
-                      i === 0 ? <span key={i}>{line}<span className="block italic text-[#2f6b61]">{c.hero_title.split('\n')[1]}</span></span> : null
-                    ).filter(Boolean)[0]
-                  : c.hero_title
-                }
+                {c.hero_title}
               </h1>
               <p className="mt-7 max-w-2xl text-lg leading-relaxed text-stone-700">{c.hero_subtitle}</p>
               <div className="mt-10 flex flex-wrap gap-4">
                 <Link href="/coaching" className="rounded-full bg-[#2f6b61] px-7 py-3.5 text-sm font-semibold text-white shadow-md transition hover:bg-[#235249]">
                   {c.hero_cta}
                 </Link>
-                <Link href="/contact" className="rounded-full border border-stone-400 px-7 py-3.5 text-sm font-semibold text-stone-700 transition hover:border-stone-600 hover:text-stone-900">
+                <Link href="/contact" className="rounded-full border border-stone-400 px-7 py-3.5 text-sm font-semibold text-stone-700 transition hover:border-stone-600">
                   Prendre contact
                 </Link>
               </div>
@@ -67,7 +62,7 @@ export default function HomeClient() {
           </div>
         </section>
 
-        {/* ─── À PROPOS COURT ─── */}
+        {/* À PROPOS */}
         <section className="bg-white py-20 md:py-28">
           <div className="mx-auto max-w-6xl px-6 md:px-10">
             <div className="grid items-center gap-12 md:grid-cols-2">
@@ -90,7 +85,7 @@ export default function HomeClient() {
           </div>
         </section>
 
-        {/* ─── SERVICES ─── */}
+        {/* SERVICES */}
         <section className="bg-[#f7f4ef] py-20 md:py-28">
           <div className="mx-auto max-w-6xl px-6 md:px-10">
             <div className="mb-14 max-w-2xl">
@@ -106,14 +101,14 @@ export default function HomeClient() {
               </div>
               <div className="rounded-2xl bg-white p-8 shadow-sm">
                 <h3 className="mb-3 text-xl font-serif font-semibold text-stone-900">Pour les organisations</h3>
-                <p className="mb-4 text-sm leading-relaxed text-stone-600">Coaching de leadership, ateliers, séminaires et accompagnement du changement pour remettre de l'alignement et de l'élan dans les équipes.</p>
+                <p className="mb-4 text-sm leading-relaxed text-stone-600">Coaching de leadership, ateliers, séminaires et accompagnement du changement pour remettre de l&apos;alignement et de l&apos;élan dans les équipes.</p>
                 <Link href="/entreprises" className="text-sm font-semibold text-[#2f6b61] hover:underline">Voir les offres entreprises →</Link>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ─── NEWSLETTER ─── */}
+        {/* NEWSLETTER */}
         <section className="bg-[#2f6b61] py-20">
           <div className="mx-auto max-w-2xl px-6 text-center">
             <h2 className="mb-4 text-3xl font-serif font-light text-white">{c.newsletter_title}</h2>
@@ -121,7 +116,7 @@ export default function HomeClient() {
             <form className="flex flex-col gap-3 sm:flex-row sm:gap-0" onSubmit={e => e.preventDefault()}>
               <input type="email" placeholder="Votre adresse email" className="flex-1 rounded-full px-5 py-3 text-sm text-stone-900 outline-none sm:rounded-r-none" />
               <button type="submit" className="rounded-full bg-amber-500 px-7 py-3 text-sm font-semibold text-white transition hover:bg-amber-400 sm:rounded-l-none">
-                S'inscrire
+                S&apos;inscrire
               </button>
             </form>
           </div>
