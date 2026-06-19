@@ -53,9 +53,10 @@ export async function PUT(req: NextRequest) {
 
   const { error } = await supabase
     .from('site_content')
-    .update({ value, updated_at: new Date().toISOString() })
-    .eq('page', page)
-    .eq('block_key', block_key);
+    .upsert(
+      { page, block_key, value, updated_at: new Date().toISOString() },
+      { onConflict: 'page,block_key' }
+    );
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
