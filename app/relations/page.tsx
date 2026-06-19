@@ -52,12 +52,7 @@ export default function RelationsPage() {
           </span>
           <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-5"
             style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}>
-            {c.page_title.includes('\n')
-              ? c.page_title.split('\n').map((line: string, i: number) =>
-                  i === 0 ? <span key={i}>{line}<br /></span> : <span key={i} style={{ color: '#a864a0' }}>{line}</span>
-                )
-              : <>{c.page_title.replace(' et ', <br key="br" /> as any)} <span style={{ color: '#a864a0' }}></span></>
-            }
+            {c.page_title}
           </h1>
           <p className="text-lg md:text-xl leading-relaxed mb-10 max-w-xl mx-auto" style={{ color: '#555' }}>
             {c.intro_text}
@@ -185,7 +180,7 @@ export default function RelationsPage() {
       </section>
 
       {/* ── STAY IN TOUCH ── */}
-      {typeof StayInTouchForm !== 'undefined' && <StayInTouchForm />}
+      <StayInTouchForm />
 
       <Footer />
     </main>
