@@ -6,7 +6,7 @@ const PROTECTED_PATHS = [
   '/api/revalidate-articles',
   '/api/update-content',
 ];
-const CMS_SESSION_COOKIE = 'heldonica_cms_session';
+const CMS_SESSION_COOKIE = 'happyhumans_cms_session';
 
 type CmsSessionPayload = {
   exp: number;
