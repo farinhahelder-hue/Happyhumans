@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { requireCmsAuth } from '@/lib/cms-auth';
 
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -8,17 +9,8 @@ function getSupabase() {
   return createClient(url, key);
 }
 
-function requireAuth(req: NextRequest) {
-  const token = req.headers.get('x-cms-token');
-  if (token !== process.env.CMS_SECRET_TOKEN) {
-    return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-  }
-  return null;
-}
-
-// GET — liste tous les créneaux (admin: tous statuts, triés par date)
 export async function GET(req: NextRequest) {
-  const authError = requireAuth(req);
+  const authError = requireCmsAuth(req);
   if (authError) return authError;
   const supabase = getSupabase();
   if (!supabase) return NextResponse.json({ error: 'Supabase non configuré' }, { status: 503 });
@@ -33,9 +25,8 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ slots: data || [] });
 }
 
-// POST — créer un créneau
 export async function POST(req: NextRequest) {
-  const authError = requireAuth(req);
+  const authError = requireCmsAuth(req);
   if (authError) return authError;
   const supabase = getSupabase();
   if (!supabase) return NextResponse.json({ error: 'Supabase non configuré' }, { status: 503 });
