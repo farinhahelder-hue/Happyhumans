@@ -28,6 +28,20 @@ type Demande = {
 type Setting = { id: number; key: string; value: string; label: string; group_name: string; };
 type SiteContent = { id: number; page: string; block_key: string; value: string; label: string; type: string; };
 
+type BookingSlot = {
+  id: string; slot_date: string; slot_time: string;
+  slot_type: 'coaching' | 'discovery' | 'enterprise';
+  duration_minutes: number; status: 'available' | 'booked' | 'cancelled';
+  notes: string | null; created_at: string;
+};
+
+type BookingRequest = {
+  id: string; slot_id: string; client_name: string; client_email: string;
+  client_phone: string | null; message: string | null;
+  status: 'pending' | 'confirmed' | 'cancelled';
+  created_at: string; booking_slots?: BookingSlot;
+};
+
 // ─── Helpers ─────────────────────────────────────────────────
 const fmt = (d: string) => d ? new Date(d).toLocaleDateString('fr-FR') : '—';
 const slug = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -206,6 +220,11 @@ export default function CMSAdmin() {
 
   // Demandes travel
   const [demandes, setDemandes] = useState<Demande[]>([]);
+  const [bookingSlots, setBookingSlots] = useState<BookingSlot[]>([]);
+  const [bookingRequests, setBookingRequests] = useState<BookingRequest[]>([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
+  const [savingSlot, setSavingSlot] = useState(false);
+  const [newSlot, setNewSlot] = useState({ date: '', time: '10:00', type: 'coaching', notes: '' });
   const [loadingDemandes, setLoadingDemandes] = useState(false);
   const [updatingDemandeId, setUpdatingDemandeId] = useState<string | null>(null);
 
@@ -385,6 +404,86 @@ export default function CMSAdmin() {
     }
   }, [handleUnauthorized, showToast]);
 
+  // Load booking slots
+  const loadBookingSlots = useCallback(async () => {
+    setLoadingSlots(true);
+    try {
+      const res = await fetch('/api/cms/booking-slots');
+      if (handleUnauthorized(res)) return;
+      const data = await res.json();
+      setBookingSlots(data.slots || []);
+    } catch {
+      showToast('Impossible de charger les créneaux.');
+    } finally {
+      setLoadingSlots(false);
+    }
+  }, [handleUnauthorized, showToast]);
+
+  // Load booking requests
+  const loadBookingRequests = useCallback(async () => {
+    try {
+      const res = await fetch('/api/cms/booking-requests');
+      if (handleUnauthorized(res)) return;
+      const data = await res.json();
+      setBookingRequests(data.requests || []);
+    } catch {
+      showToast('Impossible de charger les demandes.');
+    }
+  }, [handleUnauthorized, showToast]);
+
+  // Save new slot
+  const saveNewSlot = async () => {
+    if (!newSlot.date || !newSlot.time) {
+      showToast("Veuillez remplir la date et l'heure");
+      return;
+    }
+    setSavingSlot(true);
+    try {
+      const res = await fetch('/api/cms/booking-slots', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newSlot),
+      });
+      if (handleUnauthorized(res)) return;
+      showToast('Créneau ajouté');
+      setNewSlot({ date: '', time: '10:00', type: 'coaching', notes: '' });
+      loadBookingSlots();
+    } catch {
+      showToast("Erreur: Impossible d'ajouter");
+    } finally {
+      setSavingSlot(false);
+    }
+  };
+
+  // Delete slot
+  const deleteSlot = async (id: string) => {
+    if (!confirm('Supprimer ce créneau ?')) return;
+    try {
+      const res = await fetch(`/api/cms/booking-slots/${id}`, { method: 'DELETE' });
+      if (handleUnauthorized(res)) return;
+      showToast('Créneau supprimé');
+      loadBookingSlots();
+    } catch {
+      showToast('Erreur: Impossible de supprimer');
+    }
+  };
+
+  // Update request status
+  const updateRequestStatus = async (id: string, status: string) => {
+    try {
+      const res = await fetch(`/api/cms/booking-requests/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      if (handleUnauthorized(res)) return;
+      showToast('Statut mis à jour');
+      loadBookingRequests();
+    } catch {
+      showToast('Erreur: Impossible de mettre à jour');
+    }
+  };
+
   // Load settings + content
   const loadSettings = useCallback(async () => {
     setLoadingSettings(true);
@@ -413,6 +512,7 @@ export default function CMSAdmin() {
 
   useEffect(() => { if (authed) loadArticles(); }, [authed, loadArticles]);
   useEffect(() => { if (authed && tab === 'demandes') loadDemandes(); }, [authed, tab, loadDemandes]);
+  useEffect(() => { if (authed && tab === 'booking') { loadBookingSlots(); loadBookingRequests(); } }, [authed, tab, loadBookingSlots, loadBookingRequests]);
   useEffect(() => { if (authed && (tab === 'settings' || tab === 'pages')) loadSettings(); }, [authed, tab, loadSettings]);
 
   // Save settings
@@ -1156,6 +1256,110 @@ export default function CMSAdmin() {
                   ))}
                 </div>
               )}
+          </div>
+        )}
+
+        {/* ── BOOKING ── */}
+        {tab === 'booking' && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+            {/* Add slot */}
+            <div style={{ background: 'white', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,.07)' }}>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#6b2a1a', marginBottom: '1rem' }}>📅 Ajouter un créneau</h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
+                <div>
+                  <label style={lbl}>Date</label>
+                  <input type="date" value={newSlot.date}
+                    onChange={e => setNewSlot(p => ({...p, date: e.target.value}))}
+                    style={inp} min={new Date().toISOString().split('T')[0]} />
+                </div>
+                <div>
+                  <label style={lbl}>Heure</label>
+                  <select value={newSlot.time}
+                    onChange={e => setNewSlot(p => ({...p, time: e.target.value}))}
+                    style={inp}>
+                    <option value="09:00">09:00</option>
+                    <option value="10:00">10:00</option>
+                    <option value="11:00">11:00</option>
+                    <option value="14:00">14:00</option>
+                    <option value="15:00">15:00</option>
+                    <option value="16:00">16:00</option>
+                    <option value="17:00">17:00</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={lbl}>Type</label>
+                  <select value={newSlot.type}
+                    onChange={e => setNewSlot(p => ({...p, type: e.target.value}))}
+                    style={inp}>
+                    <option value="coaching">Coaching (60 min)</option>
+                    <option value="discovery">Découverte (30 min)</option>
+                    <option value="enterprise">Entreprise</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={lbl}>Notes</label>
+                  <input type="text" value={newSlot.notes}
+                    onChange={e => setNewSlot(p => ({...p, notes: e.target.value}))}
+                    style={inp} placeholder="En ligne, présentiel..." />
+                </div>
+                <button onClick={saveNewSlot} disabled={savingSlot}
+                  style={{ padding: '.75rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer' }}>
+                  {savingSlot ? 'Ajout...' : '✅ Ajouter le créneau'}
+                </button>
+              </div>
+            </div>
+            {/* Slots list */}
+            <div style={{ background: 'white', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,.07)', maxHeight: 600, overflow: 'auto' }}>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#6b2a1a', marginBottom: '1rem' }}>
+                📆 Créneaux ({bookingSlots.length})
+              </h2>
+              {loadingSlots ? (
+                <p style={{ color: '#888', textAlign: 'center', padding: '2rem' }}>Chargement...</p>
+              ) : bookingSlots.length === 0 ? (
+                <p style={{ color: '#888', textAlign: 'center', padding: '2rem' }}>Aucun créneau</p>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
+                  {bookingSlots.map(slot => (
+                    <div key={slot.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '.75rem', background: '#faf9f7', borderRadius: '.5rem', border: '1px solid #e8e4df' }}>
+                      <div>
+                        <div style={{ fontWeight: 600, color: '#333' }}>{slot.slot_date} à {slot.slot_time}</div>
+                        <div style={{ fontSize: '.8rem', color: '#666' }}>{slot.slot_type} · {slot.duration_minutes} min</div>
+                      </div>
+                      <button onClick={() => deleteSlot(slot.id)}
+                        style={{ padding: '.3rem .6rem', background: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: '.3rem', cursor: 'pointer', fontSize: '.8rem' }}>
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            {/* Requests */}
+            <div style={{ gridColumn: '1 / -1', background: 'white', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,.07)' }}>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#6b2a1a', marginBottom: '1rem' }}>
+                📋 Demandes ({bookingRequests.length})
+              </h2>
+              {bookingRequests.length === 0 ? (
+                <p style={{ color: '#888', textAlign: 'center', padding: '1rem' }}>Aucune demande</p>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
+                  {bookingRequests.map(req => (
+                    <div key={req.id} style={{ padding: '1rem', background: '#faf9f7', borderRadius: '.75rem', border: '1px solid #e8e4df' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '.5rem' }}>
+                        <strong>{req.client_name}</strong>
+                        <span style={{ color: '#888' }}>{req.client_email}</span>
+                      </div>
+                      <div style={{ display: 'flex', gap: '.5rem', marginTop: '.75rem' }}>
+                        <button onClick={() => updateRequestStatus(req.id, 'confirmed')}
+                          style={{ padding: '.4rem .8rem', background: '#166534', color: 'white', border: 'none', borderRadius: '.4rem', cursor: 'pointer' }}>
+                          ✅ Confirmer
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
