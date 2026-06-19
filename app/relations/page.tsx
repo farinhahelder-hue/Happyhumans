@@ -1,9 +1,9 @@
 'use client';
-import { useState } from 'react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { useState, useRef } from 'react';
+import BookingWidget from '@/components/BookingWidget';
+import { AttachmentTest } from '@/components/attachment-test/AttachmentTest';
 
-const RESOURCES = [
+SOURCES = [
   {
     id: 'attached',
     emoji: '📖',
@@ -85,163 +85,188 @@ const RESOURCES = [
   },
 ];
 
+const ST
+
 const STEPS = [
-  { number: '01', title: 'Faites le test', description: "Identifiez votre style d'attachement en 16 questions (5 min, gratuit)." },
-  { number: '02', title: 'Recevez vos 3 actions', description: 'Monica vous identifie 3 actions concrètes et personnalisées vers des relations plus épanouissantes.' },
-  { number: '03', title: "Passez à l'action", description: 'Repartez avec un plan clair, des outils pratiques et la clarté pour transformer vos relations dès maintenant.' },
-];
+  { num: '01', title: 'Faites le test', desc: '16 questions · 3 à 5 minutes · Résultat immédiat' },
+  { num: '02', title: 'Session découverte', desc: 'Séance offerte de 45 min pour découvrir vos 3 actions' },
+  { num: '03', title: 'Passez à l'action', desc: 'Un plan clair et des outils pour des relations épanouissantes' },
+]
 
 export default function RelationsPage() {
-  const [activeModal, setActiveModal] = useState<string | null>(null);
-  const activeResource = RESOURCES.find(r => r.id === activeModal);
+  const [activeModal, setActiveModal] = useState<string | null>(null)
+  const [bookingOpen, setBookingOpen] = useState(false)
+  const bookingRef = useRef<HTMLDivElement>(null)
+
+  const handleBook = () => {
+    setBookingOpen(true)
+    setTimeout(() => {
+      bookingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 100)
+  }
+
+  const activeSource = SOURCES.find(s => s.id === activeModal)
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: '#F8F6F2' }}>
-      <Header />
+    <div className="min-h-screen bg-[#f7f4ef]">
 
-      {/* HERO */}
-      <section className="px-4 py-20 md:py-32 text-center"
-        style={{ background: 'linear-gradient(160deg, #fdf6ee 0%, #f5e8f5 50%, #ede8fa 100%)' }}>
-        <div className="max-w-3xl mx-auto">
-          <h1 className="text-4xl md:text-6xl font-bold mb-5"
-            style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}>
-            Comprendre pour transformer
-          </h1>
-          <p className="text-lg md:text-xl" style={{ color: '#666' }}>
-            Des clés concrètes pour nourrir vos relations — avec les autres, et avec vous-même.
-          </p>
+      {/* ══ NAV MINIMALISTE ═══════════════════════════════════════════════ */}
+      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-stone-200 bg-white/90 px-6 py-4 backdrop-blur-sm md:px-10">
+        <a href="/" className="text-lg font-serif font-semibold text-stone-900 hover:text-[#2f6b61] transition">
+          ← Happy Humans
+        </a>
+        <button
+          onClick={handleBook}
+          className="rounded-full bg-[#2f6b61] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#235249] transition"
+        >
+          Réserver une séance
+        </button>
+      </header>
+
+      <main>
+
+        {/* ══ TEST ATTACHEMENT — EN HAUT ════════════════════════════════ */}
+        <section className="bg-stone-900 px-6 py-16 md:py-24 md:px-10">
+          <div className="mx-auto max-w-3xl">
+            <div className="mb-10 text-center">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
+                Relations &amp; Attachement · Happy Humans
+              </p>
+            </div>
+            <AttachmentTest onBook={handleBook} />
+          </div>
+        </section>
+
+        {/* ══ VOS 3 ACTIONS ════════════════════════════════════════════ */}
+        <section className="bg-[#f7f4ef] px-6 py-16 md:px-10 md:py-20">
+          <div className="mx-auto max-w-4xl">
+            <div className="mb-10 text-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">La méthode</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Vos 3 actions</h2>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {STEPS.map(({ num, title, desc }) => (
+                <div key={num} className="rounded-2xl bg-white p-7 shadow-sm">
+                  <p className="mb-3 text-3xl font-serif font-light text-[#2f6b61] opacity-60">{num}</p>
+                  <h3 className="mb-2 text-base font-semibold text-stone-900">{title}</h3>
+                  <p className="text-sm text-stone-500">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ══ RÉSERVER — BOOKING ════════════════════════════════════════ */}
+        <section
+          ref={bookingRef}
+          className="bg-white px-6 py-16 md:px-10 md:py-20"
+          id="booking"
+        >
+          <div className="mx-auto max-w-4xl">
+            <div className="mb-10 text-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Agenda</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">
+                Choisissez votre créneau
+              </h2>
+              <p className="mt-3 text-sm text-stone-500">
+                Séance découverte offerte · 45 minutes · Sans engagement
+              </p>
+            </div>
+            {bookingOpen
+              ? <BookingWidget defaultType="discovery" />
+              : (
+                <div className="text-center">
+                  <button
+                    onClick={() => setBookingOpen(true)}
+                    className="rounded-full bg-[#2f6b61] px-8 py-4 text-sm font-semibold text-white shadow hover:bg-[#235249] transition"
+                  >
+                    Voir les créneaux disponibles →
+                  </button>
+                </div>
+              )
+            }
+          </div>
+        </section>
+
+        {/* ══ RESSOURCES THÉORIQUES ═════════════════════════════════════ */}
+        <section className="bg-[#f7f4ef] px-6 py-16 md:px-10 md:py-20">
+          <div className="mx-auto max-w-4xl">
+            <div className="mb-10 text-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Références</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">
+                Les fondements théoriques
+              </h2>
+              <p className="mt-3 text-sm text-stone-500 max-w-xl mx-auto">
+                Cliquez sur une carte pour explorer les théories qui guident l&apos;approche de Monica.
+              </p>
+            </div>
+            <div className="grid gap-5 sm:grid-cols-3">
+              {SOURCES.map(source => (
+                <button
+                  key={source.id}
+                  onClick={() => setActiveModal(source.id)}
+                  className="rounded-2xl bg-white p-6 text-left shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all group"
+                >
+                  <div className="mb-3 text-3xl">{source.emoji}</div>
+                  <h3 className="mb-1 text-base font-semibold text-stone-900 group-hover:text-[#2f6b61] transition">{source.title}</h3>
+                  <p className="text-xs text-stone-500">{source.subtitle}</p>
+                  <p className="mt-3 text-xs font-semibold text-[#2f6b61]">En savoir plus →</p>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      {/* ══ FOOTER MINIMAL ════════════════════════════════════════════════ */}
+      <footer className="border-t border-stone-800 bg-stone-900 px-6 py-8 md:px-10">
+        <div className="mx-auto max-w-5xl flex flex-col items-center justify-between gap-4 text-xs text-stone-400 md:flex-row">
+          <a href="/" className="font-serif text-base text-stone-300 font-semibold hover:text-white transition">Happy Humans</a>
+          <p>© {new Date().getFullYear()} Happy Humans — Monica Schneider</p>
+          <div className="flex gap-6">
+            <a href="/mentions-legales" className="hover:text-stone-200 transition">Mentions légales</a>
+            <a href="/politique-confidentialite" className="hover:text-stone-200 transition">Confidentialité</a>
+          </div>
         </div>
-      </section>
+      </footer>
 
-      {/* 3 ACTIONS */}
-      <section className="px-4 py-16 md:py-24" style={{ background: 'linear-gradient(160deg, #fdf6ee 0%, #f5e8f5 50%, #ede8fa 100%)' }}>
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center" style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}>
-            Vos 3 actions vers des relations plus épanouissantes
-          </h2>
-          <p className="text-center mb-12 max-w-2xl mx-auto" style={{ color: '#666' }}>
-            Lors d'une séance offerte de 30 minutes, Monica vous accompagne pour identifier les 3 actions concrètes les plus impactantes pour transformer vos relations dès maintenant.
-          </p>
-          <div className="grid md:grid-cols-3 gap-8">
-            {STEPS.map((step) => (
-              <div key={step.number} className="text-center p-6">
-                <div className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold" style={{ background: '#a864a0', color: '#fff' }}>{step.number}</div>
-                <h3 className="text-xl font-bold mb-2" style={{ color: '#1a1a2e' }}>{step.title}</h3>
-                <p className="text-sm" style={{ color: '#666' }}>{step.description}</p>
+      {/* ══ MODAL THÉORIQUE ═══════════════════════════════════════════════ */}
+      {activeModal && activeSource && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-stone-900/80 p-4 pt-16 backdrop-blur-sm"
+          onClick={() => setActiveModal(null)}
+        >
+          <div
+            className="relative w-full max-w-2xl rounded-2xl bg-white p-8 shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setActiveModal(null)}
+              className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-full bg-stone-100 text-stone-500 hover:bg-stone-200"
+            >✕</button>
+            <div className="mb-6 flex items-center gap-3">
+              <span className="text-3xl">{activeSource.emoji}</span>
+              <div>
+                <h2 className="text-xl font-semibold text-stone-900">{activeSource.title}</h2>
+                <p className="text-sm text-stone-500">{activeSource.subtitle}</p>
               </div>
-            ))}
-          </div>
-          <div className="text-center mt-10">
-            <a href="/booking" className="inline-block px-10 py-4 font-semibold rounded-2xl text-lg transition-all shadow-lg"
-              style={{ background: '#a864a0', color: '#fff', boxShadow: '0 8px 24px rgba(168,100,160,0.35)' }}>
-              Réserver ma séance offerte
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* RESSOURCES */}
-      <section className="px-4 py-16 md:py-24">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center" style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}>
-            Ressources
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {RESOURCES.map((resource) => (
+            </div>
+            <div className="prose prose-sm max-w-none text-stone-700">
+              {activeSource.content}
+            </div>
+            <div className="mt-8 border-t pt-6">
               <button
-                key={resource.id}
-                onClick={() => setActiveModal(resource.id)}
-                className="text-left rounded-2xl p-8 transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer"
-                style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.08)' }}
+                onClick={() => { setActiveModal(null); handleBook() }}
+                className="w-full rounded-full bg-[#2f6b61] py-3 text-sm font-semibold text-white hover:bg-[#235249] transition"
               >
-                <div className="text-5xl mb-4">{resource.emoji}</div>
-                <h2 className="text-2xl font-bold mb-2" style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}>{resource.title}</h2>
-                <p className="text-sm" style={{ color: '#666' }}>{resource.subtitle}</p>
-                <div className="mt-4 flex items-center gap-2" style={{ color: '#a864a0' }}>
-                  <span className="text-sm font-medium">Lire</span><span>→</span>
-                </div>
+                Réserver une séance découverte de 45 min →
               </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* EXERCICES */}
-      <section className="px-4 py-16 md:py-24" style={{ background: 'linear-gradient(135deg, #f5e8f5 0%, #ede8fa 100%)' }}>
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center" style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}>
-            Exercices à faire chez soi
-          </h2>
-          
-          <div className="space-y-8">
-            <div className="p-6 rounded-xl" style={{ background: '#fff' }}>
-              <h3 className="text-lg font-semibold mb-4" style={{ color: '#a864a0' }}>Questions de réflexion</h3>
-              <ul className="space-y-3" style={{ color: '#555', lineHeight: 1.8 }}>
-                <li>Quels sont les modèles d'attachement que j'ai intériorisés dans mon enfance ?</li>
-                <li>Quelles « conditions de valeur » est-ce que je me fixe pour me sentir acceptable ?</li>
-                <li>Est-ce que je cherche l'amour pour combler un vide ou pour partager une plénitude ?</li>
-                <li>Quelles parts de moi est-ce que je cache par peur du jugement ?</li>
-              </ul>
             </div>
-            
-            <div className="p-6 rounded-xl" style={{ background: '#fff' }}>
-              <h3 className="text-lg font-semibold mb-4" style={{ color: '#a864a0' }}>Exercices à faire dans le monde</h3>
-              <div className="grid sm:grid-cols-3 gap-6">
-                <div className="text-center">
-                  <div className="text-4xl mb-3">🚶</div>
-                  <h4 className="font-semibold mb-2">Marcher en flottant</h4>
-                  <p className="text-sm" style={{ color: '#666' }}>Une promenade consciente, sans destination, pour contacter vos sensations.</p>
-                </div>
-                <div className="text-center">
-                  <div className="text-4xl mb-3">💕</div>
-                  <h4 className="font-semibold mb-2">S'emmener à des dates</h4>
-                  <p className="text-sm" style={{ color: '#666' }}>Passez du temps avec vous-même comme vous le feriez avec quelqu'un que vous aimez.</p>
-                </div>
-                <div className="text-center">
-                  <div className="text-4xl mb-3">✨</div>
-                  <h4 className="font-semibold mb-2">Faire ce qu'on a vraiment envie</h4>
-                  <p className="text-sm" style={{ color: '#666' }}>Pleurer, rire, demander de l'aide — faites-le quand même.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA FINAL */}
-      <section id="seance-offerte" className="px-4 py-20 md:py-24" style={{ background: '#fff' }}>
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}>
-            Prête à transformer vos relations ?
-          </h2>
-          <p className="text-lg mb-8" style={{ color: '#666' }}>
-            Lors d'une séance offerte de 30 minutes, Monica vous accompagne pour identifier les axes concrets de transformation dans vos relations.
-          </p>
-          <a href="/booking" className="inline-block px-10 py-4 font-semibold rounded-2xl text-lg transition-all shadow-lg"
-            style={{ background: '#a864a0', color: '#fff', boxShadow: '0 8px 24px rgba(168,100,160,0.35)' }}>
-            Réserver ma séance offerte
-          </a>
-        </div>
-      </section>
-
-      <Footer />
-
-      {/* MODAL */}
-      {activeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.6)' }} onClick={() => setActiveModal(null)}>
-          <div className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl p-8" style={{ background: '#fff' }} onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setActiveModal(null)} className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center text-2xl" style={{ background: 'rgba(0,0,0,0.05)', color: '#666' }}>×</button>
-            {activeResource && (
-              <>
-                <div className="text-4xl mb-4">{activeResource.emoji}</div>
-                <h2 className="text-3xl font-bold mb-2" style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}>{activeResource.title}</h2>
-                <p className="text-lg mb-6" style={{ color: '#a864a0' }}>{activeResource.subtitle}</p>
-                <div className="border-t pt-6" style={{ borderColor: 'rgba(0,0,0,0.08)' }}>{activeResource.content}</div>
-              </>
-            )}
           </div>
         </div>
       )}
-    </main>
-  );
+
+    </div>
+  )
 }
