@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { requireCmsAuth } from '@/lib/cms-auth';
 
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -8,16 +9,8 @@ function getSupabase() {
   return createClient(url, key);
 }
 
-function requireAuth(req: NextRequest) {
-  const token = req.headers.get('x-cms-token');
-  if (token !== process.env.CMS_SECRET_TOKEN) {
-    return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
-  }
-  return null;
-}
-
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
-  const authError = requireAuth(req);
+  const authError = requireCmsAuth(req);
   if (authError) return authError;
   const supabase = getSupabase();
   if (!supabase) return NextResponse.json({ error: 'Supabase non configuré' }, { status: 503 });
