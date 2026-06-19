@@ -13,7 +13,7 @@ const DEFAULTS = {
 
 export default function ContactPage() {
   const c = useCmsContent('contact', DEFAULTS)
-  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
+  const [form, setForm] = useState({ name: '', email: '', type: '', subject: '', message: '' })
   const [sent, setSent] = useState(false)
   const [sending, setSending] = useState(false)
 
@@ -24,7 +24,7 @@ export default function ContactPage() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, type: form.type }),
       })
       if (res.ok) setSent(true)
     } finally {
@@ -73,6 +73,18 @@ export default function ContactPage() {
                       </div>
                     </div>
                     <div>
+                      
+                      <div>
+                        <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">Type de demande</label>
+                        <select required value={form.type} onChange={e => setForm(f => ({...f, type: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2f6b61] bg-white">
+                          <option value="">Sélectionnez...</option>
+                          <option value="coaching-individuel">Coaching individuel</option>
+                          <option value="coaching-entreprises">Coaching & accompagnement entreprises</option>
+                          <option value="relations">Accompagnement Relations</option>
+                          <option value="conference">Conférence / Formation</option>
+                          <option value="autre">Autre question</option>
+                        </select>
+                      </div>
                       <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">Sujet</label>
                       <input value={form.subject} onChange={e => setForm(f => ({...f, subject: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2f6b61]" placeholder="Objet de votre message" />
                     </div>
