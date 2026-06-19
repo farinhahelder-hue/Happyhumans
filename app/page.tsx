@@ -145,9 +145,9 @@ export default function LandingPage() {
               </div>
               <div className="grid gap-4">
                 {[
-                  { emoji: '📖', title: 'Théorie de l'attachement', desc: 'Sécure, anxieux, évitant — comprenez vos schémas relationnels.' },
+                  { emoji: '📖', title: 'Théorie de l\'attachement', desc: 'Sécure, anxieux, évitant — comprenez vos schémas relationnels.' },
                   { emoji: '🪞', title: 'Carl Rogers', desc: 'Regard positif inconditionnel et amour de soi comme base.' },
-                  { emoji: '💝', title: 'Erich Fromm', desc: 'L'art d'aimer : de l'amour immature à l'amour mature.' },
+                  { emoji: '💝', title: 'Erich Fromm', desc: 'L\'art d\'aimer : de l\'amour immature à l\'amour mature.' },
                 ].map(({ emoji, title, desc }) => (
                   <Link key={title} href="/relations" className="flex gap-4 rounded-xl bg-[#f7f4ef] p-4 hover:shadow-sm transition group">
                     <span className="text-2xl">{emoji}</span>

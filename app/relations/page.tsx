@@ -3,7 +3,7 @@ import { useState, useRef } from 'react';
 import BookingWidget from '@/components/BookingWidget';
 import { AttachmentTest } from '@/components/attachment-test/AttachmentTest';
 
-SOURCES = [
+const SOURCES = [
   {
     id: 'attached',
     emoji: '📖',
@@ -85,12 +85,11 @@ SOURCES = [
   },
 ];
 
-const ST
 
 const STEPS = [
   { num: '01', title: 'Faites le test', desc: '16 questions · 3 à 5 minutes · Résultat immédiat' },
   { num: '02', title: 'Session découverte', desc: 'Séance offerte de 45 min pour découvrir vos 3 actions' },
-  { num: '03', title: 'Passez à l'action', desc: 'Un plan clair et des outils pour des relations épanouissantes' },
+  { num: '03', title: 'Passez à l\'action', desc: 'Un plan clair et des outils pour des relations épanouissantes' },
 ]
 
 export default function RelationsPage() {
