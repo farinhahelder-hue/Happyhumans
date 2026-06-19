@@ -62,75 +62,103 @@ function getReadTimeMinutes(content?: string) {
 }
 
 // â”€â”€â”€ Config pages CMS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { key: string; label: string; type: 'text' | 'textarea' }[] }> = {
+const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'richtext' }[] }> = {
   'home': {
     label: 'Accueil',
     emoji: '🏠',
     sections: [
-      { key: 'hero_title',          label: 'Hero â€“ Titre',                     type: 'text' },
-      { key: 'hero_subtitle',       label: 'Hero â€“ Sous-titre',                type: 'textarea' },
-      { key: 'hero_cta',            label: 'Hero â€“ Bouton CTA',                type: 'text' },
-      { key: 'section_about_title', label: 'Section Ã€ propos â€“ Titre',         type: 'text' },
-      { key: 'section_about_text',  label: 'Section Ã€ propos â€“ Texte',         type: 'textarea' },
-      { key: 'services_title',      label: 'Section Services â€“ Titre',         type: 'text' },
-      { key: 'services_subtitle',   label: 'Section Services â€“ Sous-titre',    type: 'textarea' },
-      { key: 'newsletter_title',    label: 'Newsletter â€“ Titre',               type: 'text' },
-      { key: 'newsletter_subtitle', label: 'Newsletter â€“ Sous-titre',          type: 'textarea' },
+      { key: 'hero_image',          label: 'Hero — Image de fond',              type: 'image' },
+      { key: 'hero_title',          label: 'Hero — Titre',                      type: 'text' },
+      { key: 'hero_subtitle',       label: 'Hero — Sous-titre',                 type: 'textarea' },
+      { key: 'hero_cta',            label: 'Hero — Bouton CTA',                 type: 'text' },
+      { key: 'section_about_image', label: 'À propos — Photo Monica',           type: 'image' },
+      { key: 'section_about_title', label: 'À propos — Titre',                  type: 'text' },
+      { key: 'section_about_text',  label: 'À propos — Texte',                  type: 'richtext' },
+      { key: 'services_title',      label: 'Section Services — Titre',          type: 'text' },
+      { key: 'services_subtitle',   label: 'Section Services — Sous-titre',     type: 'textarea' },
+      { key: 'services_image',      label: 'Section Services — Image',          type: 'image' },
+      { key: 'newsletter_title',    label: 'Newsletter — Titre',                type: 'text' },
+      { key: 'newsletter_subtitle', label: 'Newsletter — Sous-titre',           type: 'textarea' },
     ],
   },
   'a-propos': {
-    label: 'Ã€ propos',
+    label: 'À propos',
     emoji: '👋',
     sections: [
-      { key: 'page_title',  label: 'Titre de la page',      type: 'text' },
-      { key: 'intro_text',  label: 'Texte d\'introduction', type: 'textarea' },
+      { key: 'hero_image',    label: 'Photo principale (hero)',         type: 'image' },
+      { key: 'page_title',    label: 'Titre de la page',                type: 'text' },
+      { key: 'intro_text',    label: "Texte d'introduction",            type: 'richtext' },
+      { key: 'photo_1',       label: 'Photo 1',                         type: 'image' },
+      { key: 'photo_2',       label: 'Photo 2',                         type: 'image' },
+      { key: 'photo_3',       label: 'Photo 3',                         type: 'image' },
+      { key: 'bio_title',     label: 'Section biographie — Titre',      type: 'text' },
+      { key: 'bio_text',      label: 'Section biographie — Texte',      type: 'richtext' },
+      { key: 'valeurs_title', label: 'Section valeurs — Titre',         type: 'text' },
+      { key: 'valeurs_text',  label: 'Section valeurs — Texte',         type: 'richtext' },
     ],
   },
-  'nos-services': {
-    label: 'Nos services',
-    emoji: '✨',
-    sections: [
-      { key: 'hero_title',    label: 'Hero â€“ Titre',              type: 'text' },
-      { key: 'hero_subtitle', label: 'Hero â€“ Sous-titre',         type: 'textarea' },
-      { key: 'b2c_title',     label: 'B2C â€“ Titre service',       type: 'text' },
-      { key: 'b2c_desc',      label: 'B2C â€“ Description',         type: 'textarea' },
-      { key: 'b2c_cta',       label: 'B2C â€“ Bouton CTA',          type: 'text' },
-      { key: 'b2b_title',     label: 'B2B â€“ Titre service',       type: 'text' },
-      { key: 'b2b_desc',      label: 'B2B â€“ Description',         type: 'textarea' },
-      { key: 'b2b_cta',       label: 'B2B â€“ Bouton CTA',          type: 'text' },
-    ],
-  },
-  'travel-planning': {
+  'coaching': {
     label: 'Coaching',
-    emoji: '✈️',
+    emoji: '✈️',
     sections: [
-      { key: 'hero_title',    label: 'Hero â€“ Titre',       type: 'text' },
-      { key: 'hero_subtitle', label: 'Hero â€“ Sous-titre',  type: 'textarea' },
-      { key: 'form_intro',    label: 'Intro formulaire',   type: 'textarea' },
-      { key: 'reassurance',   label: 'Texte réassurance',  type: 'text' },
+      { key: 'hero_image',        label: 'Image hero',                  type: 'image' },
+      { key: 'hero_title',        label: 'Hero — Titre',                type: 'text' },
+      { key: 'hero_subtitle',     label: 'Hero — Sous-titre',           type: 'textarea' },
+      { key: 'coaching_b2c_image',label: 'Coaching individuel — Image', type: 'image' },
+      { key: 'coaching_b2c_title',label: 'Coaching individuel — Titre', type: 'text' },
+      { key: 'coaching_b2c_text', label: 'Coaching individuel — Texte', type: 'richtext' },
+      { key: 'coaching_b2b_image',label: 'Coaching entreprises — Image',type: 'image' },
+      { key: 'coaching_b2b_title',label: 'Coaching entreprises — Titre',type: 'text' },
+      { key: 'coaching_b2b_text', label: 'Coaching entreprises — Texte',type: 'richtext' },
+      { key: 'form_intro',        label: 'Intro formulaire',            type: 'textarea' },
+      { key: 'reassurance',       label: 'Texte réassurance',           type: 'text' },
+    ],
+  },
+  'entreprises': {
+    label: 'Entreprises',
+    emoji: '🏢',
+    sections: [
+      { key: 'hero_image',    label: 'Image hero',                type: 'image' },
+      { key: 'page_title',    label: 'Titre de la page',          type: 'text' },
+      { key: 'intro_text',    label: "Texte d'introduction",      type: 'richtext' },
+      { key: 'section_image', label: 'Image section principale',  type: 'image' },
+      { key: 'section_title', label: 'Titre section',             type: 'text' },
+      { key: 'section_text',  label: 'Texte section',             type: 'richtext' },
+    ],
+  },
+  'temoignages': {
+    label: 'Témoignages',
+    emoji: '💬',
+    sections: [
+      { key: 'hero_image',   label: 'Image hero',          type: 'image' },
+      { key: 'page_title',   label: 'Titre de la page',    type: 'text' },
+      { key: 'intro_text',   label: 'Texte introduction',  type: 'textarea' },
     ],
   },
   'contact': {
     label: 'Contact',
     emoji: '📧',
     sections: [
-      { key: 'page_title',  label: 'Titre de la page',      type: 'text' },
-      { key: 'intro_text',  label: 'Texte d\'introduction', type: 'textarea' },
-    ],
-  },
-  'hotel-consulting': {
-    label: 'Entreprises',
-    emoji: '🏨',
-    sections: [
-      { key: 'page_title',  label: 'Titre de la page',      type: 'text' },
-      { key: 'intro_text',  label: 'Texte d\'introduction', type: 'textarea' },
+      { key: 'hero_image',  label: 'Image hero',                type: 'image' },
+      { key: 'page_title',  label: 'Titre de la page',          type: 'text' },
+      { key: 'intro_text',  label: "Texte d'introduction",      type: 'richtext' },
+      { key: 'photo',       label: 'Photo Monica (sidebar)',     type: 'image' },
     ],
   },
   'mentions-legales': {
     label: 'Mentions légales',
-    emoji: '⚖️',
+    emoji: '⚖️',
     sections: [
       { key: 'page_title', label: 'Titre de la page', type: 'text' },
+      { key: 'content',    label: 'Contenu complet',  type: 'richtext' },
+    ],
+  },
+  'politique-confidentialite': {
+    label: 'Politique de confidentialité',
+    emoji: '🔒',
+    sections: [
+      { key: 'page_title', label: 'Titre de la page', type: 'text' },
+      { key: 'content',    label: 'Contenu complet',  type: 'richtext' },
     ],
   },
 };
@@ -160,6 +188,7 @@ export default function CMSAdmin() {
   const [loadingArticles, setLoadingArticles] = useState(false);
   const [savingArticle, setSavingArticle] = useState(false);
   const [uploadingFeaturedImage, setUploadingFeaturedImage] = useState(false);
+  const [mediaPickerTarget, setMediaPickerTarget] = useState<string | null>(null);
   const [articleBaseline, setArticleBaseline] = useState(() => getArticleDraftSignature(null));
   const [showArticlePreview, setShowArticlePreview] = useState(false);
 
@@ -637,7 +666,14 @@ export default function CMSAdmin() {
           onClose={() => setShowMediaLibrary(false)}
           onSelect={(url) => {
             setEditingArticle(prev => prev ? { ...prev, featured_image: url } : prev);
-            showToast('✅ Image sélectionnée depuis la médiathèque !');
+            if (mediaPickerTarget) {
+              setEditedContent((prev: Record<string,string>) => ({ ...prev, [mediaPickerTarget]: url }));
+              setMediaPickerTarget(null);
+              setActiveTab('pages');
+              showToast('✅ Image sélectionnée !');
+            } else {
+              showToast('✅ Image sélectionnée depuis la médiathèque !');
+            }
           }}
         />
       )}
@@ -970,7 +1006,39 @@ export default function CMSAdmin() {
                             return (
                               <div key={key}>
                                 <label style={lbl}>{section.label}</label>
-                                {section.type === 'textarea' ? (
+                                {section.type === 'image' ? (
+                                  <div>
+                                    {editedContent[key] && (
+                                      <div style={{ position: 'relative', marginBottom: '.5rem', display: 'inline-block' }}>
+                                        <img src={editedContent[key]} alt={section.label} style={{ maxWidth: '100%', maxHeight: 200, borderRadius: '.5rem', border: '1px solid #ddd' }} />
+                                        <button onClick={() => setEditedContent(prev => ({ ...prev, [key]: '' }))} style={{ position: 'absolute', top: -8, right: -8, background: '#c0392b', color: 'white', border: 'none', borderRadius: '50%', width: 22, height: 22, cursor: 'pointer', fontSize: '.8rem' }}>✕</button>
+                                      </div>
+                                    )}
+                                    <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
+                                      <button onClick={() => { setMediaPickerTarget(key); setActiveTab('media'); }} style={{ padding: '.5rem 1rem', background: '#01696f', color: 'white', border: 'none', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>🖼️ Choisir dans la médiathèque</button>
+                                      <label style={{ padding: '.5rem 1rem', background: '#6b2a1a', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>
+                                        ⬆️ Upload
+                                        <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
+                                          const file = e.target.files?.[0];
+                                          if (!file) return;
+                                          const fd = new FormData();
+                                          fd.append('file', file);
+                                          const res = await fetch('/api/cms/upload', { method: 'POST', body: fd });
+                                          const data = await res.json();
+                                          if (data.url) setEditedContent(prev => ({ ...prev, [key]: data.url }));
+                                        }} />
+                                      </label>
+                                      <input value={editedContent[key] ?? ''} onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))} style={{ ...inp, flex: 1, minWidth: 200 }} placeholder="Ou coller une URL d'image..." />
+                                    </div>
+                                  </div>
+                                ) : section.type === 'richtext' ? (
+                                  <textarea
+                                    value={editedContent[key] ?? ''}
+                                    onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))}
+                                    style={{ ...inp, height: 180, resize: 'vertical', fontFamily: 'monospace', fontSize: '.85rem' }}
+                                    placeholder={section.label}
+                                  />
+                                ) : section.type === 'textarea' ? (
                                   <textarea
                                     value={editedContent[key] ?? ''}
                                     onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))}
