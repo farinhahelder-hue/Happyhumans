@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { AuthProvider } from '@/components/AuthProvider';
 import CookieConsentBanner from '@/components/CookieConsentBanner';
+import DynamicFavicon from '@/components/DynamicFavicon';
 
 const SITE_URL = 'https://happy-humans.org';
 
@@ -150,6 +151,7 @@ export default function RootLayout({
       </head>
       <body>
         <AuthProvider>
+        <DynamicFavicon />
           {children}
           <CookieConsentBanner />
         </AuthProvider>
