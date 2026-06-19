@@ -10,7 +10,7 @@ function useSettings() {
     const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
     if (!url || !key) return
     createClient(url, key)
-      .from('cms_settings_kv')
+      .from('cms_settings')
       .select('key, value')
       .in('key', ['site_name','linkedin_url','instagram_url','footer_text','contact_email'])
       .then(({ data }) => {
