@@ -120,7 +120,7 @@ export default function RelationsPage() {
             Vos 3 actions vers des relations plus épanouissantes
           </h2>
           <p className="text-center mb-12 max-w-2xl mx-auto" style={{ color: '#666' }}>
-            Lors d'une séance offerte de 45 minutes, Monica vous accompagne pour identifier les 3 actions concrètes les plus impactantes pour transformer vos relations dès maintenant.
+            Lors d'une séance offerte de 30 minutes, Monica vous accompagne pour identifier les 3 actions concrètes les plus impactantes pour transformer vos relations dès maintenant.
           </p>
           <div className="grid md:grid-cols-3 gap-8">
             {STEPS.map((step) => (
@@ -215,7 +215,7 @@ export default function RelationsPage() {
             Prête à transformer vos relations ?
           </h2>
           <p className="text-lg mb-8" style={{ color: '#666' }}>
-            Lors d'une séance offerte de 45 minutes, Monica vous accompagne pour identifier les axes concrets de transformation dans vos relations.
+            Lors d'une séance offerte de 30 minutes, Monica vous accompagne pour identifier les axes concrets de transformation dans vos relations.
           </p>
           <a href="/booking" className="inline-block px-10 py-4 font-semibold rounded-2xl text-lg transition-all shadow-lg"
             style={{ background: '#a864a0', color: '#fff', boxShadow: '0 8px 24px rgba(168,100,160,0.35)' }}>
