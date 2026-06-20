@@ -8,15 +8,25 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'cloud-dancer': '#F8F6F2',
-        'eucalyptus': '#006D77',
-        'teal': '#4ECDC4',
-        'mahogany': '#6B2D1F',
-        'charcoal': '#2C2C2C',
+        // Palette Happy Humans — alignée sur le logo
+        'hh-green':      '#2d5f54',   // vert sapin foncé (logo tronc)
+        'hh-green-dark': '#1e3a34',   // vert très foncé (texte/titres)
+        'hh-green-mid':  '#3d7a6c',   // vert moyen (hover, accents)
+        'hh-green-light':'#eef4f2',   // vert très clair (backgrounds)
+        'hh-gold':       '#c9a96e',   // or doré (logo feuilles, "HAPPINESS DESIGN")
+        'hh-gold-light': '#e8d5b0',   // or clair (accents doux)
+        'hh-cream':      '#f5f0e8',   // beige crème (fond logo)
+        'hh-cream-dark': '#ede5d8',   // beige plus foncé (sections alt)
+        'hh-text':       '#1e3a34',   // texte principal
+        'hh-text-muted': '#5a7a74',   // texte secondaire
+        // Rétrocompatibilité
+        'cloud-dancer':  '#f5f0e8',
+        'eucalyptus':    '#2d5f54',
+        'charcoal':      '#1e3a34',
       },
       fontFamily: {
-        serif: ['Playfair Display', 'serif'],
-        sans: ['Inter', 'sans-serif'],
+        serif: ['Playfair Display', 'Georgia', 'serif'],
+        sans:  ['Inter', 'system-ui', 'sans-serif'],
       },
       spacing: {
         'section': '80px',
