@@ -73,11 +73,11 @@ const faqs = [
 ];
 
 export const metadata: Metadata = {
-  title: 'Consulting hôtelier | Heldonica',
+  title: 'Consulting hôtelier | Happy Humans',
   description:
     'On connaît vos clients parce qu’on en fait partie. Regard terrain, parcours client, visibilité locale et outils IA utiles pour hôtels indépendants.',
   alternates: {
-    canonical: 'https://www.heldonica.fr/hotel-consulting',
+    canonical: 'https://www.happyhumans.fr/hotel-consulting',
   },
 };
 
