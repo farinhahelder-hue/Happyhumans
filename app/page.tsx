@@ -9,7 +9,7 @@ const DEFAULTS = {
   hero_badge:           'Monica Schneider · Executive Coach · Happy Humans',
   hero_title:           'Clarté, confiance et relations qui vous ressemblent',
   hero_subtitle:        'Executive Coach certifiée AoEC · EMCC Practitioner · Philosophical Counselling',
-  hero_cta_primary:     'Découvrir l'approche →',
+  hero_cta_primary:     'Découvrir l\'approche →',
   hero_cta_secondary:   'Séance découverte gratuite',
   // Services
   services_title:       'Comment puis-je vous aider ?',
@@ -17,10 +17,10 @@ const DEFAULTS = {
   services_b2c_text:    'Managers, dirigeants, entrepreneurs ou personnes en transition qui veulent retrouver de la clarté, de la confiance et une direction qui leur ressemble vraiment.',
   services_b2c_cta:     'Réserver une séance découverte →',
   services_b2b_title:   'Pour les organisations',
-  services_b2b_text:    'Coaching de leadership, ateliers, séminaires et accompagnement du changement pour remettre de l'alignement et de l'élan dans les équipes.',
-  services_b2b_cta:     'Discuter d'un projet →',
+  services_b2b_text:    'Coaching de leadership, ateliers, séminaires et accompagnement du changement pour remettre de l\'alignement et de l\'élan dans les équipes.',
+  services_b2b_cta:     'Discuter d\'un projet →',
   // Test
-  test_title:           'Quel est votre style d'attachement ?',
+  test_title:           'Quel est votre style d\'attachement ?',
   test_subtitle:        'Découvrez si vous êtes sécure, anxieux ou évitant — et ce que cela change dans vos relations. 16 questions · 5 minutes · Résultat immédiat.',
   test_cta:             'Faire le test gratuit',
   // Réservation
