@@ -18,7 +18,7 @@ const CATEGORY_FALLBACK_BG: Record<string, string> = {
   'Guides Pratiques': 'bg-gradient-to-br from-[#7C2D12] to-[#9A3412]',
 }
 
-const BADGE_FALLBACK_SRC = '/images/badges-heldonica.svg'
+const BADGE_FALLBACK_SRC = '/images/badges-happyhumans.svg'
 
 interface Props {
   posts: (BlogPost & { formattedDate: string })[]
@@ -60,14 +60,14 @@ export default function BlogClientPage({ posts }: Props) {
           className="absolute inset-0 opacity-25"
           style={{
             backgroundImage:
-              "url('https://heldonica.fr/wp-content/uploads/2025/08/PXL_20250712_190916811.RAW-01.COVER-EDIT-1024x771.jpg')",
+              "url('https://happyhumans.fr/wp-content/uploads/2025/08/PXL_20250712_190916811.RAW-01.COVER-EDIT-1024x771.jpg')",
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-br from-stone-950/80 via-stone-900/75 to-amber-950/65" />
         <div className="relative mx-auto max-w-4xl text-center">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-amber-300">Blog Heldonica</p>
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-amber-300">Blog Happy Humans</p>
           <h1 className="mb-6 text-5xl font-serif font-light leading-tight md:text-7xl">
             Des moments, des détours,
             <br />
@@ -332,14 +332,14 @@ function ArticleCard({ post }: { post: BlogPost & { formattedDate: string } }) {
             <div className={`flex h-full w-full flex-col items-center justify-center gap-3 ${fallbackBg}`}>
               <img
                 src={BADGE_FALLBACK_SRC}
-                alt="Heldonica"
+                alt="Happy Humans"
                 width={220}
                 height={140}
                 className="h-auto w-36 opacity-95"
                 loading="lazy"
               />
               <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/85">
-                Heldonica
+                Happy Humans
               </span>
             </div>
           )}
