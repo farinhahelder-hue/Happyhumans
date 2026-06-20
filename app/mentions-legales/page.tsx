@@ -28,12 +28,12 @@ export default function MentionsLegales() {
             {/* Éditeur */}
             <section>
               <h2 className="text-lg font-semibold mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem' }}>
-                Identité de l'éditeur
+                Identité de l&apos;éditeur
               </h2>
               <div className="space-y-1" style={{ color: '#3d3d3d' }}>
                 <p><strong>Nom commercial :</strong> Happy Humans</p>
                 <p><strong>Responsable :</strong> Monica Schneider</p>
-                <p><strong>Activité :</strong> Philo-coaching, executive coaching, philosophical counselling</p>
+                <p><strong>Activité :</strong> Philo-coaching, executive coaching, philosophical counselling, sparring partner</p>
                 <p><strong>Email :</strong>{' '}
                   <a href="mailto:happyhumans.coaching@gmail.com" style={{ color: '#2d5f54' }}>
                     happyhumans.coaching@gmail.com
@@ -54,10 +54,25 @@ export default function MentionsLegales() {
               </h2>
               <div className="space-y-1" style={{ color: '#3d3d3d' }}>
                 <p><strong>Société :</strong> Vercel Inc.</p>
-                <p><strong>Adresse :</strong> 340 S Lemon Ave #4133, Walnut, CA 91789, USA</p>
+                <p><strong>Adresse :</strong> 340 Pine Street Suite 701, San Francisco, CA 94104, USA</p>
                 <p><strong>Site :</strong>{' '}
                   <a href="https://vercel.com" target="_blank" rel="noopener noreferrer" style={{ color: '#2d5f54' }}>
                     vercel.com
+                  </a>
+                </p>
+              </div>
+            </section>
+
+            {/* Base de données */}
+            <section>
+              <h2 className="text-lg font-semibold mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem' }}>
+                Base de données
+              </h2>
+              <div className="space-y-1" style={{ color: '#3d3d3d' }}>
+                <p><strong>Service :</strong> Supabase (Supabase Inc.)</p>
+                <p><strong>Site :</strong>{' '}
+                  <a href="https://supabase.com" target="_blank" rel="noopener noreferrer" style={{ color: '#2d5f54' }}>
+                    supabase.com
                   </a>
                 </p>
               </div>
@@ -69,13 +84,13 @@ export default function MentionsLegales() {
                 Propriété intellectuelle
               </h2>
               <p style={{ color: '#3d3d3d' }}>
-                L'ensemble des contenus présents sur ce site (textes, visuels, éléments graphiques, structure et code) 
+                L&apos;ensemble des contenus présents sur ce site (textes, visuels, éléments graphiques, structure et code) 
                 est la propriété exclusive de Happy Humans — Monica Schneider et est protégé par le droit de la propriété intellectuelle.
                 Toute reproduction, diffusion, adaptation ou exploitation, totale ou partielle, sans autorisation préalable 
                 écrite est interdite.
               </p>
               <p className="mt-2" style={{ color: '#3d3d3d' }}>
-                Crédits photo : Happy Humans et banques d'images sous licence.
+                Crédits photo : Happy Humans et banques d&apos;images sous licence.
               </p>
             </section>
 
@@ -85,10 +100,10 @@ export default function MentionsLegales() {
                 Limitation de responsabilité
               </h2>
               <p style={{ color: '#3d3d3d' }}>
-                Happy Humans s'efforce de fournir des informations fiables et à jour, sans garantie d'exhaustivité 
-                ou d'absence d'erreur. Happy Humans ne pourra être tenue responsable des dommages directs ou indirects 
-                liés à l'utilisation du site, à l'indisponibilité temporaire du service ou à l'usage d'informations 
-                externes référencées. Les liens sortants sont fournis à titre informatif et n'emportent pas validation 
+                Happy Humans s&apos;efforce de fournir des informations fiables et à jour, sans garantie d&apos;exhaustivité 
+                ou d&apos;absence d&apos;erreur. Happy Humans ne pourra être tenue responsable des dommages directs ou indirects 
+                liés à l&apos;utilisation du site, à l&apos;indisponibilité temporaire du service ou à l&apos;usage d&apos;informations 
+                externes référencées. Les liens sortants sont fournis à titre informatif et n&apos;emportent pas validation 
                 de leur contenu.
               </p>
             </section>
@@ -96,10 +111,10 @@ export default function MentionsLegales() {
             {/* Contact légal */}
             <section>
               <h2 className="text-lg font-semibold mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem' }}>
-                Contact légal
+                Contact
               </h2>
               <p style={{ color: '#3d3d3d' }}>
-                Pour toute demande légale ou relative au RGPD, vous pouvez nous écrire à{' '}
+                Pour toute demande légale ou relative aux données personnelles, vous pouvez nous écrire à{' '}
                 <a href="mailto:happyhumans.coaching@gmail.com" style={{ color: '#2d5f54' }}>
                   happyhumans.coaching@gmail.com
                 </a>.

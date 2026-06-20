@@ -15,7 +15,7 @@ export default function PolitiqueConfidentialite() {
 
           {/* Titre */}
           <div className="mb-12 text-center">
-            <p className="text-xs uppercase tracking-widest mb-3" style={{ color: '#c9a96e' }}>Cadre légal</p>
+            <p className="text-xs uppercase tracking-widest mb-3" style={{ color: '#c9a96e' }}>Données personnelles</p>
             <h1 className="text-4xl font-light" style={{ fontFamily: 'Cormorant Garamond, Playfair Display, serif', color: '#1e3a34' }}>
               Politique de confidentialité
             </h1>
@@ -43,10 +43,9 @@ export default function PolitiqueConfidentialite() {
               </h2>
               <p style={{ color: '#3d3d3d' }}>Nous collectons uniquement les données que vous nous transmettez volontairement :</p>
               <ul className="mt-2 space-y-1 list-disc list-inside" style={{ color: '#3d3d3d' }}>
-                <li>Nom, prénom et adresse email (formulaire de contact ou de réservation)</li>
-                <li>Numéro de téléphone (optionnel, lors d'une réservation)</li>
-                <li>Message libre et informations partagées dans le cadre du coaching</li>
-                <li>Résultats du test de style d'attachement (anonymes, non liés à votre identité sauf consentement)</li>
+                <li>Nom et adresse email (formulaire de contact)</li>
+                <li>Nom, email, type de séance, créneau choisi (formulaire de réservation)</li>
+                <li>Résultats du test de style d&apos;attachement (anonymes)</li>
               </ul>
             </section>
 
@@ -58,20 +57,7 @@ export default function PolitiqueConfidentialite() {
               <ul className="space-y-1 list-disc list-inside" style={{ color: '#3d3d3d' }}>
                 <li>Répondre à vos demandes de contact ou de réservation</li>
                 <li>Organiser et assurer le suivi des séances de coaching</li>
-                <li>Respecter les obligations légales et comptables applicables</li>
-              </ul>
-            </section>
-
-            {/* Bases légales */}
-            <section>
-              <h2 className="text-lg mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem', fontWeight: 600 }}>
-                Bases légales
-              </h2>
-              <ul className="space-y-1 list-disc list-inside" style={{ color: '#3d3d3d' }}>
-                <li>Exécution précontractuelle ou contractuelle (demandes et prestations)</li>
-                <li>Consentement (cookies non essentiels, communications marketing)</li>
-                <li>Intérêt légitime (sécurité, prévention de fraude, maintenance)</li>
-                <li>Obligation légale (conservation comptable et fiscale)</li>
+                <li>Respecter les obligations légales applicables</li>
               </ul>
             </section>
 
@@ -80,11 +66,8 @@ export default function PolitiqueConfidentialite() {
               <h2 className="text-lg mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem', fontWeight: 600 }}>
                 Durée de conservation
               </h2>
-              <ul className="space-y-1 list-disc list-inside" style={{ color: '#3d3d3d' }}>
-                <li>Demandes de contact : jusqu'à 24 mois après le dernier échange</li>
-                <li>Données clients : pendant la relation puis conservation légale obligatoire</li>
-                <li>Logs techniques : durée courte de sécurité et de diagnostic</li>
-              </ul>
+              <p style={{ color: '#3d3d3d' }}>2 ans maximum pour les données de contact et de réservation.</p>
+              <p style={{ color: '#3d3d3d' }}>Les résultats anonymes du test d&apos;attachement ne sont pas conservés de manière identifiable.</p>
             </section>
 
             {/* Sous-traitants */}
@@ -93,26 +76,9 @@ export default function PolitiqueConfidentialite() {
                 Hébergement et sous-traitants
               </h2>
               <p style={{ color: '#3d3d3d' }}>
-                Les données peuvent être traitées par des prestataires techniques sélectionnés pour l'hébergement 
-                et la base de données : <strong>Vercel</strong> (hébergement) et <strong>Supabase</strong> (base de données).
-                Ces prestataires sont soumis à des obligations de confidentialité strictes.
+                Les données peuvent être traitées par des prestataires techniques sélectionnés :{' '}
+                <strong>Vercel</strong> (hébergement) et <strong>Supabase</strong> (base de données).
               </p>
-            </section>
-
-            {/* Vos droits */}
-            <section>
-              <h2 className="text-lg mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem', fontWeight: 600 }}>
-                Vos droits RGPD
-              </h2>
-              <p style={{ color: '#3d3d3d' }}>Conformément au RGPD, vous pouvez demander :</p>
-              <ul className="mt-2 space-y-1 list-disc list-inside" style={{ color: '#3d3d3d' }}>
-                <li>L'accès à vos données personnelles</li>
-                <li>La rectification de données inexactes</li>
-                <li>L'effacement de vos données, sous réserve des obligations légales</li>
-                <li>La limitation ou l'opposition à certains traitements</li>
-                <li>La portabilité des données lorsque applicable</li>
-                <li>Le retrait de votre consentement à tout moment</li>
-              </ul>
             </section>
 
             {/* Cookies */}
@@ -120,19 +86,27 @@ export default function PolitiqueConfidentialite() {
               <h2 className="text-lg mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem', fontWeight: 600 }}>
                 Cookies
               </h2>
-              <p style={{ color: '#3d3d3d' }}>
-                Les cookies strictement nécessaires au fonctionnement du site sont activés par défaut. 
-                Les cookies de mesure d'audience ou marketing sont conditionnés à votre consentement explicite.
-                Vous pouvez modifier votre choix à tout moment depuis le bandeau cookies.
+              <p style={{ color: '#3d3d3d', fontWeight: 600 }}>Pas de cookies tiers.</p>
+              <p style={{ color: '#3d3d3d', fontWeight: 600 }}>Pas de publicité.</p>
+              <p style={{ color: '#3d3d3d', fontWeight: 600 }}>Pas de partage avec des tiers.</p>
+              <p style={{ color: '#3d3d3d' }} className="mt-2">
+                Les cookies strictement nécessaires au fonctionnement du site sont utilisés sans consentement préalable.
               </p>
             </section>
 
-            {/* Contact */}
+            {/* Vos droits */}
             <section>
               <h2 className="text-lg mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem', fontWeight: 600 }}>
-                Exercer vos droits
+                Vos droits (RGPD)
               </h2>
-              <p style={{ color: '#3d3d3d' }}>
+              <p style={{ color: '#3d3d3d' }}>Conformément au RGPD, vous pouvez demander :</p>
+              <ul className="mt-2 space-y-1 list-disc list-inside" style={{ color: '#3d3d3d' }}>
+                <li>L&apos;accès à vos données personnelles</li>
+                <li>La rectification de données inexactes</li>
+                <li>L&apos;effacement de vos données</li>
+                <li>La limitation ou l&apos;opposition à certains traitements</li>
+              </ul>
+              <p style={{ color: '#3d3d3d' }} className="mt-3">
                 Pour exercer vos droits ou poser une question relative à vos données, contactez-nous à{' '}
                 <a href="mailto:happyhumans.coaching@gmail.com" style={{ color: '#2d5f54' }}>
                   happyhumans.coaching@gmail.com
