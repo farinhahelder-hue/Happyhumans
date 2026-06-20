@@ -23,7 +23,7 @@ export default function BookingPage() {
           </div>
         </section>
 
-        <section className="bg-[#f7f4ef] py-16 md:py-24">
+        <section className="bg-[#f5f0e8] py-16 md:py-24">
           <div className="mx-auto max-w-3xl px-6 md:px-10">
             <BookingWidget />
           </div>
@@ -37,7 +37,7 @@ export default function BookingPage() {
                 { emoji: '📅', title: 'Confirmation sous 48h', desc: 'Monica confirme chaque réservation manuellement et vous répond par email.' },
                 { emoji: '🔄', title: 'Annulation libre', desc: 'Vous pouvez reporter ou annuler jusqu\'à 48h avant la séance, sans frais.' },
               ].map(({ emoji, title, desc }) => (
-                <div key={title} className="rounded-2xl bg-[#f7f4ef] p-6">
+                <div key={title} className="rounded-2xl bg-[#f5f0e8] p-6">
                   <div className="text-2xl mb-3">{emoji}</div>
                   <h3 className="text-sm font-semibold text-stone-900 mb-2">{title}</h3>
                   <p className="text-xs text-stone-500 leading-relaxed">{desc}</p>
