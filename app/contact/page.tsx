@@ -5,10 +5,20 @@ import { useCmsContent } from '@/hooks/useCmsContent'
 import { useState } from 'react'
 
 const DEFAULTS = {
-  hero_image: '',
-  page_title: 'Parlons de ce qui vous amène.',
-  intro_text: "Que vous soyez en plein questionnement, en transition ou simplement curieux·se de voir si le dialogue peut aider — je vous invite à me contacter. Je réponds personnellement à chaque message.",
-  photo:      '',
+  hero_badge:           'Contact',
+  hero_image:           '',
+  page_title:           'Parlons de ce qui vous amène.',
+  intro_text:           "Que vous soyez en plein questionnement, en transition ou simplement curieux·se de voir si le dialogue peut aider — je vous invite à me contacter. Je réponds personnellement à chaque message.",
+  photo:                '',
+  form_name_label:      'Votre nom',
+  form_email_label:     'Votre email',
+  form_subject_label:   'Sujet (optionnel)',
+  form_message_label:   'Votre message',
+  form_submit_label:    'Envoyer →',
+  success_title:        'Message envoyé !',
+  success_text:         'Monica vous répondra sous 48h.',
+  sidebar_name:         'Monica Schneider',
+  sidebar_title:        'Executive Coach · Philo-coaching',
 }
 
 export default function ContactPage() {
