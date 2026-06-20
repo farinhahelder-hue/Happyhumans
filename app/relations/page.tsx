@@ -107,16 +107,16 @@ export default function RelationsPage() {
   const activeSource = SOURCES.find(s => s.id === activeModal)
 
   return (
-    <div className="min-h-screen bg-[#f7f4ef]">
+    <div className="min-h-screen bg-[#f5f0e8]">
 
       {/* ══ NAV MINIMALISTE ═══════════════════════════════════════════════ */}
       <header className="sticky top-0 z-40 flex items-center justify-between border-b border-stone-200 bg-white/90 px-6 py-4 backdrop-blur-sm md:px-10">
-        <a href="/" className="text-lg font-serif font-semibold text-stone-900 hover:text-[#2f6b61] transition">
+        <a href="/" className="text-lg font-serif font-semibold text-stone-900 hover:text-[#2d5f54] transition">
           ← Happy Humans
         </a>
         <button
           onClick={handleBook}
-          className="rounded-full bg-[#2f6b61] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#235249] transition"
+          className="rounded-full bg-[#2d5f54] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#1e3a34] transition"
         >
           Réserver une séance
         </button>
@@ -137,7 +137,7 @@ export default function RelationsPage() {
         </section>
 
         {/* ══ VOS 3 ACTIONS ════════════════════════════════════════════ */}
-        <section className="bg-[#f7f4ef] px-6 py-16 md:px-10 md:py-20">
+        <section className="bg-[#f5f0e8] px-6 py-16 md:px-10 md:py-20">
           <div className="mx-auto max-w-4xl">
             <div className="mb-10 text-center">
               <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">La méthode</p>
@@ -146,7 +146,7 @@ export default function RelationsPage() {
             <div className="grid gap-6 md:grid-cols-3">
               {STEPS.map(({ num, title, desc }) => (
                 <div key={num} className="rounded-2xl bg-white p-7 shadow-sm">
-                  <p className="mb-3 text-3xl font-serif font-light text-[#2f6b61] opacity-60">{num}</p>
+                  <p className="mb-3 text-3xl font-serif font-light text-[#2d5f54] opacity-60">{num}</p>
                   <h3 className="mb-2 text-base font-semibold text-stone-900">{title}</h3>
                   <p className="text-sm text-stone-500">{desc}</p>
                 </div>
@@ -177,7 +177,7 @@ export default function RelationsPage() {
                 <div className="text-center">
                   <button
                     onClick={() => setBookingOpen(true)}
-                    className="rounded-full bg-[#2f6b61] px-8 py-4 text-sm font-semibold text-white shadow hover:bg-[#235249] transition"
+                    className="rounded-full bg-[#2d5f54] px-8 py-4 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
                   >
                     Voir les créneaux disponibles →
                   </button>
@@ -188,7 +188,7 @@ export default function RelationsPage() {
         </section>
 
         {/* ══ RESSOURCES THÉORIQUES ═════════════════════════════════════ */}
-        <section className="bg-[#f7f4ef] px-6 py-16 md:px-10 md:py-20">
+        <section className="bg-[#f5f0e8] px-6 py-16 md:px-10 md:py-20">
           <div className="mx-auto max-w-4xl">
             <div className="mb-10 text-center">
               <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Références</p>
@@ -207,9 +207,9 @@ export default function RelationsPage() {
                   className="rounded-2xl bg-white p-6 text-left shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all group"
                 >
                   <div className="mb-3 text-3xl">{source.emoji}</div>
-                  <h3 className="mb-1 text-base font-semibold text-stone-900 group-hover:text-[#2f6b61] transition">{source.title}</h3>
+                  <h3 className="mb-1 text-base font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">{source.title}</h3>
                   <p className="text-xs text-stone-500">{source.subtitle}</p>
-                  <p className="mt-3 text-xs font-semibold text-[#2f6b61]">En savoir plus →</p>
+                  <p className="mt-3 text-xs font-semibold text-[#2d5f54]">En savoir plus →</p>
                 </button>
               ))}
             </div>
@@ -257,7 +257,7 @@ export default function RelationsPage() {
             <div className="mt-8 border-t pt-6">
               <button
                 onClick={() => { setActiveModal(null); handleBook() }}
-                className="w-full rounded-full bg-[#2f6b61] py-3 text-sm font-semibold text-white hover:bg-[#235249] transition"
+                className="w-full rounded-full bg-[#2d5f54] py-3 text-sm font-semibold text-white hover:bg-[#1e3a34] transition"
               >
                 Réserver une séance découverte de 45 min →
               </button>
