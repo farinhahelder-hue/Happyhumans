@@ -4,11 +4,11 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Itineraire Madere 7 jours | Heldonica',
+  title: 'Itineraire Madere 7 jours | Happy Humans',
   description:
-    'Itineraire slow travel Madere sur 7 jours: rythme, points de vue, levadas et adresses locales.',
+    'Itineraire coaching philosophique Madere sur 7 jours: rythme, points de vue, levadas et adresses locales.',
   alternates: {
-    canonical: 'https://www.heldonica.fr/destinations/madere/itineraire-7-jours',
+    canonical: 'https://www.happyhumans.fr/destinations/madere/itineraire-7-jours',
   },
 };
 
