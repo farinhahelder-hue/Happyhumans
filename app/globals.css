@@ -1,8 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── Variables Happy Humans ──────────────────────────── */
+:root {
+  --hh-green:       #2d5f54;
+  --hh-green-dark:  #1e3a34;
+  --hh-green-mid:   #3d7a6c;
+  --hh-gold:        #c9a96e;
+  --hh-gold-light:  #e8d5b0;
+  --hh-cream:       #f5f0e8;
+  --hh-cream-dark:  #ede5d8;
+  --hh-text:        #1e3a34;
+  --hh-text-muted:  #5a7a74;
+}
 
 * {
   margin: 0;
@@ -15,74 +28,115 @@ html {
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  background-color: #F8F6F2;
-  color: #2C2C2C;
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--hh-cream);
+  color: var(--hh-text);
+  font-weight: 300;
+  letter-spacing: 0.01em;
 }
 
+/* ── Typographie ─────────────────────────────────────── */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Playfair Display', serif;
-  font-weight: 700;
+  font-family: 'Cormorant Garamond', 'Playfair Display', serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--hh-green-dark);
 }
 
+/* Accroche principale style logo */
+.display-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.gold-accent {
+  color: var(--hh-gold);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+}
+
+/* ── Boutons ─────────────────────────────────────────── */
+.btn-primary {
+  background-color: var(--hh-green);
+  color: #fff;
+  border-radius: 9999px;
+  padding: 0.65rem 1.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  transition: background-color 0.2s ease;
+}
+.btn-primary:hover {
+  background-color: var(--hh-green-dark);
+}
+
+.btn-gold {
+  background-color: var(--hh-gold);
+  color: var(--hh-green-dark);
+  border-radius: 9999px;
+  padding: 0.65rem 1.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  transition: background-color 0.2s ease;
+}
+.btn-gold:hover {
+  background-color: var(--hh-gold-light);
+}
+
+.btn-outline {
+  border: 1.5px solid var(--hh-green);
+  color: var(--hh-green);
+  border-radius: 9999px;
+  padding: 0.65rem 1.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+}
+.btn-outline:hover {
+  background-color: var(--hh-green);
+  color: #fff;
+}
+
+/* ── Layout ──────────────────────────────────────────── */
 .container {
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 1.5rem;
+}
+
+/* ── Sections ────────────────────────────────────────── */
+.section-cream  { background-color: var(--hh-cream); }
+.section-white  { background-color: #fff; }
+.section-dark   { background-color: var(--hh-green-dark); color: #f5f0e8; }
+.section-green  { background-color: var(--hh-green); color: #f5f0e8; }
+
+/* ── Cards ───────────────────────────────────────────── */
+.card-elegant {
+  background: #fff;
+  border: 1px solid var(--hh-gold-light);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 2px 20px rgba(45,95,84,0.06);
+  transition: box-shadow 0.2s ease;
+}
+.card-elegant:hover {
+  box-shadow: 0 8px 32px rgba(45,95,84,0.12);
+}
+
+/* ── Divider doré ─────────────────────────────────────── */
+.gold-divider {
+  width: 3rem;
+  height: 2px;
+  background: var(--hh-gold);
+  margin: 1rem auto;
 }
 
 @media (max-width: 768px) {
   .container {
     padding: 0 1rem;
   }
-}
-
-.section-spacing {
-  padding: 80px 0;
-}
-
-@media (max-width: 768px) {
-  .section-spacing {
-    padding: 60px 0;
-  }
-}
-
-/* === SYSTÈME D'ESPACEMENT UNIFIÉ === */
-/* Utiliser ces classes pour une cohérence visuelle */
-
-/* Sections */
-.section-py {
-  padding-top: 5rem;    /* 80px */
-  padding-bottom: 5rem;
-}
-.section-py-sm {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-}
-
-/* Blocs */
-.block-py {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-}
-.block-py-lg {
-  padding-top: 4rem;
-  padding-bottom: 4rem;
-}
-
-/* Gap standard */
-.gap-standard {
-  gap: 1.5rem; /* 24px */
-}
-.gap-lg {
-  gap: 2rem;   /* 32px */
-}
-
-/* Hide scrollbar but allow scroll */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 }
