@@ -36,7 +36,7 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f7f4ef] font-sans">
+    <div className="min-h-screen bg-[#f5f0e8] font-sans">
 
       {/* ══ NAV MINIMALISTE ══════════════════════════════════════════════ */}
       <header className="sticky top-0 z-40 flex items-center justify-between border-b border-stone-200 bg-white/90 px-6 py-4 backdrop-blur-sm md:px-10">
@@ -48,7 +48,7 @@ export default function LandingPage() {
         </div>
         <button
           onClick={() => setBookingOpen(true)}
-          className="rounded-full bg-[#2f6b61] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#235249] transition"
+          className="rounded-full bg-[#2d5f54] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#1e3a34] transition"
         >
           Réserver une séance
         </button>
@@ -70,7 +70,7 @@ export default function LandingPage() {
             <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
               <button
                 onClick={() => setBookingOpen(true)}
-                className="rounded-full bg-[#2f6b61] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#235249] transition"
+                className="rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
               >
                 Séance découverte gratuite
               </button>
@@ -85,7 +85,7 @@ export default function LandingPage() {
         </section>
 
         {/* ══ SERVICES ══════════════════════════════════════════════════ */}
-        <section className="bg-[#f7f4ef] px-6 py-20 md:px-10 md:py-24" id="services">
+        <section className="bg-[#f5f0e8] px-6 py-20 md:px-10 md:py-24" id="services">
           <div className="mx-auto max-w-5xl">
             <div className="mb-12 text-center">
               <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Accompagnement</p>
@@ -97,7 +97,7 @@ export default function LandingPage() {
                 <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef4f3] text-xl">🧭</div>
                 <h3 className="mb-3 text-xl font-serif font-semibold text-stone-900">Pour les individus</h3>
                 <p className="mb-5 text-sm leading-relaxed text-stone-600">Managers, dirigeants, entrepreneurs ou personnes en transition qui veulent retrouver de la clarté, de la confiance et une direction qui leur ressemble vraiment.</p>
-                <button onClick={() => setBookingOpen(true)} className="text-sm font-semibold text-[#2f6b61] hover:underline">
+                <button onClick={() => setBookingOpen(true)} className="text-sm font-semibold text-[#2d5f54] hover:underline">
                   Réserver une séance découverte →
                 </button>
               </div>
@@ -105,7 +105,7 @@ export default function LandingPage() {
                 <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef4f3] text-xl">🏢</div>
                 <h3 className="mb-3 text-xl font-serif font-semibold text-stone-900">Pour les organisations</h3>
                 <p className="mb-5 text-sm leading-relaxed text-stone-600">Coaching de leadership, ateliers, séminaires et accompagnement du changement pour remettre de l&apos;alignement et de l&apos;élan dans les équipes.</p>
-                <a href="#contact" className="text-sm font-semibold text-[#2f6b61] hover:underline">
+                <a href="#contact" className="text-sm font-semibold text-[#2d5f54] hover:underline">
                   Discuter d&apos;un projet →
                 </a>
               </div>
@@ -131,13 +131,13 @@ export default function LandingPage() {
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <Link
                     href="/test-attachement"
-                    className="inline-block rounded-full bg-[#2f6b61] px-6 py-3 text-sm font-semibold text-white shadow hover:bg-[#235249] transition"
+                    className="inline-block rounded-full bg-[#2d5f54] px-6 py-3 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
                   >
                     Faire le test gratuit
                   </Link>
                   <Link
                     href="/relations"
-                    className="inline-block rounded-full border border-stone-300 px-6 py-3 text-sm font-semibold text-stone-700 hover:border-[#2f6b61] hover:text-[#2f6b61] transition"
+                    className="inline-block rounded-full border border-stone-300 px-6 py-3 text-sm font-semibold text-stone-700 hover:border-[#2d5f54] hover:text-[#2d5f54] transition"
                   >
                     Explorer les ressources
                   </Link>
@@ -149,10 +149,10 @@ export default function LandingPage() {
                   { emoji: '🪞', title: 'Carl Rogers', desc: 'Regard positif inconditionnel et amour de soi comme base.' },
                   { emoji: '💝', title: 'Erich Fromm', desc: 'L\'art d\'aimer : de l\'amour immature à l\'amour mature.' },
                 ].map(({ emoji, title, desc }) => (
-                  <Link key={title} href="/relations" className="flex gap-4 rounded-xl bg-[#f7f4ef] p-4 hover:shadow-sm transition group">
+                  <Link key={title} href="/relations" className="flex gap-4 rounded-xl bg-[#f5f0e8] p-4 hover:shadow-sm transition group">
                     <span className="text-2xl">{emoji}</span>
                     <div>
-                      <p className="text-sm font-semibold text-stone-900 group-hover:text-[#2f6b61] transition">{title}</p>
+                      <p className="text-sm font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">{title}</p>
                       <p className="text-xs text-stone-500 mt-0.5">{desc}</p>
                     </div>
                   </Link>
@@ -163,7 +163,7 @@ export default function LandingPage() {
         </section>
 
         {/* ══ BOOKING ═══════════════════════════════════════════════════ */}
-        <section className="bg-[#f7f4ef] px-6 py-20 md:px-10 md:py-24" id="booking">
+        <section className="bg-[#f5f0e8] px-6 py-20 md:px-10 md:py-24" id="booking">
           <div className="mx-auto max-w-4xl">
             <div className="mb-10 text-center">
               <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Agenda</p>
@@ -193,23 +193,23 @@ export default function LandingPage() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-stone-400">Nom *</label>
-                    <input required value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2f6b61]" placeholder="Votre nom" />
+                    <input required value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder="Votre nom" />
                   </div>
                   <div>
                     <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-stone-400">Email *</label>
-                    <input required type="email" value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2f6b61]" placeholder="votre@email.com" />
+                    <input required type="email" value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder="votre@email.com" />
                   </div>
                 </div>
                 <div>
                   <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-stone-400">Message *</label>
-                  <textarea required value={form.message} onChange={e => setForm(f => ({...f, message: e.target.value}))} rows={4} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2f6b61] resize-none" placeholder="Votre question ou demande…" />
+                  <textarea required value={form.message} onChange={e => setForm(f => ({...f, message: e.target.value}))} rows={4} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54] resize-none" placeholder="Votre question ou demande…" />
                 </div>
-                <button type="submit" disabled={sending} className="w-full rounded-full bg-[#2f6b61] py-3.5 text-sm font-semibold text-white hover:bg-[#235249] disabled:opacity-60 transition">
+                <button type="submit" disabled={sending} className="w-full rounded-full bg-[#2d5f54] py-3.5 text-sm font-semibold text-white hover:bg-[#1e3a34] disabled:opacity-60 transition">
                   {sending ? 'Envoi en cours…' : 'Envoyer le message'}
                 </button>
                 {s.contact_email && (
                   <p className="text-center text-xs text-stone-400">
-                    Ou directement par email : <a href={`mailto:${s.contact_email}`} className="text-[#2f6b61] hover:underline">{s.contact_email}</a>
+                    Ou directement par email : <a href={`mailto:${s.contact_email}`} className="text-[#2d5f54] hover:underline">{s.contact_email}</a>
                   </p>
                 )}
               </form>
