@@ -6,9 +6,9 @@ import Breadcrumb from '@/components/Breadcrumb';
 export const metadata: Metadata = {
   title: 'Mentions legales',
   description:
-    "Informations legales de l'editeur, de l'hebergeur et conditions d'utilisation du site Heldonica.",
+    "Informations legales de l'editeur, de l'hebergeur et conditions d'utilisation du site Happy Humans.",
   alternates: {
-    canonical: 'https://heldonica.fr/mentions-legales',
+    canonical: 'https://happyhumans.fr/mentions-legales',
   },
 };
 
@@ -42,7 +42,7 @@ export default function MentionsLegalesPage() {
               Mentions legales
             </h1>
             <p className="text-lg text-charcoal/80">
-              Informations legales du site heldonica.fr, de son editeur et de son hebergeur.
+              Informations legales du site happyhumans.fr, de son editeur et de son hebergeur.
             </p>
           </div>
         </section>
@@ -57,7 +57,7 @@ export default function MentionsLegalesPage() {
 
             <LegalSection title="Identite de l'editeur">
               <p>
-                <strong>Nom commercial :</strong> Heldonica
+                <strong>Nom commercial :</strong> Happy Humans
               </p>
               <p>
                 Informations legales complementaires en cours de mise a jour.
@@ -65,10 +65,10 @@ export default function MentionsLegalesPage() {
               <p>
                 <strong>Email de contact :</strong>{' '}
                 <a
-                  href="mailto:contact@heldonica.fr"
+                  href="mailto:contact@happyhumans.fr"
                   className="text-eucalyptus hover:text-teal transition"
                 >
-                  contact@heldonica.fr
+                  contact@happyhumans.fr
                 </a>
               </p>
             </LegalSection>
@@ -95,26 +95,26 @@ export default function MentionsLegalesPage() {
 
             <LegalSection title="Propriete intellectuelle">
               <p>
-                L'ensemble des contenus presents sur heldonica.fr (textes, visuels, videos,
+                L'ensemble des contenus presents sur happyhumans.fr (textes, visuels, videos,
                 elements graphiques, structure et code) est protege par le droit de la propriete
                 intellectuelle.
               </p>
               <p>
                 Toute reproduction, diffusion, adaptation ou exploitation, totale ou partielle,
-                sans autorisation prealable ecrite de Heldonica est interdite.
+                sans autorisation prealable ecrite de Happy Humans est interdite.
               </p>
               <p>
-                <strong>Credits photo :</strong> Heldonica et banques d'images sous licence.
+                <strong>Credits photo :</strong> Happy Humans et banques d'images sous licence.
               </p>
             </LegalSection>
 
             <LegalSection title="Limitation de responsabilite">
               <p>
-                Heldonica s'efforce de fournir des informations fiables et a jour, sans garantie
+                Happy Humans s'efforce de fournir des informations fiables et a jour, sans garantie
                 d'exhaustivite ou d'absence d'erreur.
               </p>
               <p>
-                Heldonica ne pourra etre tenue responsable des dommages directs ou indirects lies a
+                Happy Humans ne pourra etre tenue responsable des dommages directs ou indirects lies a
                 l'utilisation du site, a l'indisponibilite temporaire du service ou a l'usage
                 d'informations externes referencees.
               </p>
@@ -128,10 +128,10 @@ export default function MentionsLegalesPage() {
               <p>
                 Pour toute demande legale ou RGPD, vous pouvez nous ecrire a{' '}
                 <a
-                  href="mailto:contact@heldonica.fr"
+                  href="mailto:contact@happyhumans.fr"
                   className="text-eucalyptus hover:text-teal transition"
                 >
-                  contact@heldonica.fr
+                  contact@happyhumans.fr
                 </a>
                 .
               </p>
@@ -139,7 +139,7 @@ export default function MentionsLegalesPage() {
 
             <LegalSection title="Copyright">
               <p>
-                <strong>&copy; Heldonica 2026</strong> - Tous droits reserves.
+                <strong>&copy; Happy Humans 2026</strong> - Tous droits reserves.
               </p>
             </LegalSection>
           </div>
