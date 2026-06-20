@@ -7,7 +7,35 @@ export const metadata = {
   description: 'Choisissez un créneau pour votre séance découverte gratuite (45 min) avec Monica Schneider.',
 }
 
+import { useCmsContent } from '@/hooks/useCmsContent'
+
+const DEFAULTS_BOOKING = {
+  hero_badge:           'Réservation',
+  hero_title:           'Choisissez votre créneau',
+  hero_subtitle:        'Séance découverte gratuite (45 min) — choisissez la date qui vous convient.',
+  filter_all:           'Toutes',
+  filter_discovery:     'Découverte',
+  filter_coaching:      'Coaching',
+  filter_enterprise:    'Entreprises',
+  empty_slots_text:     'Aucun créneau disponible pour le moment.',
+  form_name_label:      'Votre nom',
+  form_email_label:     'Votre email',
+  form_phone_label:     'Téléphone (optionnel)',
+  form_message_label:   'Message (optionnel)',
+  form_submit_label:    'Envoyer ma demande',
+  success_title:        'Demande envoyée !',
+  success_text:         'Monica vous confirmera votre séance sous 48h.',
+  reassurance_1_title:  '🎁 Séance découverte gratuite',
+  reassurance_1_text:   '45 minutes sans engagement',
+  reassurance_2_title:  '📅 Confirmation sous 48h',
+  reassurance_2_text:   'Monica confirme chaque réservation manuellement',
+  reassurance_3_title:  '🔄 Annulation libre',
+  reassurance_3_text:   'Reporter ou annuler jusqu\'à 48h avant, sans frais',
+}
+
 export default function BookingPage() {
+  const c = useCmsContent('booking', DEFAULTS_BOOKING)
+
   return (
     <>
       <MiniNav />
