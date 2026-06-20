@@ -5,11 +5,11 @@ import Footer from '@/components/Footer'
 import Breadcrumb from '@/components/Breadcrumb'
 
 export const metadata: Metadata = {
-  title: 'Planifier | Heldonica',
+  title: 'Planifier | Happy Humans',
   description:
     'Temps, budget, énergie, enfants, fatigue, envie de vrai : raconte-nous le cadre réel et on construit le voyage à partir de là.',
   alternates: {
-    canonical: 'https://heldonica.fr/planifier',
+    canonical: 'https://happyhumans.fr/planifier',
   },
 }
 
