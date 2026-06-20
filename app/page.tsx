@@ -8,12 +8,12 @@ const DEFAULTS = {
   hero_title:   'Clarté, confiance et relations qui vous ressemblent',
   hero_subtitle: 'Executive Coach certifiée AoEC · EMCC Practitioner · Philosophical Counselling',
   logo_url: '',
-  contact_email: 'monica@happyhumans.ch',
+  contact_email: 'happyhumans.coaching@gmail.com',
 }
 
 export default function LandingPage() {
   const c = useCmsContent('home', DEFAULTS)
-  const s = useCmsContent('settings', { contact_email: 'monica@happyhumans.ch', site_name: 'Happy Humans' })
+  const s = useCmsContent('settings', { contact_email: 'happyhumans.coaching@gmail.com', site_name: 'Happy Humans' })
   const [bookingOpen, setBookingOpen] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [sent, setSent] = useState(false)
