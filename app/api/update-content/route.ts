@@ -3,10 +3,10 @@ import { supabase } from '@/lib/supabase';
 import { requireCmsAuth } from '@/lib/cms-auth';
 
 const CONTENT_UPDATES: { slug: string; content: string }[] = [
-  { slug: `madere-slow-travel-guide`, content: `<article class="prose-heldonica">
+  { slug: `madere-slow-travel-guide`, content: `<article class="prose-happyhumans">
 <p class="lead">On a posé les valises à Madère pour la première fois en mars 2024. On pensait rester dix jours. On est restés seize. Ce n'est pas un accident — c'est Madère qui fait ça.</p>
-<p>L'île est petite (57 km sur 22), volcanique, vertigineuse. Elle tombe dans l'Atlantique par des falaises de 600 mètres. Elle monte jusqu'à 1862 mètres au Pico Ruivo. Entre les deux, un réseau de 2000 kilomètres de levadas — ces canaux d'irrigation du XVe siècle qu'on a transformés en sentiers de randonnée. C'est le terrain de jeu slow travel le plus dense d'Europe.</p>
-<h2>Pourquoi Madère est faite pour le slow travel</h2>
+<p>L'île est petite (57 km sur 22), volcanique, vertigineuse. Elle tombe dans l'Atlantique par des falaises de 600 mètres. Elle monte jusqu'à 1862 mètres au Pico Ruivo. Entre les deux, un réseau de 2000 kilomètres de levadas — ces canaux d'irrigation du XVe siècle qu'on a transformés en sentiers de randonnée. C'est le terrain de jeu coaching philosophique le plus dense d'Europe.</p>
+<h2>Pourquoi Madère est faite pour le coaching philosophique</h2>
 <p>La plupart des voyageurs font Madère en 5 jours. Ils voient Funchal, le téléphérique, le marché, Monte. Ils rentrent en disant que c'est beau. Ils ont raison. Mais ils ont raté l'essentiel.</p>
 <p>L'essentiel, c'est le nord. C'est Santana et ses maisons à toit de chaume. C'est São Vicente et sa côte sauvage. C'est Fanal et ses tilleuls centenaires dans le brouillard à 6h du matin. C'est le paysan qui cultive encore ses patates douces en terrasses au-dessus de Porto Moniz. C'est la table d'une vieille dame à Câmara de Lobos qui te sert un prego no bolo do caco sans te demander si tu parles portugais.</p>
 <p>Tout ça prend du temps. Du vrai temps. Pas une heure entre deux spots Instagram.</p>
@@ -31,17 +31,17 @@ const CONTENT_UPDATES: { slug: string; content: string }[] = [
 <li><strong>Lapas grillées</strong> (patelles) — des coquillages grillés au beurre d'ail sur une plaque de pierre. Incontournable dans tout bar de bord de mer.</li>
 <li><strong>Bolo do caco</strong> — le pain plat à la patate douce cuit sur pierre. Accompagne tout, se mange à toute heure.</li>
 </ul>
-<h2>✦ Verdict Heldonica</h2>
+<h2>✦ Verdict Happy Humans</h2>
 <blockquote>
 <p>Madère est l'île qui nous a appris à vraiment ralentir. Pas parce qu'il n'y a rien à faire — il y a trop à faire. Mais parce que chaque endroit mérite plus d'une heure. Chaque levada mérite l'aube. Chaque table mérite la conversation qui suit le repas. Seize jours ne suffisaient pas. On y retourne en octobre.</p>
-<p><em>— Heldonica, mars 2024 et octobre 2025, deux séjours complets</em></p>
+<p><em>— Happy Humans, mars 2024 et octobre 2025, deux séjours complets</em></p>
 </blockquote>
 </article>` },
-  { slug: `guide-pratique-comment-debuter-le-slow-travel-en-duo`, content: `<article class="prose-heldonica">
+  { slug: `guide-pratique-comment-debuter-le-slow-travel-en-duo`, content: `<article class="prose-happyhumans">
 <p class="lead">On était comme toi. Deux semaines de vacances par an, un vol low-cost, un hôtel TripAdvisor, un programme de 14 villes en 10 jours. On rentrait épuisés en disant qu'on avait "bien voyagé". On mentait — à nous-mêmes d'abord.</p>
-<p>Le virage slow travel s'est fait brutalement, un dimanche soir à Porto. On était assis sur les marches d'une église, à regarder les gens vivre leur dimanche. Et on a réalisé qu'on n'avait rien vu de Porto depuis trois jours qu'on y était — on avait coché Porto, pas vécu Porto.</p>
-<h2>Ce que le slow travel n'est pas</h2>
-<p>Pas besoin de partir six mois en van. Pas besoin de tout quitter. Le slow travel n'est pas une philosophie de vie radicale — c'est une façon différente d'organiser le temps qu'on a déjà.</p>
+<p>Le virage coaching philosophique s'est fait brutalement, un dimanche soir à Porto. On était assis sur les marches d'une église, à regarder les gens vivre leur dimanche. Et on a réalisé qu'on n'avait rien vu de Porto depuis trois jours qu'on y était — on avait coché Porto, pas vécu Porto.</p>
+<h2>Ce que le coaching philosophique n'est pas</h2>
+<p>Pas besoin de partir six mois en van. Pas besoin de tout quitter. Le coaching philosophique n'est pas une philosophie de vie radicale — c'est une façon différente d'organiser le temps qu'on a déjà.</p>
 <p>La règle qu'on s'est donnée : <strong>jamais plus d'une ville principale par semaine</strong>. Le reste, c'est du bonus.</p>
 <h2>Les 5 principes qu'on applique en duo</h2>
 <ol>
@@ -54,16 +54,16 @@ const CONTENT_UPDATES: { slug: string; content: string }[] = [
 <h2>Comment commencer dès ton prochain voyage</h2>
 <p>Pas besoin de refondre toute ta façon de voyager d'un coup. Commence par un seul changement :</p>
 <p><strong>Choisis une destination et réserve 5 nuits minimum.</strong> Une seule. Pas de city-trip 3 jours + extension 2 jours ailleurs. Cinq nuits dans la même ville, le même appartement, le même quartier. Tu verras la différence dès le troisième matin.</p>
-<h2>Le duo : un avantage slow travel</h2>
-<p>Voyager en couple ralentit naturellement. On négocie le programme, on s'arrête quand l'un veut s'arrêter, on prend le temps du café que l'autre attendait. Ce qui peut sembler une friction est en réalité la meilleure contrainte slow travel qui soit.</p>
+<h2>Le duo : un avantage coaching philosophique</h2>
+<p>Voyager en couple ralentit naturellement. On négocie le programme, on s'arrête quand l'un veut s'arrêter, on prend le temps du café que l'autre attendait. Ce qui peut sembler une friction est en réalité la meilleure contrainte coaching philosophique qui soit.</p>
 <p>On a arrêté d'utiliser des applications de planification. Un carnet papier, stylo, et la règle : si on ne peut pas l'écrire à la main en moins de dix minutes, le programme est trop chargé.</p>
-<h2>✦ Verdict Heldonica</h2>
+<h2>✦ Verdict Happy Humans</h2>
 <blockquote>
-<p>Le slow travel en duo, c'est choisir la profondeur plutôt que la largeur. Une ville vraiment vécue vaut dix villes survolées. Et la meilleure souvenir de voyage ne vient jamais d'un monument — il vient d'un moment imprévu, dans une ruelle qu'on n'avait pas prévu de traverser, avec quelqu'un qu'on n'avait pas prévu de rencontrer.</p>
-<p><em>— Heldonica, appliqué depuis 2019, affiné à chaque voyage</em></p>
+<p>Le coaching philosophique en duo, c'est choisir la profondeur plutôt que la largeur. Une ville vraiment vécue vaut dix villes survolées. Et la meilleure souvenir de voyage ne vient jamais d'un monument — il vient d'un moment imprévu, dans une ruelle qu'on n'avait pas prévu de traverser, avec quelqu'un qu'on n'avait pas prévu de rencontrer.</p>
+<p><em>— Happy Humans, appliqué depuis 2019, affiné à chaque voyage</em></p>
 </blockquote>
 </article>` },
-  { slug: `urbex-paris-safe`, content: `<article class="prose-heldonica">
+  { slug: `urbex-paris-safe`, content: `<article class="prose-happyhumans">
 <p class="lead">L'urbex, c'est explorer des lieux abandonnés ou méconnus. À Paris, ça évoque les catacombes illégales, les toits interdits, les friches industrielles. C'est excitant — et souvent illégal. On te propose autre chose : l'urbex légal, accessible, et franchement plus intéressant pour les non-adrénalomanes.</p>
 <p>On a passé trois mois à explorer Paris autrement. Voici nos pépites dénichées — toutes accessibles, toutes légales, aucune sur les listes Airbnb Experience.</p>
 <h2>La Petite Ceinture : 35 km de friche végétale</h2>
@@ -79,13 +79,13 @@ const CONTENT_UPDATES: { slug: string; content: string }[] = [
 <h2>La Halle Pajol : cathédrale solaire</h2>
 <p>Dans le 18e, une ancienne halle ferroviaire de 1926 convertie en espace de vie — bibliothèque, auberge de jeunesse, jardin urbain, panneaux solaires. La structure métallique d'origine est conservée. Sous la verrière, la lumière change toutes les heures.</p>
 <p>On y vient travailler avec nos laptops. Le café du rez-de-chaussée est ouvert au public, les prix sont raisonnables, et l'architecture vaut n'importe quel musée.</p>
-<h2>✦ Verdict Heldonica</h2>
+<h2>✦ Verdict Happy Humans</h2>
 <blockquote>
 <p>L'urbex légal à Paris, c'est comprendre que la ville cache ses meilleures pépites à ceux qui ne cherchent pas les monuments. La Petite Ceinture brumeuse d'octobre vaut n'importe quelle visite guidée. Et elle est gratuite, accessible en métro, et pratiquement vide à 8h du matin.</p>
-<p><em>— Heldonica, exploré sur trois mois d'arpentage parisien en 2025</em></p>
+<p><em>— Happy Humans, exploré sur trois mois d'arpentage parisien en 2025</em></p>
 </blockquote>
 </article>` },
-  { slug: `madere-quand-partir-sur-lile-de-leternel-printemps`, content: `<article class="prose-heldonica">
+  { slug: `madere-quand-partir-sur-lile-de-leternel-printemps`, content: `<article class="prose-happyhumans">
 <p class="lead">Madère est surnommée l'île de l'éternel printemps. C'est vrai — et c'est trompeur. Le climat y est doux toute l'année, oui. Mais ce surnom cache une réalité plus nuancée : un nord sauvage et pluvieux, un sud ensoleillé, des sommets dans les nuages et des vallées inondées de lumière, parfois le même jour.</p>
 <p>On l'a visitée en mars, en octobre et en novembre. Voici ce qu'on a vécu — sans filtre.</p>
 <h2>Le paradoxe climatique de Madère</h2>
@@ -100,7 +100,7 @@ const CONTENT_UPDATES: { slug: string; content: string }[] = [
 <p><strong>Pour qui :</strong> Idéal pour tout le monde. Notre recommandation top.</p>
 <h3>Juin – Août</h3>
 <p>La haute saison. L'île est belle mais les levadas populaires sont encombrées dès 9h. Les prix explosent (+40%). Si tu viens en été, pars tôt le matin.</p>
-<p><strong>Pour qui :</strong> Les familles, les baigneurs. Pas pour le slow travel serein.</p>
+<p><strong>Pour qui :</strong> Les familles, les baigneurs. Pas pour le coaching philosophique serein.</p>
 <h3>Septembre – Octobre</h3>
 <p>La lumière dorée de l'automne atlantique. Les touristes d'été sont partis. C'est la saison du vin — les vendanges en septembre sont un spectacle. Températures idéales (22-25°C).</p>
 <p><strong>Pour qui :</strong> Notre deuxième saison préférée. Meilleur rapport qualité-prix-solitude.</p>
@@ -109,13 +109,13 @@ const CONTENT_UPDATES: { slug: string; content: string }[] = [
 <p><strong>Pour qui :</strong> Les voyageurs qui veulent voir l'île "vraie".</p>
 <h2>Ce que la météo ne te dit pas</h2>
 <p>Le bulletin météo de Funchal ne représente pas Madère. Conseil pratique : consulte les webcams sur <strong>webcamtaxi.com/madeira</strong> pour voir en temps réel les conditions sur l'île — indispensable pour planifier les randonnées en altitude.</p>
-<h2>✦ Verdict Heldonica</h2>
+<h2>✦ Verdict Happy Humans</h2>
 <blockquote>
 <p>Il n'y a pas de mauvaise saison à Madère. Mars-avril pour la douceur et les fleurs. Octobre pour la lumière et la tranquillité. Évite juillet-août si tu veux vivre l'île plutôt que la subir. Et quelle que soit la saison : lève-toi tôt.</p>
-<p><em>— Heldonica, trois saisons testées sur place</em></p>
+<p><em>— Happy Humans, trois saisons testées sur place</em></p>
 </blockquote>
 </article>` },
-  { slug: `pepites-mystiques-de-madere`, content: `<article class="prose-heldonica">
+  { slug: `pepites-mystiques-de-madere`, content: `<article class="prose-happyhumans">
 <p class="lead">Il y a un endroit à Madère où on est restés silencieux pendant vingt minutes. Pas parce qu'on n'avait rien à dire. Parce que la forêt nous avait absorbés.</p>
 <p>C'était à Fanal, à 6h30 du matin, dans le brouillard. Les tilleuls centenaires émergent de la brume comme des fantômes bienveillants. Aucun son humain. Juste les gouttelettes sur les feuilles, et quelque chose qu'on ne sait pas nommer.</p>
 <h2>Fanal : la forêt hors du temps</h2>
@@ -130,13 +130,13 @@ const CONTENT_UPDATES: { slug: string; content: string }[] = [
 <h2>Curral das Freiras : le cirque caché</h2>
 <p>«Le cirque des nonnes» — un village encerclé par des falaises de 1500m de tous côtés. Au XVIe siècle, les religieuses de Funchal s'y réfugiaient lors des attaques de pirates. Aujourd'hui, c'est une des communes les plus isolées de l'île.</p>
 <p>La route pour y descendre est une série de lacets vertigineux. En bas : un village hors du temps, une seule rue principale. Le restaurant local sert une soupe de châtaignes qui réchauffe l'âme.</p>
-<h2>✦ Verdict Heldonica</h2>
+<h2>✦ Verdict Happy Humans</h2>
 <blockquote>
 <p>Madère cache ses meilleures pépites à ceux qui prennent le temps de chercher. Aucun de ces endroits n'est sur les listes des "top 10 things to do". Tous demandent un réveil plus tôt, ou simplement de s'éloigner du chemin balisé de 200 mètres. C'est là que l'île révèle son âme.</p>
-<p><em>— Heldonica, pépites dénichées lors de trois séjours à Madère</em></p>
+<p><em>— Happy Humans, pépites dénichées lors de trois séjours à Madère</em></p>
 </blockquote>
 </article>` },
-  { slug: `prego-no-bolo-do-caco`, content: `<article class="prose-heldonica">
+  { slug: `prego-no-bolo-do-caco`, content: `<article class="prose-happyhumans">
 <p class="lead">On a mangé beaucoup de choses à Madère. Des espadas à la sauce de fruit de la passion, du vin de Madère chaud sur les levadas, des ponchas artisanales dans des caves à Câmara de Lobos. Mais ce dont on parle encore à table, c'est d'un sandwich.</p>
 <p>Un steak de bœuf mariné à l'ail et aux herbes, grillé sur feu de bois, glissé dans un bolo do caco chaud tartiné de beurre d'ail. Ce n'est pas une recette de chef étoilé. C'est la nourriture des travailleurs, vendue dans des snacks de bord de route, consommée debout ou sur un tabouret plastique. Et c'est l'une des meilleures choses qu'on ait mangées en Europe.</p>
 <h2>C'est quoi le bolo do caco ?</h2>
@@ -165,10 +165,10 @@ const CONTENT_UPDATES: { slug: string; content: string }[] = [
 <li>Réchauffe les bolos à la plancha, coupe-les en deux, beurre généreusement.</li>
 <li>Glisse le steak dans le pain. Mange immédiatement.</li>
 </ol>
-<h2>✦ Verdict Heldonica</h2>
+<h2>✦ Verdict Happy Humans</h2>
 <blockquote>
-<p>Le prego no bolo do caco, c'est la quintessence de ce qu'on aime dans le slow travel alimentaire : une recette simple, des ingrédients locaux, un savoir-faire transmis de snack en snack depuis des générations. Ce n'est pas dans les guides gastronomiques. C'est dans les mains d'une femme qui cuit son pain sur une pierre depuis quarante ans.</p>
-<p><em>— Heldonica, recette reçue de Maria, Câmara de Lobos, octobre 2025</em></p>
+<p>Le prego no bolo do caco, c'est la quintessence de ce qu'on aime dans le coaching philosophique alimentaire : une recette simple, des ingrédients locaux, un savoir-faire transmis de snack en snack depuis des générations. Ce n'est pas dans les guides gastronomiques. C'est dans les mains d'une femme qui cuit son pain sur une pierre depuis quarante ans.</p>
+<p><em>— Happy Humans, recette reçue de Maria, Câmara de Lobos, octobre 2025</em></p>
 </blockquote>
 </article>` },
 ];
