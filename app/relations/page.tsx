@@ -2,6 +2,7 @@
 import { useState, useRef } from 'react';
 import BookingWidget from '@/components/BookingWidget';
 import { AttachmentTest } from '@/components/attachment-test/AttachmentTest';
+import Image from 'next/image';
 
 const SOURCES = [
   {
@@ -85,14 +86,73 @@ const SOURCES = [
   },
 ];
 
+const ATTACHMENT_STYLES = [
+  {
+    id: 'secure',
+    emoji: '🌿',
+    label: 'Sécure',
+    percent: '55–60 %',
+    color: '#2d5f54',
+    bg: 'rgba(45,95,84,0.07)',
+    desc: 'À l'aise avec l'intimité et l'indépendance. Communique ses besoins clairement et gère les conflits de façon constructive. Représente la base sécure vers laquelle tendre.',
+  },
+  {
+    id: 'anxious',
+    emoji: '🌊',
+    label: 'Anxieux',
+    percent: '~20 %',
+    color: '#b45309',
+    bg: 'rgba(180,83,9,0.07)',
+    desc: 'Peur du rejet et de l'abandon. Grand besoin de validation et de proximité. Tend à suranalyser les silences et les distances de l'autre.',
+  },
+  {
+    id: 'avoidant',
+    emoji: '🌬️',
+    label: 'Évitant',
+    percent: '~25 %',
+    color: '#1d4ed8',
+    bg: 'rgba(29,78,216,0.07)',
+    desc: 'A appris à minimiser ses besoins émotionnels pour se protéger. Valorise l'indépendance et peut se sentir étouffé·e quand l'intimité s'intensifie.',
+  },
+  {
+    id: 'disorganized',
+    emoji: '⚡',
+    label: 'Désorganisé',
+    percent: '~5 %',
+    color: '#7c3d8f',
+    bg: 'rgba(124,61,143,0.08)',
+    desc: 'Conflit interne entre le besoin désespéré de proximité et la peur panique de l'autre. Souvent lié à des expériences d'enfance complexes ou traumatiques.',
+  },
+];
+
+const COMM_RULES = [
+  {
+    icon: '🎯',
+    title: 'Spécifique',
+    desc: 'Nommez un comportement précis plutôt qu'une généralité blessante.',
+    example: '« Quand tu ne m'envoies pas de message après une soirée... » au lieu de « Tu te fiches de moi ».',
+  },
+  {
+    icon: '💚',
+    title: 'Non culpabilisant',
+    desc: 'Exprimez votre ressenti sans attaquer, juger ou blâmer l'autre.',
+    example: '« Je me sens seul·e » plutôt que « Tu me rends seul·e ».',
+  },
+  {
+    icon: '🦁',
+    title: 'Assertif',
+    desc: 'Assumez la légitimité de vos besoins — surtout si vous avez un profil anxieux qui craint d'être « trop ».',
+    example: '« J'ai besoin de réassurance, c'est un besoin valide » non pas une faiblesse.',
+  },
+];
 
 const STEPS = [
   { num: '01', title: 'Faites le test', desc: '16 questions · 3 à 5 minutes · Résultat immédiat' },
   { num: '02', title: 'Session découverte', desc: 'Séance offerte de 45 min pour découvrir vos 3 actions' },
   { num: '03', title: 'Passez à l\'action', desc: 'Un plan clair et des outils pour des relations épanouissantes' },
-]
+];
 
-import { useCmsContent } from '@/hooks/useCmsContent'
+import { useCmsContent } from '@/hooks/useCmsContent';
 
 const DEFAULTS_RELATIONS = {
   hero_badge:          'Relations & Attachement · Happy Humans',
@@ -114,31 +174,32 @@ const DEFAULTS_RELATIONS = {
   theory_card_2_text:  'L\'écoute inconditionnelle',
   theory_card_3_title: '❤️ Erich Fromm',
   theory_card_3_text:  'L\'art d\'aimer',
-}
+};
 
 export default function RelationsPage() {
-  const c = useCmsContent('relations', DEFAULTS_RELATIONS)
+  const c = useCmsContent('relations', DEFAULTS_RELATIONS);
 
-  const [activeModal, setActiveModal] = useState<string | null>(null)
-  const [bookingOpen, setBookingOpen] = useState(false)
-  const bookingRef = useRef<HTMLDivElement>(null)
+  const [activeModal, setActiveModal] = useState<string | null>(null);
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const bookingRef = useRef<HTMLDivElement>(null);
 
   const handleBook = () => {
-    setBookingOpen(true)
+    setBookingOpen(true);
     setTimeout(() => {
-      bookingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }, 100)
-  }
+      bookingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  };
 
-  const activeSource = SOURCES.find(s => s.id === activeModal)
+  const activeSource = SOURCES.find(s => s.id === activeModal);
 
   return (
     <div className="min-h-screen bg-[#f5f0e8]">
 
       {/* ══ NAV MINIMALISTE ═══════════════════════════════════════════════ */}
       <header className="sticky top-0 z-40 flex items-center justify-between border-b border-stone-200 bg-white/90 px-6 py-4 backdrop-blur-sm md:px-10">
-        <a href="/" className="text-lg font-serif font-semibold text-stone-900 hover:text-[#2d5f54] transition">
-          ← Happy Humans
+        <a href="/" className="flex items-center gap-3 hover:opacity-80 transition">
+          <Image src="/logo-happy-humans.jpg" alt="Happy Humans" width={40} height={40} className="rounded-full" />
+          <span className="text-lg font-serif font-semibold text-stone-900 hover:text-[#2d5f54] transition">← Happy Humans</span>
         </a>
         <button
           onClick={handleBook}
@@ -150,20 +211,175 @@ export default function RelationsPage() {
 
       <main>
 
-        {/* ══ TEST ATTACHEMENT — EN HAUT ════════════════════════════════ */}
+        {/* ══ HERO INTRO ════════════════════════════════════════════════ */}
+        <section className="bg-stone-900 px-6 py-12 md:py-16 md:px-10 text-center">
+          <div className="mx-auto max-w-2xl">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
+              Relations &amp; Attachement · Happy Humans
+            </p>
+            <h1 className="text-3xl md:text-4xl font-serif font-light text-white mb-4">
+              Comprendre vos liens pour les transformer
+            </h1>
+            <p className="text-stone-400 text-sm md:text-base leading-relaxed">
+              La façon dont nous nous connectons aux autres prend racine dans notre enfance. Découvrez votre style d'attachement et les clés pour construire des relations épanouissantes.
+            </p>
+          </div>
+        </section>
+
+        {/* ══ LES 4 STYLES D'ATTACHEMENT ════════════════════════════════ */}
+        <section className="bg-[#f5f0e8] px-6 py-16 md:px-10 md:py-20">
+          <div className="mx-auto max-w-4xl">
+            <div className="mb-10 text-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Théorie de l'attachement</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Les 4 styles d'attachement</h2>
+              <p className="mt-3 text-sm text-stone-500 max-w-xl mx-auto">
+                Notre façon d'entrer en relation à l'âge adulte reflète des modèles construits dès la petite enfance. Quel est le vôtre ?
+              </p>
+            </div>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {ATTACHMENT_STYLES.map(s => (
+                <div key={s.id} className="rounded-2xl bg-white p-6 shadow-sm border-t-4" style={{ borderColor: s.color }}>
+                  <div className="text-3xl mb-3">{s.emoji}</div>
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-base font-semibold text-stone-900">{s.label}</h3>
+                    <span className="text-xs font-bold rounded-full px-2 py-0.5" style={{ background: s.bg, color: s.color }}>{s.percent}</span>
+                  </div>
+                  <p className="text-xs text-stone-500 leading-relaxed">{s.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ══ TEST ATTACHEMENT ══════════════════════════════════════════ */}
         <section className="bg-stone-900 px-6 py-16 md:py-24 md:px-10">
           <div className="mx-auto max-w-3xl">
             <div className="mb-10 text-center">
               <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
-                Relations &amp; Attachement · Happy Humans
+                Quiz · Découvrez votre profil
               </p>
             </div>
             <AttachmentTest onBook={handleBook} />
           </div>
         </section>
 
-        {/* ══ VOS 3 ACTIONS ════════════════════════════════════════════ */}
+        {/* ══ LA DANSE ANXIEUX-ÉVITANT ═══════════════════════════════════ */}
+        <section className="bg-white px-6 py-16 md:px-10 md:py-20">
+          <div className="mx-auto max-w-4xl">
+            <div className="mb-10 text-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Dynamique relationnelle</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">La danse Anxieux–Évitant</h2>
+              <p className="mt-3 text-sm text-stone-500 max-w-xl mx-auto">
+                Le couple le plus fréquent… et le plus volatile. Comprendre ce mécanisme change tout.
+              </p>
+            </div>
+            <div className="flex flex-col md:flex-row gap-6 items-stretch">
+              <div className="flex-1 rounded-2xl p-7 text-center" style={{ background: 'rgba(180,83,9,0.07)', border: '1px solid rgba(180,83,9,0.15)' }}>
+                <div className="text-4xl mb-3">🌊</div>
+                <h3 className="font-semibold text-lg mb-2" style={{ color: '#b45309' }}>Le profil Anxieux</h3>
+                <p className="text-sm text-stone-600 leading-relaxed">Par peur de perdre le lien, il <strong>poursuit</strong> et demande plus d'attention (hyperactivation). Plus il ressent de distance, plus il accélère.</p>
+              </div>
+              <div className="flex items-center justify-center text-3xl md:text-5xl text-stone-300 font-light select-none">
+                ⟷
+              </div>
+              <div className="flex-1 rounded-2xl p-7 text-center" style={{ background: 'rgba(29,78,216,0.07)', border: '1px solid rgba(29,78,216,0.12)' }}>
+                <div className="text-4xl mb-3">🌬️</div>
+                <h3 className="font-semibold text-lg mb-2" style={{ color: '#1d4ed8' }}>Le profil Évitant</h3>
+                <p className="text-sm text-stone-600 leading-relaxed">Craint la dépendance, alors il <strong>fuit</strong> et se distance (désactivation). Plus l'anxieux s'approche, plus il s'éloigne.</p>
+              </div>
+            </div>
+            <div className="mt-8 rounded-2xl p-6 text-center" style={{ background: 'rgba(45,95,84,0.07)' }}>
+              <p className="text-sm text-stone-700 leading-relaxed">
+                <strong style={{ color: '#2d5f54' }}>Bonne nouvelle :</strong> ces réactions ne relèvent pas d'un manque d'amour, mais d'un <em>système biologique d'attachement activé</em>. Les comprendre permet de sortir du piège et de retrouver la connexion.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ══ LE CHANGEMENT EST POSSIBLE ════════════════════════════════ */}
         <section className="bg-[#f5f0e8] px-6 py-16 md:px-10 md:py-20">
+          <div className="mx-auto max-w-4xl">
+            <div className="mb-10 text-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Neuroplasticité & guérison</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">L'attachement sécurisé acquis</h2>
+              <p className="mt-3 text-sm text-stone-500 max-w-xl mx-auto">
+                Votre style d'attachement n'est pas une fatalité. Grâce à la neuroplasticité du cerveau, il est possible de le transformer.
+              </p>
+            </div>
+            <div className="grid gap-5 md:grid-cols-3">
+              <div className="rounded-2xl bg-white p-7 shadow-sm">
+                <div className="text-3xl mb-3">🔍</div>
+                <h3 className="font-semibold mb-2 text-stone-900">La conscience de soi</h3>
+                <p className="text-sm text-stone-500 leading-relaxed">Observer ses réactions sans se juger. Identifier ses déclencheurs émotionnels. Créer un espace entre le stimulus et la réponse.</p>
+              </div>
+              <div className="rounded-2xl bg-white p-7 shadow-sm">
+                <div className="text-3xl mb-3">🤝</div>
+                <h3 className="font-semibold mb-2 text-stone-900">Les relations correctrices</h3>
+                <p className="text-sm text-stone-500 leading-relaxed">S'entourer de personnes sécures et fiables. Leur présence apaisante va progressivement « recâbler » le système nerveux vers plus de sécurité.</p>
+              </div>
+              <div className="rounded-2xl bg-white p-7 shadow-sm">
+                <div className="text-3xl mb-3">💫</div>
+                <h3 className="font-semibold mb-2 text-stone-900">La thérapie (EFT)</h3>
+                <p className="text-sm text-stone-500 leading-relaxed">La Thérapie Centrée sur les Émotions (Sue Johnson) utilise la relation thérapeutique comme base de sécurité pour transformer les modèles internes.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ══ COMMUNICATION EFFICACE ════════════════════════════════════ */}
+        <section className="bg-white px-6 py-16 md:px-10 md:py-20">
+          <div className="mx-auto max-w-4xl">
+            <div className="mb-10 text-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Outils pratiques</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Communiquer efficacement</h2>
+              <p className="mt-3 text-sm text-stone-500 max-w-xl mx-auto">
+                Formuler ses besoins selon son style d'attachement : 3 règles pour apaiser les tensions relationnelles.
+              </p>
+            </div>
+            <div className="grid gap-5 md:grid-cols-3">
+              {COMM_RULES.map(r => (
+                <div key={r.title} className="rounded-2xl bg-[#f5f0e8] p-7">
+                  <div className="text-3xl mb-3">{r.icon}</div>
+                  <h3 className="font-semibold mb-2 text-stone-900">{r.title}</h3>
+                  <p className="text-sm text-stone-600 leading-relaxed mb-3">{r.desc}</p>
+                  <p className="text-xs text-stone-400 italic border-l-2 border-amber-300 pl-3 leading-relaxed">{r.example}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ══ AU TRAVAIL AUSSI ══════════════════════════════════════════ */}
+        <section className="bg-[#f5f0e8] px-6 py-16 md:px-10 md:py-20">
+          <div className="mx-auto max-w-4xl">
+            <div className="flex flex-col md:flex-row gap-8 items-center">
+              <div className="flex-1">
+                <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Coaching professionnel</p>
+                <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl mb-4">L'attachement au travail aussi</h2>
+                <p className="text-sm text-stone-600 leading-relaxed mb-4">
+                  Les styles d'attachement influencent notre rapport au travail, notre leadership et la sécurité psychologique en équipe.
+                </p>
+                <ul className="space-y-3 text-sm text-stone-600">
+                  <li className="flex items-start gap-2"><span style={{ color: '#2d5f54' }}>🌿</span><span><strong>Leader sécure :</strong> inspire confiance, sait déléguer, crée un environnement de sécurité psychologique.</span></li>
+                  <li className="flex items-start gap-2"><span style={{ color: '#b45309' }}>🌊</span><span><strong>Collaborateur anxieux :</strong> cherche constamment la validation de sa hiérarchie, risque le burn-out par épuisement.</span></li>
+                  <li className="flex items-start gap-2"><span style={{ color: '#1d4ed8' }}>🌬️</span><span><strong>Collaborateur évitant :</strong> privilégie l'autonomie au détriment du travail d'équipe et de la collaboration.</span></li>
+                </ul>
+              </div>
+              <div className="flex-shrink-0">
+                <button
+                  onClick={handleBook}
+                  className="rounded-2xl bg-[#2d5f54] px-8 py-5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition text-center block"
+                >
+                  <span className="text-2xl block mb-2">💼</span>
+                  Explorer le coaching<br />en entreprise
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ══ VOS 3 ACTIONS ════════════════════════════════════════════ */}
+        <section className="bg-white px-6 py-16 md:px-10 md:py-20">
           <div className="mx-auto max-w-4xl">
             <div className="mb-10 text-center">
               <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">La méthode</p>
@@ -171,7 +387,7 @@ export default function RelationsPage() {
             </div>
             <div className="grid gap-6 md:grid-cols-3">
               {STEPS.map(({ num, title, desc }) => (
-                <div key={num} className="rounded-2xl bg-white p-7 shadow-sm">
+                <div key={num} className="rounded-2xl bg-[#f5f0e8] p-7 shadow-sm">
                   <p className="mb-3 text-3xl font-serif font-light text-[#2d5f54] opacity-60">{num}</p>
                   <h3 className="mb-2 text-base font-semibold text-stone-900">{title}</h3>
                   <p className="text-sm text-stone-500">{desc}</p>
@@ -184,7 +400,7 @@ export default function RelationsPage() {
         {/* ══ RÉSERVER — BOOKING ════════════════════════════════════════ */}
         <section
           ref={bookingRef}
-          className="bg-white px-6 py-16 md:px-10 md:py-20"
+          className="bg-[#f5f0e8] px-6 py-16 md:px-10 md:py-20"
           id="booking"
         >
           <div className="mx-auto max-w-4xl">
@@ -214,7 +430,7 @@ export default function RelationsPage() {
         </section>
 
         {/* ══ RESSOURCES THÉORIQUES ═════════════════════════════════════ */}
-        <section className="bg-[#f5f0e8] px-6 py-16 md:px-10 md:py-20">
+        <section className="bg-white px-6 py-16 md:px-10 md:py-20">
           <div className="mx-auto max-w-4xl">
             <div className="mb-10 text-center">
               <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Références</p>
@@ -230,7 +446,7 @@ export default function RelationsPage() {
                 <button
                   key={source.id}
                   onClick={() => setActiveModal(source.id)}
-                  className="rounded-2xl bg-white p-6 text-left shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all group"
+                  className="rounded-2xl bg-[#f5f0e8] p-6 text-left shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all group"
                 >
                   <div className="mb-3 text-3xl">{source.emoji}</div>
                   <h3 className="mb-1 text-base font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">{source.title}</h3>
@@ -247,7 +463,10 @@ export default function RelationsPage() {
       {/* ══ FOOTER MINIMAL ════════════════════════════════════════════════ */}
       <footer className="border-t border-stone-800 bg-stone-900 px-6 py-8 md:px-10">
         <div className="mx-auto max-w-5xl flex flex-col items-center justify-between gap-4 text-xs text-stone-400 md:flex-row">
-          <a href="/" className="font-serif text-base text-stone-300 font-semibold hover:text-white transition">Happy Humans</a>
+          <a href="/" className="flex items-center gap-2 hover:opacity-80 transition">
+            <Image src="/logo-happy-humans.jpg" alt="Happy Humans" width={28} height={28} className="rounded-full opacity-80" />
+            <span className="font-serif text-base text-stone-300 font-semibold hover:text-white transition">Happy Humans</span>
+          </a>
           <p>© {new Date().getFullYear()} Happy Humans — Monica Schneider</p>
           <div className="flex gap-6">
             <a href="/mentions-legales" className="hover:text-stone-200 transition">Mentions légales</a>
@@ -282,7 +501,7 @@ export default function RelationsPage() {
             </div>
             <div className="mt-8 border-t pt-6">
               <button
-                onClick={() => { setActiveModal(null); handleBook() }}
+                onClick={() => { setActiveModal(null); handleBook(); }}
                 className="w-full rounded-full bg-[#2d5f54] py-3 text-sm font-semibold text-white hover:bg-[#1e3a34] transition"
               >
                 Réserver une séance découverte de 45 min →
@@ -293,5 +512,5 @@ export default function RelationsPage() {
       )}
 
     </div>
-  )
+  );
 }
