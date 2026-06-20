@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 
 type CmsContent = Record<string, string>;
 const cache: Record<string, { data: CmsContent; ts: number }> = {};
-const TTL = 30_000; // 30 secondes - rafraîchi automatiquement
+const TTL = 30_000;
 
 export function useCmsContent(page: string, defaults: CmsContent = {}): CmsContent {
   const [content, setContent] = useState<CmsContent>(defaults);
@@ -13,7 +13,12 @@ export function useCmsContent(page: string, defaults: CmsContent = {}): CmsConte
     const now = Date.now();
     const cached = cache[page];
     if (cached && now - cached.ts < TTL) {
-      setContent({ ...defaults, ...cached.data });
+      // defaults wins over DB for non-empty default values
+      const merged: CmsContent = { ...cached.data };
+      Object.keys(defaults).forEach(k => {
+        if (defaults[k]) merged[k] = defaults[k];
+      });
+      setContent(merged);
       return;
     }
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -30,7 +35,12 @@ export function useCmsContent(page: string, defaults: CmsContent = {}): CmsConte
           if (r.value) map[r.block_key] = r.value;
         });
         cache[page] = { data: map, ts: Date.now() };
-        setContent({ ...defaults, ...map });
+        // defaults with non-empty values always win
+        const merged: CmsContent = { ...map };
+        Object.keys(defaults).forEach(k => {
+          if (defaults[k]) merged[k] = defaults[k];
+        });
+        setContent(merged);
       });
   }, [page]);
 
