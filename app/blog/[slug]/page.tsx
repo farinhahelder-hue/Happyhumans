@@ -13,7 +13,7 @@ import { sanitizeHtml } from '@/lib/sanitize-html'
 
 export const revalidate = 60
 
-const SITE_URL = 'https://heldonica.fr'
+const SITE_URL = 'https://happyhumans.fr'
 const DEFAULT_OG = `${SITE_URL}/og-default.jpg`
 
 interface Props {
@@ -27,26 +27,26 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await getPostBySlug(params.slug)
-  if (!post) return { title: 'Article introuvable | Heldonica' }
+  if (!post) return { title: 'Article introuvable | Happy Humans' }
 
   const ogImage = post.featured_image ?? DEFAULT_OG
   const canonical = `${SITE_URL}/blog/${post.slug}`
-  const description = post.excerpt ?? 'Un carnet Heldonica écrit depuis le terrain.'
+  const description = post.excerpt ?? 'Un carnet Happy Humans écrit depuis le terrain.'
 
   return {
-    title: `${post.title} | Heldonica`,
+    title: `${post.title} | Happy Humans`,
     description,
     alternates: { canonical },
-    authors: post.author ? [{ name: post.author }] : [{ name: 'Heldonica' }],
+    authors: post.author ? [{ name: post.author }] : [{ name: 'Happy Humans' }],
     openGraph: {
       title: post.title,
       description,
       url: canonical,
-      siteName: 'Heldonica',
+      siteName: 'Happy Humans',
       type: 'article',
       publishedTime: post.published_at ?? undefined,
       modifiedTime: post.updated_at ?? undefined,
-      authors: post.author ? [post.author] : ['Heldonica'],
+      authors: post.author ? [post.author] : ['Happy Humans'],
       tags: post.tags ?? undefined,
       images: [
         {
@@ -83,12 +83,12 @@ function buildJsonLds(post: BlogPost, readTime: number) {
     dateModified: post.updated_at ?? post.published_at ?? '',
     author: {
       '@type': 'Person',
-      name: post.author ?? 'Heldonica',
+      name: post.author ?? 'Happy Humans',
       url: SITE_URL,
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Heldonica',
+      name: 'Happy Humans',
       url: SITE_URL,
       logo: {
         '@type': 'ImageObject',
@@ -229,7 +229,7 @@ export default async function BlogPostPage({ params }: Props) {
                 {post.title}
               </h1>
               <div className="flex flex-wrap items-center gap-4 text-sm text-white/65">
-                <span>{post.author ?? 'Heldonica'}</span>
+                <span>{post.author ?? 'Happy Humans'}</span>
                 <span>•</span>
                 <span>{formatDate(post.published_at)}</span>
                 {readTime > 0 && (
