@@ -126,7 +126,7 @@ export default function LandingPage() {
                   Découvrez si vous êtes sécure, anxieux ou évitant — et ce que cela change dans vos relations. 16 questions · 5 minutes · Résultat immédiat.
                 </p>
                 <p className="mb-7 text-sm leading-relaxed text-stone-600">
-                  Lors d&apos;une <strong>séance offerte de 30 minutes</strong>, Monica vous accompagne pour identifier vos 3 actions concrètes vers des relations plus épanouissantes.
+                  Lors d&apos;une <strong>séance offerte de 45 minutes</strong>, Monica vous accompagne pour identifier vos 3 actions concrètes vers des relations plus épanouissantes.
                 </p>
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <Link
@@ -168,7 +168,7 @@ export default function LandingPage() {
             <div className="mb-10 text-center">
               <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Agenda</p>
               <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Choisissez votre créneau</h2>
-              <p className="mt-3 text-sm text-stone-500">Séance découverte offerte (30 min) ou programme de coaching.</p>
+              <p className="mt-3 text-sm text-stone-500">Séance découverte offerte (45 min) ou programme de coaching.</p>
             </div>
             <BookingWidget />
           </div>
@@ -251,7 +251,7 @@ export default function LandingPage() {
             </button>
             <div className="mb-6">
               <h2 className="text-xl font-semibold text-stone-900">Choisissez votre créneau</h2>
-              <p className="text-sm text-stone-500 mt-1">Séance découverte offerte · 30 minutes · Sans engagement</p>
+              <p className="text-sm text-stone-500 mt-1">Séance découverte offerte · 45 minutes · Sans engagement</p>
             </div>
             <BookingWidget defaultType="discovery" />
           </div>
