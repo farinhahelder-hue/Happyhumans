@@ -65,18 +65,18 @@ export default function ContactPage() {
                     <div className="grid gap-5 sm:grid-cols-2">
                       <div>
                         <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">Nom</label>
-                        <input required value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2f6b61]" placeholder="Votre nom" />
+                        <input required value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder="Votre nom" />
                       </div>
                       <div>
                         <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">Email</label>
-                        <input required type="email" value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2f6b61]" placeholder="votre@email.com" />
+                        <input required type="email" value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder="votre@email.com" />
                       </div>
                     </div>
                     <div>
                       
                       <div>
                         <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">Type de demande</label>
-                        <select required value={form.type} onChange={e => setForm(f => ({...f, type: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2f6b61] bg-white">
+                        <select required value={form.type} onChange={e => setForm(f => ({...f, type: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54] bg-white">
                           <option value="">Sélectionnez...</option>
                           <option value="coaching-individuel">Coaching individuel</option>
                           <option value="coaching-entreprises">Coaching & accompagnement entreprises</option>
@@ -86,13 +86,13 @@ export default function ContactPage() {
                         </select>
                       </div>
                       <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">Sujet</label>
-                      <input value={form.subject} onChange={e => setForm(f => ({...f, subject: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2f6b61]" placeholder="Objet de votre message" />
+                      <input value={form.subject} onChange={e => setForm(f => ({...f, subject: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder="Objet de votre message" />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">Message</label>
-                      <textarea required value={form.message} onChange={e => setForm(f => ({...f, message: e.target.value}))} rows={6} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2f6b61] resize-none" placeholder="Décrivez votre situation ou votre question…" />
+                      <textarea required value={form.message} onChange={e => setForm(f => ({...f, message: e.target.value}))} rows={6} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54] resize-none" placeholder="Décrivez votre situation ou votre question…" />
                     </div>
-                    <button type="submit" disabled={sending} className="rounded-full bg-[#2f6b61] px-8 py-3.5 text-sm font-semibold text-white hover:bg-[#235249] transition disabled:opacity-60">
+                    <button type="submit" disabled={sending} className="rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white hover:bg-[#1e3a34] transition disabled:opacity-60">
                       {sending ? 'Envoi…' : 'Envoyer le message'}
                     </button>
                   </form>
