@@ -19,14 +19,14 @@ export default function MerciPage() {
           <Link href="/blog" className="px-6 py-3 bg-amber-900 hover:bg-amber-800 text-white rounded font-semibold text-sm transition">
             Découvrir nos carnets de voyage
           </Link>
-          <a href="https://www.instagram.com/heldonica/" target="_blank" rel="noopener noreferrer"
+          <a href="https://www.instagram.com/happyhumans/" target="_blank" rel="noopener noreferrer"
             className="px-6 py-3 border border-stone-300 hover:border-amber-900 hover:text-amber-900 text-stone-700 rounded font-semibold text-sm transition">
             Nous suivre sur Instagram
           </a>
         </div>
         <div className="mt-10 p-5 bg-amber-50 border border-amber-200 rounded-xl text-sm text-stone-700">
           <p className="font-semibold text-amber-900 mb-1">📬 Pas de réponse reçue ?</p>
-          <p>Vérifie ton dossier spam ou écris-nous à <a href="mailto:info@heldonica.fr" className="text-amber-800 underline">info@heldonica.fr</a></p>
+          <p>Vérifie ton dossier spam ou écris-nous à <a href="mailto:info@happyhumans.fr" className="text-amber-800 underline">info@happyhumans.fr</a></p>
         </div>
       </div>
     </main>
