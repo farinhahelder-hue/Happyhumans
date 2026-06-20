@@ -14,8 +14,8 @@ export default function InstagramEmbed({ limit = 6 }: InstagramEmbedProps) {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center gap-4 mb-8">
         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-eucalyptus to-teal p-2 shadow-md mx-auto sm:mx-0">
           <img
-            src="/images/badges-heldonica.svg"
-            alt="Badge Heldonica"
+            src="/images/badges-happyhumans.svg"
+            alt="Badge Happy Humans"
             className="w-full h-full object-cover rounded-full bg-white"
             loading="lazy"
           />
@@ -56,7 +56,7 @@ export default function InstagramEmbed({ limit = 6 }: InstagramEmbedProps) {
               className="w-full h-full object-cover opacity-85 group-hover:opacity-95 group-hover:scale-105 transition duration-500"
               loading="lazy"
               onError={(event) => {
-                event.currentTarget.src = '/images/badges-heldonica.svg'
+                event.currentTarget.src = '/images/badges-happyhumans.svg'
               }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
