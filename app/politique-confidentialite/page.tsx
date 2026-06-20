@@ -6,9 +6,9 @@ import Breadcrumb from '@/components/Breadcrumb';
 export const metadata: Metadata = {
   title: 'Politique de confidentialite',
   description:
-    "Politique de confidentialite et traitement des donnees personnelles du site Heldonica.",
+    "Politique de confidentialite et traitement des donnees personnelles du site Happy Humans.",
   alternates: {
-    canonical: 'https://heldonica.fr/politique-confidentialite',
+    canonical: 'https://happyhumans.fr/politique-confidentialite',
   },
 };
 
@@ -43,7 +43,7 @@ export default function PolitiqueConfidentialitePage() {
             </h1>
             <p className="text-lg text-charcoal/80">
               Cette page detaille la collecte, l'usage et la conservation de vos donnees sur
-              heldonica.fr.
+              happyhumans.fr.
             </p>
           </div>
         </section>
@@ -52,7 +52,7 @@ export default function PolitiqueConfidentialitePage() {
           <div className="max-w-4xl mx-auto px-6 space-y-12">
             <PrivacySection title="Donnees collectees">
               <p>
-                Selon votre usage du site, Heldonica peut collecter les categories de donnees
+                Selon votre usage du site, Happy Humans peut collecter les categories de donnees
                 suivantes :
               </p>
               <ul className="list-disc list-inside space-y-2">
@@ -134,10 +134,10 @@ export default function PolitiqueConfidentialitePage() {
                 Pour exercer vos droits ou poser une question relative a vos donnees, contactez-nous
                 a{' '}
                 <a
-                  href="mailto:info@heldonica.fr"
+                  href="mailto:info@happyhumans.fr"
                   className="text-eucalyptus hover:text-teal transition"
                 >
-                  info@heldonica.fr
+                  info@happyhumans.fr
                 </a>
                 .
               </p>
