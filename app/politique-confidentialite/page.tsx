@@ -1,155 +1,156 @@
-import type { Metadata } from 'next';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import Breadcrumb from '@/components/Breadcrumb';
+import MiniNav from '@/components/MiniNav'
+import MiniFooter from '@/components/MiniFooter'
 
-export const metadata: Metadata = {
-  title: 'Politique de confidentialite',
-  description:
-    "Politique de confidentialite et traitement des donnees personnelles du site Happy Humans.",
-  alternates: {
-    canonical: 'https://happyhumans.fr/politique-confidentialite',
-  },
-};
-
-function PrivacySection({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="space-y-4">
-      <h2 className="text-3xl font-serif font-bold text-mahogany">{title}</h2>
-      <div className="space-y-3 text-charcoal">{children}</div>
-    </section>
-  );
+export const metadata = {
+  title: 'Politique de confidentialité | Happy Humans',
+  description: 'Politique de confidentialité et protection des données personnelles — Happy Humans, Monica Schneider.',
 }
 
-export default function PolitiqueConfidentialitePage() {
+export default function PolitiqueConfidentialite() {
   return (
     <>
-      <Header />
-      <Breadcrumb />
-      <main className="bg-white">
-        <section className="bg-gradient-to-br from-cloud-dancer to-white py-16 md:py-24">
-          <div className="max-w-4xl mx-auto px-6">
-            <p className="text-xs uppercase tracking-[0.16em] text-eucalyptus font-semibold mb-3">
-              Donnees personnelles
-            </p>
-            <h1 className="text-4xl md:text-6xl font-serif font-bold text-mahogany mb-5">
-              Politique de confidentialite
+      <MiniNav />
+      <main className="min-h-screen py-20 px-6 md:px-10" style={{ backgroundColor: '#f5f0e8' }}>
+        <div className="mx-auto max-w-3xl">
+
+          {/* Titre */}
+          <div className="mb-12 text-center">
+            <p className="text-xs uppercase tracking-widest mb-3" style={{ color: '#c9a96e' }}>Cadre légal</p>
+            <h1 className="text-4xl font-light" style={{ fontFamily: 'Cormorant Garamond, Playfair Display, serif', color: '#1e3a34' }}>
+              Politique de confidentialité
             </h1>
-            <p className="text-lg text-charcoal/80">
-              Cette page detaille la collecte, l'usage et la conservation de vos donnees sur
-              happyhumans.fr.
-            </p>
+            <div className="mx-auto mt-4 w-12 h-px" style={{ backgroundColor: '#c9a96e' }} />
+            <p className="mt-4 text-sm" style={{ color: '#5a7a74' }}>Dernière mise à jour : juin 2026</p>
           </div>
-        </section>
 
-        <section className="py-16 md:py-24">
-          <div className="max-w-4xl mx-auto px-6 space-y-12">
-            <PrivacySection title="Donnees collectees">
-              <p>
-                Selon votre usage du site, Happy Humans peut collecter les categories de donnees
-                suivantes :
+          <div className="space-y-10 text-sm leading-relaxed" style={{ color: '#1e3a34' }}>
+
+            {/* Responsable */}
+            <section>
+              <h2 className="text-lg mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem', fontWeight: 600 }}>
+                Responsable du traitement
+              </h2>
+              <p style={{ color: '#3d3d3d' }}>
+                <strong>Happy Humans — Monica Schneider</strong><br />
+                Email : <a href="mailto:happyhumans.coaching@gmail.com" style={{ color: '#2d5f54' }}>happyhumans.coaching@gmail.com</a>
               </p>
-              <ul className="list-disc list-inside space-y-2">
-                <li>Donnees d'identification : nom, prenom, email, telephone.</li>
-                <li>Donnees de projet : informations fournies via les formulaires de voyage.</li>
-                <li>Donnees techniques : adresse IP, type d'appareil, navigateur, logs.</li>
-                <li>
-                  Donnees marketing : interactions newsletter, consentement cookies, campagnes.
-                </li>
+            </section>
+
+            {/* Données collectées */}
+            <section>
+              <h2 className="text-lg mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem', fontWeight: 600 }}>
+                Données collectées
+              </h2>
+              <p style={{ color: '#3d3d3d' }}>Nous collectons uniquement les données que vous nous transmettez volontairement :</p>
+              <ul className="mt-2 space-y-1 list-disc list-inside" style={{ color: '#3d3d3d' }}>
+                <li>Nom, prénom et adresse email (formulaire de contact ou de réservation)</li>
+                <li>Numéro de téléphone (optionnel, lors d'une réservation)</li>
+                <li>Message libre et informations partagées dans le cadre du coaching</li>
+                <li>Résultats du test de style d'attachement (anonymes, non liés à votre identité sauf consentement)</li>
               </ul>
-            </PrivacySection>
+            </section>
 
-            <PrivacySection title="Finalites du traitement">
-              <p>Les donnees sont traitees pour :</p>
-              <ul className="list-disc list-inside space-y-2">
-                <li>Repondre a vos demandes de contact et de travel planning.</li>
-                <li>Executer une prestation (accompagnement voyage, suivi client).</li>
-                <li>Envoyer des contenus newsletter si vous y avez consenti.</li>
-                <li>Mesurer l'audience et ameliorer le site apres consentement cookies.</li>
-                <li>Respecter les obligations legales et comptables applicables.</li>
+            {/* Finalités */}
+            <section>
+              <h2 className="text-lg mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem', fontWeight: 600 }}>
+                Finalités du traitement
+              </h2>
+              <ul className="space-y-1 list-disc list-inside" style={{ color: '#3d3d3d' }}>
+                <li>Répondre à vos demandes de contact ou de réservation</li>
+                <li>Organiser et assurer le suivi des séances de coaching</li>
+                <li>Respecter les obligations légales et comptables applicables</li>
               </ul>
-            </PrivacySection>
+            </section>
 
-            <PrivacySection title="Bases legales">
-              <ul className="list-disc list-inside space-y-2">
-                <li>Execution precontractuelle ou contractuelle (demandes et prestations).</li>
-                <li>Consentement (cookies non essentiels, communications marketing).</li>
-                <li>Interet legitime (securite, prevention de fraude, maintenance).</li>
-                <li>Obligation legale (conservation comptable et fiscale).</li>
+            {/* Bases légales */}
+            <section>
+              <h2 className="text-lg mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem', fontWeight: 600 }}>
+                Bases légales
+              </h2>
+              <ul className="space-y-1 list-disc list-inside" style={{ color: '#3d3d3d' }}>
+                <li>Exécution précontractuelle ou contractuelle (demandes et prestations)</li>
+                <li>Consentement (cookies non essentiels, communications marketing)</li>
+                <li>Intérêt légitime (sécurité, prévention de fraude, maintenance)</li>
+                <li>Obligation légale (conservation comptable et fiscale)</li>
               </ul>
-            </PrivacySection>
+            </section>
 
-            <PrivacySection title="Duree de conservation">
-              <ul className="list-disc list-inside space-y-2">
-                <li>Demandes de contact : jusqu'a 24 mois apres le dernier echange.</li>
-                <li>Donnees clients : pendant la relation puis conservation legale obligatoire.</li>
-                <li>Donnees newsletter : jusqu'au retrait du consentement.</li>
-                <li>Logs techniques : duree courte de securite et de diagnostic.</li>
+            {/* Durée de conservation */}
+            <section>
+              <h2 className="text-lg mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem', fontWeight: 600 }}>
+                Durée de conservation
+              </h2>
+              <ul className="space-y-1 list-disc list-inside" style={{ color: '#3d3d3d' }}>
+                <li>Demandes de contact : jusqu'à 24 mois après le dernier échange</li>
+                <li>Données clients : pendant la relation puis conservation légale obligatoire</li>
+                <li>Logs techniques : durée courte de sécurité et de diagnostic</li>
               </ul>
-            </PrivacySection>
+            </section>
 
-            <PrivacySection title="Destinataires et sous-traitants">
-              <p>
-                Les donnees peuvent etre traitees par des prestataires techniques selectionnes pour
-                l'hebergement, la base de donnees, l'emailing, l'analytics et le paiement.
+            {/* Sous-traitants */}
+            <section>
+              <h2 className="text-lg mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem', fontWeight: 600 }}>
+                Hébergement et sous-traitants
+              </h2>
+              <p style={{ color: '#3d3d3d' }}>
+                Les données peuvent être traitées par des prestataires techniques sélectionnés pour l'hébergement 
+                et la base de données : <strong>Vercel</strong> (hébergement) et <strong>Supabase</strong> (base de données).
+                Ces prestataires sont soumis à des obligations de confidentialité strictes.
               </p>
-              <p>
-                Exemples d'outils utilises : Vercel, Supabase, Brevo, Google Analytics (si consenti)
-                et Stripe (lors de l'activation paiement).
-              </p>
-            </PrivacySection>
+            </section>
 
-            <PrivacySection title="Vos droits RGPD">
-              <p>Conformement au RGPD, vous pouvez demander :</p>
-              <ul className="list-disc list-inside space-y-2">
-                <li>L'acces a vos donnees personnelles.</li>
-                <li>La rectification de donnees inexactes.</li>
-                <li>L'effacement de vos donnees, sous reserve des obligations legales.</li>
-                <li>La limitation ou l'opposition a certains traitements.</li>
-                <li>La portabilite des donnees lorsque applicable.</li>
-                <li>Le retrait de votre consentement a tout moment.</li>
+            {/* Vos droits */}
+            <section>
+              <h2 className="text-lg mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem', fontWeight: 600 }}>
+                Vos droits RGPD
+              </h2>
+              <p style={{ color: '#3d3d3d' }}>Conformément au RGPD, vous pouvez demander :</p>
+              <ul className="mt-2 space-y-1 list-disc list-inside" style={{ color: '#3d3d3d' }}>
+                <li>L'accès à vos données personnelles</li>
+                <li>La rectification de données inexactes</li>
+                <li>L'effacement de vos données, sous réserve des obligations légales</li>
+                <li>La limitation ou l'opposition à certains traitements</li>
+                <li>La portabilité des données lorsque applicable</li>
+                <li>Le retrait de votre consentement à tout moment</li>
               </ul>
-            </PrivacySection>
+            </section>
 
-            <PrivacySection title="Cookies et consentement">
-              <p>
-                Les cookies strictement necessaires au fonctionnement du site sont actives par
-                defaut. Les cookies de mesure d'audience ou marketing sont conditionnes a votre
-                consentement explicite en France.
+            {/* Cookies */}
+            <section>
+              <h2 className="text-lg mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem', fontWeight: 600 }}>
+                Cookies
+              </h2>
+              <p style={{ color: '#3d3d3d' }}>
+                Les cookies strictement nécessaires au fonctionnement du site sont activés par défaut. 
+                Les cookies de mesure d'audience ou marketing sont conditionnés à votre consentement explicite.
+                Vous pouvez modifier votre choix à tout moment depuis le bandeau cookies.
               </p>
-              <p>
-                Vous pouvez modifier votre choix a tout moment depuis le bandeau cookies lors de vos
-                prochaines visites.
-              </p>
-            </PrivacySection>
+            </section>
 
-            <PrivacySection title="Contact">
-              <p>
-                Pour exercer vos droits ou poser une question relative a vos donnees, contactez-nous
-                a{' '}
-                <a
-                  href="mailto:info@happyhumans.fr"
-                  className="text-eucalyptus hover:text-teal transition"
-                >
-                  info@happyhumans.fr
-                </a>
-                .
+            {/* Contact */}
+            <section>
+              <h2 className="text-lg mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem', fontWeight: 600 }}>
+                Exercer vos droits
+              </h2>
+              <p style={{ color: '#3d3d3d' }}>
+                Pour exercer vos droits ou poser une question relative à vos données, contactez-nous à{' '}
+                <a href="mailto:happyhumans.coaching@gmail.com" style={{ color: '#2d5f54' }}>
+                  happyhumans.coaching@gmail.com
+                </a>.
               </p>
-            </PrivacySection>
+            </section>
 
-            <p className="text-sm text-charcoal/60 text-center">
-              Derniere mise a jour : 15 avril 2026
-            </p>
+            {/* Copyright */}
+            <section className="pt-6 border-t" style={{ borderColor: '#e8d5b0' }}>
+              <p className="text-xs" style={{ color: '#5a7a74' }}>
+                © 2026 Happy Humans — Monica Schneider. Tous droits réservés.
+              </p>
+            </section>
+
           </div>
-        </section>
+        </div>
       </main>
-      <Footer />
+      <MiniFooter />
     </>
-  );
+  )
 }
