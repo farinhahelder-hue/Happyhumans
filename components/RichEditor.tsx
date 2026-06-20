@@ -216,10 +216,10 @@ export default function RichEditor({
         [contenteditable] a { color: #01696f; text-decoration: underline; }
         [contenteditable] img { max-width: 100%; border-radius: .5rem; margin: 1rem 0; }
         [contenteditable] p { margin: .5em 0; }
-        [contenteditable] .heldonica-carousel { margin: 1.4rem 0; border: 1px solid #ece3d8; border-radius: 1rem; overflow: hidden; background: #faf8f5; }
-        [contenteditable] .heldonica-carousel__slide { margin: 0; }
-        [contenteditable] .heldonica-carousel__slide img { margin: 0; width: 100%; display: block; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 0; }
-        [contenteditable] .heldonica-carousel__controls { display: none; }
+        [contenteditable] .happyhumans-carousel { margin: 1.4rem 0; border: 1px solid #ece3d8; border-radius: 1rem; overflow: hidden; background: #faf8f5; }
+        [contenteditable] .happyhumans-carousel__slide { margin: 0; }
+        [contenteditable] .happyhumans-carousel__slide img { margin: 0; width: 100%; display: block; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 0; }
+        [contenteditable] .happyhumans-carousel__controls { display: none; }
       `}</style>
 
       <CarouselBuilderModal
