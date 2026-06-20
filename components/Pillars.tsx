@@ -12,7 +12,7 @@ export default function Pillars() {
     },
     {
       title: "Notre promesse",
-      description: "Que vous partiez trois semaines en Islande ou flâniez en bas de chez vous, Heldonica vous accompagne pour planifier vos voyages avec âme.",
+      description: "Que vous partiez trois semaines en Islande ou flâniez en bas de chez vous, Happy Humans vous accompagne pour planifier vos voyages avec âme.",
       icon: "💚"
     }
   ]
