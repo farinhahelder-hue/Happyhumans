@@ -197,10 +197,10 @@ export default function SlowTravelQuiz() {
   return (
     <section className="rounded-2xl border border-stone-200 bg-white p-6 md:p-8 shadow-sm">
       <p className="text-xs uppercase tracking-[0.16em] text-eucalyptus font-semibold mb-3">
-        Quiz slow travel
+        Quiz coaching philosophique
       </p>
       <h3 className="text-2xl font-serif text-mahogany mb-2">
-        Quel slow traveler es-tu ?
+        Quel coaching philosophiqueer es-tu ?
       </h3>
       <p className="text-sm text-charcoal/75 mb-6">
         5 questions rapides pour identifier ta destination la plus naturelle.
