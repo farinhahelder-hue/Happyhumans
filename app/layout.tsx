@@ -8,12 +8,13 @@ const SITE_URL = 'https://happy-humans.org';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  themeColor: '#2d5f54',
   title: {
     default: 'Happy Humans | Coaching & transformation avec Monica Schneider',
     template: '%s | Happy Humans',
   },
   description:
-    "Executive coaching, philosophical counselling et accompagnement des organisations avec Monica Schneider. Une approche pour retrouver clarté, alignement et impact durable.",
+    "Philo-coaching avec Monica Schneider. Executive coaching, philosophical counselling et sparring partner pour individus et organisations. Retrouvez clarté, alignement et relations épanouissantes.",
   keywords: [
     'executive coach',
     'coaching dirigeant',
