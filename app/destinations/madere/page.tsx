@@ -5,23 +5,23 @@ import Footer from '@/components/Footer';
 import SlowTravelQuiz from '@/components/SlowTravelQuiz';
 
 export const metadata: Metadata = {
-  title: 'Madere slow travel | Guide Heldonica',
+  title: 'Madere coaching philosophique | Guide Happy Humans',
   description:
     'Guide pilier Madere: quand partir, budget reel, ou dormir, itinerary 7 jours et FAQ pratique.',
   alternates: {
-    canonical: 'https://www.heldonica.fr/destinations/madere',
+    canonical: 'https://www.happyhumans.fr/destinations/madere',
   },
   openGraph: {
-    title: 'Madere slow travel | Guide Heldonica',
+    title: 'Madere coaching philosophique | Guide Happy Humans',
     description:
-      'Falaises, levadas, adresses locales et plan de voyage concret pour un duo slow travel.',
-    url: 'https://www.heldonica.fr/destinations/madere',
+      'Falaises, levadas, adresses locales et plan de voyage concret pour un duo coaching philosophique.',
+    url: 'https://www.happyhumans.fr/destinations/madere',
     images: [
       {
-        url: 'https://heldonica.fr/wp-content/uploads/2026/03/madere-foret-1024x683.jpg',
+        url: 'https://happyhumans.fr/wp-content/uploads/2026/03/madere-foret-1024x683.jpg',
         width: 1200,
         height: 630,
-        alt: 'Madere en slow travel - Fanal et falaises atlantiques',
+        alt: 'Madere en coaching philosophique - Fanal et falaises atlantiques',
       },
     ],
     locale: 'fr_FR',
@@ -77,14 +77,14 @@ export default function MaderePage() {
       <main>
         <section className="relative min-h-[66vh] flex items-end overflow-hidden bg-stone-900">
           <img
-            src="https://heldonica.fr/wp-content/uploads/2026/03/madere-foret-1024x683.jpg"
+            src="https://happyhumans.fr/wp-content/uploads/2026/03/madere-foret-1024x683.jpg"
             alt="Foret de Fanal dans la brume a Madere"
             className="absolute inset-0 h-full w-full object-cover opacity-65"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
           <div className="absolute right-4 top-4 hidden md:block rounded-xl overflow-hidden border border-white/25 shadow-xl bg-black/30 backdrop-blur-sm">
             <img
-              src="https://heldonica.fr/wp-content/uploads/2026/03/fetched-image-2-1024x768.jpg"
+              src="https://happyhumans.fr/wp-content/uploads/2026/03/fetched-image-2-1024x768.jpg"
               alt="Cabo Girao a l'aube, spot eco-luxe"
               className="h-28 w-40 object-cover"
               loading="lazy"
@@ -98,7 +98,7 @@ export default function MaderePage() {
               Destination pilier
             </p>
             <h1 className="text-4xl md:text-6xl font-serif text-white max-w-4xl mb-5">
-              Madere, l ile de l eternel printemps en mode slow travel
+              Madere, l ile de l eternel printemps en mode coaching philosophique
             </h1>
             <p className="text-white/85 max-w-2xl text-lg leading-relaxed">
               Un mix unique de relief volcanique, villages atlantiques et adresses
@@ -244,7 +244,7 @@ export default function MaderePage() {
             <div className="grid lg:grid-cols-[1.1fr_1fr] gap-8 items-start">
               <article className="rounded-2xl bg-white border border-stone-200 p-6 md:p-8">
                 <h2 className="text-3xl font-serif text-mahogany mb-4">
-                  Itineraire 7 jours: version Heldonica
+                  Itineraire 7 jours: version Happy Humans
                 </h2>
                 <ul className="space-y-3 text-charcoal/80 mb-6">
                   <li>Jour 1: Funchal, marche, vieille ville, coucher de soleil.</li>
