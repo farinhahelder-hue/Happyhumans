@@ -1,151 +1,122 @@
-import type { Metadata } from 'next';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import Breadcrumb from '@/components/Breadcrumb';
+import MiniNav from '@/components/MiniNav'
+import MiniFooter from '@/components/MiniFooter'
 
-export const metadata: Metadata = {
-  title: 'Mentions legales',
-  description:
-    "Informations legales de l'editeur, de l'hebergeur et conditions d'utilisation du site Happy Humans.",
-  alternates: {
-    canonical: 'https://happyhumans.fr/mentions-legales',
-  },
-};
-
-function LegalSection({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="space-y-4">
-      <h2 className="text-3xl font-serif font-bold text-mahogany">{title}</h2>
-      <div className="space-y-3 text-charcoal">{children}</div>
-    </section>
-  );
+export const metadata = {
+  title: 'Mentions légales | Happy Humans',
+  description: 'Mentions légales du site Happy Humans — Monica Schneider, philo-coaching.',
 }
 
-export default function MentionsLegalesPage() {
+export default function MentionsLegales() {
   return (
     <>
-      <Header />
-      <Breadcrumb />
-      <main className="bg-white">
-        <section className="bg-gradient-to-br from-cloud-dancer to-white py-16 md:py-24">
-          <div className="max-w-4xl mx-auto px-6">
-            <p className="text-xs uppercase tracking-[0.16em] text-eucalyptus font-semibold mb-3">
-              Cadre legal
-            </p>
-            <h1 className="text-4xl md:text-6xl font-serif font-bold text-mahogany mb-5">
-              Mentions legales
+      <MiniNav />
+      <main className="min-h-screen py-20 px-6 md:px-10" style={{ backgroundColor: '#f5f0e8' }}>
+        <div className="mx-auto max-w-3xl">
+
+          {/* Titre */}
+          <div className="mb-12 text-center">
+            <p className="text-xs uppercase tracking-widest mb-3" style={{ color: '#c9a96e' }}>Cadre légal</p>
+            <h1 className="text-4xl font-light" style={{ fontFamily: 'Cormorant Garamond, Playfair Display, serif', color: '#1e3a34' }}>
+              Mentions légales
             </h1>
-            <p className="text-lg text-charcoal/80">
-              Informations legales du site happyhumans.fr, de son editeur et de son hebergeur.
-            </p>
+            <div className="mx-auto mt-4 w-12 h-px" style={{ backgroundColor: '#c9a96e' }} />
+            <p className="mt-4 text-sm" style={{ color: '#5a7a74' }}>Dernière mise à jour : juin 2026</p>
           </div>
-        </section>
 
-        <section className="py-16 md:py-24">
-          <div className="max-w-4xl mx-auto px-6 space-y-12">
-            <div className="rounded-2xl border border-mahogany/20 bg-cloud-dancer/50 p-6 text-charcoal">
-              <p className="text-sm text-charcoal/60">
-                Derniere mise a jour : 16 avril 2026
-              </p>
-            </div>
+          <div className="space-y-10 text-sm leading-relaxed" style={{ color: '#1e3a34' }}>
 
-            <LegalSection title="Identite de l'editeur">
-              <p>
-                <strong>Nom commercial :</strong> Happy Humans
-              </p>
-              <p>
-                Informations legales complementaires en cours de mise a jour.
-              </p>
-              <p>
-                <strong>Email de contact :</strong>{' '}
-                <a
-                  href="mailto:contact@happyhumans.fr"
-                  className="text-eucalyptus hover:text-teal transition"
-                >
-                  contact@happyhumans.fr
-                </a>
-              </p>
-            </LegalSection>
+            {/* Éditeur */}
+            <section>
+              <h2 className="text-lg font-semibold mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem' }}>
+                Identité de l'éditeur
+              </h2>
+              <div className="space-y-1" style={{ color: '#3d3d3d' }}>
+                <p><strong>Nom commercial :</strong> Happy Humans</p>
+                <p><strong>Responsable :</strong> Monica Schneider</p>
+                <p><strong>Activité :</strong> Philo-coaching, executive coaching, philosophical counselling</p>
+                <p><strong>Email :</strong>{' '}
+                  <a href="mailto:happyhumans.coaching@gmail.com" style={{ color: '#2d5f54' }}>
+                    happyhumans.coaching@gmail.com
+                  </a>
+                </p>
+                <p><strong>Site :</strong>{' '}
+                  <a href="https://happyhumans.vercel.app" style={{ color: '#2d5f54' }}>
+                    happyhumans.vercel.app
+                  </a>
+                </p>
+              </div>
+            </section>
 
-            <LegalSection title="Hebergeur">
-              <p>
-                <strong>Societe :</strong> Vercel Inc.
-              </p>
-              <p>
-                <strong>Adresse :</strong> 340 S Lemon Ave #4133, Walnut, CA 91789, USA
-              </p>
-              <p>
-                <strong>Site web :</strong>{' '}
-                <a
-                  href="https://vercel.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-eucalyptus hover:text-teal transition"
-                >
-                  https://vercel.com
-                </a>
-              </p>
-            </LegalSection>
+            {/* Hébergeur */}
+            <section>
+              <h2 className="text-lg font-semibold mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem' }}>
+                Hébergeur
+              </h2>
+              <div className="space-y-1" style={{ color: '#3d3d3d' }}>
+                <p><strong>Société :</strong> Vercel Inc.</p>
+                <p><strong>Adresse :</strong> 340 S Lemon Ave #4133, Walnut, CA 91789, USA</p>
+                <p><strong>Site :</strong>{' '}
+                  <a href="https://vercel.com" target="_blank" rel="noopener noreferrer" style={{ color: '#2d5f54' }}>
+                    vercel.com
+                  </a>
+                </p>
+              </div>
+            </section>
 
-            <LegalSection title="Propriete intellectuelle">
-              <p>
-                L'ensemble des contenus presents sur happyhumans.fr (textes, visuels, videos,
-                elements graphiques, structure et code) est protege par le droit de la propriete
-                intellectuelle.
+            {/* Propriété intellectuelle */}
+            <section>
+              <h2 className="text-lg font-semibold mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem' }}>
+                Propriété intellectuelle
+              </h2>
+              <p style={{ color: '#3d3d3d' }}>
+                L'ensemble des contenus présents sur ce site (textes, visuels, éléments graphiques, structure et code) 
+                est la propriété exclusive de Happy Humans — Monica Schneider et est protégé par le droit de la propriété intellectuelle.
+                Toute reproduction, diffusion, adaptation ou exploitation, totale ou partielle, sans autorisation préalable 
+                écrite est interdite.
               </p>
-              <p>
-                Toute reproduction, diffusion, adaptation ou exploitation, totale ou partielle,
-                sans autorisation prealable ecrite de Happy Humans est interdite.
+              <p className="mt-2" style={{ color: '#3d3d3d' }}>
+                Crédits photo : Happy Humans et banques d'images sous licence.
               </p>
-              <p>
-                <strong>Credits photo :</strong> Happy Humans et banques d'images sous licence.
-              </p>
-            </LegalSection>
+            </section>
 
-            <LegalSection title="Limitation de responsabilite">
-              <p>
-                Happy Humans s'efforce de fournir des informations fiables et a jour, sans garantie
-                d'exhaustivite ou d'absence d'erreur.
+            {/* Limitation de responsabilité */}
+            <section>
+              <h2 className="text-lg font-semibold mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem' }}>
+                Limitation de responsabilité
+              </h2>
+              <p style={{ color: '#3d3d3d' }}>
+                Happy Humans s'efforce de fournir des informations fiables et à jour, sans garantie d'exhaustivité 
+                ou d'absence d'erreur. Happy Humans ne pourra être tenue responsable des dommages directs ou indirects 
+                liés à l'utilisation du site, à l'indisponibilité temporaire du service ou à l'usage d'informations 
+                externes référencées. Les liens sortants sont fournis à titre informatif et n'emportent pas validation 
+                de leur contenu.
               </p>
-              <p>
-                Happy Humans ne pourra etre tenue responsable des dommages directs ou indirects lies a
-                l'utilisation du site, a l'indisponibilite temporaire du service ou a l'usage
-                d'informations externes referencees.
-              </p>
-              <p>
-                Les liens sortants sont fournis a titre informatif et n'emportent pas validation de
-                leur contenu.
-              </p>
-            </LegalSection>
+            </section>
 
-            <LegalSection title="Contact legal">
-              <p>
-                Pour toute demande legale ou RGPD, vous pouvez nous ecrire a{' '}
-                <a
-                  href="mailto:contact@happyhumans.fr"
-                  className="text-eucalyptus hover:text-teal transition"
-                >
-                  contact@happyhumans.fr
-                </a>
-                .
+            {/* Contact légal */}
+            <section>
+              <h2 className="text-lg font-semibold mb-3" style={{ color: '#2d5f54', fontFamily: 'Cormorant Garamond, serif', fontSize: '1.2rem' }}>
+                Contact légal
+              </h2>
+              <p style={{ color: '#3d3d3d' }}>
+                Pour toute demande légale ou relative au RGPD, vous pouvez nous écrire à{' '}
+                <a href="mailto:happyhumans.coaching@gmail.com" style={{ color: '#2d5f54' }}>
+                  happyhumans.coaching@gmail.com
+                </a>.
               </p>
-            </LegalSection>
+            </section>
 
-            <LegalSection title="Copyright">
-              <p>
-                <strong>&copy; Happy Humans 2026</strong> - Tous droits reserves.
+            {/* Copyright */}
+            <section className="pt-6 border-t" style={{ borderColor: '#e8d5b0' }}>
+              <p className="text-xs" style={{ color: '#5a7a74' }}>
+                © 2026 Happy Humans — Monica Schneider. Tous droits réservés.
               </p>
-            </LegalSection>
+            </section>
+
           </div>
-        </section>
+        </div>
       </main>
-      <Footer />
+      <MiniFooter />
     </>
-  );
+  )
 }
