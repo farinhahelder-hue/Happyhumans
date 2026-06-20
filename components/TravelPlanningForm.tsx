@@ -137,7 +137,7 @@ export default function TravelPlanningForm() {
             className="w-full px-4 py-3 border border-stone-200 rounded-lg text-stone-800 focus:outline-none focus:ring-2 focus:ring-teal-600 transition bg-white"
           >
             <option value="">Choisir…</option>
-            <option value="slow-travel">Slow Travel</option>
+            <option value="slow-travel">Coaching Philosophique</option>
             <option value="aventure">Aventure & Randonnée</option>
             <option value="culture">Culture & Découvertes</option>
             <option value="gastronomie">Gastronomie & Terroir</option>
@@ -228,8 +228,8 @@ export default function TravelPlanningForm() {
       {state === 'error' && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-700 text-center">
           Une erreur est survenue. Écris-nous directement à{' '}
-          <a href="mailto:contact@heldonica.fr" className="underline font-medium">
-            contact@heldonica.fr
+          <a href="mailto:contact@happyhumans.fr" className="underline font-medium">
+            contact@happyhumans.fr
           </a>
         </div>
       )}
