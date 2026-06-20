@@ -129,7 +129,7 @@ export default function TravelPlanningForm() {
       if (!res.ok) throw new Error('Erreur serveur')
       setSubmitted(true)
     } catch {
-      setError('Une erreur est survenue. Réessaie ou écris-nous directement à contact@heldonica.fr')
+      setError('Une erreur est survenue. Réessaie ou écris-nous directement à contact@happyhumans.fr')
     } finally {
       setLoading(false)
     }
@@ -253,7 +253,7 @@ export default function TravelPlanningForm() {
                 </p>
                 <div className="space-y-2">
                   {[
-                    { value: 'Slow Travel & Détente', emoji: '🌿' },
+                    { value: 'Coaching Philosophique & Détente', emoji: '🌿' },
                     { value: 'Aventure & Nature', emoji: '🏔️' },
                     { value: 'Culture & Gastronomie', emoji: '🎭' },
                     { value: 'Éco-responsable & Durable', emoji: '♻️' },
@@ -279,7 +279,7 @@ export default function TravelPlanningForm() {
                 <div className="space-y-2">
                   {[
                     { value: 'Destination précise', emoji: '📍' },
-                    { value: 'Suggestions Heldonica', emoji: '🗺️' },
+                    { value: 'Suggestions Happy Humans', emoji: '🗺️' },
                     { value: 'Région/continent', emoji: '🌐' },
                   ].map(({ value, emoji }) => (
                     <RadioCard
@@ -293,7 +293,7 @@ export default function TravelPlanningForm() {
                     />
                   ))}
                 </div>
-                {form.destination && form.destination !== 'Suggestions Heldonica' && (
+                {form.destination && form.destination !== 'Suggestions Happy Humans' && (
                   <input
                     type="text"
                     placeholder={
