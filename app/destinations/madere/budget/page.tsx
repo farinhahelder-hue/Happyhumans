@@ -52,7 +52,7 @@ export default function MadereBudgetPage() {
               Calculateur budget Madere
             </h1>
             <p className="text-charcoal/80 text-lg max-w-3xl leading-relaxed">
-              Point de depart fiable pour cadrer ton voyage. Reference heldonica:
+              Point de depart fiable pour cadrer ton voyage. Reference happyhumans:
               1400-1800 EUR pour 7 jours en duo, style equilibre.
             </p>
           </div>
