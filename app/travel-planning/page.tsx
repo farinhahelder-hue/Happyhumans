@@ -83,7 +83,7 @@ export default function TravelPlanning() {
         <section className="relative overflow-hidden bg-stone-950">
           <img
             src="https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=1600&q=85"
-            alt="Couple en slow travel, vue panoramique sur la nature"
+            alt="Couple en coaching philosophique, vue panoramique sur la nature"
             className="absolute inset-0 w-full h-full object-cover opacity-30"
             width="1600"
             height="900"
@@ -91,7 +91,7 @@ export default function TravelPlanning() {
           <div className="absolute inset-0 bg-gradient-to-b from-stone-950/60 via-transparent to-stone-950" />
           <div className="relative max-w-4xl mx-auto px-6 md:px-10 py-28 md:py-40 text-center">
             <p className="fade-up-1 text-amber-400 text-xs font-bold tracking-[0.2em] uppercase mb-5">
-              Slow travel vécu · Contraintes réelles · Hors sentiers
+              Coaching philosophique vécu · Contraintes réelles · Hors sentiers
             </p>
             <h1 className="fade-up-2 text-4xl md:text-6xl lg:text-7xl font-serif font-light text-white leading-[1.1] mb-6">
               On ne fait pas des itinéraires.
@@ -140,7 +140,7 @@ export default function TravelPlanning() {
                 </ul>
               </div>
               <div className="bg-amber-50 rounded-2xl p-8 border border-amber-200">
-                <p className="text-amber-800 text-xs font-bold tracking-[0.15em] uppercase mb-5">Avec Heldonica</p>
+                <p className="text-amber-800 text-xs font-bold tracking-[0.15em] uppercase mb-5">Avec Happy Humans</p>
                 <ul className="space-y-4">
                   {[
                     'Une séquence qui respecte ton énergie, pas seulement ton rêve',
