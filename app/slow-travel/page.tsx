@@ -5,22 +5,22 @@ import Footer from '@/components/Footer'
 import Breadcrumb from '@/components/Breadcrumb'
 
 export const metadata: Metadata = {
-  title: 'Slow Travel | Heldonica',
+  title: 'Coaching Philosophique | Happy Humans',
   description:
-    'Le slow travel selon Heldonica : regarder mieux, laisser de la place, revenir, et apprendre à dénicher des pépites même en bas de chez soi.',
+    'Le coaching philosophique selon Happy Humans : regarder mieux, laisser de la place, revenir, et apprendre à dénicher des pépites même en bas de chez soi.',
   alternates: {
-    canonical: 'https://heldonica.fr/slow-travel',
+    canonical: 'https://happyhumans.fr/slow-travel',
   },
 }
 
 const principles = [
   {
     title: 'Ralentir assez pour voir',
-    text: 'Le slow travel ne consiste pas à faire moins pour cocher une valeur morale. Il consiste à laisser une journée respirer assez longtemps pour qu’un lieu commence enfin à répondre.',
+    text: 'Le coaching philosophique ne consiste pas à faire moins pour cocher une valeur morale. Il consiste à laisser une journée respirer assez longtemps pour qu’un lieu commence enfin à répondre.',
   },
   {
     title: 'Revenir quand c’est nécessaire',
-    text: 'On comprend rarement un terrain au premier passage. Revenir, corriger, comparer, rater mieux : c’est aussi comme ça qu’on construit Heldonica.',
+    text: 'On comprend rarement un terrain au premier passage. Revenir, corriger, comparer, rater mieux : c’est aussi comme ça qu’on construit Happy Humans.',
   },
   {
     title: 'Chercher juste, pas loin',
@@ -36,9 +36,9 @@ export default function SlowTravelPage() {
       <main>
         <section className="bg-gradient-to-br from-stone-50 via-amber-50/40 to-white py-24 md:py-28">
           <div className="mx-auto max-w-4xl px-6 text-center md:px-10">
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-amber-800">Slow travel</p>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-amber-800">Coaching philosophique</p>
             <h1 className="mb-6 text-4xl font-serif font-light leading-tight text-stone-900 md:text-6xl">
-              Le slow travel n’est pas une esthétique.
+              Le coaching philosophique n’est pas une esthétique.
               <br />
               C’est une façon de regarder.
             </h1>
