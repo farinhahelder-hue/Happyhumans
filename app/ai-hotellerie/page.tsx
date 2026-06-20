@@ -58,11 +58,11 @@ const tools = [
 ];
 
 export const metadata: Metadata = {
-  title: 'IA hôtellerie | Heldonica',
+  title: 'IA hôtellerie | Happy Humans',
   description:
     'L’IA ne remplace pas votre instinct. Elle lui donne des données. Usages concrets pour hôtels indépendants, sans jargon ni effet de mode.',
   alternates: {
-    canonical: 'https://heldonica.fr/ai-hotellerie',
+    canonical: 'https://happyhumans.fr/ai-hotellerie',
   },
 };
 
