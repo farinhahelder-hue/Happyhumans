@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useAuth } from '@/components/AuthProvider'
 import { createClient } from '@supabase/supabase-js'
 
@@ -15,7 +16,7 @@ function getSupabaseBrowser() {
 export default function Header() {
   const [open, setOpen] = useState(false)
   const { user, loading } = useAuth()
-  const [logoUrl, setLogoUrl] = useState<string>('')
+  const [logoUrl, setLogoUrl] = useState<string>('/logo-happy-humans.jpg')
   const [siteName, setSiteName] = useState('Happy Humans')
 
   const accountHref = !loading && user ? '/dashboard' : '/auth/login'
@@ -42,21 +43,18 @@ export default function Header() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
           <Link
             href="/"
-            className="flex items-center gap-2.5 text-amber-900 transition-colors duration-200 hover:text-amber-700"
+            className="flex items-center gap-3 transition-colors duration-200"
             aria-label={`${siteName} accueil`}
           >
-            {logoUrl ? (
-              <img src={logoUrl} alt={siteName} style={{ height: 38, width: 'auto', objectFit: 'contain' }} />
-            ) : (
-              <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
-                <circle cx="17" cy="17" r="16" stroke="currentColor" strokeWidth="1.2" />
-                <line x1="10" y1="9" x2="10" y2="22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                <line x1="24" y1="9" x2="24" y2="22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                <line x1="10" y1="15.5" x2="24" y2="15.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                <path d="M8 26 Q11 24 14 26 Q17 28 20 26 Q23 24 26 26" stroke="currentColor" strokeWidth="1" strokeLinecap="round" fill="none" opacity="0.6" />
-              </svg>
-            )}
-            <span className="text-xl font-serif font-bold tracking-tight">{siteName}</span>
+            <Image 
+              src={logoUrl} 
+              alt={siteName} 
+              width={44} 
+              height={44} 
+              className="rounded-full object-cover"
+              style={{ height: 44, width: 44 }}
+            />
+            <span className="text-xl font-serif font-bold tracking-tight text-stone-900">{siteName}</span>
           </Link>
 
           <div className="hidden items-center gap-6 md:flex">

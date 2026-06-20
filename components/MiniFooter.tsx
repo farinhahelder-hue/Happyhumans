@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function MiniFooter() {
   const year = new Date().getFullYear()
@@ -9,17 +10,25 @@ export default function MiniFooter() {
       <div className="mx-auto max-w-4xl flex flex-col items-center justify-between gap-6 md:flex-row">
 
         {/* Logo footer */}
-        <div className="flex flex-col items-center md:items-start gap-1">
-          <Link href="/" className="transition"
-            style={{ fontFamily: 'Cormorant Garamond, Playfair Display, serif', fontSize: '1.1rem', letterSpacing: '0.08em', color: '#f5f0e8', fontWeight: 400 }}>
-            HAPPY HUMANS
+        <div className="flex items-center gap-3">
+          <Link href="/" className="transition">
+            <Image 
+              src="/logo-happy-humans.jpg" 
+              alt="Happy Humans" 
+              width={36} 
+              height={36} 
+              className="rounded-full object-cover"
+            />
           </Link>
-          <span className="text-xs italic" style={{ color: '#c9a96e', fontFamily: 'Cormorant Garamond, serif', letterSpacing: '0.08em' }}>
-            philo-coaching
-          </span>
-          <p className="text-xs mt-1" style={{ color: '#5a7a74' }}>
-            by Monica Schneider
-          </p>
+          <div className="flex flex-col">
+            <Link href="/" className="transition"
+              style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.1rem', letterSpacing: '0.08em', color: '#f5f0e8', fontWeight: 400 }}>
+              HAPPY HUMANS
+            </Link>
+            <span className="text-xs italic" style={{ color: '#c9a96e', fontFamily: 'Cormorant Garamond, serif', letterSpacing: '0.08em' }}>
+              philo-coaching
+            </span>
+          </div>
         </div>
 
         {/* Copyright */}

@@ -1,11 +1,8 @@
+'use client'
+
 import BookingWidget from '@/components/BookingWidget'
 import MiniNav from '@/components/MiniNav'
 import MiniFooter from '@/components/MiniFooter'
-
-export const metadata = {
-  title: 'Réserver une séance — Happy Humans',
-  description: 'Choisissez un créneau pour votre séance découverte gratuite (45 min) avec Monica Schneider.',
-}
 
 import { useCmsContent } from '@/hooks/useCmsContent'
 

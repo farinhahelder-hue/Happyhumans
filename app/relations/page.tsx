@@ -18,7 +18,7 @@ const SOURCES = [
         <p>Le style évitant pousse à fuir la proximité, à valoriser l\'indépendance à l'excès et à se sentir « étouffé » dès que la relation devient sérieuse.</p>
         <p>Le livre propose des tests pour identifier son propre style, ainsi que celui de son partenaire, et des stratégies concrètes pour mieux communiquer ses besoins.</p>
         <div className="mt-8 p-6 rounded-xl" style={{ background: 'rgba(168,100,160,0.08)' }}>
-          <h4 className="text-lg font-semibold mb-4" style={{ color: '#7c3d8f' }}>Comment ces styles se forment dans l'enfance</h4>
+          <h4 className="text-lg font-semibold mb-4" style={{ color: '#2d5f54' }}>Comment ces styles se forment dans l'enfance</h4>
           <div className="space-y-4" style={{ color: '#555' }}>
             <p>Selon Bowlby, le nourrisson a un besoin biologique de proximité avec une figure d'attachement (généralement un parent) pour assurer sa survie. La façon dont ce parent répond — de manière cohérente et sensible, ou au contraire imprévisible, distante, voire intrusive — façonne un modèle inconscient de ce à quoi s'attendre des relations.</p>
             <p>Si le parent est globalement disponible et réconfortant, l'enfant développe un <strong>attachement sécure</strong> : il apprend que ses besoins seront entendus.</p>
@@ -38,7 +38,7 @@ const SOURCES = [
     content: (
       <div className="space-y-6" style={{ color: '#444', lineHeight: 1.8 }}>
         <div>
-          <h4 className="text-lg font-semibold mb-3" style={{ color: '#7c3d8f' }}>Le concept de Carl Rogers sur l\'amour inconditionnel</h4>
+          <h4 className="text-lg font-semibold mb-3" style={{ color: '#2d5f54' }}>Le concept de Carl Rogers sur l\'amour inconditionnel</h4>
           <div className="space-y-4">
             <p>L'idée de Carl Rogers repose sur son concept de « regard positif inconditionnel » — accepter une autre personne pleinement, sans jugement ni condition, telle qu\'elle est. Son intuition était que nous ne pouvons offrir ce type de regard à quelqu'un d'autre que dans la mesure où nous avons appris à nous l'offrir à nous-mêmes.</p>
             <p>Rogers pensait que la plupart d'entre nous grandissons en intériorisant une acceptation conditionnelle : un amour qui dépendait du fait d\'être gentil, performant, séduisant ou conciliant. Avec le temps, nous construisons un « concept de soi » façonné par ce que nous pensons avoir le droit d\'être, et nous cachons ou rejetons les parts de nous-mêmes qui n'ont pas obtenu l\'approbation — la colère, le besoin affectif, la peur, l\'ambition, la sexualité.</p>
@@ -47,7 +47,7 @@ const SOURCES = [
           </div>
         </div>
         <div className="p-6 rounded-xl" style={{ background: 'rgba(168,100,160,0.06)' }}>
-          <h4 className="text-lg font-semibold mb-4" style={{ color: '#7c3d8f' }}>Comment faire la paix avec soi-même selon Rogers</h4>
+          <h4 className="text-lg font-semibold mb-4" style={{ color: '#2d5f54' }}>Comment faire la paix avec soi-même selon Rogers</h4>
           <div className="space-y-4" style={{ color: '#555' }}>
             <p>Rogers ne voyait pas cela comme une technique unique, mais comme un processus continu qu\'il appelait devenir une « personne pleinement fonctionnelle ». Quelques éléments centraux :</p>
             <p><strong>Abandonner les « conditions de valeur »</strong>. Remarquez les règles intérieures que vous avez intériorisées — « je ne suis acceptable que si je suis calme, généreuse, performante, facile à vivre ». Rogers voulait que les personnes distinguent qui elles sont réellement de qui elles ont appris qu\'elles avaient le droit d\'être. Cela commence simplement par remarquer quand on joue un rôle plutôt que de ressentir.</p>
@@ -119,7 +119,7 @@ const ATTACHMENT_STYLES = [
     emoji: '⚡',
     label: 'Désorganisé',
     percent: '~5 %',
-    color: '#7c3d8f',
+    color: '#2d5f54',
     bg: 'rgba(124,61,143,0.08)',
     desc: 'Conflit interne entre le besoin désespéré de proximité et la peur panique de l\'autre. Souvent lié à des expériences d\'enfance complexes ou traumatiques.',
   },

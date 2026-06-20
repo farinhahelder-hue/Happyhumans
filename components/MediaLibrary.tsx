@@ -135,7 +135,7 @@ export default function MediaLibrary({ onSelect, onClose, cmsPassword }: Props) 
         {/* Header */}
         <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1.5px solid #e8e3dc', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#6b2a1a', margin: 0 }}>🖼️ Médiathèque Supabase</h2>
+            <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#2d5f54', margin: 0 }}>🖼️ Médiathèque Supabase</h2>
             <p style={{ fontSize: '.8rem', color: '#888', margin: 0 }}>Storage · Upload direct · Import Google Photos</p>
           </div>
           <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '1.4rem', cursor: 'pointer', color: '#888' }}>✕</button>
@@ -151,8 +151,8 @@ export default function MediaLibrary({ onSelect, onClose, cmsPassword }: Props) 
             <button key={id} onClick={() => setTab(id)} style={{
               padding: '.75rem 1.1rem', border: 'none', background: 'none', cursor: 'pointer',
               fontWeight: tab === id ? 700 : 400,
-              color: tab === id ? '#6b2a1a' : '#666',
-              borderBottom: tab === id ? '2.5px solid #6b2a1a' : '2.5px solid transparent',
+              color: tab === id ? '#2d5f54' : '#666',
+              borderBottom: tab === id ? '2.5px solid #2d5f54' : '2.5px solid transparent',
               fontSize: '.88rem',
             }}>{label}</button>
           ))}

@@ -159,7 +159,7 @@ export default function CarouselBuilderModal({
             <p style={{ margin: 0, fontSize: '.78rem', color: '#8a7a70', textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: 700 }}>
               Générateur
             </p>
-            <h2 style={{ margin: '.15rem 0 0', fontSize: '1.1rem', color: '#6b2a1a' }}>
+            <h2 style={{ margin: '.15rem 0 0', fontSize: '1.1rem', color: '#2d5f54' }}>
               Carrousel photo
             </h2>
           </div>
@@ -250,7 +250,7 @@ export default function CarouselBuilderModal({
                     border: '1px solid #d9cfc2',
                     borderRadius: '.55rem',
                     background: 'white',
-                    color: '#6b2a1a',
+                    color: '#2d5f54',
                     cursor: 'pointer',
                     fontWeight: 700,
                     fontSize: '.84rem',
@@ -418,7 +418,7 @@ export default function CarouselBuilderModal({
                 border: '1px solid #d9cfc2',
                 borderRadius: '.6rem',
                 background: 'white',
-                color: '#6b2a1a',
+                color: '#2d5f54',
                 cursor: uploading ? 'wait' : 'pointer',
                 fontWeight: 700,
               }}
@@ -433,7 +433,7 @@ export default function CarouselBuilderModal({
                 padding: '.75rem 1.1rem',
                 border: 'none',
                 borderRadius: '.6rem',
-                background: uploading || images.length < 2 ? '#c8c3bc' : '#6b2a1a',
+                background: uploading || images.length < 2 ? '#c8c3bc' : '#2d5f54',
                 color: 'white',
                 cursor: uploading || images.length < 2 ? 'not-allowed' : 'pointer',
                 fontWeight: 700,
@@ -454,7 +454,7 @@ function actionButton(disabled: boolean): CSSProperties {
     borderRadius: '.5rem',
     border: '1px solid #ddd4c9',
     background: disabled ? '#f4f1ec' : 'white',
-    color: disabled ? '#b7afa6' : '#6b2a1a',
+    color: disabled ? '#b7afa6' : '#2d5f54',
     cursor: disabled ? 'not-allowed' : 'pointer',
     fontSize: '.78rem',
     fontWeight: 700,

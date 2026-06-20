@@ -181,7 +181,7 @@ export default function EnhancedRichContent({ html, className, style }: Props) {
           border-radius: 999px;
           border: 1px solid #dbcdbd;
           background: #fffaf4;
-          color: #6b2a1a;
+          color: #2d5f54;
           font-size: 1.35rem;
           line-height: 1;
           cursor: pointer;
@@ -213,7 +213,7 @@ export default function EnhancedRichContent({ html, className, style }: Props) {
         }
 
         .happyhumans-carousel__dot.is-active {
-          background: #6b2a1a;
+          background: #2d5f54;
           transform: scale(1.15);
         }
 

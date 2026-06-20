@@ -50,7 +50,7 @@ export default function StayInTouchForm() {
         >
           <p
             className="text-sm font-semibold uppercase tracking-widest mb-3"
-            style={{ color: '#a864a0' }}
+            style={{ color: '#2d5f54' }}
           >
             Restons en lien
           </p>
@@ -58,7 +58,7 @@ export default function StayInTouchForm() {
             className="text-3xl md:text-4xl font-bold mb-4"
             style={{ fontFamily: "'Playfair Display', serif", color: '#1a1a2e' }}
           >
-            Vous voulez continuer <span style={{ color: '#a864a0' }}>avec Monica ?</span>
+            Vous voulez continuer <span style={{ color: '#2d5f54' }}>avec Monica ?</span>
           </h2>
           <p className="max-w-lg mx-auto mb-8 leading-relaxed" style={{ color: '#666' }}>
             Recevez ses conseils, ressources et prochains événements directement par email.
@@ -70,7 +70,7 @@ export default function StayInTouchForm() {
               className="max-w-md mx-auto rounded-2xl px-6 py-5"
               style={{ background: '#f5e8f5' }}
             >
-              <p className="font-semibold" style={{ color: '#7c3d8f' }}>
+              <p className="font-semibold" style={{ color: '#2d5f54' }}>
                 {message}
               </p>
               <p className="text-sm mt-1" style={{ color: '#888' }}>
@@ -92,7 +92,7 @@ export default function StayInTouchForm() {
                   color: '#2c2c2c',
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = '#a864a0'
+                  e.target.style.borderColor = '#2d5f54'
                   e.target.style.boxShadow = '0 0 0 3px rgba(168,100,160,0.15)'
                 }}
                 onBlur={(e) => {
@@ -105,7 +105,7 @@ export default function StayInTouchForm() {
                 disabled={status === 'loading'}
                 className="px-7 py-3.5 font-semibold rounded-2xl text-base transition-all disabled:opacity-60"
                 style={{
-                  background: '#a864a0',
+                  background: '#2d5f54',
                   color: '#fff',
                   boxShadow: '0 8px 24px rgba(168,100,160,0.35)',
                 }}

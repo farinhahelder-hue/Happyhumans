@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function MiniNav() {
   return (
@@ -9,15 +10,24 @@ export default function MiniNav() {
         borderColor: '#e8d5b0' 
       }}>
       {/* Logo */}
-      <Link href="/" className="flex items-center gap-2 group">
-        <span className="font-serif text-lg font-semibold tracking-wide transition"
-          style={{ color: '#1e3a34', fontFamily: 'Cormorant Garamond, Playfair Display, serif', fontSize: '1.2rem', letterSpacing: '0.06em' }}>
-          Happy Humans
-        </span>
-        <span className="text-xs italic"
-          style={{ color: '#c9a96e', fontFamily: 'Cormorant Garamond, serif', letterSpacing: '0.08em' }}>
-          philo-coaching
-        </span>
+      <Link href="/" className="flex items-center gap-3 group">
+        <Image 
+          src="/logo-happy-humans.jpg" 
+          alt="Happy Humans" 
+          width={36} 
+          height={36} 
+          className="rounded-full object-cover"
+        />
+        <div className="flex flex-col">
+          <span className="font-serif text-base font-semibold tracking-wide transition"
+            style={{ color: '#1e3a34', fontFamily: 'Cormorant Garamond, serif', letterSpacing: '0.04em' }}>
+            Happy Humans
+          </span>
+          <span className="text-xs italic"
+            style={{ color: '#c9a96e', fontFamily: 'Cormorant Garamond, serif', letterSpacing: '0.08em' }}>
+            philo-coaching
+          </span>
+        </div>
       </Link>
 
       {/* Nav */}

@@ -124,7 +124,7 @@ export default function BlogGenerator({ onGenerated }: BlogGeneratorProps) {
             {result.content?.slice(0, 500)}...
           </div>
           {result.hashtags?.length > 0 && (
-            <div style={{ fontSize: '.75rem', color: '#6b2a1a' }}>
+            <div style={{ fontSize: '.75rem', color: '#2d5f54' }}>
               {result.hashtags.slice(0, 8).join(' ')}
             </div>
           )}
@@ -132,7 +132,7 @@ export default function BlogGenerator({ onGenerated }: BlogGeneratorProps) {
             onClick={handleUseContent}
             style={{
               width: '100%', marginTop: '1rem', padding: '.5rem',
-              background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.4rem',
+              background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.4rem',
               cursor: 'pointer', fontSize: '.85rem', fontWeight: 600,
             }}
           >

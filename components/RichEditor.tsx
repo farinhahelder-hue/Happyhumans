@@ -208,7 +208,7 @@ export default function RichEditor({
 
       <style>{`
         [contenteditable]:empty:before { content: attr(data-placeholder); color: #bbb; pointer-events: none; }
-        [contenteditable] h2 { font-size: 1.4rem; font-weight: 700; margin: 1.2em 0 .5em; color: #6b2a1a; }
+        [contenteditable] h2 { font-size: 1.4rem; font-weight: 700; margin: 1.2em 0 .5em; color: #2d5f54; }
         [contenteditable] h3 { font-size: 1.15rem; font-weight: 700; margin: 1em 0 .4em; color: #444; }
         [contenteditable] blockquote { border-left: 3px solid #d4a88a; margin: 1em 0; padding: .5em 1em; background: #faf3ee; color: #666; border-radius: 0 .5rem .5rem 0; font-style: italic; }
         [contenteditable] ul { list-style: disc; padding-left: 1.5em; margin: .5em 0; }

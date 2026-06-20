@@ -775,7 +775,7 @@ export default function CMSAdmin() {
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f3ef' }}>
       <div style={{ background: 'white', padding: '2.5rem', borderRadius: '1rem', boxShadow: '0 8px 32px rgba(0,0,0,.1)', width: '100%', maxWidth: 380, textAlign: 'center' }}>
         <div style={{ fontSize: '2.5rem', marginBottom: '.5rem' }}>...</div>
-        <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#6b2a1a' }}>Happy Humans CMS</h1>
+        <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#2d5f54' }}>Happy Humans CMS</h1>
         <p style={{ color: '#888', fontSize: '.9rem' }}>Verification de la session...</p>
       </div>
     </div>
@@ -786,7 +786,7 @@ export default function CMSAdmin() {
       <div style={{ background: 'white', padding: '2.5rem', borderRadius: '1rem', boxShadow: '0 8px 32px rgba(0,0,0,.1)', width: '100%', maxWidth: 380 }}>
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
           <div style={{ fontSize: '2.5rem', marginBottom: '.5rem' }}>🌿</div>
-          <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#6b2a1a' }}>Happy Humans CMS</h1>
+          <h1 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#2d5f54' }}>Happy Humans CMS</h1>
           <p style={{ color: '#888', fontSize: '.9rem' }}>Accès réservé</p>
         </div>
         <input type="password" placeholder="Mot de passe" value={pwd}
@@ -796,7 +796,7 @@ export default function CMSAdmin() {
         />
         {authErr && <p style={{ color: '#c0392b', fontSize: '.85rem', marginBottom: '.75rem' }}>{authErr}</p>}
         <button onClick={login} disabled={authLoading}
-          style={{ width: '100%', padding: '.8rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, fontSize: '1rem', cursor: authLoading ? 'wait' : 'pointer', opacity: authLoading ? .7 : 1 }}
+          style={{ width: '100%', padding: '.8rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, fontSize: '1rem', cursor: authLoading ? 'wait' : 'pointer', opacity: authLoading ? .7 : 1 }}
         >{authLoading ? 'Connexion…' : 'Entrer'}</button>
       </div>
     </div>
@@ -817,7 +817,7 @@ export default function CMSAdmin() {
   return (
     <div style={{ minHeight: '100vh', background: '#f5f3ef', fontFamily: 'system-ui, sans-serif' }}>
       {/* Header */}
-      <div style={{ background: '#6b2a1a', color: 'white', padding: '1rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 2px 12px rgba(0,0,0,.15)' }}>
+      <div style={{ background: '#2d5f54', color: 'white', padding: '1rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 50, boxShadow: '0 2px 12px rgba(0,0,0,.15)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
           <span style={{ fontSize: '1.5rem' }}>🌿</span>
           <span style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '.03em' }}>Happy Humans CMS</span>
@@ -856,14 +856,14 @@ export default function CMSAdmin() {
             style={{
               padding: '.85rem 1.2rem', border: 'none', background: 'none', cursor: 'pointer',
               fontWeight: tab === t.id ? 700 : 400,
-              color: tab === t.id ? '#6b2a1a' : '#666',
-              borderBottom: tab === t.id ? '2.5px solid #6b2a1a' : '2.5px solid transparent',
+              color: tab === t.id ? '#2d5f54' : '#666',
+              borderBottom: tab === t.id ? '2.5px solid #2d5f54' : '2.5px solid transparent',
               fontSize: '.9rem', display: 'flex', alignItems: 'center', gap: '.4rem', whiteSpace: 'nowrap',
             }}
           >
             {t.label}
             {t.count !== null && t.count > 0 && (
-              <span style={{ background: '#f0e8e4', color: '#6b2a1a', borderRadius: '9999px', padding: '.1rem .55rem', fontSize: '.75rem', fontWeight: 700 }}>{t.count}</span>
+              <span style={{ background: '#f0e8e4', color: '#2d5f54', borderRadius: '9999px', padding: '.1rem .55rem', fontSize: '.75rem', fontWeight: 700 }}>{t.count}</span>
             )}
           </button>
         ))}
@@ -887,7 +887,7 @@ export default function CMSAdmin() {
                 <option value="published">Publiés</option>
                 <option value="draft">Brouillons</option>
               </select>
-              <button onClick={loadArticles} style={{ padding: '.6rem 1.2rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.9rem' }}>🔍</button>
+              <button onClick={loadArticles} style={{ padding: '.6rem 1.2rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.9rem' }}>🔍</button>
               <button onClick={() => openArticleEditor({})} style={{ padding: '.6rem 1.2rem', background: '#01696f', color: 'white', border: 'none', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.9rem' }}>+ Nouvel article</button>
             </div>
             {loadingArticles ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement…</p>
@@ -927,13 +927,13 @@ export default function CMSAdmin() {
         {tab === 'new' && (
           <div style={{ background: 'white', borderRadius: '1rem', padding: '2rem', boxShadow: '0 2px 12px rgba(0,0,0,.07)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem' }}>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#6b2a1a' }}>{editingArticle?.id ? `✏️ Modifier : ${editingArticle.title}` : '✏️ Nouvel article'}</h2>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#2d5f54' }}>{editingArticle?.id ? `✏️ Modifier : ${editingArticle.title}` : '✏️ Nouvel article'}</h2>
               <button onClick={closeArticleEditor} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '1.3rem' }}>✕</button>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
               <button
                 onClick={() => setShowArticlePreview(prev => !prev)}
-                style={{ padding: '.5rem .95rem', border: '1px solid #ddd', borderRadius: '.5rem', background: 'white', color: '#6b2a1a', cursor: 'pointer', fontSize: '.82rem', fontWeight: 700 }}
+                style={{ padding: '.5rem .95rem', border: '1px solid #ddd', borderRadius: '.5rem', background: 'white', color: '#2d5f54', cursor: 'pointer', fontSize: '.82rem', fontWeight: 700 }}
               >
                 {showArticlePreview ? "Masquer l'aperçu" : 'Aperçu live'}
               </button>
@@ -971,7 +971,7 @@ export default function CMSAdmin() {
                 <label style={lbl}>Image à la une</label>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap', marginBottom: '.75rem' }}>
                   <button onClick={() => setShowMediaLibrary(true)}
-                    style={{ padding: '.6rem 1.1rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.85rem', fontWeight: 600 }}
+                    style={{ padding: '.6rem 1.1rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.85rem', fontWeight: 600 }}
                   >🖼️ Médiathèque Supabase</button>
                   <span style={{ color: '#aaa', fontSize: '.82rem' }}>ou</span>
                   <label style={{ padding: '.6rem 1rem', background: uploadingFeaturedImage ? '#8aa8a9' : '#01696f', color: 'white', borderRadius: '.5rem', cursor: uploadingFeaturedImage ? 'wait' : 'pointer', fontSize: '.85rem', fontWeight: 600 }}>
@@ -1082,7 +1082,7 @@ export default function CMSAdmin() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
                   <div>
                     <p style={{ margin: 0, fontSize: '.78rem', color: '#8a7a70', textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: 700 }}>Preview</p>
-                    <h3 style={{ margin: '.2rem 0 0', fontSize: '1.1rem', color: '#6b2a1a' }}>Aperçu public de l&apos;article</h3>
+                    <h3 style={{ margin: '.2rem 0 0', fontSize: '1.1rem', color: '#2d5f54' }}>Aperçu public de l&apos;article</h3>
                   </div>
                   <span style={{ ...metaChip, background: '#e8f5f2', color: '#01696f' }}>HTML sanitizé comme sur le site</span>
                 </div>
@@ -1127,7 +1127,7 @@ export default function CMSAdmin() {
               <button onClick={closeArticleEditor}
                 style={{ padding: '.7rem 1.5rem', border: '1.5px solid #ddd', borderRadius: '.5rem', background: 'white', cursor: 'pointer', fontSize: '.9rem' }}>Annuler</button>
               <button onClick={saveArticle} disabled={savingArticle}
-                style={{ padding: '.7rem 2rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: savingArticle ? 'wait' : 'pointer', fontSize: '.9rem', opacity: savingArticle ? .75 : 1 }}>{savingArticle ? '⏳ Enregistrement…' : '💾 Enregistrer'}</button>
+                style={{ padding: '.7rem 2rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: savingArticle ? 'wait' : 'pointer', fontSize: '.9rem', opacity: savingArticle ? .75 : 1 }}>{savingArticle ? '⏳ Enregistrement…' : '💾 Enregistrer'}</button>
             </div>
           </div>
         )}
@@ -1143,7 +1143,7 @@ export default function CMSAdmin() {
                   <p style={{ fontSize: '.75rem', fontWeight: 700, color: '#aaa', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.75rem', padding: '0 .5rem' }}>Pages du site</p>
                   {Object.entries(PAGES_CONFIG).map(([key, cfg]) => (
                     <button key={key} onClick={() => setActivePage(key)}
-                      style={{ display: 'flex', alignItems: 'center', gap: '.5rem', width: '100%', textAlign: 'left', padding: '.6rem .75rem', borderRadius: '.5rem', border: 'none', cursor: 'pointer', fontSize: '.88rem', fontWeight: activePage === key ? 700 : 400, background: activePage === key ? '#f0e8e4' : 'transparent', color: activePage === key ? '#6b2a1a' : '#555', marginBottom: '.2rem' }}
+                      style={{ display: 'flex', alignItems: 'center', gap: '.5rem', width: '100%', textAlign: 'left', padding: '.6rem .75rem', borderRadius: '.5rem', border: 'none', cursor: 'pointer', fontSize: '.88rem', fontWeight: activePage === key ? 700 : 400, background: activePage === key ? '#f0e8e4' : 'transparent', color: activePage === key ? '#2d5f54' : '#555', marginBottom: '.2rem' }}
                     >
                       <span>{cfg.emoji}</span> {cfg.label}
                     </button>
@@ -1158,7 +1158,7 @@ export default function CMSAdmin() {
                     return (
                       <div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                          <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#6b2a1a' }}>
+                          <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#2d5f54' }}>
                             {config.emoji} {config.label}
                           </h2>
                           <a
@@ -1186,7 +1186,7 @@ export default function CMSAdmin() {
                                     )}
                                     <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
                                       <button onClick={() => { setMediaPickerTarget(key); setActiveTab('media'); }} style={{ padding: '.5rem 1rem', background: '#01696f', color: 'white', border: 'none', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>🖼️ Choisir dans la médiathèque</button>
-                                      <label style={{ padding: '.5rem 1rem', background: '#6b2a1a', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>
+                                      <label style={{ padding: '.5rem 1rem', background: '#2d5f54', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>
                                         ⬆️ Upload
                                         <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
                                           const file = e.target.files?.[0];
@@ -1232,7 +1232,7 @@ export default function CMSAdmin() {
                           <button
                             onClick={() => savePageContent(activePage)}
                             disabled={savingSettings}
-                            style={{ padding: '.75rem 2.25rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.95rem', opacity: savingSettings ? .7 : 1 }}
+                            style={{ padding: '.75rem 2.25rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.95rem', opacity: savingSettings ? .7 : 1 }}
                           >
                             {savingSettings ? '⏳ Sauvegarde…' : '💾 Sauvegarder la page'}
                           </button>
@@ -1250,14 +1250,14 @@ export default function CMSAdmin() {
         {tab === 'media' && (
           <div style={{ background: 'white', borderRadius: '1rem', padding: '2rem', boxShadow: '0 2px 12px rgba(0,0,0,.07)', minHeight: 400 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#6b2a1a' }}>🖼️ Médiathèque</h2>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#2d5f54' }}>🖼️ Médiathèque</h2>
               <p style={{ fontSize: '.85rem', color: '#888' }}>Supabase Storage</p>
             </div>
             <div style={{ background: '#faf8f5', borderRadius: '.75rem', padding: '2rem', textAlign: 'center', border: '2px dashed #e8e3dc' }}>
               <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>â˜ï¸</div>
               <p style={{ color: '#555', marginBottom: '1.25rem', lineHeight: 1.6 }}>Toutes tes images sont stockées sur <strong>Supabase Storage</strong>.</p>
               <button onClick={() => setShowMediaLibrary(true)}
-                style={{ padding: '.8rem 1.75rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.95rem' }}
+                style={{ padding: '.8rem 1.75rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.95rem' }}
               >🖼️ Ouvrir la médiathèque</button>
             </div>
           </div>
@@ -1267,7 +1267,7 @@ export default function CMSAdmin() {
         {tab === 'demandes' && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#6b2a1a' }}>✈️ Demandes Travel Planning</h2>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#2d5f54' }}>✈️ Demandes Travel Planning</h2>
               <button onClick={loadDemandes} disabled={loadingDemandes} style={{ padding: '.5rem 1rem', background: 'white', border: '1.5px solid #ddd', borderRadius: '.5rem', cursor: loadingDemandes ? 'wait' : 'pointer', fontSize: '.85rem', opacity: loadingDemandes ? .7 : 1 }}>{loadingDemandes ? '⏳ Actualisation…' : '🔄 Actualiser'}</button>
             </div>
             {loadingDemandes ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement…</p>
@@ -1322,7 +1322,7 @@ export default function CMSAdmin() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
             {/* Add slot */}
             <div style={{ background: 'white', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,.07)' }}>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#6b2a1a', marginBottom: '1rem' }}>📅 Ajouter un créneau</h2>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#2d5f54', marginBottom: '1rem' }}>📅 Ajouter un créneau</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
                 <div>
                   <label style={lbl}>Date</label>
@@ -1361,14 +1361,14 @@ export default function CMSAdmin() {
                     style={inp} placeholder="En ligne, présentiel..." />
                 </div>
                 <button onClick={saveNewSlot} disabled={savingSlot}
-                  style={{ padding: '.75rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer' }}>
+                  style={{ padding: '.75rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer' }}>
                   {savingSlot ? 'Ajout...' : '✅ Ajouter le créneau'}
                 </button>
               </div>
             </div>
             {/* Slots list */}
             <div style={{ background: 'white', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,.07)', maxHeight: 600, overflow: 'auto' }}>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#6b2a1a', marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#2d5f54', marginBottom: '1rem' }}>
                 📆 Créneaux ({bookingSlots.length})
               </h2>
               {loadingSlots ? (
@@ -1394,7 +1394,7 @@ export default function CMSAdmin() {
             </div>
             {/* Requests */}
             <div style={{ gridColumn: '1 / -1', background: 'white', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 2px 12px rgba(0,0,0,.07)' }}>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#6b2a1a', marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#2d5f54', marginBottom: '1rem' }}>
                 📋 Demandes ({bookingRequests.length})
               </h2>
               {bookingRequests.length === 0 ? (
@@ -1460,7 +1460,7 @@ export default function CMSAdmin() {
                   <p style={{ fontSize: '.75rem', fontWeight: 700, color: '#aaa', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.75rem', padding: '0 .5rem' }}>Paramètres globaux</p>
                   {Object.entries(SETTINGS_GROUPS).map(([key, cfg]) => (
                     <button key={key} onClick={() => setSettingsGroup(key)}
-                      style={{ display: 'flex', alignItems: 'center', gap: '.5rem', width: '100%', textAlign: 'left', padding: '.6rem .75rem', borderRadius: '.5rem', border: 'none', cursor: 'pointer', fontSize: '.88rem', fontWeight: settingsGroup === key ? 700 : 400, background: settingsGroup === key ? '#f0e8e4' : 'transparent', color: settingsGroup === key ? '#6b2a1a' : '#555', marginBottom: '.2rem' }}
+                      style={{ display: 'flex', alignItems: 'center', gap: '.5rem', width: '100%', textAlign: 'left', padding: '.6rem .75rem', borderRadius: '.5rem', border: 'none', cursor: 'pointer', fontSize: '.88rem', fontWeight: settingsGroup === key ? 700 : 400, background: settingsGroup === key ? '#f0e8e4' : 'transparent', color: settingsGroup === key ? '#2d5f54' : '#555', marginBottom: '.2rem' }}
                     >
                       <span>{cfg.emoji}</span> {cfg.label}
                     </button>
@@ -1474,7 +1474,7 @@ export default function CMSAdmin() {
                     const groupCfg = SETTINGS_GROUPS[settingsGroup];
                     return (
                       <div>
-                        <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#6b2a1a', marginBottom: '1.5rem' }}>
+                        <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#2d5f54', marginBottom: '1.5rem' }}>
                           {groupCfg?.emoji} {groupCfg?.label}
                         </h2>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
@@ -1489,7 +1489,7 @@ export default function CMSAdmin() {
                                     </div>
                                   )}
                                   <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-                                    <label style={{ padding: '.5rem 1rem', background: '#6b2a1a', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>
+                                    <label style={{ padding: '.5rem 1rem', background: '#2d5f54', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>
                                       ⬆️ Upload logo
                                       <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
                                         const file = e.target.files?.[0];
@@ -1519,7 +1519,7 @@ export default function CMSAdmin() {
                           )}
                         </div>
                         <button onClick={saveSettings} disabled={savingSettings}
-                          style={{ marginTop: '1.75rem', padding: '.7rem 2rem', background: '#6b2a1a', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.9rem', opacity: savingSettings ? .7 : 1 }}
+                          style={{ marginTop: '1.75rem', padding: '.7rem 2rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.9rem', opacity: savingSettings ? .7 : 1 }}
                         >{savingSettings ? '⏳ Sauvegarde…' : '💾 Sauvegarder'}</button>
                       </div>
                     );
@@ -1547,7 +1547,7 @@ const metaChip: React.CSSProperties = {
   padding: '.35rem .65rem',
   borderRadius: '9999px',
   background: '#f0e8e4',
-  color: '#6b2a1a',
+  color: '#2d5f54',
   fontSize: '.76rem',
   fontWeight: 600,
 };
