@@ -18,7 +18,7 @@ export default function EnhancedRichContent({ html, className, style }: Props) {
 
     const cleanups: Array<() => void> = [];
     const carousels = Array.from(
-      root.querySelectorAll<HTMLElement>('[data-heldonica-carousel="true"]')
+      root.querySelectorAll<HTMLElement>('[data-happyhumans-carousel="true"]')
     );
 
     carousels.forEach((carousel) => {
@@ -124,7 +124,7 @@ export default function EnhancedRichContent({ html, className, style }: Props) {
     <>
       <div ref={rootRef} className={className} style={style} dangerouslySetInnerHTML={{ __html: html }} />
       <style>{`
-        .heldonica-carousel {
+        .happyhumans-carousel {
           margin: 2rem 0;
           border-radius: 1.4rem;
           overflow: hidden;
@@ -133,16 +133,16 @@ export default function EnhancedRichContent({ html, className, style }: Props) {
           box-shadow: 0 18px 45px rgba(55, 40, 25, 0.08);
         }
 
-        .heldonica-carousel__viewport {
+        .happyhumans-carousel__viewport {
           position: relative;
           background: linear-gradient(135deg, #f4ede3 0%, #efe5d6 100%);
         }
 
-        .heldonica-carousel__slide {
+        .happyhumans-carousel__slide {
           margin: 0;
         }
 
-        .heldonica-carousel__slide img {
+        .happyhumans-carousel__slide img {
           display: block;
           width: 100%;
           aspect-ratio: 16 / 10;
@@ -153,19 +153,19 @@ export default function EnhancedRichContent({ html, className, style }: Props) {
           background: #eadfce;
         }
 
-        .heldonica-carousel:not([data-enhanced="true"]) .heldonica-carousel__controls {
+        .happyhumans-carousel:not([data-enhanced="true"]) .happyhumans-carousel__controls {
           display: none;
         }
 
-        .heldonica-carousel[data-enhanced="true"] .heldonica-carousel__slide {
+        .happyhumans-carousel[data-enhanced="true"] .happyhumans-carousel__slide {
           display: none;
         }
 
-        .heldonica-carousel[data-enhanced="true"] .heldonica-carousel__slide.is-active {
+        .happyhumans-carousel[data-enhanced="true"] .happyhumans-carousel__slide.is-active {
           display: block;
         }
 
-        .heldonica-carousel__controls {
+        .happyhumans-carousel__controls {
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -175,7 +175,7 @@ export default function EnhancedRichContent({ html, className, style }: Props) {
           border-top: 1px solid #ece3d8;
         }
 
-        .heldonica-carousel__button {
+        .happyhumans-carousel__button {
           width: 2.4rem;
           height: 2.4rem;
           border-radius: 999px;
@@ -188,13 +188,13 @@ export default function EnhancedRichContent({ html, className, style }: Props) {
           transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
         }
 
-        .heldonica-carousel__button:hover {
+        .happyhumans-carousel__button:hover {
           background: #f7ecdf;
           border-color: #caa785;
           transform: translateY(-1px);
         }
 
-        .heldonica-carousel__dots {
+        .happyhumans-carousel__dots {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -202,7 +202,7 @@ export default function EnhancedRichContent({ html, className, style }: Props) {
           flex: 1;
         }
 
-        .heldonica-carousel__dot {
+        .happyhumans-carousel__dot {
           width: 0.72rem;
           height: 0.72rem;
           border-radius: 999px;
@@ -212,22 +212,22 @@ export default function EnhancedRichContent({ html, className, style }: Props) {
           transition: transform 0.18s ease, background 0.18s ease;
         }
 
-        .heldonica-carousel__dot.is-active {
+        .happyhumans-carousel__dot.is-active {
           background: #6b2a1a;
           transform: scale(1.15);
         }
 
         @media (max-width: 640px) {
-          .heldonica-carousel {
+          .happyhumans-carousel {
             border-radius: 1rem;
           }
 
-          .heldonica-carousel__controls {
+          .happyhumans-carousel__controls {
             padding: 0.75rem 0.85rem;
             gap: 0.75rem;
           }
 
-          .heldonica-carousel__button {
+          .happyhumans-carousel__button {
             width: 2.1rem;
             height: 2.1rem;
             font-size: 1.15rem;
