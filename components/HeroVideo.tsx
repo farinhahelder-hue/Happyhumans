@@ -13,14 +13,14 @@ export default function HeroVideo() {
           className="w-full h-full object-cover"
           style={{ opacity: 0.6 }}
         >
-          <source src="https://d2xsxph8kpxj0f.cloudfront.net/310519663470606636/jAd3LynLbumRRtRSgGxysF/Heldonica_11053b9d.mp4" type="video/mp4" />
+          <source src="https://d2xsxph8kpxj0f.cloudfront.net/310519663470606636/jAd3LynLbumRRtRSgGxysF/Happy Humans_11053b9d.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/20"></div>
       </div>
 
       <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
         <h1 className="text-6xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight">
-          Découvrez le slow travel
+          Découvrez le coaching philosophique
         </h1>
         <p className="text-xl md:text-2xl text-gray-100 mb-8 font-light max-w-2xl mx-auto">
           Des voyages authentiques, conçus pour vous
