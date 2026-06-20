@@ -37,11 +37,11 @@ const cases = [
 ];
 
 export const metadata: Metadata = {
-  title: 'Etudes de cas hotellerie | Heldonica',
+  title: 'Etudes de cas hotellerie | Happy Humans',
   description:
-    'Cas clients B2B Heldonica: Revenue Management, SEO local et experience client avec resultats mesures.',
+    'Cas clients B2B Happy Humans: Revenue Management, SEO local et experience client avec resultats mesures.',
   alternates: {
-    canonical: 'https://www.heldonica.fr/etudes-de-cas',
+    canonical: 'https://www.happyhumans.fr/etudes-de-cas',
   },
 };
 
