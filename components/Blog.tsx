@@ -50,8 +50,8 @@ export default function Blog() {
                     }`}
                   >
                     <img
-                      src="/images/badges-heldonica.svg"
-                      alt="Fallback visuel Heldonica"
+                      src="/images/badges-happyhumans.svg"
+                      alt="Fallback visuel Happy Humans"
                       width={220}
                       height={140}
                       className="w-32 h-auto"
