@@ -27,39 +27,39 @@ export interface DestinationPage {
 export const blogPosts: BlogPost[] = [
   {
     id: 1274,
-    title: `Madère Slow Travel : Guide Complet Éco-Luxe 2026`,
+    title: `Madère Coaching Philosophique : Guide Complet Éco-Luxe 2026`,
     slug: "madere-slow-travel-guide",
-    excerpt: `Madère Slow Travel : Guide Complet Éco-Luxe 2026 Découvrez aussi nos pépites mystiques.`,
-    content: `<div><span>Étiqueté insolite, madere, slow travel</span></div>`,
+    excerpt: `Madère Coaching Philosophique : Guide Complet Éco-Luxe 2026 Découvrez aussi nos pépites mystiques.`,
+    content: `<div><span>Étiqueté insolite, madere, coaching philosophique</span></div>`,
     category: "Travel",
     categories: ["Europe", "Guides pratiques", "Madère", "Portugal"],
-    tags: ["insolite", "madere", "slow travel"],
+    tags: ["insolite", "madere", "coaching philosophique"],
     date: "21 Mar 2026",
     readTime: 2,
-    image: "https://heldonica.fr/wp-content/uploads/2026/03/fetched-image-2-1024x768.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2026/03/fetched-image-2-1024x768.jpg",
   },
   {
     id: 1269,
     title: `Urbex Slow Paris : Pépites Légales & Éco Couples`,
     slug: "urbex-paris-safe",
     excerpt: `Urbex Paris 2026 : Exploration Légale Slow Éco Couples Découvrez aussi notre escapade à la Petite Ceinture.`,
-    content: `<div><span>Étiqueté duo, paris, slow travel</span></div>`,
+    content: `<div><span>Étiqueté duo, paris, coaching philosophique</span></div>`,
     category: "Travel",
     categories: ["City Trips", "Europe", "France", "Paris"],
-    tags: ["duo", "paris", "slow travel"],
+    tags: ["duo", "paris", "coaching philosophique"],
     date: "21 Mar 2026",
     readTime: 2,
-    image: "https://heldonica.fr/wp-content/uploads/2026/03/fetched-image-1-1024x683.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2026/03/fetched-image-1-1024x683.jpg",
   },
   {
     id: 1164,
-    title: `Guide Pratique : Comment débuter le Slow Travel en Duo`,
+    title: `Guide Pratique : Comment débuter le Coaching Philosophique en Duo`,
     slug: "guide-pratique-comment-debuter-le-slow-travel-en-duo",
-    excerpt: `Bienvenue dans notre guide pratique dédié au Slow Travel. Voyager lentement, c'est avant tout prendre le temps de découvrir l'âme d'une destination.`,
-    content: `<div><span>Étiqueté duo, slow travel, transylvanie</span></div>`,
+    excerpt: `Bienvenue dans notre guide pratique dédié au Coaching Philosophique. Voyager lentement, c'est avant tout prendre le temps de découvrir l'âme d'une destination.`,
+    content: `<div><span>Étiqueté duo, coaching philosophique, transylvanie</span></div>`,
     category: "Travel",
     categories: ["Guides pratiques", "Roumanie"],
-    tags: ["duo", "slow travel"],
+    tags: ["duo", "coaching philosophique"],
     date: "20 Mar 2026",
     readTime: 2,
     image: "",
@@ -75,7 +75,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["été", "madere"],
     date: "17 Mar 2026",
     readTime: 2,
-    image: "https://heldonica.fr/wp-content/uploads/2026/03/madere-cascade-1024x683.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2026/03/madere-cascade-1024x683.jpg",
   },
   {
     id: 702,
@@ -88,7 +88,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["insolite", "lieux-secrets", "madere", "mystique", "portugal"],
     date: "17 Mar 2026",
     readTime: 2,
-    image: "https://heldonica.fr/wp-content/uploads/2026/03/madere-foret-1024x683.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2026/03/madere-foret-1024x683.jpg",
   },
   {
     id: 448,
@@ -101,7 +101,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["bolo-do-caco", "madere", "prego", "sandwich"],
     date: "29 Oct 2025",
     readTime: 2,
-    image: "https://heldonica.fr/wp-content/uploads/2025/10/prego-bolo-caco-683x1024.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2025/10/prego-bolo-caco-683x1024.jpg",
   },
   {
     id: 446,
@@ -114,7 +114,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["bacalhau", "madere"],
     date: "29 Oct 2025",
     readTime: 2,
-    image: "https://heldonica.fr/wp-content/uploads/2025/10/bacalhau-lagareiro-3-683x1024.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2025/10/bacalhau-lagareiro-3-683x1024.jpg",
   },
   {
     id: 433,
@@ -127,7 +127,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["bolo-do-caco", "madere"],
     date: "29 Oct 2025",
     readTime: 2,
-    image: "https://heldonica.fr/wp-content/uploads/2025/10/zurich-riviere-1024x683.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2025/10/zurich-riviere-1024x683.jpg",
   },
   {
     id: 281,
@@ -140,7 +140,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["duo"],
     date: "01 Oct 2025",
     readTime: 2,
-    image: "https://heldonica.fr/wp-content/uploads/2025/10/crepes-riz-3-1024x683.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2025/10/crepes-riz-3-1024x683.jpg",
   },
   {
     id: 285,
@@ -153,7 +153,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["architecture", "art contemporain"],
     date: "27 Sep 2025",
     readTime: 2,
-    image: "https://heldonica.fr/wp-content/uploads/2025/09/timisoara-ville-3-1024x683.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2025/09/timisoara-ville-3-1024x683.jpg",
   },
   {
     id: 279,
@@ -166,7 +166,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["zurich", "été"],
     date: "27 Sep 2025",
     readTime: 4,
-    image: "https://heldonica.fr/wp-content/uploads/2025/09/zurich-limmat-ete-3-1024x681.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2025/09/zurich-limmat-ete-3-1024x681.jpg",
   },
   {
     id: 277,
@@ -179,7 +179,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["architecture", "insolite", "paris"],
     date: "27 Sep 2025",
     readTime: 3,
-    image: "https://heldonica.fr/wp-content/uploads/2025/09/paris-petite-ceinture-2-683x1024.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2025/09/paris-petite-ceinture-2-683x1024.jpg",
   },
   {
     id: 273,
@@ -192,7 +192,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["paris", "restaurant-vegetarien", "rue-mouffetard"],
     date: "27 Sep 2025",
     readTime: 2,
-    image: "https://heldonica.fr/wp-content/uploads/2025/09/paris-mouffetard-2-1024x681.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2025/09/paris-mouffetard-2-1024x681.jpg",
   },
   {
     id: 271,
@@ -205,20 +205,20 @@ export const blogPosts: BlogPost[] = [
     tags: ["bière artisanale", "brasserie", "zurich"],
     date: "26 Sep 2025",
     readTime: 2,
-    image: "https://heldonica.fr/wp-content/uploads/2025/09/zurich-brasserie-2-683x1024.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2025/09/zurich-brasserie-2-683x1024.jpg",
   },
   {
     id: 192,
-    title: `Zurich : notre carnet slow travel 2026`,
+    title: `Zurich : notre carnet coaching philosophique 2026`,
     slug: "zurich",
     excerpt: `Flottez sur la Limmat, découvrez les meilleures brasseries et vivez Zurich au rythme slow.`,
-    content: `<div><span>Étiqueté été, slow travel, suisse, zurich</span></div>`,
+    content: `<div><span>Étiqueté été, coaching philosophique, suisse, zurich</span></div>`,
     category: "Travel",
     categories: ["Carnets voyage", "Destinations", "Suisse"],
-    tags: ["été", "slow travel", "zurich"],
+    tags: ["été", "coaching philosophique", "zurich"],
     date: "12 Aug 2025",
     readTime: 2,
-    image: "https://heldonica.fr/wp-content/uploads/2025/08/zurich-panorama-2-1024x679.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2025/08/zurich-panorama-2-1024x679.jpg",
   },
   {
     id: 69,
@@ -231,7 +231,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["alpes suisses", "montagne suisse", "randonnée alpine"],
     date: "01 Aug 2025",
     readTime: 2,
-    image: "https://heldonica.fr/wp-content/uploads/2025/08/PXL_20250712_190916811.RAW-01.COVER-EDIT-1024x771.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2025/08/PXL_20250712_190916811.RAW-01.COVER-EDIT-1024x771.jpg",
   },
   {
     id: 93,
@@ -244,7 +244,7 @@ export const blogPosts: BlogPost[] = [
     tags: ["alpes", "stoos", "suisse"],
     date: "01 Aug 2025",
     readTime: 2,
-    image: "https://heldonica.fr/wp-content/uploads/2025/08/randonnee-montagne-1024x683.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2025/08/randonnee-montagne-1024x683.jpg",
   },
 ];
 
@@ -252,37 +252,37 @@ export const destinationPages: DestinationPage[] = [
   // ── Pages utilitaires ──────────────────────────────────────
   {
     id: 1327,
-    title: `Accueil Heldonica Vidéo`,
-    slug: "accueil-heldonica-video",
+    title: `Accueil Happy Humans Vidéo`,
+    slug: "accueil-happyhumans-video",
     content: `<div><p>Explorateurs émerveillés, dénicheurs de pépites.</p></div>`,
-    image: "https://heldonica.fr/wp-content/uploads/2026/03/Heldonica.mp4",
+    image: "https://happyhumans.fr/wp-content/uploads/2026/03/Happy Humans.mp4",
   },
   {
     id: 1326,
-    title: `Accueil Heldonica 2026`,
-    slug: "accueil-heldonica-2026",
-    content: `<section><h1>Heldonica : L'Expert de l'Aventure Slow</h1><p>Duo explorateurs-sages : itinéraires terrain 100% vécus.</p></section>`,
-    image: "https://heldonica.fr/wp-content/uploads/2026/03/Heldonica.mp4",
+    title: `Accueil Happy Humans 2026`,
+    slug: "accueil-happyhumans-2026",
+    content: `<section><h1>Happy Humans : L'Expert de l'Aventure Slow</h1><p>Duo explorateurs-sages : itinéraires terrain 100% vécus.</p></section>`,
+    image: "https://happyhumans.fr/wp-content/uploads/2026/03/Happy Humans.mp4",
   },
   {
     id: 1321,
     title: `Accueil`,
-    slug: "accueil-heldonica-3",
+    slug: "accueil-happyhumans-3",
     content: `<section><h1>Vivre découvrir partager</h1></section>`,
-    image: "https://heldonica.fr/wp-content/uploads/2026/03/Heldonica.mp4",
+    image: "https://happyhumans.fr/wp-content/uploads/2026/03/Happy Humans.mp4",
   },
   {
     id: 1315,
     title: `Portugal Slow : Douro & Authenticité`,
     slug: "portugal-slow-douro",
-    content: `<div><p>Découvrez le Portugal slow travel à travers le Douro et ses paysages authentiques.</p></div>`,
+    content: `<div><p>Découvrez le Portugal coaching philosophique à travers le Douro et ses paysages authentiques.</p></div>`,
     image: "",
   },
   {
     id: 1313,
-    title: `Quel Slow Traveler Es-Tu ? Test 5 Questions`,
+    title: `Quel Coaching Philosophiqueer Es-Tu ? Test 5 Questions`,
     slug: "quiz-quel-slow-traveler-es-tu",
-    content: `<h1>Quel Slow Traveler Es-Tu ? Test 5 Questions</h1><p>Découvrez votre profil de voyageur slow.</p>`,
+    content: `<h1>Quel Coaching Philosophiqueer Es-Tu ? Test 5 Questions</h1><p>Découvrez votre profil de voyageur slow.</p>`,
     image: "",
   },
   // ── Pages destination Zurich ───────────────────────────────
@@ -291,7 +291,7 @@ export const destinationPages: DestinationPage[] = [
     title: `Zurich`,
     slug: "zurich",
     content: `
-      <h2>Pourquoi on aime Zurich en slow travel</h2>
+      <h2>Pourquoi on aime Zurich en coaching philosophique</h2>
       <p>Zurich, c'est la ville suisse qu'on croyait réservée aux banquiers et aux montres de luxe. On y est arrivés un vendredi de juillet, sacs sur le dos, sans plan précis — et on est repartis conquis. La Limmat qui serpente entre les façades médiévales, les Badi (piscines flottantes) bondées de locaux, les brasseries artisanales cachées dans les ruelles du Langstrasse… Zurich se mérite, et elle le rend bien.</p>
       <h2>Nos pépites dénichées sur place</h2>
       <ul>
@@ -307,9 +307,9 @@ export const destinationPages: DestinationPage[] = [
         <li><strong>Budget :</strong> comptez 80-120€/jour/personne hors hébergement — Zurich est chère mais les activités gratuites sont nombreuses</li>
         <li><strong>Où dormir :</strong> les quartiers Kreis 4 et Kreis 5 pour l'ambiance locale</li>
       </ul>
-      <p><em>Verdict Heldonica — On a posé nos valises 4 jours. On en aurait pris 7. Zurich est la destination slow travel européenne sous-estimée par excellence.</em></p>
+      <p><em>Verdict Happy Humans — On a posé nos valises 4 jours. On en aurait pris 7. Zurich est la destination coaching philosophique européenne sous-estimée par excellence.</em></p>
     `,
-    image: "https://heldonica.fr/wp-content/uploads/2025/08/zurich-panorama-2-1024x679.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2025/08/zurich-panorama-2-1024x679.jpg",
   },
   // ── Pages destination Suisse ───────────────────────────────
   {
@@ -317,7 +317,7 @@ export const destinationPages: DestinationPage[] = [
     title: `Suisse`,
     slug: "suisse",
     content: `
-      <h2>La Suisse autrement : notre vision slow travel</h2>
+      <h2>La Suisse autrement : notre vision coaching philosophique</h2>
       <p>On ne compte plus les fois où des amis nous ont dit "la Suisse c'est joli mais trop cher". C'est vrai et faux à la fois. Oui, une nuit d'hôtel en ville peut piquer. Mais randonner sur la Stoos Ridge, flotter sur la Limmat à Zurich ou s'asseoir au bord du lac de Thoune avec un pique-nique du marché — ça, ça ne coûte presque rien.</p>
       <h2>Nos destinations suisses coups de cœur</h2>
       <ul>
@@ -332,9 +332,9 @@ export const destinationPages: DestinationPage[] = [
         <li><strong>Budget malin :</strong> pique-niquez au marché, cuisinez à l'hébergement, privilegiez les auberges de jeunesse suisses (excellentes)</li>
         <li><strong>Meilleure saison :</strong> juillet-août pour le plein air, décembre-mars pour la neige et l'ambiance de chalet</li>
       </ul>
-      <p><em>Verdict Heldonica — La Suisse, c'est notre destination slow travel européenne de référence. Chaque séjour, on y découvre une nouvelle pépite.</em></p>
+      <p><em>Verdict Happy Humans — La Suisse, c'est notre destination coaching philosophique européenne de référence. Chaque séjour, on y découvre une nouvelle pépite.</em></p>
     `,
-    image: "https://heldonica.fr/wp-content/uploads/2025/08/PXL_20250712_190916811.RAW-01.COVER-EDIT-1024x771.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2025/08/PXL_20250712_190916811.RAW-01.COVER-EDIT-1024x771.jpg",
   },
   // ── Pages destination Roumanie ─────────────────────────────
   {
@@ -358,9 +358,9 @@ export const destinationPages: DestinationPage[] = [
         <li><strong>Transport :</strong> train entre les grandes villes, location de voiture indispensable pour le Delta et les Carpates</li>
         <li><strong>Meilleure période :</strong> mai-juin et septembre pour éviter la chaleur et la foule</li>
       </ul>
-      <p><em>Verdict Heldonica — La Roumanie est notre destination slow travel coup de cœur. On y retourne chaque année et on y découvre toujours quelque chose de nouveau.</em></p>
+      <p><em>Verdict Happy Humans — La Roumanie est notre destination coaching philosophique coup de cœur. On y retourne chaque année et on y découvre toujours quelque chose de nouveau.</em></p>
     `,
-    image: "https://heldonica.fr/wp-content/uploads/2025/09/timisoara-ville-3-1024x683.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2025/09/timisoara-ville-3-1024x683.jpg",
   },
   // ── Pages destination Madère ───────────────────────────────
   {
@@ -369,7 +369,7 @@ export const destinationPages: DestinationPage[] = [
     slug: "madere",
     content: `
       <h2>Madère, l'île de l'éternel printemps</h2>
-      <p>On a atterri à Madère en novembre, fuyant le gris parisien. Ce qu'on a trouvé : 22°C, des cascades dans la forêt, des falaises à pic sur l'Atlantique et un pain cuit sur pierre volcanique qui a changé notre rapport au sandwich. Madère, c'est l'île qui réconcilie le slow travel avec le confort — pas besoin de se priver pour voyager bien ici.</p>
+      <p>On a atterri à Madère en novembre, fuyant le gris parisien. Ce qu'on a trouvé : 22°C, des cascades dans la forêt, des falaises à pic sur l'Atlantique et un pain cuit sur pierre volcanique qui a changé notre rapport au sandwich. Madère, c'est l'île qui réconcilie le coaching philosophique avec le confort — pas besoin de se priver pour voyager bien ici.</p>
       <h2>Nos incontournables madeiriens</h2>
       <ul>
         <li><strong>La forêt de Fanal</strong> — notre graal. Des laurisylves millénaires dans le brouillard, à l'aube. Un lieu mystique qui ne ressemble à rien d'autre en Europe.</li>
@@ -384,9 +384,9 @@ export const destinationPages: DestinationPage[] = [
         <li><strong>Meilleure période :</strong> octobre à mai pour éviter la chaleur et profiter des prix hors saison</li>
         <li><strong>Budget :</strong> 60-90€/jour/personne — plus accessible que la plupart des îles atlantiques</li>
       </ul>
-      <p><em>Verdict Heldonica — Madère est dans notre top 3 absolu. Une île qu'on recommande les yeux fermés, en toute saison.</em></p>
+      <p><em>Verdict Happy Humans — Madère est dans notre top 3 absolu. Une île qu'on recommande les yeux fermés, en toute saison.</em></p>
     `,
-    image: "https://heldonica.fr/wp-content/uploads/2026/03/madere-foret-1024x683.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2026/03/madere-foret-1024x683.jpg",
   },
   // ── Pages destination Paris / Île-de-France ────────────────
   {
@@ -394,18 +394,18 @@ export const destinationPages: DestinationPage[] = [
     title: `Paris & Île-de-France`,
     slug: "paris",
     content: `
-      <h2>Paris en slow travel : voir la ville autrement</h2>
-      <p>On habite en Île-de-France, et pourtant Paris nous surprend encore. Pas le Paris des selfies devant la Tour Eiffel — l'autre Paris, celui de la Petite Ceinture au 14ème, du Canal de l'Ourcq un dimanche matin, des cours intérieures cachées dans le Marais. Le slow travel commence parfois à 30 minutes de chez soi.</p>
+      <h2>Paris en coaching philosophique : voir la ville autrement</h2>
+      <p>On habite en Île-de-France, et pourtant Paris nous surprend encore. Pas le Paris des selfies devant la Tour Eiffel — l'autre Paris, celui de la Petite Ceinture au 14ème, du Canal de l'Ourcq un dimanche matin, des cours intérieures cachées dans le Marais. Le coaching philosophique commence parfois à 30 minutes de chez soi.</p>
       <h2>Nos pépites parisiennes</h2>
       <ul>
         <li><strong>La Petite Ceinture (14ème)</strong> — l'ancienne voie ferrée reconvertie en promenade sauvage. Street art, végétation folle, ambiance urbex légal.</li>
         <li><strong>La rue Mouffetard</strong> — le marché du jeudi et vendredi matin, puis une soirée au Singh'Nature pour une cuisine végétarienne fusion mémorable.</li>
-        <li><strong>Le Canal de l'Ourcq</strong> — longer le canal à vélo depuis La Villette jusqu'à Meaux. Une journée entière de slow travel à portée de RER.</li>
+        <li><strong>Le Canal de l'Ourcq</strong> — longer le canal à vélo depuis La Villette jusqu'à Meaux. Une journée entière de coaching philosophique à portée de RER.</li>
         <li><strong>Fontainebleau</strong> — le château, oui, mais surtout la forêt. Escalade sur les blocs, pique-nique, silence. À 40 minutes de Paris en train.</li>
       </ul>
-      <p><em>Verdict Heldonica — Paris se mérite quand on la cherche vraiment. Pas la carte postale — l'âme cachée.</em></p>
+      <p><em>Verdict Happy Humans — Paris se mérite quand on la cherche vraiment. Pas la carte postale — l'âme cachée.</em></p>
     `,
-    image: "https://heldonica.fr/wp-content/uploads/2025/09/paris-petite-ceinture-2-683x1024.jpg",
+    image: "https://happyhumans.fr/wp-content/uploads/2025/09/paris-petite-ceinture-2-683x1024.jpg",
   },
 ];
 
