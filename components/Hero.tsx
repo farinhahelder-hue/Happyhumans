@@ -10,7 +10,7 @@ export default function Hero() {
               L'Expert de l'Aventure
             </h1>
             <p className="text-xl text-charcoal mb-8 leading-relaxed">
-              Slow travel en couple écoresponsable & Consulting hôtelier indépendant
+              Coaching philosophique en couple écoresponsable & Consulting hôtelier indépendant
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/travel-planning" className="px-8 py-3 bg-eucalyptus text-white rounded-lg hover:bg-teal transition text-center">
@@ -24,7 +24,7 @@ export default function Hero() {
           <div className="bg-gradient-to-br from-eucalyptus/10 to-teal/10 rounded-lg h-96 flex items-center justify-center">
             <div className="text-center">
               <p className="text-gray-500 text-sm">Image Hero</p>
-              <p className="text-gray-400 text-xs">(Couple slow travel)</p>
+              <p className="text-gray-400 text-xs">(Couple coaching philosophique)</p>
             </div>
           </div>
         </div>
