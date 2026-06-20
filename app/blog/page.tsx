@@ -8,19 +8,19 @@ import Breadcrumb from '@/components/Breadcrumb'
 export const revalidate = 60
 
 export const metadata: Metadata = {
-  title: 'Blog | Heldonica',
+  title: 'Blog | Happy Humans',
   description:
-    'Carnets, pépites et guides écrits depuis le terrain. Des récits slow travel ancrés dans le réel, pas dans la brochure.',
-  keywords: ['blog slow travel', 'carnet de voyage', 'pépites voyage', 'voyage terrain', 'heldonica'],
+    'Carnets, pépites et guides écrits depuis le terrain. Des récits coaching philosophique ancrés dans le réel, pas dans la brochure.',
+  keywords: ['blog coaching philosophique', 'carnet de voyage', 'pépites voyage', 'voyage terrain', 'happyhumans'],
   alternates: {
-    canonical: 'https://heldonica.fr/blog',
+    canonical: 'https://happyhumans.fr/blog',
   },
   openGraph: {
-    title: 'Blog | Heldonica',
+    title: 'Blog | Happy Humans',
     description:
-      'Carnets, pépites et guides écrits depuis le terrain. Des récits slow travel ancrés dans le réel, pas dans la brochure.',
-    url: 'https://heldonica.fr/blog',
-    siteName: 'Heldonica',
+      'Carnets, pépites et guides écrits depuis le terrain. Des récits coaching philosophique ancrés dans le réel, pas dans la brochure.',
+    url: 'https://happyhumans.fr/blog',
+    siteName: 'Happy Humans',
     type: 'website',
     locale: 'fr_FR',
   },
