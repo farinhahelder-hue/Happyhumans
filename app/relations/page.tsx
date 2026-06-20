@@ -92,7 +92,33 @@ const STEPS = [
   { num: '03', title: 'Passez à l\'action', desc: 'Un plan clair et des outils pour des relations épanouissantes' },
 ]
 
+import { useCmsContent } from '@/hooks/useCmsContent'
+
+const DEFAULTS_RELATIONS = {
+  hero_badge:          'Relations & Attachement · Happy Humans',
+  hero_title:          'Quel est votre style d\'attachement ?',
+  hero_description:    'Un outil de découverte douce pour mieux comprendre comment vous vous connectez aux autres.',
+  quiz_pill_1:         '⏱ 3 à 5 minutes',
+  quiz_pill_2:         '📝 16 questions',
+  quiz_pill_3:         '✨ Résultats immédiats',
+  quiz_cta:            'Commencer le test →',
+  result_cta_title:    'Passez à l\'étape suivante',
+  result_cta_subtitle: 'Séance découverte offerte de 45 minutes avec Monica',
+  result_cta_button:   'Réserver ma séance découverte gratuite →',
+  booking_title:       'Choisissez votre créneau',
+  booking_subtitle:    'Séance découverte offerte · 45 minutes · Sans engagement',
+  theory_title:        'Les fondements théoriques',
+  theory_card_1_title: '📖 ATTACHED',
+  theory_card_1_text:  'Comprendre son style d\'attachement',
+  theory_card_2_title: '🌿 Carl Rogers',
+  theory_card_2_text:  'L\'écoute inconditionnelle',
+  theory_card_3_title: '❤️ Erich Fromm',
+  theory_card_3_text:  'L\'art d\'aimer',
+}
+
 export default function RelationsPage() {
+  const c = useCmsContent('relations', DEFAULTS_RELATIONS)
+
   const [activeModal, setActiveModal] = useState<string | null>(null)
   const [bookingOpen, setBookingOpen] = useState(false)
   const bookingRef = useRef<HTMLDivElement>(null)
