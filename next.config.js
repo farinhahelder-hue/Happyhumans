@@ -122,7 +122,7 @@ const nextConfig = {
       { source: '/destinations', destination: '/', permanent: true },
       { source: '/destinations/:path*', destination: '/', permanent: true },
       { source: '/slow-travel', destination: '/', permanent: true },
-      { source: '/temoignages', destination: '/coaching', permanent: true },
+      // /temoignages est une vraie page — pas de redirect
       { source: '/travel-planner', destination: '/coaching', permanent: true },
       { source: '/travel-planner/', destination: '/coaching', permanent: true },
       { source: '/nos-services', destination: '/coaching', permanent: true },

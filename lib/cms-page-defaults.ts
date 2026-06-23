@@ -90,6 +90,10 @@ export const PAGE_DEFAULTS: Record<string, Record<string, string>> = {
     label_contact:     'Contact',
     label_cta:         'Réserver une séance',
   },
+  temoignages: {
+    page_title: 'Ils témoignent',
+    intro_text: 'Des parcours différents, une même expérience : retrouver de la clarté et avancer avec confiance.',
+  },
   footer: {
     site_name:     'Happy Humans',
     tagline:       'philo-coaching',

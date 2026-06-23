@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { createClient } from '@supabase/supabase-js'
 import { useCmsContent } from '@/hooks/useCmsContent'
 
 type Temoignage = { id: number; nom: string; role: string; texte: string; photo_url: string; note: number }
@@ -21,15 +20,10 @@ export default function TemoignagesPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    if (!url || !key) { setLoading(false); return }
-    createClient(url, key)
-      .from('temoignages')
-      .select('id, nom, role, texte, photo_url, note')
-      .eq('visible', true)
-      .order('sort_order', { ascending: true })
-      .then(({ data }) => { setItems(data || []); setLoading(false) })
+    fetch('/api/cms/public-temoignages')
+      .then(r => r.ok ? r.json() : { items: [] })
+      .then(({ items: data }) => { setItems(data || []); setLoading(false) })
+      .catch(() => setLoading(false))
   }, [])
 
   return (
