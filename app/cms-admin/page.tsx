@@ -9,6 +9,7 @@ import CarouselEditor from '@/components/admin/CarouselEditor';
 import CarouselGenerator from '@/components/admin/CarouselGenerator';
 import BlogGenerator from '@/components/admin/BlogGenerator';
 import { PAGE_DEFAULTS } from '@/lib/cms-page-defaults';
+import { THEMES } from '@/components/DynamicTheme';
 
 const RichEditor = dynamic(() => import('@/components/RichEditor'), { ssr: false });
 
@@ -285,7 +286,8 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
 };
 
 const SETTINGS_GROUPS: Record<string, { label: string; emoji: string }> = {
-  branding: { label: 'Logo & Identité',  emoji: '🎨' },
+  theme:    { label: 'Thème & Couleurs', emoji: '🎨' },
+  branding: { label: 'Logo & Identité',  emoji: '🖼' },
   general:  { label: 'Général',          emoji: '🌍' },
   social:   { label: 'Réseaux sociaux',  emoji: '📱' },
   seo:      { label: 'SEO',              emoji: '🔍' },
@@ -1585,6 +1587,67 @@ export default function CMSAdmin() {
                         <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#2d5f54', marginBottom: '1.5rem' }}>
                           {groupCfg?.emoji} {groupCfg?.label}
                         </h2>
+                        {/* ── THEME PICKER ── */}
+                        {settingsGroup === 'theme' && (
+                          <div style={{ marginBottom: '2rem' }}>
+                            <p style={{ fontSize: '.85rem', color: '#888', marginBottom: '1rem' }}>Choisissez un thème visuel pour tout le site. Cliquez pour appliquer instantanément.</p>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+                              {Object.entries(THEMES).map(([key, theme]) => {
+                                const isActive = (editedSettings['theme_preset'] || 'forest') === key;
+                                return (
+                                  <button key={key} onClick={() => setEditedSettings(p => ({ ...p, theme_preset: key }))}
+                                    style={{ border: isActive ? `3px solid ${theme.primary}` : '2px solid #e5e7eb', borderRadius: '.75rem', padding: '1rem .75rem', cursor: 'pointer', background: theme.bg, textAlign: 'center', transition: 'all .15s', boxShadow: isActive ? `0 0 0 2px ${theme.primary}33` : 'none' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'center', gap: '4px', marginBottom: '.5rem' }}>
+                                      <div style={{ width: 20, height: 20, borderRadius: '50%', background: theme.primary }} />
+                                      <div style={{ width: 20, height: 20, borderRadius: '50%', background: theme.accent }} />
+                                      <div style={{ width: 20, height: 20, borderRadius: '50%', background: theme.dark }} />
+                                    </div>
+                                    <p style={{ fontWeight: isActive ? 700 : 500, fontSize: '.82rem', color: theme.text, margin: 0 }}>{theme.label}</p>
+                                    {isActive && <p style={{ fontSize: '.7rem', color: theme.primary, margin: '2px 0 0', fontWeight: 600 }}>✓ Actif</p>}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                            <div style={{ borderTop: '1px solid #f0ece8', paddingTop: '1.5rem' }}>
+                              <p style={{ fontSize: '.82rem', fontWeight: 600, color: '#555', marginBottom: '1rem' }}>Couleurs personnalisées (optionnel — surcharge le thème)</p>
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                {[
+                                  { key: 'theme_primary', label: 'Couleur principale' },
+                                  { key: 'theme_accent',  label: 'Couleur accent' },
+                                  { key: 'theme_dark',    label: 'Couleur sombre (nav/footer)' },
+                                  { key: 'theme_bg',      label: 'Couleur fond' },
+                                ].map(({ key, label }) => (
+                                  <div key={key}>
+                                    <label style={lbl}>{label}</label>
+                                    <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center' }}>
+                                      <input type="color" value={editedSettings[key] || '#2d5f54'}
+                                        onChange={e => setEditedSettings(p => ({ ...p, [key]: e.target.value }))}
+                                        style={{ width: 40, height: 36, border: 'none', borderRadius: '.3rem', cursor: 'pointer', padding: 2 }} />
+                                      <input type="text" value={editedSettings[key] || ''}
+                                        onChange={e => setEditedSettings(p => ({ ...p, [key]: e.target.value }))}
+                                        placeholder="ex: #2d5f54"
+                                        style={{ ...inp, flex: 1 }} />
+                                      {editedSettings[key] && (
+                                        <button onClick={() => setEditedSettings(p => { const n = {...p}; delete n[key]; return n; })}
+                                          style={{ padding: '.3rem .5rem', background: '#fee2e2', border: 'none', borderRadius: '.3rem', cursor: 'pointer', fontSize: '.75rem', color: '#dc2626' }}>
+                                          ✕
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                              <button onClick={() => setEditedSettings(p => {
+                                const n = {...p};
+                                delete n['theme_primary']; delete n['theme_accent'];
+                                delete n['theme_dark']; delete n['theme_bg'];
+                                return n;
+                              })} style={{ marginTop: '1rem', padding: '.4rem .9rem', background: '#f5f0eb', border: 'none', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.8rem', color: '#666' }}>
+                                Réinitialiser les couleurs personnalisées
+                              </button>
+                            </div>
+                          </div>
+                        )}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
                           {groupItems.map(s => (
                             <div key={s.key}>

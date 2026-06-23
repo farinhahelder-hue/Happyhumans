@@ -10,6 +10,13 @@ function getSupabase() {
 }
 
 const DEFAULT_SETTINGS = [
+  // Thème
+  { key: 'theme_preset',     label: 'Thème actif',                group_name: 'theme',    type: 'text',     value: 'forest' },
+  { key: 'theme_primary',    label: 'Couleur principale',         group_name: 'theme',    type: 'text',     value: '' },
+  { key: 'theme_accent',     label: 'Couleur accent',             group_name: 'theme',    type: 'text',     value: '' },
+  { key: 'theme_dark',       label: 'Couleur sombre',             group_name: 'theme',    type: 'text',     value: '' },
+  { key: 'theme_bg',         label: 'Couleur fond',               group_name: 'theme',    type: 'text',     value: '' },
+  // Branding
   { key: 'logo_url',         label: 'Logo du site (image)',       group_name: 'branding', type: 'image',    value: '' },
   { key: 'favicon_url',      label: 'Favicon (icône onglet)',      group_name: 'branding', type: 'image',    value: '' },
   { key: 'site_name',        label: 'Nom du site',                 group_name: 'branding', type: 'text',     value: 'Happy Humans' },
