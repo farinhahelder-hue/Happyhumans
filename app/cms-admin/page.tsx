@@ -677,27 +677,30 @@ export default function CMSAdmin() {
     if (!config) { setSavingSettings(false); return; }
 
     try {
-      const promises: Promise<Response>[] = [];
-      config.sections.forEach(section => {
+      // Sauvegarder TOUS les champs (upsert — pas de diff pour éviter les faux négatifs)
+      const promises = config.sections.map(section => {
         const key = `${pageKey}__${section.key}`;
-        const newVal = editedContent[key] ?? '';
-        const existing = siteContent.find(c => c.page === pageKey && c.block_key === section.key);
-        if (!existing || newVal !== (existing.value ?? '')) {
-          promises.push(fetch('/api/cms/content', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ page: pageKey, block_key: section.key, value: newVal }),
-          }));
-        }
+        const value = editedContent[key] ?? '';
+        return fetch('/api/cms/content', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ page: pageKey, block_key: section.key, value }),
+        });
       });
 
-      if (promises.length === 0) {
-        showToast('Aucune modification à enregistrer sur cette page.');
+      const responses = await Promise.all(promises);
+
+      // Vérifier auth
+      if (responses.some(res => handleUnauthorized(res))) return;
+
+      // Vérifier erreurs API (500, 503, etc.)
+      const failed = responses.filter(r => !r.ok);
+      if (failed.length > 0) {
+        const errBody = await failed[0].json().catch(() => ({}));
+        showToast(`❌ Erreur ${failed[0].status}: ${errBody.error || 'Impossible de sauvegarder'}`);
         return;
       }
 
-      const responses = await Promise.all(promises);
-      if (responses.some(res => handleUnauthorized(res))) return;
       showToast(`✅ Page "${config.label}" sauvegardée !`);
       loadSettings();
     } catch {
