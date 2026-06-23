@@ -8,6 +8,7 @@ import { sanitizeHtml } from '@/lib/sanitize-html';
 import CarouselEditor from '@/components/admin/CarouselEditor';
 import CarouselGenerator from '@/components/admin/CarouselGenerator';
 import BlogGenerator from '@/components/admin/BlogGenerator';
+import { PAGE_DEFAULTS } from '@/lib/cms-page-defaults';
 
 const RichEditor = dynamic(() => import('@/components/RichEditor'), { ssr: false });
 
@@ -598,8 +599,17 @@ export default function CMSAdmin() {
       setSiteContent(cData.content || []);
       const initS: Record<string, string> = {};
       (sData.settings || []).forEach((s: Setting) => { initS[s.key] = s.value || ''; });
+      // Pré-remplir avec les defaults de chaque page
       const initC: Record<string, string> = {};
-      (cData.content || []).forEach((c: SiteContent) => { initC[`${c.page}__${c.block_key}`] = c.value || ''; });
+      Object.entries(PAGE_DEFAULTS).forEach(([page, defs]) => {
+        Object.entries(defs).forEach(([key, val]) => {
+          initC[`${page}__${key}`] = val;
+        });
+      });
+      // Les valeurs DB écrasent les defaults
+      (cData.content || []).forEach((c: SiteContent) => {
+        if (c.value) initC[`${c.page}__${c.block_key}`] = c.value;
+      });
       setEditedSettings(initS);
       setEditedContent(initC);
     } catch {
