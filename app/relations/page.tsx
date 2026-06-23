@@ -3,6 +3,7 @@ import { useState, useRef } from 'react';
 import BookingWidget from '@/components/BookingWidget';
 import { AttachmentTest } from '@/components/attachment-test/AttachmentTest';
 import Header from '@/components/Header';
+import Image from 'next/image';
 
 const SOURCES = [
   {
