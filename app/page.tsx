@@ -126,51 +126,32 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ══ RELATIONS / TEST ATTACHEMENT ══════════════════════════════ */}
-        <section className="bg-white px-6 py-20 md:px-10 md:py-24" id="relations">
+        {/* ══ EXPLORER L'ACCOMPAGNEMENT ════════════════════════════════ */}
+        <section className="bg-white px-6 py-20 md:px-10 md:py-24">
           <div className="mx-auto max-w-5xl">
-            <div className="grid gap-10 md:grid-cols-2 items-center">
-              <div>
-                <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Relations & Attachement</p>
-                <h2 className="mb-5 text-2xl font-serif font-light leading-tight text-stone-900 md:text-3xl">
-                  Quel est votre style d&apos;attachement ?
-                </h2>
-                <p className="mb-4 text-sm leading-relaxed text-stone-600">
-                  Découvrez si vous êtes sécure, anxieux ou évitant — et ce que cela change dans vos relations. 16 questions · 5 minutes · Résultat immédiat.
-                </p>
-                <p className="mb-7 text-sm leading-relaxed text-stone-600">
-                  Lors d&apos;une <strong>séance offerte de 45 minutes</strong>, Monica vous accompagne pour identifier vos 3 actions concrètes vers des relations plus épanouissantes.
-                </p>
-                <div className="flex flex-col gap-3 sm:flex-row">
-                  <Link
-                    href="/test-attachement"
-                    className="inline-block rounded-full bg-[#2d5f54] px-6 py-3 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
-                  >
-                    Faire le test gratuit
-                  </Link>
-                  <Link
-                    href="/relations"
-                    className="inline-block rounded-full border border-stone-300 px-6 py-3 text-sm font-semibold text-stone-700 hover:border-[#2d5f54] hover:text-[#2d5f54] transition"
-                  >
-                    Explorer les ressources
-                  </Link>
-                </div>
-              </div>
-              <div className="grid gap-4">
-                {[
-                  { emoji: '📖', title: 'Théorie de l\'attachement', desc: 'Sécure, anxieux, évitant — comprenez vos schémas relationnels.' },
-                  { emoji: '🪞', title: 'Carl Rogers', desc: 'Regard positif inconditionnel et amour de soi comme base.' },
-                  { emoji: '💝', title: 'Erich Fromm', desc: 'L\'art d\'aimer : de l\'amour immature à l\'amour mature.' },
-                ].map(({ emoji, title, desc }) => (
-                  <Link key={title} href="/relations" className="flex gap-4 rounded-xl bg-[#f5f0e8] p-4 hover:shadow-sm transition group">
-                    <span className="text-2xl">{emoji}</span>
-                    <div>
-                      <p className="text-sm font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">{title}</p>
-                      <p className="text-xs text-stone-500 mt-0.5">{desc}</p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+            <div className="mb-12 text-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Aller plus loin</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Explorez les thématiques</h2>
+            </div>
+            <div className="grid gap-5 md:grid-cols-3">
+              <Link href="/coaching" className="group rounded-2xl bg-[#f5f0e8] p-7 hover:bg-[#eef5f3] transition">
+                <div className="mb-4 text-3xl">✨</div>
+                <h3 className="mb-2 text-lg font-serif font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">Coaching individuel</h3>
+                <p className="text-sm text-stone-500 leading-relaxed mb-4">Clarté, confiance et direction — un accompagnement sur mesure pour managers, dirigeants et personnes en transition.</p>
+                <span className="text-sm font-semibold text-[#2d5f54]">Découvrir →</span>
+              </Link>
+              <Link href="/relations" className="group rounded-2xl bg-[#f5f0e8] p-7 hover:bg-[#eef5f3] transition">
+                <div className="mb-4 text-3xl">💚</div>
+                <h3 className="mb-2 text-lg font-serif font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">Relations & Attachement</h3>
+                <p className="text-sm text-stone-500 leading-relaxed mb-4">Comprenez votre style d&apos;attachement et transformez durablement vos relations — personnelles et professionnelles.</p>
+                <span className="text-sm font-semibold text-[#2d5f54]">Explorer →</span>
+              </Link>
+              <Link href="/entreprises" className="group rounded-2xl bg-[#f5f0e8] p-7 hover:bg-[#eef5f3] transition">
+                <div className="mb-4 text-3xl">🏢</div>
+                <h3 className="mb-2 text-lg font-serif font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">Pour les organisations</h3>
+                <p className="text-sm text-stone-500 leading-relaxed mb-4">Coaching de dirigeants, ateliers de cohésion et accompagnement du changement pour remettre de l&apos;alignement.</p>
+                <span className="text-sm font-semibold text-[#2d5f54]">En savoir plus →</span>
+              </Link>
             </div>
           </div>
         </section>
