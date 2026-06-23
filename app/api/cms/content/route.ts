@@ -54,7 +54,7 @@ export async function PUT(req: NextRequest) {
   const { error } = await supabase
     .from('site_content')
     .upsert(
-      { page, block_key, value, updated_at: new Date().toISOString() },
+      { page, block_key, value },
       { onConflict: 'page,block_key' }
     );
 
