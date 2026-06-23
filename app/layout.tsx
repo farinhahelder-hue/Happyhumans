@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   themeColor: '#2d5f54',
   title: {
-    default: 'Happy Humans | Coaching & transformation avec Monica Schneider',
+    default: 'Happy Humans — Monica Schneider',
     template: '%s | Happy Humans',
   },
   description:
@@ -60,12 +60,12 @@ export const metadata: Metadata = {
     locale: 'fr_FR',
     url: SITE_URL,
     siteName: 'Happy Humans',
-    title: 'Happy Humans | Coaching & transformation avec Monica Schneider',
+    title: 'Happy Humans — Monica Schneider',
     description:
       "Accompagnement individuel et collectif pour managers, dirigeants et organisations en quete d'alignement, de clarte et de transformation durable.",
     images: [
       {
-        url: '/og-default.jpg',
+        url: '/logo-happy-humans.jpg',
         width: 1200,
         height: 630,
         alt: 'Happy Humans - coaching et transformation avec Monica Schneider',
@@ -77,7 +77,7 @@ export const metadata: Metadata = {
     title: 'Happy Humans | Coaching & transformation avec Monica Schneider',
     description:
       'Executive coaching, philosophical counselling et accompagnement des organisations avec Monica Schneider.',
-    images: ['/og-default.jpg'],
+    images: ['/logo-happy-humans.jpg'],
   },
 };
 

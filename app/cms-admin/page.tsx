@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
@@ -40,6 +40,12 @@ type BookingRequest = {
   client_phone: string | null; message: string | null;
   status: 'pending' | 'confirmed' | 'cancelled';
   created_at: string; booking_slots?: BookingSlot;
+};
+
+type ContactMessage = {
+  id: string; name: string; email: string; message: string;
+  type: string; status: 'unread' | 'read' | 'replied';
+  created_at: string;
 };
 
 // ─── Helpers ─────────────────────────────────────────────────
@@ -275,6 +281,10 @@ export default function CMSAdmin() {
   const [mediaPickerTarget, setMediaPickerTarget] = useState<string | null>(null);
   const [articleBaseline, setArticleBaseline] = useState(() => getArticleDraftSignature(null));
   const [showArticlePreview, setShowArticlePreview] = useState(false);
+
+  // Messages contact
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [loadingMessages, setLoadingMessages] = useState(false);
 
   // Demandes travel
   const [demandes, setDemandes] = useState<Demande[]>([]);
@@ -568,10 +578,22 @@ export default function CMSAdmin() {
     }
   }, [handleUnauthorized, showToast]);
 
+  const loadMessages = useCallback(async () => {
+    setLoadingMessages(true);
+    try {
+      const res = await fetch('/api/cms/contact-messages', { headers: { 'x-cms-token': localStorage.getItem('cms_token') || '' } });
+      if (res.status === 401) { handleUnauthorized(); return; }
+      const d = await res.json();
+      setMessages(d.messages || []);
+    } catch { showToast('Impossible de charger les messages.'); }
+    finally { setLoadingMessages(false); }
+  }, [handleUnauthorized, showToast]);
+
   useEffect(() => { if (authed) loadArticles(); }, [authed, loadArticles]);
   useEffect(() => { if (authed && tab === 'demandes') loadDemandes(); }, [authed, tab, loadDemandes]);
   useEffect(() => { if (authed && tab === 'booking') { loadBookingSlots(); loadBookingRequests(); } }, [authed, tab, loadBookingSlots, loadBookingRequests]);
   useEffect(() => { if (authed && (tab === 'settings' || tab === 'pages')) loadSettings(); }, [authed, tab, loadSettings]);
+  useEffect(() => { if (authed && tab === 'messages') loadMessages(); }, [authed, tab, loadMessages]);
 
   // Save settings
   const saveSettings = async () => {
@@ -811,6 +833,7 @@ export default function CMSAdmin() {
     { id: 'demandes', label: '✈️ Coaching', count: demandes.length },
     { id: 'media',    label: '🖼️ Médiathèque', count: null },
     { id: 'carousel', label: '🎠 Carrousel', count: null },
+    { id: 'messages', label: '💬 Messages', count: messages.filter(m => m.status === 'unread').length || null },
     { id: 'settings', label: '⚙️ Paramètres', count: null },
   ];
 
@@ -1449,6 +1472,52 @@ export default function CMSAdmin() {
           />
         )}
 
+
+        {/* ── MESSAGES ── */}
+        {tab === 'messages' && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#2d5f54' }}>💬 Messages reçus</h2>
+              <button onClick={loadMessages} style={{ padding: '.45rem 1rem', background: '#f5f0eb', border: 'none', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.85rem', color: '#555' }}>↻ Actualiser</button>
+            </div>
+            {loadingMessages ? (
+              <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement…</p>
+            ) : messages.length === 0 ? (
+              <p style={{ textAlign: 'center', color: '#aaa', padding: '3rem' }}>Aucun message pour le moment.</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
+                {messages.map(m => (
+                  <div key={m.id} style={{ background: 'white', borderRadius: '1rem', padding: '1.25rem 1.5rem', boxShadow: '0 1px 4px rgba(0,0,0,.06)', borderLeft: m.status === 'unread' ? '4px solid #2d5f54' : '4px solid #e0dbd5' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
+                      <div>
+                        <p style={{ fontWeight: 700, fontSize: '.95rem', color: '#1a1a1a', marginBottom: '.2rem' }}>{m.name} <span style={{ fontWeight: 400, color: '#888' }}>— {m.email}</span></p>
+                        <p style={{ fontSize: '.8rem', color: '#aaa', marginBottom: '.75rem' }}>{fmt(m.created_at)}</p>
+                        <p style={{ fontSize: '.9rem', color: '#444', whiteSpace: 'pre-wrap' }}>{m.message}</p>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '.4rem', flexShrink: 0 }}>
+                        {m.status !== 'read' && (
+                          <button onClick={async () => {
+                            await fetch(`/api/cms/contact-messages/${m.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-cms-token': localStorage.getItem('cms_token') || '' }, body: JSON.stringify({ status: 'read' }) });
+                            setMessages(prev => prev.map(x => x.id === m.id ? { ...x, status: 'read' } : x));
+                          }} style={{ padding: '.35rem .75rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.78rem', fontWeight: 600 }}>
+                            ✓ Marquer lu
+                          </button>
+                        )}
+                        <button onClick={async () => {
+                          if (!confirm('Supprimer ce message ?')) return;
+                          await fetch(`/api/cms/contact-messages/${m.id}`, { method: 'DELETE', headers: { 'x-cms-token': localStorage.getItem('cms_token') || '' } });
+                          setMessages(prev => prev.filter(x => x.id !== m.id));
+                        }} style={{ padding: '.35rem .75rem', background: '#fee2e2', color: '#b91c1c', border: 'none', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.78rem', fontWeight: 600 }}>
+                          🗑 Supprimer
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
         {/* ── PARAMÃˆTRES ── */}
         {tab === 'settings' && (
           <div>
