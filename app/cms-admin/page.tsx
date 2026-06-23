@@ -741,7 +741,7 @@ export default function CMSAdmin() {
     try {
       const res = await fetch(`/api/cms/articles/${id}`, { method: 'DELETE' });
       if (handleUnauthorized(res)) return;
-      if (res.ok) { showToast('🗑ï¸ Article supprimé'); loadArticles(); }
+      if (res.ok) { showToast('🗑ï¸ Article supprimé'); loadArticles(); }
     } catch {
       showToast('Impossible de supprimer cet article.');
     }
@@ -827,12 +827,12 @@ export default function CMSAdmin() {
   // ─── CMS ──────────────────────────────────────────────────
   const TABS = [
     { id: 'articles', label: '📝 Articles', count: articles.length },
-    { id: 'new',      label: '✏️ Nouvel article', count: null },
-    { id: 'pages',    label: '🗂️ Pages', count: null },
-    { id: 'media',    label: '🖼️ Médiathèque', count: null },
+    { id: 'new',      label: '✏️ Nouvel article', count: null },
+    { id: 'pages',    label: '🗂️ Pages', count: null },
+    { id: 'media',    label: '🖼️ Médiathèque', count: null },
     { id: 'booking',  label: '📅 Réservations', count: null },
     { id: 'messages', label: '💬 Messages', count: messages.filter(m => m.status === 'unread').length || null },
-    { id: 'settings', label: '⚙️ Paramètres', count: null },
+    { id: 'settings', label: '⚙️ Paramètres', count: null },
   ];
 
   return (
@@ -933,9 +933,9 @@ export default function CMSAdmin() {
                         {a.published ? '✅ Publié' : '📦 Brouillon'}
                       </span>
                       <div style={{ display: 'flex', gap: '.5rem' }}>
-                        <button onClick={() => openArticleEditor(a)} style={{ padding: '.35rem .8rem', border: '1px solid #ddd', borderRadius: '.4rem', background: 'white', cursor: 'pointer', fontSize: '.82rem' }}>✏️ Ã‰diter</button>
+                        <button onClick={() => openArticleEditor(a)} style={{ padding: '.35rem .8rem', border: '1px solid #ddd', borderRadius: '.4rem', background: 'white', cursor: 'pointer', fontSize: '.82rem' }}>✏️ Ã‰diter</button>
                         <button onClick={() => togglePublish(a)} style={{ padding: '.35rem .8rem', border: '1px solid #ddd', borderRadius: '.4rem', background: 'white', cursor: 'pointer', fontSize: '.82rem' }}>{a.published ? '📦 Dépublier' : '🚀 Publier'}</button>
-                        <button onClick={() => deleteArticle(a.id)} style={{ padding: '.35rem .8rem', border: '1px solid #fcc', borderRadius: '.4rem', background: '#fff5f5', color: '#c0392b', cursor: 'pointer', fontSize: '.82rem' }}>🗑ï¸</button>
+                        <button onClick={() => deleteArticle(a.id)} style={{ padding: '.35rem .8rem', border: '1px solid #fcc', borderRadius: '.4rem', background: '#fff5f5', color: '#c0392b', cursor: 'pointer', fontSize: '.82rem' }}>🗑ï¸</button>
                       </div>
                     </div>
                   ))}
@@ -948,7 +948,7 @@ export default function CMSAdmin() {
         {tab === 'new' && (
           <div style={{ background: 'white', borderRadius: '1rem', padding: '2rem', boxShadow: '0 2px 12px rgba(0,0,0,.07)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem' }}>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#2d5f54' }}>{editingArticle?.id ? `✏️ Modifier : ${editingArticle.title}` : '✏️ Nouvel article'}</h2>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#2d5f54' }}>{editingArticle?.id ? `✏️ Modifier : ${editingArticle.title}` : '✏️ Nouvel article'}</h2>
               <button onClick={closeArticleEditor} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '1.3rem' }}>✕</button>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
@@ -993,10 +993,10 @@ export default function CMSAdmin() {
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap', marginBottom: '.75rem' }}>
                   <button onClick={() => setShowMediaLibrary(true)}
                     style={{ padding: '.6rem 1.1rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.85rem', fontWeight: 600 }}
-                  >🖼️ Médiathèque Supabase</button>
+                  >🖼️ Médiathèque Supabase</button>
                   <span style={{ color: '#aaa', fontSize: '.82rem' }}>ou</span>
                   <label style={{ padding: '.6rem 1rem', background: uploadingFeaturedImage ? '#8aa8a9' : '#01696f', color: 'white', borderRadius: '.5rem', cursor: uploadingFeaturedImage ? 'wait' : 'pointer', fontSize: '.85rem', fontWeight: 600 }}>
-                    {uploadingFeaturedImage ? '⏳ Upload…' : '⬆️ Upload direct'}
+                    {uploadingFeaturedImage ? '⏳ Upload…' : '⬆️ Upload direct'}
                     <input type="file" accept="image/*" onChange={uploadFeaturedImage} style={{ display: 'none' }} disabled={uploadingFeaturedImage} />
                   </label>
                 </div>
@@ -1271,15 +1271,15 @@ export default function CMSAdmin() {
         {tab === 'media' && (
           <div style={{ background: 'white', borderRadius: '1rem', padding: '2rem', boxShadow: '0 2px 12px rgba(0,0,0,.07)', minHeight: 400 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#2d5f54' }}>🖼️ Médiathèque</h2>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#2d5f54' }}>🖼️ Médiathèque</h2>
               <p style={{ fontSize: '.85rem', color: '#888' }}>Supabase Storage</p>
             </div>
             <div style={{ background: '#faf8f5', borderRadius: '.75rem', padding: '2rem', textAlign: 'center', border: '2px dashed #e8e3dc' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>â˜ï¸</div>
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>â˜ï¸</div>
               <p style={{ color: '#555', marginBottom: '1.25rem', lineHeight: 1.6 }}>Toutes tes images sont stockées sur <strong>Supabase Storage</strong>.</p>
               <button onClick={() => setShowMediaLibrary(true)}
                 style={{ padding: '.8rem 1.75rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.95rem' }}
-              >🖼️ Ouvrir la médiathèque</button>
+              >🖼️ Ouvrir la médiathèque</button>
             </div>
           </div>
         )}
@@ -1288,13 +1288,13 @@ export default function CMSAdmin() {
         {tab === 'demandes' && (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#2d5f54' }}>✈️ Demandes Travel Planning</h2>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#2d5f54' }}>✈️ Demandes Travel Planning</h2>
               <button onClick={loadDemandes} disabled={loadingDemandes} style={{ padding: '.5rem 1rem', background: 'white', border: '1.5px solid #ddd', borderRadius: '.5rem', cursor: loadingDemandes ? 'wait' : 'pointer', fontSize: '.85rem', opacity: loadingDemandes ? .7 : 1 }}>{loadingDemandes ? '⏳ Actualisation…' : '🔄 Actualiser'}</button>
             </div>
             {loadingDemandes ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement…</p>
               : demandes.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '4rem', color: '#aaa' }}>
-                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✉️</div>
+                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✉️</div>
                   <p>Aucune demande pour le moment</p>
                 </div>
               ) : (

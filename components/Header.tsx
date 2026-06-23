@@ -25,7 +25,7 @@ export default function Header() {
   useEffect(() => {
     const sb = getSupabaseBrowser()
     if (!sb) return
-    sb.from('cms_settings')
+    sb.from('cms_settings_kv')
       .select('key, value')
       .in('key', ['logo_url', 'site_name'])
       .then(({ data }) => {
