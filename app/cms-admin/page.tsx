@@ -833,6 +833,7 @@ export default function CMSAdmin() {
     { id: 'demandes', label: '✈️ Coaching', count: demandes.length },
     { id: 'media',    label: '🖼️ Médiathèque', count: null },
     { id: 'carousel', label: '🎠 Carrousel', count: null },
+    { id: 'booking',  label: '📅 Réservations', count: null },
     { id: 'messages', label: '💬 Messages', count: messages.filter(m => m.status === 'unread').length || null },
     { id: 'settings', label: '⚙️ Paramètres', count: null },
   ];
