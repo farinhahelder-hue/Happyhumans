@@ -1,6 +1,5 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
 
 type CmsContent = Record<string, string>;
 const cache: Record<string, { data: CmsContent; ts: number }> = {};
@@ -16,23 +15,20 @@ export function useCmsContent(page: string, defaults: CmsContent = {}): CmsConte
       setContent({ ...defaults, ...cached.data });
       return;
     }
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (!url || !key) return;
-    createClient(url, key)
-      .from('site_content')
-      .select('block_key, value')
-      .eq('page', page)
-      .then(({ data }) => {
-        if (!data) return;
+
+    // Lecture via API serveur (pas de NEXT_PUBLIC vars requises)
+    fetch(`/api/cms/public-content?page=${encodeURIComponent(page)}`)
+      .then(r => r.ok ? r.json() : { content: [] })
+      .then(({ content: rows }) => {
+        if (!rows?.length) return;
         const map: CmsContent = {};
-        data.forEach((r: { block_key: string; value: string }) => {
+        rows.forEach((r: { block_key: string; value: string }) => {
           if (r.value) map[r.block_key] = r.value;
         });
         cache[page] = { data: map, ts: Date.now() };
-        // DB values override defaults
         setContent({ ...defaults, ...map });
-      });
+      })
+      .catch(() => {/* garde les defaults si erreur réseau */});
   }, [page]);
 
   return content;
