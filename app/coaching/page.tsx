@@ -56,13 +56,11 @@ export default function CoachingPage() {
                   Me contacter →
                 </Link>
               </div>
-              {c.coaching_b2c_image ? (
-                <img src={c.coaching_b2c_image} alt={c.coaching_b2c_title} className="rounded-2xl object-cover shadow-lg h-72 w-full" />
-              ) : (
-                <div className="rounded-2xl bg-gradient-to-br from-[#eef5f3] to-[#dde8e5] h-72 flex items-center justify-center">
-                  <span className="text-6xl opacity-30">🌱</span>
-                </div>
-              )}
+              <img
+                src={c.coaching_b2c_image || 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=800&q=80&auto=format&fit=crop'}
+                alt="Personne en introspection et réflexion, coaching individuel"
+                className="rounded-2xl object-cover shadow-lg h-72 w-full"
+              />
             </div>
           </div>
         </section>
@@ -71,13 +69,11 @@ export default function CoachingPage() {
         <section className="bg-[#f7f4ef] py-20 md:py-28">
           <div className="mx-auto max-w-5xl px-6 md:px-10">
             <div className="grid gap-12 md:grid-cols-2 items-center">
-              {c.coaching_b2b_image ? (
-                <img src={c.coaching_b2b_image} alt={c.coaching_b2b_title} className="rounded-2xl object-cover shadow-lg h-72 w-full order-2 md:order-1" />
-              ) : (
-                <div className="rounded-2xl bg-gradient-to-br from-[#e8e0d5] to-[#d5ccc0] h-72 flex items-center justify-center order-2 md:order-1">
-                  <span className="text-6xl opacity-30">🏢</span>
-                </div>
-              )}
+              <img
+                src={c.coaching_b2b_image || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80&auto=format&fit=crop'}
+                alt="Réunion d'équipe et leadership organisationnel en entreprise"
+                className="rounded-2xl object-cover shadow-lg h-72 w-full order-2 md:order-1"
+              />
               <div className="space-y-5 order-1 md:order-2">
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Organisations</p>
                 <h2 className="text-3xl font-serif font-light leading-tight text-stone-900">{c.coaching_b2b_title}</h2>

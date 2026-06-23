@@ -38,6 +38,11 @@ export default function BookingPage() {
       <MiniNav />
       <main>
         <section className="relative flex h-[38vh] items-end overflow-hidden bg-stone-900">
+          <img
+            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80&auto=format&fit=crop"
+            alt="Paysage serein avec lumière naturelle, ambiance de sérénité et clarté"
+            className="absolute inset-0 h-full w-full object-cover opacity-20"
+          />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(43,111,98,0.35),transparent_50%)]" />
           <div className="relative mx-auto w-full max-w-5xl px-6 pb-12 md:px-10">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-amber-400">Réservation</p>

@@ -212,8 +212,13 @@ export default function RelationsPage() {
       <main>
 
         {/* ══ HERO INTRO ════════════════════════════════════════════════ */}
-        <section className="bg-stone-900 px-6 py-12 md:py-16 md:px-10 text-center">
-          <div className="mx-auto max-w-2xl">
+        <section className="relative overflow-hidden bg-stone-900 px-6 py-12 md:py-16 md:px-10 text-center">
+          <img
+            src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&q=85&auto=format&fit=crop"
+            alt="Connexion humaine, mains tendues symbolisant le lien entre personnes"
+            className="absolute inset-0 h-full w-full object-cover opacity-15"
+          />
+          <div className="relative mx-auto max-w-2xl">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
               Relations &amp; Attachement · Happy Humans
             </p>

@@ -34,9 +34,10 @@ export default function MiniFooter() {
           </div>
         </div>
 
-        <p className="text-xs text-center" style={{ color: '#5a7a74' }}>
-          © {year} {c.copyright}
-        </p>
+        <div className="text-center">
+          <p className="text-xs" style={{ color: '#5a7a74' }}>© {year} {c.copyright}</p>
+          <p className="text-xs opacity-40 mt-1" style={{ color: '#5a7a74' }}>Photos : <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
+        </div>
 
         <div className="flex gap-6 text-xs" style={{ color: '#5a7a74' }}>
           <Link href="/mentions-legales" className="transition hover:text-white" style={{ color: '#5a7a74' }}>Mentions légales</Link>

@@ -27,7 +27,7 @@ export default function AProposPage() {
         {/* HERO */}
         <section className="relative flex h-[55vh] items-end overflow-hidden bg-stone-900 md:h-[65vh]">
           <img
-            src={c.hero_image || 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1400&q=80'}
+            src={c.hero_image || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1400&q=80&auto=format&fit=crop'}
             alt="Portrait Monica Schneider"
             className="absolute inset-0 h-full w-full object-cover opacity-40"
           />

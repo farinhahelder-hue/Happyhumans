@@ -71,7 +71,10 @@ export default function Footer() {
         <div className="w-full h-px mb-6" style={{ backgroundColor: '#2d5f54' }} />
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs" style={{ color: '#5a7a74' }}>
-          <p>© {year} {c.copyright}</p>
+          <div>
+            <p>© {year} {c.copyright}</p>
+            <p className="opacity-40 mt-1">Photos : <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition">Unsplash</a></p>
+          </div>
           <div className="flex gap-6">
             <Link href="/mentions-legales" className="hover:text-white transition">Mentions légales</Link>
             <Link href="/politique-confidentialite" className="hover:text-white transition">Confidentialité</Link>

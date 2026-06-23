@@ -81,6 +81,11 @@ export default function LandingPage() {
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
         <section className="relative overflow-hidden bg-stone-900 px-6 py-24 text-center md:py-36 md:px-10">
+          <img
+            src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=85&auto=format&fit=crop"
+            alt="Bureau élégant avec lumière naturelle, ambiance coaching professionnel"
+            className="absolute inset-0 h-full w-full object-cover opacity-20"
+          />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(43,111,98,0.35),transparent_50%),radial-gradient(circle_at_bottom_left,rgba(182,140,94,0.2),transparent_40%)]" />
           <div className="relative mx-auto max-w-3xl">
             <p className="mb-5 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
@@ -248,6 +253,7 @@ export default function LandingPage() {
           <div className="flex flex-col items-center justify-between gap-4 text-xs text-stone-400 md:flex-row">
             <p className="font-serif text-base text-stone-300 font-semibold">Happy Humans</p>
             <p>© {year} Happy Humans — Monica Schneider. Tous droits réservés.</p>
+            <p className="text-xs opacity-40 mt-1">Photos : <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition">Unsplash</a></p>
             <div className="flex gap-6">
               <Link href="/mentions-legales" className="hover:text-stone-200 transition">Mentions légales</Link>
               <Link href="/politique-confidentialite" className="hover:text-stone-200 transition">Confidentialité</Link>
