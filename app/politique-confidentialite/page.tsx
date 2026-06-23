@@ -1,4 +1,4 @@
-import MiniNav from '@/components/MiniNav'
+﻿import Header from '@/components/Header'
 import MiniFooter from '@/components/MiniFooter'
 
 export const metadata = {
@@ -9,7 +9,7 @@ export const metadata = {
 export default function PolitiqueConfidentialite() {
   return (
     <>
-      <MiniNav />
+      <Header />
       <main className="min-h-screen py-20 px-6 md:px-10" style={{ backgroundColor: '#f5f0e8' }}>
         <div className="mx-auto max-w-3xl">
 

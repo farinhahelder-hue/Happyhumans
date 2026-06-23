@@ -31,8 +31,7 @@ export default function Header() {
   const [siteName, setSiteName] = useState('Happy Humans')
   const nav = useCmsContent('navigation', NAV_DEFAULTS)
 
-  const accountHref = !loading && user ? '/dashboard' : '/auth/login'
-  const accountLabel = !loading && user ? 'CMS' : 'Connexion'
+  const isCmsUser = !loading && !!user
 
   useEffect(() => {
     const sb = getSupabaseBrowser()
@@ -70,18 +69,20 @@ export default function Header() {
           <div className="hidden items-center gap-6 md:flex">
             {navLinks.map(link => (
               <Link key={link.href} href={link.href}
-                className="text-sm font-medium text-stone-600 transition-colors duration-200 hover:text-amber-900">
+                className="text-sm font-medium text-stone-600 transition-colors duration-200 hover:text-[#2d5f54]">
                 {link.label}
               </Link>
             ))}
             <Link href="/booking"
-              className="rounded-full bg-amber-900 px-4 py-1.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-amber-800">
+              className="rounded-full bg-[#2d5f54] px-4 py-1.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-[#1e3a34]">
               {nav.label_cta}
             </Link>
-            <Link href={accountHref}
-              className="text-xs text-stone-400 hover:text-stone-600 transition-colors duration-200">
-              {accountLabel}
-            </Link>
+            {isCmsUser && (
+              <Link href="/cms-admin"
+                className="text-xs text-stone-400 hover:text-stone-600 transition-colors duration-200">
+                CMS
+              </Link>
+            )}
           </div>
 
           {/* Mobile burger */}
@@ -100,18 +101,20 @@ export default function Header() {
             <div className="flex flex-col gap-3">
               {navLinks.map(link => (
                 <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
-                  className="text-sm font-medium text-stone-700 hover:text-amber-900 py-1">
+                  className="text-sm font-medium text-stone-700 hover:text-[#2d5f54] py-1">
                   {link.label}
                 </Link>
               ))}
               <Link href="/booking" onClick={() => setOpen(false)}
-                className="mt-2 rounded-full bg-amber-900 px-4 py-2 text-sm font-medium text-white text-center hover:bg-amber-800">
+                className="mt-2 rounded-full bg-[#2d5f54] px-4 py-2 text-sm font-medium text-white text-center hover:bg-[#1e3a34]">
                 {nav.label_cta}
               </Link>
-              <Link href={accountHref} onClick={() => setOpen(false)}
-                className="text-xs text-center text-stone-400 hover:text-stone-600">
-                {accountLabel}
-              </Link>
+              {isCmsUser && (
+                <Link href="/cms-admin" onClick={() => setOpen(false)}
+                  className="text-xs text-center text-stone-400 hover:text-stone-600">
+                  CMS
+                </Link>
+              )}
             </div>
           </div>
         )}

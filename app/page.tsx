@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
+import Header from '@/components/Header'
 import BookingWidget from '@/components/BookingWidget'
 import { useCmsContent } from '@/hooks/useCmsContent'
 
@@ -60,24 +61,8 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-[#f5f0e8] font-sans">
-
-      {/* ══ NAV MINIMALISTE ══════════════════════════════════════════════ */}
-      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-stone-200 bg-white/90 px-6 py-4 backdrop-blur-sm md:px-10">
-        <div className="flex items-center gap-3">
-          {c.logo_url
-            ? <img src={c.logo_url} alt="Happy Humans" className="h-8 w-auto" />
-            : <span className="text-lg font-serif font-semibold text-stone-900">Happy Humans</span>
-          }
-        </div>
-        <button
-          onClick={() => setBookingOpen(true)}
-          className="rounded-full bg-[#2d5f54] px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#1e3a34] transition"
-        >
-          Réserver une séance
-        </button>
-      </header>
-
-      <main>
+      <Header />
+      <main className="pt-[72px]">
 
         {/* ══ HERO ══════════════════════════════════════════════════════ */}
         <section className="relative overflow-hidden bg-stone-900 px-6 py-24 text-center md:py-36 md:px-10">

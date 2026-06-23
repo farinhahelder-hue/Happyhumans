@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 
 import BookingWidget from '@/components/BookingWidget'
-import MiniNav from '@/components/MiniNav'
+import Header from '@/components/Header'
 import MiniFooter from '@/components/MiniFooter'
 
 import { useCmsContent } from '@/hooks/useCmsContent'
@@ -35,7 +35,7 @@ export default function BookingPage() {
 
   return (
     <>
-      <MiniNav />
+      <Header />
       <main>
         <section className="relative flex h-[38vh] items-end overflow-hidden bg-stone-900">
           <img
