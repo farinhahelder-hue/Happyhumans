@@ -1,9 +1,23 @@
 'use client'
 import Link from 'next/link'
+import { useCmsContent } from '@/hooks/useCmsContent'
 
-// Footer utilisé sur les pages secondaires (non-visibles en maintenance)
-// Pour les pages publiques, utiliser MiniFooter à la place
+const DEFAULTS = {
+  site_name:     'Happy Humans',
+  tagline:       'philo-coaching',
+  description:   'Coaching & transformation avec Monica Schneider.',
+  description_2: 'Une pratique qui relie leadership, authenticité, philosophie et transformation humaine.',
+  linkedin_url:  'https://fr.linkedin.com/in/monica-schneider-philo-coaching',
+  service_1:     'Executive coaching individuel',
+  service_2:     'Coaching de dirigeants',
+  service_3:     'Philosophical counselling',
+  service_4:     'Sparring partner',
+  service_5:     'Ateliers et séminaires',
+  copyright:     'Happy Humans — Monica Schneider. Tous droits réservés.',
+}
+
 export default function Footer() {
+  const c = useCmsContent('footer', DEFAULTS)
   const year = new Date().getFullYear()
   return (
     <footer className="border-t px-6 py-10 md:px-10"
@@ -15,23 +29,19 @@ export default function Footer() {
           <div>
             <Link href="/"
               style={{ fontFamily: 'Cormorant Garamond, Playfair Display, serif', fontSize: '1.1rem', letterSpacing: '0.08em', color: '#f5f0e8', fontWeight: 400 }}>
-              HAPPY HUMANS
+              {c.site_name.toUpperCase()}
             </Link>
             <p className="text-xs italic mt-1" style={{ color: '#c9a96e', fontFamily: 'Cormorant Garamond, serif' }}>
-              philo-coaching
+              {c.tagline}
             </p>
-            <p className="text-xs mt-2" style={{ color: '#5a7a74' }}>
-              Coaching & transformation avec Monica Schneider.
-            </p>
-            <p className="text-xs mt-1" style={{ color: '#5a7a74' }}>
-              Une pratique qui relie leadership, authenticité, philosophie et transformation humaine.
-            </p>
-            <a href="https://fr.linkedin.com/in/monica-schneider-philo-coaching"
-              target="_blank" rel="noopener noreferrer"
-              className="inline-block mt-3 text-xs hover:text-white transition"
-              style={{ color: '#5a7a74' }}>
-              LinkedIn →
-            </a>
+            <p className="text-xs mt-2" style={{ color: '#5a7a74' }}>{c.description}</p>
+            <p className="text-xs mt-1" style={{ color: '#5a7a74' }}>{c.description_2}</p>
+            {c.linkedin_url && (
+              <a href={c.linkedin_url} target="_blank" rel="noopener noreferrer"
+                className="inline-block mt-3 text-xs hover:text-white transition" style={{ color: '#5a7a74' }}>
+                LinkedIn →
+              </a>
+            )}
           </div>
 
           {/* Navigation */}
@@ -39,8 +49,9 @@ export default function Footer() {
             <p className="text-xs uppercase tracking-widest mb-3" style={{ color: '#c9a96e' }}>Navigation</p>
             <div className="flex flex-col gap-2 text-xs" style={{ color: '#5a7a74' }}>
               <Link href="/" className="hover:text-white transition">Accueil</Link>
+              <Link href="/coaching" className="hover:text-white transition">Coaching</Link>
+              <Link href="/entreprises" className="hover:text-white transition">Entreprises</Link>
               <Link href="/relations" className="hover:text-white transition">Relations</Link>
-              <Link href="/booking" className="hover:text-white transition">Réserver</Link>
               <Link href="/contact" className="hover:text-white transition">Contact</Link>
             </div>
           </div>
@@ -49,22 +60,18 @@ export default function Footer() {
           <div>
             <p className="text-xs uppercase tracking-widest mb-3" style={{ color: '#c9a96e' }}>Services</p>
             <div className="flex flex-col gap-2 text-xs" style={{ color: '#5a7a74' }}>
-              <span>Executive coaching individuel</span>
-              <span>Coaching de dirigeants</span>
-              <span>Philosophical counselling</span>
-              <span>Sparring partner</span>
-              <span>Ateliers et séminaires</span>
+              {[c.service_1, c.service_2, c.service_3, c.service_4, c.service_5].filter(Boolean).map((s, i) => (
+                <span key={i}>{s}</span>
+              ))}
             </div>
           </div>
 
         </div>
 
-        {/* Divider */}
         <div className="w-full h-px mb-6" style={{ backgroundColor: '#2d5f54' }} />
 
-        {/* Bottom */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs" style={{ color: '#5a7a74' }}>
-          <p>© {year} Happy Humans — Monica Schneider. Tous droits réservés.</p>
+          <p>© {year} {c.copyright}</p>
           <div className="flex gap-6">
             <Link href="/mentions-legales" className="hover:text-white transition">Mentions légales</Link>
             <Link href="/politique-confidentialite" className="hover:text-white transition">Confidentialité</Link>

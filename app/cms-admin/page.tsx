@@ -250,6 +250,37 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'content',    label: 'Contenu complet',  type: 'richtext' },
     ],
   },
+  'navigation': {
+    label: 'Navigation',
+    emoji: '🧭',
+    sections: [
+      { key: 'label_apropos',     label: 'Lien — À propos (ex: Monica)',       type: 'text' },
+      { key: 'label_coaching',    label: 'Lien — Coaching',                    type: 'text' },
+      { key: 'label_entreprises', label: 'Lien — Entreprises',                 type: 'text' },
+      { key: 'label_relations',   label: 'Lien — Relations',                   type: 'text' },
+      { key: 'label_temoignages', label: 'Lien — Témoignages',                 type: 'text' },
+      { key: 'label_contact',     label: 'Lien — Contact',                     type: 'text' },
+      { key: 'label_cta',         label: 'Bouton CTA (ex: Réserver une séance)', type: 'text' },
+    ],
+  },
+  'footer': {
+    label: 'Footer',
+    emoji: '🦶',
+    sections: [
+      { key: 'site_name',     label: 'Nom du site',                        type: 'text' },
+      { key: 'tagline',       label: 'Tagline (ex: philo-coaching)',        type: 'text' },
+      { key: 'description',   label: 'Description courte',                  type: 'textarea' },
+      { key: 'description_2', label: 'Description longue',                  type: 'textarea' },
+      { key: 'linkedin_url',  label: 'URL LinkedIn',                        type: 'text' },
+      { key: 'service_1',     label: 'Service 1',                           type: 'text' },
+      { key: 'service_2',     label: 'Service 2',                           type: 'text' },
+      { key: 'service_3',     label: 'Service 3',                           type: 'text' },
+      { key: 'service_4',     label: 'Service 4',                           type: 'text' },
+      { key: 'service_5',     label: 'Service 5',                           type: 'text' },
+      { key: 'copyright',     label: 'Texte copyright',                     type: 'text' },
+      { key: 'logo_url',      label: 'Logo (MiniFooter)',                   type: 'image' },
+    ],
+  },
 };
 
 const SETTINGS_GROUPS: Record<string, { label: string; emoji: string }> = {
