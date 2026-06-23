@@ -581,7 +581,7 @@ export default function CMSAdmin() {
   const loadMessages = useCallback(async () => {
     setLoadingMessages(true);
     try {
-      const res = await fetch('/api/cms/contact-messages', { headers: { 'x-cms-token': localStorage.getItem('cms_token') || '' } });
+      const res = await fetch('/api/cms/contact-messages');
       if (res.status === 401) { handleUnauthorized(); return; }
       const d = await res.json();
       setMessages(d.messages || []);
