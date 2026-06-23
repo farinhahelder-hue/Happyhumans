@@ -13,12 +13,7 @@ export function useCmsContent(page: string, defaults: CmsContent = {}): CmsConte
     const now = Date.now();
     const cached = cache[page];
     if (cached && now - cached.ts < TTL) {
-      // defaults wins over DB for non-empty default values
-      const merged: CmsContent = { ...cached.data };
-      Object.keys(defaults).forEach(k => {
-        if (defaults[k]) merged[k] = defaults[k];
-      });
-      setContent(merged);
+      setContent({ ...defaults, ...cached.data });
       return;
     }
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -35,12 +30,8 @@ export function useCmsContent(page: string, defaults: CmsContent = {}): CmsConte
           if (r.value) map[r.block_key] = r.value;
         });
         cache[page] = { data: map, ts: Date.now() };
-        // defaults with non-empty values always win
-        const merged: CmsContent = { ...map };
-        Object.keys(defaults).forEach(k => {
-          if (defaults[k]) merged[k] = defaults[k];
-        });
-        setContent(merged);
+        // DB values override defaults
+        setContent({ ...defaults, ...map });
       });
   }, [page]);
 

@@ -828,11 +828,8 @@ export default function CMSAdmin() {
   const TABS = [
     { id: 'articles', label: '📝 Articles', count: articles.length },
     { id: 'new',      label: '✏️ Nouvel article', count: null },
-    { id: 'blog',     label: '✨ Générateur Blog IA', count: null },
     { id: 'pages',    label: '🗂️ Pages', count: null },
-    { id: 'demandes', label: '✈️ Coaching', count: demandes.length },
     { id: 'media',    label: '🖼️ Médiathèque', count: null },
-    { id: 'carousel', label: '🎠 Carrousel', count: null },
     { id: 'booking',  label: '📅 Réservations', count: null },
     { id: 'messages', label: '💬 Messages', count: messages.filter(m => m.status === 'unread').length || null },
     { id: 'settings', label: '⚙️ Paramètres', count: null },
