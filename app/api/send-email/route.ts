@@ -1,32 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
 
-// Envoie un email via Gmail SMTP (Nodemailer)
-// Variables requises dans Vercel :
-//   GMAIL_USER     = happyhumans.coaching@gmail.com
-//   GMAIL_APP_PWD  = mot de passe d'application Google (16 caractères)
-//   → Générer sur : myaccount.google.com → Sécurité → Mots de passe d'application
+// Envoie un email via Brevo (ex-Sendinblue) — gratuit 300 emails/jour
+// 1. Créer un compte gratuit sur brevo.com
+// 2. SMTP & API → Clés API → Créer une clé
+// 3. Ajouter dans Vercel : BREVO_API_KEY = votre clé
 async function sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
-  const user = process.env.GMAIL_USER;
-  const pass = process.env.GMAIL_APP_PWD;
-  if (!user || !pass) return { error: 'GMAIL_USER ou GMAIL_APP_PWD manquant' };
+  const apiKey = process.env.BREVO_API_KEY;
+  if (!apiKey) return { error: 'BREVO_API_KEY manquante — ajouter dans Vercel env vars' };
 
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: { user, pass },
+  const senderEmail = process.env.SENDER_EMAIL || 'happyhumans.coaching@gmail.com';
+  const senderName  = process.env.SENDER_NAME  || 'Happy Humans';
+
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'api-key': apiKey,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      sender:   { name: senderName, email: senderEmail },
+      to:       [{ email: to }],
+      subject,
+      htmlContent: html,
+    }),
   });
 
-  try {
-    const info = await transporter.sendMail({
-      from: `Happy Humans <${user}>`,
-      to,
-      subject,
-      html,
-    });
-    return { id: info.messageId };
-  } catch (e: unknown) {
-    return { error: e instanceof Error ? e.message : 'Erreur envoi email' };
-  }
+  const data = await res.json().catch(() => ({}));
+  return res.ok ? { id: data.messageId } : { error: data.message || `HTTP ${res.status}` };
 }
 
 export async function POST(req: NextRequest) {
