@@ -1,24 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
+import nodemailer from 'nodemailer';
 
-// Envoie un email via Resend
-// Doc : https://resend.com/docs/api-reference/emails/send-email
+// Envoie un email via Gmail SMTP (Nodemailer)
+// Variables requises dans Vercel :
+//   GMAIL_USER     = happyhumans.coaching@gmail.com
+//   GMAIL_APP_PWD  = mot de passe d'application Google (16 caractères)
+//   → Générer sur : myaccount.google.com → Sécurité → Mots de passe d'application
 async function sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return { error: 'RESEND_API_KEY manquante' };
+  const user = process.env.GMAIL_USER;
+  const pass = process.env.GMAIL_APP_PWD;
+  if (!user || !pass) return { error: 'GMAIL_USER ou GMAIL_APP_PWD manquant' };
 
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      from: 'Happy Humans <noreply@happy-humans.org>',
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user, pass },
+  });
+
+  try {
+    const info = await transporter.sendMail({
+      from: `Happy Humans <${user}>`,
       to,
       subject,
       html,
-    }),
-  });
-
-  const data = await res.json();
-  return res.ok ? { id: data.id } : { error: data.message };
+    });
+    return { id: info.messageId };
+  } catch (e: unknown) {
+    return { error: e instanceof Error ? e.message : 'Erreur envoi email' };
+  }
 }
 
 export async function POST(req: NextRequest) {
