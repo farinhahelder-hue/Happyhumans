@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
   // Vérifier que le créneau est encore disponible
   const { data: slot } = await supabase
     .from('booking_slots')
-    .select('id, status')
+    .select('id, status, slot_date, slot_time, slot_type')
     .eq('id', slot_id)
     .eq('status', 'available')
     .single();
@@ -59,11 +59,37 @@ export async function POST(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  // Marquer le créneau comme temporairement réservé (Monica confirme ensuite)
-  await supabase
-    .from('booking_slots')
-    .update({ status: 'booked' })
-    .eq('id', slot_id);
+  // Marquer le créneau comme temporairement réservé
+  await supabase.from('booking_slots').update({ status: 'booked' }).eq('id', slot_id);
+
+  // Emails asynchrones (ne bloque pas la réponse)
+  const emailBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://happy-humans.org';
+  const emailData = {
+    name: client_name,
+    email: client_email,
+    phone: client_phone,
+    date: slot?.slot_date,
+    time: slot?.slot_time,
+    slot_type: slot?.slot_type,
+    message,
+  };
+
+  const adminEmail = process.env.ADMIN_EMAIL || 'happyhumans.coaching@gmail.com';
+
+  Promise.all([
+    // Email de confirmation au client
+    fetch(`${emailBase}/api/send-email`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'booking_confirmation', to: client_email, data: emailData }),
+    }),
+    // Notification à Monica
+    fetch(`${emailBase}/api/send-email`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'booking_admin', to: adminEmail, data: emailData }),
+    }),
+  ]).catch(() => {}); // silencieux si email échoue
 
   return NextResponse.json({ booking, success: true }, { status: 201 });
 }

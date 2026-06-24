@@ -117,8 +117,7 @@ const nextConfig = {
       { source: '/hotel-consulting', destination: '/entreprises', permanent: true },
       { source: '/ai-hotellerie', destination: '/entreprises', permanent: true },
       { source: '/etudes-de-cas', destination: '/entreprises', permanent: true },
-      { source: '/blog', destination: '/', permanent: true },
-      { source: '/blog/:path*', destination: '/', permanent: true },
+      // /blog est une vraie page — pas de redirect
       { source: '/destinations', destination: '/', permanent: true },
       { source: '/destinations/:path*', destination: '/', permanent: true },
       { source: '/slow-travel', destination: '/', permanent: true },

@@ -52,7 +52,10 @@ export default function Footer() {
               <Link href="/coaching" className="hover:text-white transition">Coaching</Link>
               <Link href="/entreprises" className="hover:text-white transition">Entreprises</Link>
               <Link href="/relations" className="hover:text-white transition">Relations</Link>
+              <Link href="/temoignages" className="hover:text-white transition">Témoignages</Link>
               <Link href="/contact" className="hover:text-white transition">Contact</Link>
+              <Link href="/blog" className="hover:text-white transition">Ressources</Link>
+              <Link href="/faq" className="hover:text-white transition">FAQ</Link>
             </div>
           </div>
 

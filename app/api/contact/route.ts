@@ -32,6 +32,25 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
+    // Email de confirmation au visiteur + notification Monica
+    const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://happy-humans.org'
+    Promise.all([
+      fetch(`${base}/api/send-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'contact_confirmation', to: email, data: { name } }),
+      }),
+      fetch(`${base}/api/send-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'booking_admin',
+          to: process.env.ADMIN_EMAIL || 'happyhumans.coaching@gmail.com',
+          data: { name, email, message },
+        }),
+      }),
+    ]).catch(() => {})
+
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error('contact error:', err)
