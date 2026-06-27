@@ -79,9 +79,8 @@ export default function AProposPage() {
                 <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef5f3] text-xl">✨</div>
                 <h3 className="text-xl font-serif font-semibold text-stone-900 mb-4">Coaching</h3>
                 <div className="text-sm leading-relaxed text-stone-600 space-y-3">
-                  <p>Le coaching est une danse entre le coach et le coaché. À travers les questions du coach, le coaché réfléchit, change de perspective, fait l&apos;expérience de révélations, de aha moments et d&apos;eurêkas.</p>
-                  <p>Il ou elle trouve en soi les meilleures solutions pour avancer sereinement vers son objectif, dessine un plan d&apos;action clair et daté, et ressort de la séance avec un sentiment de clarté, une énergie renouvelée et souvent un sourire confiant.</p>
-                  <p>Ma pratique de coaching est enrichie, quand la situation s&apos;y prête, par de la philosophie pratique.</p>
+                  <p>Le coaching est une danse entre le coach et le coaché. À travers les questions du coach, le coaché réfléchit, change de perspective, fait l&apos;expérience de révélations, de &ldquo;aha moments&rdquo; et d&apos;eurêkas. Il ou elle trouve en soi les meilleures solutions pour avancer sereinement vers son objectif. Le coaché dessine un plan d&apos;action clair et daté. Il ressort de la séance avec un sentiment de clarté, une énergie renouvelée et souvent un sourire confiant.</p>
+                  <p>À noter : ma pratique de coaching est enrichie, quand la situation s&apos;y prête, par de la philosophie pratique.</p>
                 </div>
                 <Link href="/coaching" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#2f6b61] hover:underline">
                   Voir le coaching →
@@ -96,7 +95,7 @@ export default function AProposPage() {
                 <ul className="space-y-2 text-sm text-stone-600">
                   {[
                     "Comment être visible tout en restant authentique ?",
-                    "Comment démontrer du leadership et signaler que vous êtes prêt·e pour la prochaine étape ?",
+                    "Comment démontrer du leadership et signaler que nous sommes prêts pour la next step ?",
                     "Quel plan de communication interne mettre en place pour rebooster l'engagement ?",
                     "Comment naviguer les différences de communication au sein d'environnements multiculturels ?",
                   ].map((item, i) => (
@@ -120,7 +119,7 @@ export default function AProposPage() {
             <div className="rounded-2xl bg-[#f5f0e8] border border-amber-200 p-8 md:p-10">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800 mb-3">Happiness Design</p>
               <p className="text-base leading-relaxed text-stone-700 mb-6">
-                Je souhaite rendre cette boîte à outils du bonheur accessible au plus grand nombre. Ce projet s&apos;appelle Happiness Design.
+                Je souhaite rendre cette boîte à outils du bonheur, même dans une vie chaotique, accessible au plus grand nombre. Ce projet s&apos;appelle Happiness Design.
               </p>
               <Link href="/happiness-design" className="inline-flex items-center gap-2 text-sm font-semibold text-[#2f6b61] hover:underline">
                 Pour en savoir plus, c&apos;est par ici →
