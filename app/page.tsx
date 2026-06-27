@@ -135,25 +135,33 @@ export default function LandingPage() {
             </div>
             <div className="grid gap-5 md:grid-cols-3">
               <Link href="/coaching" className="group rounded-2xl bg-[#f5f0e8] p-7 hover:bg-[#eef5f3] transition">
-                <div className="mb-4 text-3xl">✨</div>
+                <div className="mb-5 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+                </div>
                 <h3 className="mb-2 text-lg font-serif font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">Coaching individuel</h3>
                 <p className="text-sm text-stone-500 leading-relaxed mb-4">Clarté, confiance et direction — un accompagnement sur mesure pour managers, dirigeants et personnes en transition.</p>
                 <span className="text-sm font-semibold text-[#2d5f54]">Découvrir →</span>
               </Link>
               <Link href="/relations" className="group rounded-2xl bg-[#f5f0e8] p-7 hover:bg-[#eef5f3] transition">
-                <div className="mb-4 text-3xl">💚</div>
+                <div className="mb-5 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </div>
                 <h3 className="mb-2 text-lg font-serif font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">Relations & Attachement</h3>
                 <p className="text-sm text-stone-500 leading-relaxed mb-4">Comprenez votre style d&apos;attachement et transformez durablement vos relations — personnelles et professionnelles.</p>
                 <span className="text-sm font-semibold text-[#2d5f54]">Explorer →</span>
               </Link>
               <Link href="/entreprises" className="group rounded-2xl bg-[#f5f0e8] p-7 hover:bg-[#eef5f3] transition">
-                <div className="mb-4 text-3xl">🏢</div>
+                <div className="mb-5 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+                </div>
                 <h3 className="mb-2 text-lg font-serif font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">Pour les organisations</h3>
                 <p className="text-sm text-stone-500 leading-relaxed mb-4">Coaching de dirigeants, ateliers de cohésion et accompagnement du changement pour remettre de l&apos;alignement.</p>
                 <span className="text-sm font-semibold text-[#2d5f54]">En savoir plus →</span>
               </Link>
               <Link href="/happiness-design" className="group rounded-2xl bg-[#f5f0e8] p-7 hover:bg-[#eef5f3] transition">
-                <div className="mb-4 text-3xl">✨</div>
+                <div className="mb-5 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                </div>
                 <h3 className="mb-2 text-lg font-serif font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">Happiness Design</h3>
                 <p className="text-sm text-stone-500 leading-relaxed mb-4">12 séances pour reprendre les rênes de votre bonheur — au boulot et ailleurs. Un programme multidisciplinaire unique.</p>
                 <span className="text-sm font-semibold text-[#2d5f54]">Découvrir le programme →</span>

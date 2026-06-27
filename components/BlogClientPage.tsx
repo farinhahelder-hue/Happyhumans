@@ -75,14 +75,10 @@ export default function BlogClientPage({ posts }: Props) {
   return (
     <main className="min-h-screen bg-[#f7f5f1]">
       <section className="relative overflow-hidden bg-stone-950 px-4 py-24 text-white md:py-28">
-        <div
-          className="absolute inset-0 opacity-25"
-          style={{
-            backgroundImage:
-              "url('https://happyhumans.fr/wp-content/uploads/2025/08/PXL_20250712_190916811.RAW-01.COVER-EDIT-1024x771.jpg')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
+        <img
+          src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1600&q=80&auto=format&fit=crop"
+          alt="Écriture et réflexion"
+          className="absolute inset-0 h-full w-full object-cover opacity-25"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-stone-950/80 via-stone-900/75 to-amber-950/65" />
         <div className="relative mx-auto max-w-4xl text-center">

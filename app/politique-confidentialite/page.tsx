@@ -2,8 +2,8 @@
 import MiniFooter from '@/components/MiniFooter'
 
 export const metadata = {
-  title: 'Politique de confidentialité | Happy Humans',
-  description: 'Politique de confidentialité et protection des données personnelles — Happy Humans, Monica Schneider.',
+  title: 'Politique de confidentialité',
+  description: 'Consultez la politique de confidentialité et la protection des données personnelles du site Happy Humans.',
 }
 
 export default function PolitiqueConfidentialite() {

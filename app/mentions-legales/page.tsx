@@ -2,8 +2,8 @@
 import MiniFooter from '@/components/MiniFooter'
 
 export const metadata = {
-  title: 'Mentions légales | Happy Humans',
-  description: 'Mentions légales du site Happy Humans — Monica Schneider, philo-coaching.',
+  title: 'Mentions légales',
+  description: 'Consultez les mentions légales du site Happy Humans — Monica Schneider, executive coaching et philo-coaching.',
 }
 
 export default function MentionsLegales() {

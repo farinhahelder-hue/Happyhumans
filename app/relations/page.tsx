@@ -111,8 +111,8 @@ const ATTACHMENT_STYLES = [
     emoji: '🌬️',
     label: 'Évitant',
     percent: '~25 %',
-    color: '#1d4ed8',
-    bg: 'rgba(29,78,216,0.07)',
+    color: '#64748b',
+    bg: 'rgba(100,116,139,0.07)',
     desc: 'A appris à minimiser ses besoins émotionnels pour se protéger. Valorise l\'indépendance et peut se sentir étouffé·e quand l\'intimité s\'intensifie.',
   },
   {
@@ -120,8 +120,8 @@ const ATTACHMENT_STYLES = [
     emoji: '⚡',
     label: 'Désorganisé',
     percent: '~5 %',
-    color: '#2d5f54',
-    bg: 'rgba(124,61,143,0.08)',
+    color: '#78716c',
+    bg: 'rgba(120,113,108,0.07)',
     desc: 'Conflit interne entre le besoin désespéré de proximité et la peur panique de l\'autre. Souvent lié à des expériences d\'enfance complexes ou traumatiques.',
   },
 ];
