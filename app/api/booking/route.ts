@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { sendEmail, bookingConfirmationHtml, adminNotifHtml } from '@/lib/send-email';
 
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -63,33 +64,12 @@ export async function POST(req: NextRequest) {
   await supabase.from('booking_slots').update({ status: 'booked' }).eq('id', slot_id);
 
   // Emails asynchrones (ne bloque pas la réponse)
-  const emailBase = process.env.NEXT_PUBLIC_SITE_URL || 'https://happy-humans.org';
-  const emailData = {
-    name: client_name,
-    email: client_email,
-    phone: client_phone,
-    date: slot?.slot_date,
-    time: slot?.slot_time,
-    slot_type: slot?.slot_type,
-    message,
-  };
-
+  const emailData = { name: client_name, email: client_email, phone: client_phone, date: slot?.slot_date, time: slot?.slot_time, slot_type: slot?.slot_type, message };
   const adminEmail = process.env.ADMIN_EMAIL || 'happyhumans.coaching@gmail.com';
-
   Promise.all([
-    // Email de confirmation au client
-    fetch(`${emailBase}/api/send-email`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'booking_confirmation', to: client_email, data: emailData }),
-    }),
-    // Notification à Monica
-    fetch(`${emailBase}/api/send-email`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'booking_admin', to: adminEmail, data: emailData }),
-    }),
-  ]).catch(() => {}); // silencieux si email échoue
+    sendEmail({ to: client_email, subject: 'Votre séance est bien reçue — Happy Humans', html: bookingConfirmationHtml(emailData) }),
+    sendEmail({ to: adminEmail,   subject: `Nouvelle réservation — ${client_name}`,       html: adminNotifHtml(emailData) }),
+  ]).catch(() => {});
 
   return NextResponse.json({ booking, success: true }, { status: 201 });
 }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { sendEmail, contactConfirmationHtml, adminNotifHtml } from '@/lib/send-email'
 
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -32,23 +33,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    // Email de confirmation au visiteur + notification Monica
-    const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://happy-humans.org'
+    const adminEmail = process.env.ADMIN_EMAIL || 'happyhumans.coaching@gmail.com'
     Promise.all([
-      fetch(`${base}/api/send-email`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'contact_confirmation', to: email, data: { name } }),
-      }),
-      fetch(`${base}/api/send-email`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'booking_admin',
-          to: process.env.ADMIN_EMAIL || 'happyhumans.coaching@gmail.com',
-          data: { name, email, message },
-        }),
-      }),
+      sendEmail({ to: email,       subject: 'Message bien reçu — Happy Humans',    html: contactConfirmationHtml(name) }),
+      sendEmail({ to: adminEmail,  subject: `Nouveau message — ${name}`,            html: adminNotifHtml({ name, email, message }) }),
     ]).catch(() => {})
 
     return NextResponse.json({ success: true })

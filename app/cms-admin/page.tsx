@@ -667,7 +667,7 @@ export default function CMSAdmin() {
     setLoadingMessages(true);
     try {
       const res = await fetch('/api/cms/contact-messages');
-      if (res.status === 401) { handleUnauthorized(); return; }
+      if (res.status === 401) { setAuthed(false); return; }
       const d = await res.json();
       setMessages(d.messages || []);
     } catch { showToast('Impossible de charger les messages.'); }

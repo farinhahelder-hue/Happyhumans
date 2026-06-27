@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 
 type Temoignage = { id: number; nom: string; role: string; texte: string; photo_url: string; note: number }
@@ -11,16 +10,10 @@ export default function TemoignagesWidget({ max = 3 }: { max?: number }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    if (!url || !key) { setLoading(false); return }
-    createClient(url, key)
-      .from('temoignages')
-      .select('id, nom, role, texte, photo_url, note')
-      .eq('visible', true)
-      .order('sort_order', { ascending: true })
-      .limit(max)
-      .then(({ data }) => { setItems(data || []); setLoading(false) })
+    fetch('/api/cms/public-temoignages')
+      .then(r => r.ok ? r.json() : { items: [] })
+      .then(d => { setItems((d.items || []).slice(0, max)); setLoading(false) })
+      .catch(() => setLoading(false))
   }, [max])
 
   if (loading) return null
