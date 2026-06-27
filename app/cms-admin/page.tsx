@@ -1632,6 +1632,89 @@ export default function CMSAdmin() {
                         <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#2d5f54', marginBottom: '1.5rem' }}>
                           {groupCfg?.emoji} {groupCfg?.label}
                         </h2>
+                        {/* ── BRANDING PANEL ── */}
+                        {settingsGroup === 'branding' && (
+                          <div style={{ marginBottom: '2rem' }}>
+                            {/* Prévisualisation live */}
+                            <div style={{ marginBottom: '1.5rem', padding: '1rem 1.5rem', background: 'white', borderRadius: '.75rem', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                              <div style={{ width: 260, background: '#fff', borderBottom: '1px solid #f0ece8', borderRadius: '.5rem .5rem 0 0', padding: '.6rem 1rem', display: 'flex', alignItems: 'center', gap: '.75rem' }}>
+                                {editedSettings['logo_url'] ? (
+                                  <img
+                                    src={editedSettings['logo_url']}
+                                    alt="Logo prévisualisation"
+                                    style={{
+                                      width: Number(editedSettings['logo_size'] || 44),
+                                      height: Number(editedSettings['logo_size'] || 44),
+                                      borderRadius: '50%',
+                                      objectFit: 'cover',
+                                      border: '1px solid #eee',
+                                    }}
+                                  />
+                                ) : (
+                                  <div style={{
+                                    width: Number(editedSettings['logo_size'] || 44),
+                                    height: Number(editedSettings['logo_size'] || 44),
+                                    borderRadius: '50%',
+                                    background: '#2d5f54',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    color: 'white', fontSize: '.7rem', fontWeight: 700, flexShrink: 0,
+                                  }}>HH</div>
+                                )}
+                                <div>
+                                  <p style={{ fontWeight: 700, fontSize: '.9rem', color: '#1a1a1a', margin: 0, fontFamily: 'Georgia, serif' }}>{editedSettings['site_name'] || 'Happy Humans'}</p>
+                                  {editedSettings['tagline'] && <p style={{ fontSize: '.7rem', color: '#c9a96e', margin: 0, fontStyle: 'italic' }}>{editedSettings['tagline']}</p>}
+                                </div>
+                              </div>
+                              <p style={{ fontSize: '.78rem', color: '#aaa', margin: 0 }}>← Prévisualisation header</p>
+                            </div>
+
+                            {/* Upload logo */}
+                            <div style={{ marginBottom: '1.25rem' }}>
+                              <label style={lbl}>Logo (image)</label>
+                              <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                                <label style={{ padding: '.5rem 1rem', background: '#2d5f54', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem', display: 'inline-flex', alignItems: 'center', gap: '.4rem' }}>
+                                  ⬆ Upload logo
+                                  <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
+                                    const file = e.target.files?.[0];
+                                    if (!file) return;
+                                    const fd = new FormData(); fd.append('file', file);
+                                    const res = await fetch('/api/cms/upload', { method: 'POST', body: fd });
+                                    const { url } = await res.json();
+                                    if (url) setEditedSettings(p => ({ ...p, logo_url: url }));
+                                  }} />
+                                </label>
+                                <input type="text" value={editedSettings['logo_url'] || ''} placeholder="Ou coller une URL d'image"
+                                  onChange={e => setEditedSettings(p => ({ ...p, logo_url: e.target.value }))}
+                                  style={{ ...inp, flex: 1, minWidth: 200 }} />
+                                {editedSettings['logo_url'] && (
+                                  <button onClick={() => setEditedSettings(p => ({ ...p, logo_url: '' }))}
+                                    style={{ padding: '.4rem .6rem', background: '#fee2e2', border: 'none', borderRadius: '.3rem', cursor: 'pointer', fontSize: '.8rem', color: '#dc2626' }}>✕</button>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Taille du logo */}
+                            <div style={{ marginBottom: '1.25rem' }}>
+                              <label style={lbl}>Taille du logo — {editedSettings['logo_size'] || 44}px</label>
+                              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                <span style={{ fontSize: '.75rem', color: '#aaa' }}>24px</span>
+                                <input type="range" min="24" max="96" step="4"
+                                  value={Number(editedSettings['logo_size'] || 44)}
+                                  onChange={e => setEditedSettings(p => ({ ...p, logo_size: e.target.value }))}
+                                  style={{ flex: 1, accentColor: '#2d5f54' }} />
+                                <span style={{ fontSize: '.75rem', color: '#aaa' }}>96px</span>
+                                {/* Tailles prédéfinies */}
+                                {[['XS', '28'], ['S', '36'], ['M', '44'], ['L', '56'], ['XL', '72']].map(([label, val]) => (
+                                  <button key={val} onClick={() => setEditedSettings(p => ({ ...p, logo_size: val }))}
+                                    style={{ padding: '.2rem .5rem', fontSize: '.72rem', border: `1px solid ${editedSettings['logo_size'] === val ? '#2d5f54' : '#ddd'}`, borderRadius: '.3rem', cursor: 'pointer', background: editedSettings['logo_size'] === val ? '#2d5f54' : 'white', color: editedSettings['logo_size'] === val ? 'white' : '#555' }}>
+                                    {label}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
                         {/* ── THEME PICKER ── */}
                         {settingsGroup === 'theme' && (
                           <div style={{ marginBottom: '2rem' }}>

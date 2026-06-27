@@ -29,6 +29,7 @@ export default function Header() {
   const { user, loading } = useAuth()
   const [logoUrl, setLogoUrl] = useState<string>('/logo-happy-humans.jpg')
   const [siteName, setSiteName] = useState('Happy Humans')
+  const [logoSize, setLogoSize] = useState(44)
   const nav = useCmsContent('navigation', NAV_DEFAULTS)
 
   const isCmsUser = !loading && !!user
@@ -38,12 +39,13 @@ export default function Header() {
     if (!sb) return
     sb.from('cms_settings_kv')
       .select('key, value')
-      .in('key', ['logo_url', 'site_name'])
+      .in('key', ['logo_url', 'site_name', 'logo_size'])
       .then(({ data }) => {
         if (!data) return
         data.forEach((row: { key: string; value: string }) => {
           if (row.key === 'logo_url' && row.value) setLogoUrl(row.value)
           if (row.key === 'site_name' && row.value) setSiteName(row.value)
+          if (row.key === 'logo_size' && row.value) setLogoSize(Number(row.value) || 44)
         })
       })
   }, [])
@@ -62,7 +64,7 @@ export default function Header() {
       <nav className="fixed top-0 z-50 w-full border-b border-stone-100 bg-white/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
           <Link href="/" className="flex items-center gap-3 transition-colors duration-200" aria-label={`${siteName} accueil`}>
-            <Image src={logoUrl} alt={siteName} width={44} height={44} className="rounded-full object-cover" style={{ height: 44, width: 44 }} />
+            <Image src={logoUrl} alt={siteName} width={logoSize} height={logoSize} className="rounded-full object-cover" style={{ height: logoSize, width: logoSize }} />
             <span className="text-xl font-serif font-bold tracking-tight text-stone-900">{siteName}</span>
           </Link>
 

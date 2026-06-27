@@ -18,6 +18,7 @@ const DEFAULT_SETTINGS = [
   { key: 'theme_bg',         label: 'Couleur fond',               group_name: 'theme',    type: 'text',     value: '' },
   // Branding
   { key: 'logo_url',         label: 'Logo du site (image)',       group_name: 'branding', type: 'image',    value: '' },
+  { key: 'logo_size',        label: 'Taille du logo (px)',        group_name: 'branding', type: 'text',     value: '44' },
   { key: 'favicon_url',      label: 'Favicon (icône onglet)',      group_name: 'branding', type: 'image',    value: '' },
   { key: 'site_name',        label: 'Nom du site',                 group_name: 'branding', type: 'text',     value: 'Happy Humans' },
   { key: 'tagline',          label: 'Tagline / Slogan',            group_name: 'branding', type: 'text',     value: 'philo-coaching' },
