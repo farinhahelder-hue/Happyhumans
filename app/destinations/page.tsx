@@ -5,6 +5,15 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import SlowTravelQuiz from '@/components/SlowTravelQuiz';
+import { useCmsContent } from '@/hooks/useCmsContent';
+
+const DEFAULT_DESTINATIONS = {
+  page_badge: 'Hub destinations',
+  page_title: "Six destinations qu'on a arpentées dans tous les sens",
+  page_subtitle: "Pas en touristes pressés, en gens qui reviennent, qui testent, qui se trompent et qui recommencent. Ici, on te montre des terrains qu'on connaît vraiment, avec leur bon rythme, leur budget indicatif et notre verdict signé court.",
+  no_results_title: 'Aucun résultat avec ces filtres',
+  no_results_text: "Élargis un peu le cadre, ou dis-nous ce que tu cherches vraiment.",
+}
 
 type DestinationCard = {
   name: string;
@@ -111,6 +120,7 @@ const durationOptions = [
 ] as const;
 
 export default function DestinationsPage() {
+  const c = useCmsContent('destinations', DEFAULT_DESTINATIONS)
   const [countryFilter, setCountryFilter] = useState('all');
   const [styleFilter, setStyleFilter] = useState<(typeof styleOptions)[number]['value']>('all');
   const [durationFilter, setDurationFilter] =
@@ -139,13 +149,13 @@ export default function DestinationsPage() {
         <section className="bg-gradient-to-br from-cloud-dancer to-white py-20 md:py-28">
           <div className="container">
             <p className="text-xs uppercase tracking-[0.2em] text-eucalyptus font-semibold mb-4">
-              Hub destinations
+              {c.page_badge}
             </p>
             <h1 className="text-4xl md:text-6xl font-serif text-mahogany mb-6">
-              Six destinations qu&apos;on a arpentées dans tous les sens
+              {c.page_title}
             </h1>
             <p className="text-charcoal/80 text-lg max-w-3xl leading-relaxed">
-              Pas en touristes pressés, en gens qui reviennent, qui testent, qui se trompent et qui recommencent. Ici, on te montre des terrains qu&apos;on connaît vraiment, avec leur bon rythme, leur budget indicatif et notre verdict signé court.
+              {c.page_subtitle}
             </p>
           </div>
         </section>
@@ -209,9 +219,9 @@ export default function DestinationsPage() {
           <div className="container">
             {filteredDestinations.length === 0 ? (
               <div className="rounded-2xl border border-stone-200 p-10 text-center">
-                <p className="text-lg font-semibold text-mahogany mb-2">Aucun résultat avec ces filtres</p>
+                <p className="text-lg font-semibold text-mahogany mb-2">{c.no_results_title}</p>
                 <p className="text-charcoal/70 mb-5">
-                  Élargis un peu le cadre, ou dis-nous ce que tu cherches vraiment.
+                  {c.no_results_text}
                 </p>
                 <Link
                   href="/travel-planning-form"

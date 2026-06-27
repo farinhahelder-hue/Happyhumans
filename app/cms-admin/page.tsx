@@ -283,6 +283,48 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'logo_url',      label: 'Logo (MiniFooter)',                   type: 'image' },
     ],
   },
+  'faq': {
+    label: 'FAQ',
+    emoji: '❓',
+    sections: [
+      { key: 'page_title',   label: 'Titre de la page',     type: 'text' },
+      { key: 'page_subtitle',label: 'Sous-titre de la page', type: 'textarea' },
+      { key: 'cta_title',    label: 'Section CTA — Titre',  type: 'text' },
+      { key: 'cta_text',     label: 'Section CTA — Texte',  type: 'textarea' },
+      { key: 'faqs_json',    label: 'FAQ — JSON (voir format dans le panneau)', type: 'textarea' },
+    ],
+  },
+  'destinations': {
+    label: 'Destinations',
+    emoji: '🗺',
+    sections: [
+      { key: 'page_badge',        label: 'Badge (ex: Hub destinations)',    type: 'text' },
+      { key: 'page_title',        label: 'Titre principal',                 type: 'text' },
+      { key: 'page_subtitle',     label: 'Sous-titre principal',            type: 'textarea' },
+      { key: 'no_results_title',  label: 'Message aucun résultat — Titre',  type: 'text' },
+      { key: 'no_results_text',   label: 'Message aucun résultat — Texte',  type: 'textarea' },
+    ],
+  },
+  'blog': {
+    label: 'Blog',
+    emoji: '📝',
+    sections: [
+      { key: 'hero_badge',    label: 'Badge hero',                    type: 'text' },
+      { key: 'hero_title',    label: 'Titre principal',               type: 'textarea' },
+      { key: 'hero_subtitle', label: 'Sous-titre',                    type: 'textarea' },
+      { key: 'featured_label',label: 'Label "À lire d\'abord"',       type: 'text' },
+      { key: 'featured_title',label: 'Titre "À lire d\'abord"',       type: 'text' },
+      { key: 'empty_title',   label: 'Recherche vide — Titre',        type: 'text' },
+      { key: 'empty_text',    label: 'Recherche vide — Texte',        type: 'textarea' },
+      { key: 'empty_action',  label: 'Recherche vide — Bouton',       type: 'text' },
+      { key: 'carnets_title', label: 'Section Carnets — Titre',       type: 'text' },
+      { key: 'carnets_desc',  label: 'Section Carnets — Description', type: 'textarea' },
+      { key: 'pepites_title', label: 'Section Pépites — Titre',       type: 'text' },
+      { key: 'pepites_desc',  label: 'Section Pépites — Description', type: 'textarea' },
+      { key: 'guides_title',  label: 'Section Guides — Titre',        type: 'text' },
+      { key: 'guides_desc',   label: 'Section Guides — Description',  type: 'textarea' },
+    ],
+  },
 };
 
 const SETTINGS_GROUPS: Record<string, { label: string; emoji: string }> = {

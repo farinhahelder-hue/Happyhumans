@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import NewsletterForm from '@/components/NewsletterForm'
 import type { BlogPost } from '@/lib/blog-supabase'
+import { useCmsContent } from '@/hooks/useCmsContent'
 
 const CATEGORY_LABELS: Record<string, string> = {
   Tous: 'Tout lire',
@@ -20,11 +21,29 @@ const CATEGORY_FALLBACK_BG: Record<string, string> = {
 
 const BADGE_FALLBACK_SRC = '/images/badges-happyhumans.svg'
 
+const BLOG_DEFAULTS = {
+  hero_badge:       'Blog Happy Humans',
+  hero_title:       'Des moments, des détours,\ndes repères qu\'on aurait aimé avoir avant.',
+  hero_subtitle:    "On écrit depuis le terrain : une arrivée trop tardive, une adresse trouvée au bon moment, une erreur qu'on ne refera pas. Le reste, on le laisse aux brochures.",
+  featured_label:   'À lire d\'abord',
+  featured_title:   'Un carnet qui donne le ton.',
+  empty_title:      "Rien de juste pour cette recherche, pour l'instant.",
+  empty_text:       "Essaie un lieu, un mot plus simple, ou repars de tout le blog pour reprendre le fil.",
+  empty_action:     'Voir tous les articles →',
+  carnets_title:    'Carnets de voyage',
+  carnets_desc:     "Les récits qui gardent l'heure, le rythme et ce qu'on a retenu sur place.",
+  pepites_title:    'Découvertes locales',
+  pepites_desc:     "Des lieux qu'on n'était pas venus chercher, et qu'on aurait regretté de rater.",
+  guides_title:     'Guides pratiques',
+  guides_desc:      "Des repères concrets quand le terrain devient plus utile que la théorie.",
+}
+
 interface Props {
   posts: (BlogPost & { formattedDate: string })[]
 }
 
 export default function BlogClientPage({ posts }: Props) {
+  const c = useCmsContent('blog', BLOG_DEFAULTS)
   const [activeFilter, setActiveFilter] = useState('Tous')
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -67,15 +86,12 @@ export default function BlogClientPage({ posts }: Props) {
         />
         <div className="absolute inset-0 bg-gradient-to-br from-stone-950/80 via-stone-900/75 to-amber-950/65" />
         <div className="relative mx-auto max-w-4xl text-center">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-amber-300">Blog Happy Humans</p>
-          <h1 className="mb-6 text-5xl font-serif font-light leading-tight md:text-7xl">
-            Des moments, des détours,
-            <br />
-            des repères qu&apos;on aurait aimé avoir avant.
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-amber-300">{c.hero_badge}</p>
+          <h1 className="mb-6 text-5xl font-serif font-light leading-tight md:text-7xl whitespace-pre-line">
+            {c.hero_title}
           </h1>
           <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-white/75">
-            On écrit depuis le terrain : une arrivée trop tardive, une adresse trouvée au bon
-            moment, une erreur qu&apos;on ne refera pas. Le reste, on le laisse aux brochures.
+            {c.hero_subtitle}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-white/65">
             <StatChip value={totalCarnets} label="Carnets" />
@@ -89,9 +105,9 @@ export default function BlogClientPage({ posts }: Props) {
         <section className="mx-auto max-w-7xl px-4 pb-4 pt-14">
           <div className="mb-5 flex items-end justify-between gap-4">
             <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">À lire d&apos;abord</p>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">{c.featured_label}</p>
               <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">
-                Un carnet qui donne le ton.
+                {c.featured_title}
               </h2>
             </div>
           </div>
@@ -196,9 +212,9 @@ export default function BlogClientPage({ posts }: Props) {
       {filteredPosts.length === 0 ? (
         <div className="mx-auto max-w-7xl px-4 pb-20 text-center">
           <div className="rounded-[2rem] border border-stone-200 bg-white px-6 py-16 shadow-sm">
-            <h2 className="mb-3 text-2xl font-serif font-light text-stone-900">Rien de juste pour cette recherche, pour l&apos;instant.</h2>
+            <h2 className="mb-3 text-2xl font-serif font-light text-stone-900">{c.empty_title}</h2>
             <p className="mx-auto max-w-md text-sm leading-relaxed text-stone-600">
-              Essaie un lieu, un mot plus simple, ou repars de tout le blog pour reprendre le fil.
+              {c.empty_text}
             </p>
             <button
               onClick={() => {
@@ -207,7 +223,7 @@ export default function BlogClientPage({ posts }: Props) {
               }}
               className="mt-6 text-sm font-semibold text-amber-800 transition-colors duration-200 hover:text-amber-700"
             >
-              Voir tous les articles →
+              {c.empty_action}
             </button>
           </div>
         </div>
@@ -217,8 +233,8 @@ export default function BlogClientPage({ posts }: Props) {
             <section>
               <SectionHeader
                 eyebrow="Carnets"
-                title="Carnets de voyage"
-                description="Les récits qui gardent l&apos;heure, le rythme et ce qu&apos;on a retenu sur place."
+                title={c.carnets_title}
+                description={c.carnets_desc}
                 count={carnets.length}
               />
               <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -233,8 +249,8 @@ export default function BlogClientPage({ posts }: Props) {
             <section className="rounded-[2rem] bg-amber-50 px-4 py-12 md:px-8">
               <SectionHeader
                 eyebrow="Pépites"
-                title="Découvertes locales"
-                description="Des lieux qu&apos;on n&apos;était pas venus chercher, et qu&apos;on aurait regretté de rater."
+                title={c.pepites_title}
+                description={c.pepites_desc}
                 count={decouvertes.length}
               />
               <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -249,8 +265,8 @@ export default function BlogClientPage({ posts }: Props) {
             <section>
               <SectionHeader
                 eyebrow="Guides"
-                title="Guides pratiques"
-                description="Des repères concrets quand le terrain devient plus utile que la théorie."
+                title={c.guides_title}
+                description={c.guides_desc}
                 count={guides.length}
               />
               <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">

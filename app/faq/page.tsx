@@ -3,11 +3,12 @@ import { useState } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
+import { useCmsContent } from '@/hooks/useCmsContent'
 
-const FAQS = [
+const DEFAULT_FAQS = [
   {
     q: "C'est quoi exactement une séance découverte ?",
-    a: "C'est un premier échange gratuit de 45 minutes, sans engagement. On parle de vous, de votre situation, de ce qui vous amène. C'est l'occasion de voir si le coaching vous correspond et si on a envie de travailler ensemble.",
+    a: "C'est un premier échange gratuit de 45 minutes, sans engagement. On parle de vous, de votre situation, de ce qui vous amener. C'est l'occasion de voir si le coaching vous correspond et si on a envie de travailler ensemble.",
   },
   {
     q: "À qui s'adresse le coaching avec Monica ?",
@@ -39,8 +40,30 @@ const FAQS = [
   },
 ]
 
+type FaqItem = { q: string; a: string }
+
+function parseFaqs(jsonStr: string, fallback: FaqItem[]): FaqItem[] {
+  if (!jsonStr) return fallback
+  try {
+    const parsed = JSON.parse(jsonStr)
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : fallback
+  } catch {
+    return fallback
+  }
+}
+
 export default function FaqPage() {
   const [open, setOpen] = useState<number | null>(null)
+  const c = useCmsContent('faq', {
+    page_title: "Ce qu'on nous demande souvent",
+    page_subtitle: "Et si votre question n'est pas là, écrivez-nous directement.",
+    cta_title: "Une autre question ?",
+    cta_text: "Je réponds personnellement à chaque message sous 48h.",
+    faqs_json: '',
+  })
+
+  // Parse FAQs from CMS or use defaults
+  const faqs: FaqItem[] = parseFaqs(c.faqs_json, DEFAULT_FAQS)
 
   return (
     <>
@@ -50,15 +73,15 @@ export default function FaqPage() {
         <section className="bg-[#f5f0e8] px-6 py-16 md:py-24 md:px-10">
           <div className="mx-auto max-w-3xl text-center">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Questions fréquentes</p>
-            <h1 className="text-3xl font-serif font-light text-stone-900 md:text-5xl">Ce qu&apos;on nous demande souvent</h1>
-            <p className="mt-5 text-base text-stone-500 leading-relaxed">Et si votre question n&apos;est pas là, écrivez-nous directement.</p>
+            <h1 className="text-3xl font-serif font-light text-stone-900 md:text-5xl">{c.page_title}</h1>
+            <p className="mt-5 text-base text-stone-500 leading-relaxed">{c.page_subtitle}</p>
           </div>
         </section>
 
         {/* FAQ */}
         <section className="bg-white px-6 py-16 md:py-20 md:px-10">
           <div className="mx-auto max-w-3xl divide-y divide-stone-100">
-            {FAQS.map((faq, i) => (
+            {faqs.map((faq, i) => (
               <div key={i} className="py-5">
                 <button
                   onClick={() => setOpen(open === i ? null : i)}
@@ -80,8 +103,8 @@ export default function FaqPage() {
         {/* CTA */}
         <section className="bg-[#f5f0e8] px-6 py-14 md:px-10 text-center">
           <div className="mx-auto max-w-xl">
-            <h2 className="text-xl font-serif font-light text-stone-900 mb-2">Une autre question ?</h2>
-            <p className="text-sm text-stone-500 mb-6">Je réponds personnellement à chaque message sous 48h.</p>
+            <h2 className="text-xl font-serif font-light text-stone-900 mb-2">{c.cta_title}</h2>
+            <p className="text-sm text-stone-500 mb-6">{c.cta_text}</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/contact" className="inline-block rounded-full border border-[#2d5f54] px-6 py-3 text-sm font-semibold text-[#2d5f54] hover:bg-[#2d5f54] hover:text-white transition">
                 Écrire à Monica →
