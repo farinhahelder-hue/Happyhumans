@@ -51,12 +51,13 @@ export default function Header() {
   }, [])
 
   const navLinks = [
-    { href: '/a-propos',    label: nav.label_apropos },
-    { href: '/coaching',    label: nav.label_coaching },
-    { href: '/entreprises', label: nav.label_entreprises },
-    { href: '/relations',   label: nav.label_relations },
-    { href: '/temoignages', label: nav.label_temoignages },
-    { href: '/contact',     label: nav.label_contact },
+    { href: '/a-propos',          label: nav.label_apropos },
+    { href: '/coaching',          label: nav.label_coaching },
+    { href: '/happiness-design',  label: 'Happiness Design' },
+    { href: '/entreprises',       label: nav.label_entreprises },
+    { href: '/relations',         label: nav.label_relations },
+    { href: '/temoignages',       label: nav.label_temoignages },
+    { href: '/contact',           label: nav.label_contact },
   ]
 
   return (

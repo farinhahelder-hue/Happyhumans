@@ -8,10 +8,10 @@ import { useCmsContent } from '@/hooks/useCmsContent'
 const DEFAULTS = {
   hero_image:    '',
   page_title:    "Remettre de l'alignement et de l'élan dans vos équipes.",
-  intro_text:    "Happy Humans accompagne les organisations avec une approche qui combine coaching de leadership, philosophical counselling et design d'expériences collectives.",
+  intro_text:    "Coaching de dirigeants, ateliers de cohésion, accompagnement du changement et séminaires sur mesure.",
   section_image: '',
   section_title: 'Ce que nous proposons',
-  section_text:  "Coaching de dirigeants et managers · Ateliers de cohésion · Accompagnement du changement · Séminaires sur mesure",
+  section_text:  "Quand une équipe perd de sa cohérence, les résultats s'en ressentent toujours.\n\nJe travaille avec les dirigeants et les organisations pour remettre de l'alignement — entre les personnes, entre les objectifs et les moyens, entre ce qu'on dit et ce qu'on fait — ou tout simplement pour rebooster l'engagement et l'élan commun.",
 }
 
 export default function EntreprisesPage() {

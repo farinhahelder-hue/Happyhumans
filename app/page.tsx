@@ -152,6 +152,12 @@ export default function LandingPage() {
                 <p className="text-sm text-stone-500 leading-relaxed mb-4">Coaching de dirigeants, ateliers de cohésion et accompagnement du changement pour remettre de l&apos;alignement.</p>
                 <span className="text-sm font-semibold text-[#2d5f54]">En savoir plus →</span>
               </Link>
+              <Link href="/happiness-design" className="group rounded-2xl bg-[#f5f0e8] p-7 hover:bg-[#eef5f3] transition">
+                <div className="mb-4 text-3xl">✨</div>
+                <h3 className="mb-2 text-lg font-serif font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">Happiness Design</h3>
+                <p className="text-sm text-stone-500 leading-relaxed mb-4">12 séances pour reprendre les rênes de votre bonheur — au boulot et ailleurs. Un programme multidisciplinaire unique.</p>
+                <span className="text-sm font-semibold text-[#2d5f54]">Découvrir le programme →</span>
+              </Link>
             </div>
           </div>
         </section>
