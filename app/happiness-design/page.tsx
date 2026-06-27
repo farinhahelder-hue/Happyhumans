@@ -6,23 +6,23 @@ import { useCmsContent } from '@/hooks/useCmsContent'
 
 const DEFAULTS = {
   page_title:    'Happiness Design',
-  page_subtitle: '12 séances pour reprendre les rênes de votre vie',
+  page_subtitle: '12 séances pour reprendre les rênes de votre vie et de votre bonheur — au boulot et ailleurs.',
   intro_text:    "Un programme multidisciplinaire qui mêle neurosciences, psychologie positive, philosophie pratique et design thinking — pour reprendre les rênes de votre bonheur au boulot et ailleurs.",
 }
 
 const STEPS = [
-  { n: '01', title: 'Comment ça marche', desc: 'Neurosciences + gratitude · Audit de vie (life design / bonheur)' },
-  { n: '02', title: 'Audit du boulot', desc: 'Design thinking appliqué à votre vie professionnelle' },
-  { n: '03', title: 'Audit des forces', desc: 'Identifier lesquelles sont pratiquées via Character Strengths' },
-  { n: '04', title: "L'échec", desc: 'Audit des freins et croyances limitantes' },
-  { n: '05', title: "Le syndrome de l'imposteur", desc: 'Comprendre et dépasser' },
-  { n: '06', title: "L'attachement", desc: "Théorie de l'attachement appliquée à votre vie" },
-  { n: '07', title: "L'analyse transactionnelle", desc: 'Mieux se comprendre dans ses relations' },
-  { n: '08', title: 'Les peurs', desc: 'Identifier et apprivoiser ses fears' },
-  { n: '09', title: 'Homo risibilis', desc: "Imparfait mais impactant — l'action salvatrice" },
-  { n: '10', title: 'V1 / V2', desc: 'Définir ses versions — qui vous êtes, qui vous voulez être' },
-  { n: '11', title: 'Les 3 métamorphoses', desc: 'Transformation en profondeur' },
-  { n: '12', title: "Child's Plan", desc: 'Jalons avec rappels + 4 sessions de suivi pour ancrer le changement' },
+  { n: '01', title: 'Comment ça marche', desc: 'Neurosciences + gratitude' },
+  { n: '02', title: 'Audit de sa vie', desc: 'Life Design / Bonheur' },
+  { n: '03', title: 'Audit du boulot', desc: 'Design Thinking appliqué à votre vie professionnelle' },
+  { n: '04', title: 'Audit des forces', desc: 'Identifier vos ressources et atouts profonds' },
+  { n: '05', title: 'Forces pratiquées', desc: 'Via Character Strengths — lesquelles activez-vous vraiment ?' },
+  { n: '06', title: "L'échec", desc: 'Changer son rapport à l\'échec — audit des freins' },
+  { n: '07', title: 'Audit des freins', desc: 'Syndrome de l\'imposteur · Attachement (TA) · Peurs (fears)' },
+  { n: '08', title: 'Homo risibilis', desc: "Imparfait mais impactant — l'action salvatrice" },
+  { n: '09', title: 'V1 / V2', desc: 'Qui je suis, qui je veux devenir' },
+  { n: '10', title: 'Les 3 métamorphoses', desc: 'Les trois transformations clés de votre parcours' },
+  { n: '11', title: "Child's Plan", desc: 'Jalons avec rappels pour ancrer les engagements' },
+  { n: '12', title: 'Follow-ups × 4', desc: '4 sessions de suivi pour consolider et ancrer le changement' },
 ]
 
 export default function HappinessDesignPage() {

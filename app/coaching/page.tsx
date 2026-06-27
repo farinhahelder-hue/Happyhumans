@@ -2,7 +2,6 @@
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
-import TemoignagesWidget from '@/components/TemoignagesWidget'
 import { useCmsContent } from '@/hooks/useCmsContent'
 
 const DEFAULTS = {
@@ -11,7 +10,7 @@ const DEFAULTS = {
   hero_subtitle:      "Executive Coach certifiée AoEC · EMCC Practitioner · Monica Schneider accompagne des managers, dirigeants et personnes en transition qui veulent retrouver clarté, confiance et une direction qui leur ressemble vraiment.",
   coaching_b2c_image: '',
   coaching_b2c_title: 'Coaching individuel',
-  coaching_b2c_text:  "Un espace pour ralentir, regarder ce qui se passe vraiment — et construire un mouvement qui tient dans la durée.\n\nLe coaching que je propose n'est pas un conseil. C'est un accompagnement qui part de là où vous êtes vraiment : vos questionnements, vos tensions, vos ambitions telles que vous les vivez, pas comme elles devraient être.\n\nJe m'appuie sur des techniques classiques d'executive coaching (modèles GROW, Gestalt, Solutions Focused, Co-active…) mais aussi sur des outils rencontrés plus rarement — méditation, philosophie, psychologie, design thinking — pour travailler sur la transformation que vous devez accomplir au plus profond de vous pour réaliser vos objectifs.\n\nPour offrir du recul, de la clarté et de nouvelles perspectives.\nVous y voyez plus clair, y compris sur les prochaines actions à mettre en place.\nVous ressentez des moments de révélations, d'alignement profonds.\n\nVous vous retrouvez — et vous êtes prêt·e à accélérer avec un élan et une clarté revigorants.",
+  coaching_b2c_text:  "Un espace pour ralentir, regarder ce qui se passe vraiment — et construire un mouvement qui tient dans la durée.\n\nLe coaching que je propose n'est pas un conseil. C'est un accompagnement qui part de là où vous êtes vraiment.\n\nJe m'appuie sur des techniques classiques d'executive coaching (modèles GROW, Gestalt, Solutions Focused, Co-active…) mais aussi sur des outils rencontrés plus rarement — méditation, philosophie, psychologie, design thinking — pour travailler sur la transformation que vous devez accomplir au plus profond de vous pour réaliser vos objectifs.\n\nPour offrir du recul, de la clarté et de nouvelles perspectives. Vous y voyez plus clair, y compris sur les prochaines actions à mettre en place.\n\nVous vous retrouvez — et vous êtes prêt·e à accélérer avec un élan et une clarté revigorants.",
   coaching_b2b_image: '',
   coaching_b2b_title: 'Pour les organisations',
   coaching_b2b_text:  "Coaching de dirigeants, ateliers de cohésion, accompagnement du changement et séminaires sur mesure.\n\nQuand une équipe perd de sa cohérence, les résultats s'en ressentent toujours. Je travaille avec les dirigeants et les organisations pour remettre de l'alignement — entre les personnes, entre les objectifs et les moyens, entre ce qu'on dit et ce qu'on fait.",
@@ -56,6 +55,24 @@ const PROGRAMS = [
     cta: 'En savoir plus',
     href: '/happiness-design',
     highlight: false,
+  },
+]
+
+const TEMOIGNAGES = [
+  {
+    quote: "J'étais le bon élève typique : attendre d'avoir tout compris et tout structuré avant d'agir, ce qui me freinait clairement dans mon rôle. Grâce à mes échanges avec Monica, j'ai compris mes mécanismes limitants et découvert de nouvelles perspectives. Le déclic du « cancre intelligent » m'a permis de voir mes forces autrement : j'ose proposer, tester, décider plus vite. Résultat : plus d'impact, plus de visibilité, et des résultats business concrets.",
+    name: "Thibault*",
+    title: "Directeur Marketing, Tech",
+  },
+  {
+    quote: "I highly recommend the coaching sessions that Monica Schneider offers. My experience with her has been greatly satisfactory and has allowed me to achieve goals and mindsets that would have been very difficult to accomplish otherwise. She has a vast knowledge of the questioning technique and made every session worth and developmental. Monica's coaching style reflects her professionalism and her engaging nature that has allowed me to express myself openly. She provided a psychological safe environment.",
+    name: "Maria*",
+    title: "Learning & Development Director, Banking",
+  },
+  {
+    quote: "I want to thank Monica for her inspiring, relieving, insightful and energizing sessions! She opened up valuable new perspectives on my current situation and helped me get to know myself better. It is amazing, but just in a few sessions I was able to view my situation from a completely new angle, and suddenly see the road to my new self.",
+    name: "David*",
+    title: "Governmental Think Tank",
   },
 ]
 
@@ -109,8 +126,33 @@ export default function CoachingPage() {
           </div>
         </section>
 
-        {/* PROGRAMMES */}
+        {/* TÉMOIGNAGES */}
         <section className="bg-[#f7f4ef] py-16 md:py-20">
+          <div className="mx-auto max-w-5xl px-6 md:px-10">
+            <div className="mb-10 text-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Témoignages</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Ce qu&apos;ils en disent</h2>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {TEMOIGNAGES.map((t, i) => (
+                <div key={i} className="bg-white rounded-2xl p-7 shadow-sm flex flex-col">
+                  <span className="text-4xl font-serif leading-none text-[#2f6b61] mb-4 select-none">&ldquo;</span>
+                  <blockquote className="flex-1 text-sm leading-relaxed text-stone-600 italic mb-6">
+                    {t.quote}
+                  </blockquote>
+                  <footer>
+                    <p className="text-sm font-semibold text-stone-900">{t.name}</p>
+                    <p className="text-xs text-stone-500 italic mt-0.5">{t.title}</p>
+                  </footer>
+                </div>
+              ))}
+            </div>
+            <p className="text-center text-xs text-stone-400 mt-6">* Prénom modifié</p>
+          </div>
+        </section>
+
+        {/* PROGRAMMES */}
+        <section className="bg-white py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-6 md:px-10">
             <div className="mb-10 text-center">
               <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Tarifs</p>
@@ -118,7 +160,7 @@ export default function CoachingPage() {
             </div>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               {PROGRAMS.map(({ label, price, unit, desc, format, cta, href, highlight }) => (
-                <div key={label} className={`rounded-2xl p-6 flex flex-col ${highlight ? 'bg-[#2f6b61] text-white shadow-lg ring-2 ring-[#2f6b61]' : 'bg-white text-stone-900 shadow-sm'}`}>
+                <div key={label} className={`rounded-2xl p-6 flex flex-col ${highlight ? 'bg-[#2f6b61] text-white shadow-lg ring-2 ring-[#2f6b61]' : 'bg-[#f7f4ef] text-stone-900 shadow-sm'}`}>
                   <p className={`text-xs font-bold uppercase tracking-[0.15em] mb-3 ${highlight ? 'text-emerald-200' : 'text-amber-800'}`}>{label}</p>
                   {price && <p className={`text-2xl font-serif font-semibold mb-0.5 ${highlight ? 'text-white' : 'text-stone-900'}`}>{price}</p>}
                   <p className={`text-xs mb-4 ${highlight ? 'text-emerald-200' : 'text-stone-500'}`}>{unit}</p>
@@ -134,7 +176,7 @@ export default function CoachingPage() {
         </section>
 
         {/* COACHING B2B */}
-        <section className="bg-white py-20 md:py-28">
+        <section className="bg-[#f7f4ef] py-20 md:py-28">
           <div className="mx-auto max-w-5xl px-6 md:px-10">
             <div className="grid gap-12 md:grid-cols-2 items-center">
               <img
@@ -155,9 +197,6 @@ export default function CoachingPage() {
             </div>
           </div>
         </section>
-
-        {/* TÉMOIGNAGES */}
-        <TemoignagesWidget max={3} />
 
         {/* CTA */}
         <section className="bg-[#2f6b61] py-16">
