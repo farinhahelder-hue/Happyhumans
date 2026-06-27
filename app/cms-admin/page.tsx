@@ -948,7 +948,7 @@ export default function CMSAdmin() {
             if (mediaPickerTarget) {
               setEditedContent((prev: Record<string,string>) => ({ ...prev, [mediaPickerTarget]: url }));
               setMediaPickerTarget(null);
-              setActiveTab('pages');
+              setTab('pages');
               showToast('✅ Image sélectionnée !');
             } else {
               showToast('✅ Image sélectionnée depuis la médiathèque !');
@@ -1294,7 +1294,7 @@ export default function CMSAdmin() {
                                       </div>
                                     )}
                                     <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
-                                      <button onClick={() => { setMediaPickerTarget(key); setActiveTab('media'); }} style={{ padding: '.5rem 1rem', background: '#01696f', color: 'white', border: 'none', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>🖼️ Choisir dans la médiathèque</button>
+                                      <button onClick={() => { setMediaPickerTarget(key); setTab('media'); }} style={{ padding: '.5rem 1rem', background: '#01696f', color: 'white', border: 'none', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>🖼️ Choisir dans la médiathèque</button>
                                       <label style={{ padding: '.5rem 1rem', background: '#2d5f54', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>
                                         ⬆️ Upload
                                         <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
