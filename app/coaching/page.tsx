@@ -1,8 +1,8 @@
 'use client'
+import { useState, useEffect, useRef } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
-import TemoignagesWidget from '@/components/TemoignagesWidget'
 import { useCmsContent } from '@/hooks/useCmsContent'
 
 const DEFAULTS = {
@@ -59,8 +59,37 @@ const PROGRAMS = [
   },
 ]
 
+const TESTIMONIALS = [
+  {
+    id: 1,
+    quote: "J'étais le bon élève typique : attendre d'avoir tout compris et tout structuré avant d'agir, ce qui me freinait clairement dans mon rôle. Grâce à mes échanges avec Monica, j'ai compris mes mécanismes limitants et découvert de nouvelles perspectives. Le déclic du \"cancre intelligent\" m'a permis de voir mes forces autrement : j'ose proposer, tester, décider plus vite. Résultat : plus d'impact, plus de visibilité, et des résultats business concrets.",
+    name: "Thibault*",
+    role: "Directeur Marketing (Tech)",
+  },
+  {
+    id: 2,
+    quote: "I highly recommend the coaching sessions that Monica Schneider offers. My experience with her has been greatly satisfactory and has allowed me to achieve goals and mindsets that would have been very difficult to accomplish otherwise. She has a vast knowledge of the questioning technique and made every session worth and developmental. Monica's coaching style reflects her professionalism and her engaging nature that has allowed me to express myself openly. She provided a psychological safe environment.",
+    name: "Maria*",
+    role: "Learning & Development Director, Banking",
+  },
+  {
+    id: 3,
+    quote: "I want to thank Monica for her inspiring, relieving, insightful and energizing sessions! She opened up valuable new perspectives on my current situation and helped me get to know myself better. It is amazing, but just in a few sessions I was able to view my situation from a completely new angle, and suddenly see the road to my new self.",
+    name: "David*",
+    role: "Governmental Think Tank",
+  },
+]
+
 export default function CoachingPage() {
   const c = useCmsContent('coaching', DEFAULTS)
+  const heroRef = useRef<HTMLDivElement>(null)
+  const [heroLoaded, setHeroLoaded] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setHeroLoaded(true), 100)
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
     <>
       <Header />
@@ -109,8 +138,37 @@ export default function CoachingPage() {
           </div>
         </section>
 
-        {/* PROGRAMMES */}
+        {/* TÉMOIGNAGES */}
         <section className="bg-[#f7f4ef] py-16 md:py-20">
+          <div className="mx-auto max-w-6xl px-6 md:px-10">
+            <div className="mb-10 text-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Témoignages</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Ce qu&apos;ils en disent</h2>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {TESTIMONIALS.map((t) => (
+                <div key={t.id} className="rounded-2xl bg-white p-6 shadow-sm flex flex-col">
+                  <p className="text-4xl font-serif text-[#2f6b61] mb-3 leading-none">&ldquo;</p>
+                  <blockquote className="flex-1 mb-5 text-sm leading-relaxed text-stone-700 italic">
+                    {t.quote}
+                  </blockquote>
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#2f6b61] text-xs font-bold text-white">
+                      {t.name.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-stone-900">{t.name}</p>
+                      <p className="text-xs italic text-stone-500">{t.role}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* PROGRAMMES */}
+        <section className="bg-white py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-6 md:px-10">
             <div className="mb-10 text-center">
               <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Tarifs</p>
@@ -134,7 +192,7 @@ export default function CoachingPage() {
         </section>
 
         {/* COACHING B2B */}
-        <section className="bg-white py-20 md:py-28">
+        <section className="bg-[#f7f4ef] py-20 md:py-28">
           <div className="mx-auto max-w-5xl px-6 md:px-10">
             <div className="grid gap-12 md:grid-cols-2 items-center">
               <img
@@ -155,9 +213,6 @@ export default function CoachingPage() {
             </div>
           </div>
         </section>
-
-        {/* TÉMOIGNAGES */}
-        <TemoignagesWidget max={3} />
 
         {/* CTA */}
         <section className="bg-[#2f6b61] py-16">
