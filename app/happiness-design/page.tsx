@@ -7,7 +7,7 @@ import { useCmsContent } from '@/hooks/useCmsContent'
 const DEFAULTS = {
   page_title:    'Happiness Design',
   page_subtitle: '12 séances pour reprendre les rênes de votre vie et de votre bonheur — au boulot et ailleurs.',
-  intro_text:    "Un programme multidisciplinaire qui mêle neurosciences, psychologie positive, philosophie pratique et design thinking — pour reprendre les rênes de votre bonheur au boulot et ailleurs.",
+  intro_text:    "Neurosciences, psychologie positive, philosophie pratique, design thinking — toutes les disciplines au service d'une transformation durable, pour que vous repreniez pleinement les rênes de votre vie.",
 }
 
 const STEPS = [

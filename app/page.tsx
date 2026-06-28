@@ -1,7 +1,8 @@
-'use client'
+﻿'use client'
 import { useState } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 import BookingWidget from '@/components/BookingWidget'
 import { useCmsContent } from '@/hooks/useCmsContent'
 
@@ -227,20 +228,7 @@ export default function LandingPage() {
 
       </main>
 
-      {/* ══ FOOTER MINIMAL ════════════════════════════════════════════════ */}
-      <footer className="border-t border-stone-200 bg-stone-900 px-6 py-10 md:px-10">
-        <div className="mx-auto max-w-5xl">
-          <div className="flex flex-col items-center justify-between gap-4 text-xs text-stone-400 md:flex-row">
-            <p className="font-serif text-base text-stone-300 font-semibold">Happy Humans</p>
-            <p>© {year} Happy Humans — Monica Schneider. Tous droits réservés.</p>
-            <p className="text-xs opacity-40 mt-1">Photos : <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition">Unsplash</a></p>
-            <div className="flex gap-6">
-              <Link href="/mentions-legales" className="hover:text-stone-200 transition">Mentions légales</Link>
-              <Link href="/politique-confidentialite" className="hover:text-stone-200 transition">Confidentialité</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
       {/* ══ MODAL BOOKING ═════════════════════════════════════════════════ */}
       {bookingOpen && (

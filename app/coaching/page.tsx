@@ -85,9 +85,11 @@ export default function CoachingPage() {
 
         {/* HERO */}
         <section className="relative bg-gradient-to-br from-[#f7f2e9] via-white to-[#eef5f3] py-24 md:py-32 overflow-hidden">
-          {c.hero_image && (
-            <img src={c.hero_image} alt="Photo de fond" className="absolute inset-0 h-full w-full object-cover opacity-15" />
-          )}
+          <img
+            src={c.hero_image || 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1600&q=80&auto=format&fit=crop'}
+            alt="Bureau élégant, ambiance coaching professionnel"
+            className="absolute inset-0 h-full w-full object-cover opacity-[0.08]"
+          />
           <div className="relative mx-auto max-w-6xl px-6 md:px-10">
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-[#8d5d2f]">Coaching</p>
             <h1 className="max-w-4xl text-4xl font-serif font-light leading-tight text-stone-900 md:text-6xl">{c.hero_title}</h1>
