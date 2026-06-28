@@ -40,7 +40,7 @@ export default function HappinessDesignPage() {
             className="absolute inset-0 h-full w-full object-cover opacity-20"
           />
           <div className="relative mx-auto max-w-3xl">
-            <p className="mb-5 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">Programme unique</p>
+            <p className="mb-5 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">Programme</p>
             <h1 className="text-4xl font-serif font-light leading-tight text-white md:text-6xl">{c.page_title}</h1>
             <p className="mt-5 text-xl font-serif font-light text-amber-300 md:text-2xl">{c.page_subtitle}</p>
             <p className="mt-7 text-base leading-relaxed text-stone-300 max-w-2xl mx-auto">{c.intro_text}</p>

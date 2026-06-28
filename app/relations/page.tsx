@@ -446,7 +446,7 @@ export default function RelationsPage() {
                   <div className="mb-3 text-3xl">{source.emoji}</div>
                   <h3 className="mb-1 text-base font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">{source.title}</h3>
                   <p className="text-xs text-stone-500">{source.subtitle}</p>
-                  <p className="mt-3 text-xs font-semibold text-[#2d5f54]">En savoir plus →</p>
+                  <p className="mt-3 text-xs font-semibold text-[#2d5f54]">Découvrir →</p>
                 </button>
               ))}
             </div>
