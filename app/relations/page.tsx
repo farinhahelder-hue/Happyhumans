@@ -202,7 +202,7 @@ export default function RelationsPage() {
       <main className="pt-[72px]">
 
         {/* ══ HERO INTRO ════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden bg-stone-900 px-6 py-20 md:py-28 md:px-10 text-center">
+        <section className="relative overflow-hidden bg-stone-900 px-6 py-24 md:py-36 md:px-10 text-center">
           <img
             src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&q=85&auto=format&fit=crop"
             alt="Connexion humaine, mains tendues symbolisant le lien entre personnes"
@@ -215,9 +215,24 @@ export default function RelationsPage() {
             <h1 className="text-3xl md:text-4xl font-serif font-light text-white mb-4">
               Comprendre vos liens pour les transformer
             </h1>
-            <p className="text-stone-400 text-sm md:text-base leading-relaxed">
+            <p className="text-stone-400 text-sm md:text-base leading-relaxed max-w-xl mx-auto">
               La façon dont nous nous connectons aux autres prend racine dans notre enfance. Découvrez votre style d'attachement et les clés pour construire des relations épanouissantes.
             </p>
+            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={handleBook}
+                className="rounded-full bg-[#2d5f54] px-7 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
+              >
+                Séance découverte gratuite
+              </button>
+              <a
+                href="#quiz"
+                onClick={e => { e.preventDefault(); document.querySelector('[data-quiz]')?.scrollIntoView({ behavior: 'smooth' }); }}
+                className="rounded-full border border-stone-500 px-7 py-3.5 text-sm font-semibold text-stone-300 hover:border-white hover:text-white transition"
+              >
+                Faire le test d'attachement
+              </a>
+            </div>
           </div>
         </section>
 

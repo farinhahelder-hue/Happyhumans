@@ -49,7 +49,7 @@ export default function ContactPage() {
         {/* HERO */}
         <section className="relative flex h-[40vh] items-end overflow-hidden bg-stone-900">
           <img
-            src={c.hero_image || 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1400&q=80&auto=format&fit=crop'}
+            src={c.hero_image || 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=80&auto=format&fit=crop'}
             alt="Espace d'échange calme et chaleureux"
             className="absolute inset-0 h-full w-full object-cover opacity-20"
           />
