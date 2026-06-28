@@ -4,15 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useAuth } from '@/components/AuthProvider'
-import { createClient } from '@supabase/supabase-js'
 import { useCmsContent } from '@/hooks/useCmsContent'
-
-function getSupabaseBrowser() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  if (!url || !key) return null
-  return createClient(url, key)
-}
 
 const NAV_DEFAULTS = {
   label_apropos:      'Monica',
@@ -27,7 +19,7 @@ const NAV_DEFAULTS = {
 export default function Header() {
   const [open, setOpen] = useState(false)
   const { user, loading } = useAuth()
-  const [logoUrl, setLogoUrl] = useState<string>('/logo-happy-humans.jpg')
+  const [logoUrl, setLogoUrl]   = useState<string>('/logo-happy-humans.jpg')
   const [siteName, setSiteName] = useState('Happy Humans')
   const [logoSize, setLogoSize] = useState(44)
   const nav = useCmsContent('navigation', NAV_DEFAULTS)
@@ -35,29 +27,24 @@ export default function Header() {
   const isCmsUser = !loading && !!user
 
   useEffect(() => {
-    const sb = getSupabaseBrowser()
-    if (!sb) return
-    sb.from('cms_settings_kv')
-      .select('key, value')
-      .in('key', ['logo_url', 'site_name', 'logo_size'])
-      .then(({ data }) => {
-        if (!data) return
-        data.forEach((row: { key: string; value: string }) => {
-          if (row.key === 'logo_url' && row.value) setLogoUrl(row.value)
-          if (row.key === 'site_name' && row.value) setSiteName(row.value)
-          if (row.key === 'logo_size' && row.value) setLogoSize(Number(row.value) || 44)
-        })
+    // Lecture via API serveur — pas de dépendance NEXT_PUBLIC_SUPABASE_ANON_KEY
+    fetch('/api/cms/public-settings')
+      .then(r => r.ok ? r.json() : { settings: {} })
+      .then(({ settings }) => {
+        if (settings.logo_url)  setLogoUrl(settings.logo_url)
+        if (settings.site_name) setSiteName(settings.site_name)
+        if (settings.logo_size) setLogoSize(Number(settings.logo_size) || 44)
       })
+      .catch(() => {})
   }, [])
 
   const navLinks = [
-    { href: '/a-propos',          label: nav.label_apropos },
-    { href: '/coaching',          label: nav.label_coaching },
-    { href: '/happiness-design',  label: 'Happiness Design' },
-    { href: '/entreprises',       label: nav.label_entreprises },
-    { href: '/relations',         label: nav.label_relations },
-    { href: '/temoignages',       label: nav.label_temoignages },
-    { href: '/contact',           label: nav.label_contact },
+    { href: '/a-propos',    label: nav.label_apropos },
+    { href: '/coaching',    label: nav.label_coaching },
+    { href: '/entreprises', label: nav.label_entreprises },
+    { href: '/relations',   label: nav.label_relations },
+    { href: '/temoignages', label: nav.label_temoignages },
+    { href: '/contact',     label: nav.label_contact },
   ]
 
   return (
@@ -65,7 +52,14 @@ export default function Header() {
       <nav className="fixed top-0 z-50 w-full border-b border-stone-100 bg-white/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
           <Link href="/" className="flex items-center gap-3 transition-colors duration-200" aria-label={`${siteName} accueil`}>
-            <Image src={logoUrl} alt={siteName} width={logoSize} height={logoSize} className="rounded-full object-cover" style={{ height: logoSize, width: logoSize }} />
+            <Image
+              src={logoUrl}
+              alt={siteName}
+              width={logoSize}
+              height={logoSize}
+              className="rounded-full object-cover"
+              style={{ height: logoSize, width: logoSize }}
+            />
             <span className="text-xl font-serif font-bold tracking-tight text-stone-900">{siteName}</span>
           </Link>
 
@@ -88,7 +82,6 @@ export default function Header() {
             )}
           </div>
 
-          {/* Mobile burger */}
           <button onClick={() => setOpen(!open)}
             className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 rounded-lg md:hidden"
             aria-label="Menu">
@@ -98,7 +91,6 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Mobile menu */}
         {open && (
           <div className="border-t border-stone-100 bg-white px-4 py-4 md:hidden">
             <div className="flex flex-col gap-3">

@@ -7,7 +7,7 @@ import { useCmsContent } from '@/hooks/useCmsContent'
 type Temoignage = { id: number; nom: string; role: string; texte: string; photo_url: string; note: number }
 
 const DEFAULTS = {
-  hero_image:  '',
+  hero_image:  'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1400&q=80&auto=format&fit=crop',
   page_title:  'Ils témoignent',
   intro_text:  'Des parcours différents, une même expérience : retrouver de la clarté et avancer avec confiance.',
 }

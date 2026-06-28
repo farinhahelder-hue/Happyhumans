@@ -165,6 +165,15 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'section_text',  label: 'Texte section',             type: 'richtext' },
     ],
   },
+  'happiness-design': {
+    label: 'Happiness Design',
+    emoji: '☀️',
+    sections: [
+      { key: 'page_title',   label: 'Titre principal',                    type: 'text' },
+      { key: 'page_subtitle',label: 'Sous-titre / accroche',              type: 'textarea' },
+      { key: 'intro_text',   label: 'Texte introduction',                 type: 'textarea' },
+    ],
+  },
   'temoignages': {
     label: 'Témoignages',
     emoji: '💬',

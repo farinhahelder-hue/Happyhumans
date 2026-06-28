@@ -90,7 +90,13 @@ export const PAGE_DEFAULTS: Record<string, Record<string, string>> = {
     label_contact:     'Contact',
     label_cta:         'Réserver une séance',
   },
+  'happiness-design': {
+    page_title:    'Happiness Design',
+    page_subtitle: '12 séances pour reprendre les rênes de votre vie et de votre bonheur — au boulot et ailleurs.',
+    intro_text:    "Neurosciences, psychologie positive, philosophie pratique, design thinking — toutes les disciplines au service d'une transformation durable et profonde.",
+  },
   temoignages: {
+    hero_image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1400&q=80&auto=format&fit=crop',
     page_title: 'Ils témoignent',
     intro_text: 'Des parcours différents, une même expérience : retrouver de la clarté et avancer avec confiance.',
   },
