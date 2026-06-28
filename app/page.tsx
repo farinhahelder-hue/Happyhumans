@@ -133,7 +133,7 @@ export default function LandingPage() {
               <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Aller plus loin</p>
               <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Explorez les thématiques</h2>
             </div>
-            <div className="grid gap-5 md:grid-cols-3">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               <Link href="/coaching" className="group rounded-2xl bg-[#f5f0e8] p-7 hover:bg-[#eef5f3] transition">
                 <div className="mb-5 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
@@ -148,7 +148,7 @@ export default function LandingPage() {
                 </div>
                 <h3 className="mb-2 text-lg font-serif font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">Relations & Attachement</h3>
                 <p className="text-sm text-stone-500 leading-relaxed mb-4">Comprenez votre style d&apos;attachement et transformez durablement vos relations — personnelles et professionnelles.</p>
-                <span className="text-sm font-semibold text-[#2d5f54]">Explorer →</span>
+                <span className="text-sm font-semibold text-[#2d5f54]">Découvrir →</span>
               </Link>
               <Link href="/entreprises" className="group rounded-2xl bg-[#f5f0e8] p-7 hover:bg-[#eef5f3] transition">
                 <div className="mb-5 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
@@ -156,7 +156,7 @@ export default function LandingPage() {
                 </div>
                 <h3 className="mb-2 text-lg font-serif font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">Pour les organisations</h3>
                 <p className="text-sm text-stone-500 leading-relaxed mb-4">Coaching de dirigeants, ateliers de cohésion et accompagnement du changement pour remettre de l&apos;alignement.</p>
-                <span className="text-sm font-semibold text-[#2d5f54]">En savoir plus →</span>
+                <span className="text-sm font-semibold text-[#2d5f54]">Découvrir →</span>
               </Link>
               <Link href="/happiness-design" className="group rounded-2xl bg-[#f5f0e8] p-7 hover:bg-[#eef5f3] transition">
                 <div className="mb-5 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
@@ -164,7 +164,7 @@ export default function LandingPage() {
                 </div>
                 <h3 className="mb-2 text-lg font-serif font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">Happiness Design</h3>
                 <p className="text-sm text-stone-500 leading-relaxed mb-4">12 séances pour reprendre les rênes de votre bonheur — au boulot et ailleurs. Un programme multidisciplinaire unique.</p>
-                <span className="text-sm font-semibold text-[#2d5f54]">Découvrir le programme →</span>
+                <span className="text-sm font-semibold text-[#2d5f54]">Découvrir →</span>
               </Link>
             </div>
           </div>

@@ -76,7 +76,9 @@ export default function AProposPage() {
             <div className="grid gap-8 md:grid-cols-2">
               {/* Coaching */}
               <div className="bg-white rounded-2xl p-8 shadow-sm">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef5f3] text-xl">✨</div>
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef5f3]">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+                </div>
                 <h3 className="text-xl font-serif font-semibold text-stone-900 mb-4">Coaching</h3>
                 <div className="text-sm leading-relaxed text-stone-600 space-y-3">
                   <p>Le coaching est une danse entre le coach et le coaché. À travers les questions du coach, le coaché réfléchit, change de perspective, fait l&apos;expérience de révélations, de &ldquo;aha moments&rdquo; et d&apos;eurêkas. Il ou elle trouve en soi les meilleures solutions pour avancer sereinement vers son objectif. Le coaché dessine un plan d&apos;action clair et daté. Il ressort de la séance avec un sentiment de clarté, une énergie renouvelée et souvent un sourire confiant.</p>

@@ -63,12 +63,12 @@ export default function BookingPage() {
           <div className="mx-auto max-w-3xl px-6 md:px-10">
             <div className="grid gap-6 sm:grid-cols-3 text-center">
               {[
-                { emoji: '🎁', title: 'Séance découverte gratuite', desc: '45 minutes sans engagement pour vous présenter et voir si le coaching vous correspond.' },
-                { emoji: '📅', title: 'Confirmation sous 48h', desc: 'Monica confirme chaque réservation manuellement et vous répond par email.' },
-                { emoji: '🔄', title: 'Annulation libre', desc: 'Vous pouvez reporter ou annuler jusqu\'à 48h avant la séance, sans frais.' },
-              ].map(({ emoji, title, desc }) => (
+                { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>, title: 'Séance découverte gratuite', desc: '45 minutes sans engagement pour vous présenter et voir si le coaching vous correspond.' },
+                { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>, title: 'Confirmation sous 48h', desc: 'Monica confirme chaque réservation manuellement et vous répond par email.' },
+                { icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>, title: 'Annulation libre', desc: "Vous pouvez reporter ou annuler jusqu'à 48h avant la séance, sans frais." },
+              ].map(({ icon, title, desc }) => (
                 <div key={title} className="rounded-2xl bg-[#f5f0e8] p-6">
-                  <div className="text-2xl mb-3">{emoji}</div>
+                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm mx-auto mb-3">{icon}</div>
                   <h3 className="text-sm font-semibold text-stone-900 mb-2">{title}</h3>
                   <p className="text-xs text-stone-500 leading-relaxed">{desc}</p>
                 </div>

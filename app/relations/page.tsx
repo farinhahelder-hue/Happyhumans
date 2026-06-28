@@ -156,7 +156,7 @@ const STEPS = [
 import { useCmsContent } from '@/hooks/useCmsContent';
 
 const DEFAULTS_RELATIONS = {
-  hero_badge:          'Relations & Attachement · Happy Humans',
+  hero_badge:          'Relations & Attachement',
   hero_title:          'Quel est votre style d\'attachement ?',
   hero_description:    'Un outil de découverte douce pour mieux comprendre comment vous vous connectez aux autres.',
   quiz_pill_1:         '⏱ 3 à 5 minutes',
@@ -210,7 +210,7 @@ export default function RelationsPage() {
           />
           <div className="relative mx-auto max-w-2xl">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
-              Relations &amp; Attachement · Happy Humans
+              Relations &amp; Attachement
             </p>
             <h1 className="text-3xl md:text-4xl font-serif font-light text-white mb-4">
               Comprendre vos liens pour les transformer

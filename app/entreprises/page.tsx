@@ -52,9 +52,11 @@ export default function EntreprisesPage() {
               {c.section_image ? (
                 <img src={c.section_image} alt={c.section_title} className="rounded-2xl object-cover shadow-lg h-72 w-full" />
               ) : (
-                <div className="rounded-2xl bg-gradient-to-br from-stone-100 to-stone-200 h-72 flex items-center justify-center">
-                  <span className="text-6xl opacity-20">🏢</span>
-                </div>
+                <img
+                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80&auto=format&fit=crop"
+                  alt="Réunion d'équipe et leadership en entreprise"
+                  className="rounded-2xl object-cover shadow-lg h-72 w-full"
+                />
               )}
             </div>
           </div>
