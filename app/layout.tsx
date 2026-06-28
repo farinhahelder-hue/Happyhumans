@@ -1,10 +1,10 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import './globals.css';
 import { AuthProvider } from '@/components/AuthProvider';
 import CookieConsentBanner from '@/components/CookieConsentBanner';
 import DynamicFavicon from '@/components/DynamicFavicon';
 
-const SITE_URL = 'https://happy-humans.org';
+const SITE_URL = 'https://happyhumans.vercel.app';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -104,7 +104,7 @@ const schemaOrganization = {
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'customer service',
-    email: 'contactus@happy-humans.org',
+    email: 'happyhumans.coaching@gmail.com',
     availableLanguage: ['French', 'English', 'Romanian'],
   },
 };

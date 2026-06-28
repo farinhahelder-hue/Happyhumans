@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -42,7 +42,7 @@ export default function ContactForm() {
       setTimeout(() => setSubmitted(false), 5000)
     } catch (error) {
       console.error('Erreur envoi formulaire:', error)
-      setSubmitError("Le message n'a pas pu partir. Réessaie ici ou écris-nous directement à contactus@happy-humans.org.")
+      setSubmitError("Le message n'a pas pu partir. Réessaie ici ou écris-nous directement à happyhumans.coaching@gmail.com.")
     } finally {
       setLoading(false)
     }

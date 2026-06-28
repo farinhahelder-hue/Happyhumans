@@ -10,13 +10,13 @@ export const metadata: Metadata = {
     'monica schneider',
   ],
   alternates: {
-    canonical: 'https://happy-humans.org/coaching',
+    canonical: 'https://happyhumans.vercel.app/coaching',
   },
   openGraph: {
     title: 'Coaching — Happy Humans',
     description:
       'Adresses testées, rythme juste et vraie séquence de terrain pour couples, solos, familles ou amis.',
-    url: 'https://happy-humans.org/coaching',
+    url: 'https://happyhumans.vercel.app/coaching',
     siteName: 'Happy Humans',
     images: [
       {

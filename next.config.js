@@ -1,4 +1,4 @@
-/** @type {import('next').NextConfig} */
+﻿/** @type {import('next').NextConfig} */
 
 const securityHeaders = [
   {
@@ -27,7 +27,7 @@ const securityHeaders = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
       "style-src 'self' 'unsafe-inline' https://api.fontshare.com https://fonts.googleapis.com",
-      "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co https://heldonica.fr https://www.heldonica.fr https://happy-humans.org https://www.happy-humans.org https://behold.pictures https://cdn2.behold.pictures",
+      "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co https://heldonica.fr https://www.heldonica.fr https://happyhumans.vercel.app https://happyhumans.vercel.app https://behold.pictures https://cdn2.behold.pictures",
       "font-src 'self' https://api.fontshare.com https://fonts.gstatic.com",
       "connect-src 'self' https://*.supabase.co https://api.perplexity.ai https://api.unsplash.com https://api.bufferapp.com",
       "frame-ancestors 'none'",
@@ -70,11 +70,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'happy-humans.org',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.happy-humans.org',
+        hostname: 'happyhumans.vercel.app',
       },
       {
         protocol: 'https',

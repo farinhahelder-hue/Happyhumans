@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -122,8 +122,8 @@ export default function DashboardPage() {
           <div className="mt-8 text-center">
             <p className="text-sm text-stone-500">
               Des questions sur ton accompagnement ?{' '}
-              <a href="mailto:contactus@happy-humans.org" className="text-[#2f6b61] hover:underline">
-                contactus@happy-humans.org
+              <a href="mailto:happyhumans.coaching@gmail.com" className="text-[#2f6b61] hover:underline">
+                happyhumans.coaching@gmail.com
               </a>
             </p>
           </div>

@@ -1,6 +1,6 @@
-import { MetadataRoute } from 'next';
+﻿import { MetadataRoute } from 'next';
 
-const BASE_URL = 'https://happy-humans.org';
+const BASE_URL = 'https://happyhumans.vercel.app';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

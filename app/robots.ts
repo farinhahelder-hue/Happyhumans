@@ -1,4 +1,4 @@
-import { MetadataRoute } from 'next';
+﻿import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -13,7 +13,7 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: 'https://happy-humans.org/sitemap.xml',
-    host: 'https://happy-humans.org',
+    sitemap: 'https://happyhumans.vercel.app/sitemap.xml',
+    host: 'https://happyhumans.vercel.app',
   };
 }
