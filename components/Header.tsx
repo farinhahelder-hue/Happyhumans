@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
@@ -51,10 +51,10 @@ export default function Header() {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
 
-  const topLinks = [
-    { href: '/a-propos',    label: nav.label_apropos },
-    { href: '/entreprises', label: nav.label_entreprises },
+  const topLinksLeft  = [{ href: '/a-propos', label: nav.label_apropos }]
+  const topLinksRight = [
     { href: '/relations',   label: nav.label_relations },
+    { href: '/entreprises', label: nav.label_entreprises },
     { href: '/contact',     label: nav.label_contact },
   ]
 
@@ -73,7 +73,7 @@ export default function Header() {
           {/* Desktop nav */}
           <div className="hidden items-center gap-6 md:flex">
 
-            {topLinks.map(link => (
+            {topLinksLeft.map(link => (
               <Link key={link.href} href={link.href}
                 className="text-sm font-medium text-stone-600 transition-colors duration-200 hover:text-[#2d5f54]">
                 {link.label}
@@ -115,6 +115,13 @@ export default function Header() {
               )}
             </div>
 
+            {topLinksRight.map(link => (
+              <Link key={link.href} href={link.href}
+                className="text-sm font-medium text-stone-600 transition-colors duration-200 hover:text-[#2d5f54]">
+                {link.label}
+              </Link>
+            ))}
+
             {/* CTA */}
             <Link href="/booking"
               className="rounded-full bg-[#2d5f54] px-4 py-1.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-[#1e3a34]">
@@ -142,7 +149,7 @@ export default function Header() {
         {open && (
           <div className="border-t border-stone-100 bg-white px-4 py-4 md:hidden">
             <div className="flex flex-col gap-1">
-              {topLinks.map(link => (
+              {[...topLinksLeft].map(link => (
                 <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
                   className="text-sm font-medium text-stone-700 hover:text-[#2d5f54] py-2.5 border-b border-stone-50">
                   {link.label}
@@ -174,6 +181,13 @@ export default function Header() {
                   </Link>
                 </div>
               )}
+
+              {topLinksRight.map(link => (
+                <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
+                  className="text-sm font-medium text-stone-700 hover:text-[#2d5f54] py-2.5 border-b border-stone-50">
+                  {link.label}
+                </Link>
+              ))}
 
               <Link href="/booking" onClick={() => setOpen(false)}
                 className="mt-3 rounded-full bg-[#2d5f54] px-4 py-2.5 text-sm font-medium text-white text-center hover:bg-[#1e3a34]">
