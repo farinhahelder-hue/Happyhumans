@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
@@ -24,7 +24,7 @@ const PROGRAMS = [
     price: 'Gratuit',
     unit: '45 min',
     desc: 'Premier échange pour clarifier votre situation, vos attentes et voir si le coaching vous convient.',
-    cta: 'Réserver maintenant',
+    cta: 'Réserver une séance découverte',
     href: '/booking',
     highlight: false,
   },
@@ -33,7 +33,7 @@ const PROGRAMS = [
     price: '120 €',
     unit: '60 min',
     desc: 'Séance ponctuelle pour travailler sur un sujet précis ou maintenir une dynamique engagée.',
-    cta: 'Prendre rendez-vous',
+    cta: 'Réserver une séance',
     href: '/booking',
     highlight: false,
   },
@@ -43,7 +43,7 @@ const PROGRAMS = [
     unit: 'ou 3 × 567 €',
     desc: 'Structurer ses 90 premiers jours, asseoir son leadership et incarner pleinement son nouveau rôle — avec clarté et confiance.',
     format: '6 séances + 1 point hebdo de 30 min pendant les 90 premiers jours',
-    cta: 'Réserver une séance découverte (45 min)',
+    cta: 'Réserver une séance découverte',
     href: '/booking',
     highlight: true,
   },
@@ -89,7 +89,7 @@ export default function CoachingPage() {
             <img src={c.hero_image} alt="Photo de fond" className="absolute inset-0 h-full w-full object-cover opacity-15" />
           )}
           <div className="relative mx-auto max-w-6xl px-6 md:px-10">
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-[#8d5d2f]">Coaching individuel</p>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-[#8d5d2f]">Coaching</p>
             <h1 className="max-w-4xl text-4xl font-serif font-light leading-tight text-stone-900 md:text-6xl">{c.hero_title}</h1>
             <p className="mt-7 max-w-3xl text-lg leading-relaxed text-stone-700">{c.hero_subtitle}</p>
             <div className="mt-10 flex flex-wrap gap-4">
@@ -134,18 +134,22 @@ export default function CoachingPage() {
               <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Ce qu&apos;ils en disent</h2>
             </div>
             <div className="grid gap-6 md:grid-cols-3">
-              {TEMOIGNAGES.map((t, i) => (
-                <div key={i} className="bg-white rounded-2xl p-7 shadow-sm flex flex-col">
-                  <span className="text-4xl font-serif leading-none text-[#2f6b61] mb-4 select-none">&ldquo;</span>
-                  <blockquote className="flex-1 text-sm leading-relaxed text-stone-600 italic mb-6">
-                    {t.quote}
-                  </blockquote>
-                  <footer>
-                    <p className="text-sm font-semibold text-stone-900">{t.name}</p>
-                    <p className="text-xs text-stone-500 italic mt-0.5">{t.title}</p>
-                  </footer>
-                </div>
-              ))}
+              {TEMOIGNAGES.map((t, i) => {
+                const isEn = !t.quote.match(/[àâäéèêëîïôùûüœç«»]/);
+                return (
+                  <div key={i} className="bg-white rounded-2xl p-7 shadow-sm flex flex-col">
+                    <span className="text-4xl font-serif leading-none text-[#2f6b61] mb-4 select-none">&ldquo;</span>
+                    <blockquote lang={isEn ? 'en' : 'fr'} className="flex-1 text-sm leading-relaxed text-stone-600 italic mb-5">
+                      {t.quote}
+                    </blockquote>
+                    <footer>
+                      <p className="text-sm font-semibold text-stone-900">{t.name}</p>
+                      <p className="text-xs text-stone-500 italic mt-0.5">{t.title}</p>
+                      {isEn && <p className="text-xs text-stone-400 mt-1">Version originale</p>}
+                    </footer>
+                  </div>
+                );
+              })}
             </div>
             <p className="text-center text-xs text-stone-400 mt-6">* Prénom modifié</p>
           </div>
@@ -191,7 +195,7 @@ export default function CoachingPage() {
                   {c.coaching_b2b_text.split('\n').map((p, i) => p.trim() ? <p key={i}>{p}</p> : null)}
                 </div>
                 <Link href="/entreprises" className="inline-flex items-center gap-2 text-sm font-semibold text-[#2f6b61] hover:underline">
-                  Voir les offres entreprises →
+                  Découvrir →
                 </Link>
               </div>
             </div>

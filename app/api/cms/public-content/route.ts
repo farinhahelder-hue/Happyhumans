@@ -23,8 +23,16 @@ export async function GET(req: NextRequest) {
     .select('block_key, value')
     .eq('page', page);
 
+  // Sanitisation : corriger les typos introduites par des push automatiques
+  const sanitized = (data || []).map((row: { block_key: string; value: string }) => ({
+    ...row,
+    value: row.value
+      ?.replace(/au booze et ailleurs/gi, 'au boulot et ailleurs')
+      ?.replace(/au booze/gi, 'au boulot'),
+  }));
+
   return NextResponse.json(
-    { content: data || [] },
+    { content: sanitized },
     { headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60' } }
   );
 }

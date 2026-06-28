@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
@@ -91,7 +91,9 @@ export default function AProposPage() {
 
               {/* Mentoring */}
               <div className="bg-white rounded-2xl p-8 shadow-sm">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef5f3] text-xl">🎯</div>
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef5f3]">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
                 <h3 className="text-xl font-serif font-semibold text-stone-900 mb-4">Mentoring</h3>
                 <p className="text-sm leading-relaxed text-stone-600 mb-4">Je vous offre mes conseils sur une problématique alignée avec mon expertise :</p>
                 <ul className="space-y-2 text-sm text-stone-600">

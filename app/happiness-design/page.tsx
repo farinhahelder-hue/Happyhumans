@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
@@ -85,7 +85,7 @@ export default function HappinessDesignPage() {
         {/* À PROPOS DU PROGRAMME */}
         <section className="bg-white px-6 py-16 md:py-20 md:px-10">
           <div className="mx-auto max-w-3xl text-center">
-            <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Pourquoi ce programme ?</p>
+            <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Programme</p>
             <h2 className="text-2xl font-serif font-light text-stone-900 mb-6 md:text-3xl">Une boîte à outils multidisciplinaire</h2>
             <p className="text-base leading-relaxed text-stone-600 mb-4">
               Ce n&apos;est pas le bonheur qui fait la différence, mais comment on réagit dans l&apos;adversité. Et une seule discipline ne suffit pas.
