@@ -1,6 +1,6 @@
 ﻿'use client'
 import Header from '@/components/Header'
-import MiniFooter from '@/components/MiniFooter'
+import Footer from '@/components/Footer'
 import { useCmsContent } from '@/hooks/useCmsContent'
 import { useState } from 'react'
 
@@ -116,22 +116,28 @@ export default function ContactPage() {
                 {c.photo ? (
                   <img src={c.photo} alt="Monica Schneider" className="rounded-2xl object-cover w-full h-64 shadow-lg" />
                 ) : (
-                  <div className="rounded-2xl bg-gradient-to-br from-stone-100 to-stone-200 h-64 flex items-center justify-center">
-                    <span className="text-5xl opacity-20">👤</span>
+                  <div className="rounded-2xl bg-gradient-to-br from-[#eef5f3] to-[#f5f0e8] h-64 flex items-center justify-center">
+                    <div className="w-20 h-20 rounded-full bg-[#2d5f54] flex items-center justify-center text-white text-2xl font-serif font-bold">MS</div>
                   </div>
                 )}
                 <div className="space-y-3 text-sm text-stone-600">
                   <p className="font-semibold text-stone-900">Monica Schneider</p>
                   <p>Executive Coach · Philosophical Counselling</p>
-                  <p>🌍 Accompagnement en français, anglais et roumain</p>
-                  <p>⏱️ Réponse sous 48h</p>
+                  <div className="flex items-center gap-2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    <span>Français, anglais et roumain</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span>Réponse sous 48h</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
       </main>
-      <MiniFooter />
+      <Footer />
     </>
   )
 }

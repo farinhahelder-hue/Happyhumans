@@ -2,7 +2,7 @@
 
 import BookingWidget from '@/components/BookingWidget'
 import Header from '@/components/Header'
-import MiniFooter from '@/components/MiniFooter'
+import Footer from '@/components/Footer'
 
 import { useCmsContent } from '@/hooks/useCmsContent'
 
@@ -77,7 +77,7 @@ export default function BookingPage() {
           </div>
         </section>
       </main>
-      <MiniFooter />
+      <Footer />
     </>
   )
 }

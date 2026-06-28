@@ -1361,6 +1361,13 @@ export default function CMSAdmin() {
                           >
                             🔗 Voir la page
                           </a>
+                          <button
+                            onClick={() => savePageContent(activePage)}
+                            disabled={savingSettings}
+                            style={{ padding: '.45rem 1.25rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.85rem', opacity: savingSettings ? .7 : 1 }}
+                          >
+                            {savingSettings ? '⏳ Sauvegarde…' : '💾 Sauvegarder'}
+                          </button>
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
