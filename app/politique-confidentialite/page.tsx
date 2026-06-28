@@ -1,5 +1,5 @@
 ﻿import Header from '@/components/Header'
-import MiniFooter from '@/components/MiniFooter'
+import Footer from '@/components/Footer'
 
 export const metadata = {
   title: 'Politique de confidentialité',
@@ -124,7 +124,7 @@ export default function PolitiqueConfidentialite() {
           </div>
         </div>
       </main>
-      <MiniFooter />
+      <Footer />
     </>
   )
 }

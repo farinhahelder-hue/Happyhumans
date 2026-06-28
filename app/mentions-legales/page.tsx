@@ -1,5 +1,5 @@
 ﻿import Header from '@/components/Header'
-import MiniFooter from '@/components/MiniFooter'
+import Footer from '@/components/Footer'
 
 export const metadata = {
   title: 'Mentions légales',
@@ -131,7 +131,7 @@ export default function MentionsLegales() {
           </div>
         </div>
       </main>
-      <MiniFooter />
+      <Footer />
     </>
   )
 }
