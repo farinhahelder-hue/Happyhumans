@@ -84,18 +84,18 @@ export default function CoachingPage() {
       <main className="pt-[72px]">
 
         {/* HERO */}
-        <section className="relative overflow-hidden bg-stone-900 py-24 md:py-32">
+        <section className="relative overflow-hidden bg-stone-900 px-6 py-24 text-center md:py-32 md:px-10">
           <img
             src={c.hero_image || 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1600&q=80&auto=format&fit=crop'}
             alt="Bureau élégant, ambiance coaching professionnel"
             className="absolute inset-0 h-full w-full object-cover opacity-25"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-stone-900/60 via-stone-900/40 to-stone-900/70" />
-          <div className="relative mx-auto max-w-6xl px-6 md:px-10">
+          <div className="relative mx-auto max-w-3xl">
             <p className="mb-4 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">Coaching</p>
-            <h1 className="max-w-4xl text-4xl font-serif font-light leading-tight text-white md:text-6xl">{c.hero_title}</h1>
-            <p className="mt-7 max-w-3xl text-lg leading-relaxed text-stone-300">{c.hero_subtitle}</p>
-            <div className="mt-10 flex flex-wrap gap-4">
+            <h1 className="text-4xl font-serif font-light leading-tight text-white md:text-6xl">{c.hero_title}</h1>
+            <p className="mt-6 text-lg leading-relaxed text-stone-300">{c.hero_subtitle}</p>
+            <div className="mt-10 flex flex-wrap gap-4 justify-center">
               <Link href="/booking" className="rounded-full bg-[#2f6b61] px-7 py-3.5 text-sm font-semibold text-white shadow-md hover:bg-[#235249] transition">
                 Séance découverte gratuite (45 min)
               </Link>

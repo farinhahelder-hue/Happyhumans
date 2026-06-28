@@ -202,7 +202,7 @@ export default function RelationsPage() {
       <main className="pt-[72px]">
 
         {/* ══ HERO INTRO ════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden bg-stone-900 px-6 py-12 md:py-16 md:px-10 text-center">
+        <section className="relative overflow-hidden bg-stone-900 px-6 py-20 md:py-28 md:px-10 text-center">
           <img
             src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&q=85&auto=format&fit=crop"
             alt="Connexion humaine, mains tendues symbolisant le lien entre personnes"
