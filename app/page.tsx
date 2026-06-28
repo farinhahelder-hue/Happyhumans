@@ -108,7 +108,9 @@ export default function LandingPage() {
             </div>
             <div className="grid gap-6 md:grid-cols-2">
               <div className="rounded-2xl bg-white p-8 shadow-sm">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef4f3] text-xl">🧭</div>
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef4f3]">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </div>
                 <h3 className="mb-3 text-xl font-serif font-semibold text-stone-900">Pour les individus</h3>
                 <p className="mb-5 text-sm leading-relaxed text-stone-600">Managers, dirigeants, entrepreneurs ou personnes en transition qui veulent retrouver de la clarté, de la confiance et une direction qui leur ressemble vraiment.</p>
                 <button onClick={() => setBookingOpen(true)} className="text-sm font-semibold text-[#2d5f54] hover:underline">
@@ -116,7 +118,9 @@ export default function LandingPage() {
                 </button>
               </div>
               <div className="rounded-2xl bg-white p-8 shadow-sm">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef4f3] text-xl">🏢</div>
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef4f3]">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+                </div>
                 <h3 className="mb-3 text-xl font-serif font-semibold text-stone-900">Pour les organisations</h3>
                 <p className="mb-5 text-sm leading-relaxed text-stone-600">Coaching de leadership, ateliers, séminaires et accompagnement du changement pour remettre de l&apos;alignement et de l&apos;élan dans les équipes.</p>
                 <a href="#contact" className="text-sm font-semibold text-[#2d5f54] hover:underline">
