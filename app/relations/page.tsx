@@ -206,7 +206,7 @@ export default function RelationsPage() {
           <img
             src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&q=85&auto=format&fit=crop"
             alt="Connexion humaine, mains tendues symbolisant le lien entre personnes"
-            className="absolute inset-0 h-full w-full object-cover opacity-15"
+            className="absolute inset-0 h-full w-full object-cover opacity-20"
           />
           <div className="relative mx-auto max-w-2xl">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">

@@ -48,9 +48,11 @@ export default function ContactPage() {
       <main>
         {/* HERO */}
         <section className="relative flex h-[40vh] items-end overflow-hidden bg-stone-900">
-          {c.hero_image && (
-            <img src={c.hero_image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-40" />
-          )}
+          <img
+            src={c.hero_image || 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1400&q=80&auto=format&fit=crop'}
+            alt="Espace d'échange calme et chaleureux"
+            className="absolute inset-0 h-full w-full object-cover opacity-20"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
           <div className="relative z-10 max-w-3xl px-6 pb-12 md:px-16 md:pb-20">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-amber-300">Contact</p>
