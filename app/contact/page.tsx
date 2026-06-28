@@ -65,8 +65,12 @@ export default function ContactPage() {
               <div>
                 <p className="mb-8 text-base leading-relaxed text-stone-600">{c.intro_text}</p>
                 {sent ? (
-                  <div className="rounded-2xl bg-emerald-50 border border-emerald-200 p-8 text-center">
-                    <div className="text-4xl mb-3">✅</div>
+                  <div className="rounded-2xl bg-[#eef5f3] border border-[#2d5f54]/20 p-8 text-center">
+                    <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[#2d5f54] flex items-center justify-center">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                    </div>
                     <h3 className="text-lg font-semibold text-stone-900 mb-2">Message envoyé !</h3>
                     <p className="text-sm text-stone-600">Je vous répondrai sous 48h. Merci de votre confiance.</p>
                   </div>

@@ -3,7 +3,6 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 import Image from 'next/image'
-import TemoignagesWidget from '@/components/TemoignagesWidget'
 import { useCmsContent } from '@/hooks/useCmsContent'
 
 const DEFAULTS = {
@@ -131,9 +130,6 @@ export default function AProposPage() {
             </div>
           </div>
         </section>
-
-        {/* TÉMOIGNAGES */}
-        <TemoignagesWidget max={3} />
 
         {/* CTA FINAL */}
         <section className="bg-[#2f6b61] py-16 text-center">

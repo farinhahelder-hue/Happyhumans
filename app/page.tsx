@@ -88,12 +88,12 @@ export default function LandingPage() {
               >
                 Séance découverte gratuite
               </button>
-              <a
-                href="#contact"
+              <Link
+                href="/contact"
                 className="rounded-full border border-stone-500 px-8 py-3.5 text-sm font-semibold text-stone-200 hover:border-white hover:text-white transition"
               >
-                Nous écrire
-              </a>
+                Me contacter
+              </Link>
             </div>
           </div>
         </section>

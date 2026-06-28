@@ -1,6 +1,5 @@
 ﻿'use client'
 import Header from '@/components/Header'
-import TemoignagesWidget from '@/components/TemoignagesWidget'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 import { useCmsContent } from '@/hooks/useCmsContent'
@@ -133,7 +132,23 @@ export default function EntreprisesPage() {
             <p className="mt-6 text-center text-xs text-stone-400">Prise en charge possible via OPCO selon éligibilité · Devis établi sous 48h</p>
           </div>
         </section>
-        <TemoignagesWidget max={3} />
+        {/* TÉMOIGNAGE DOROTHÉE */}
+        <section className="bg-[#f7f4ef] py-14 md:py-16">
+          <div className="mx-auto max-w-2xl px-6 md:px-10">
+            <div className="bg-white rounded-2xl p-8 shadow-sm text-center">
+              <span className="text-3xl font-serif leading-none text-[#2f6b61] select-none">&ldquo;</span>
+              <blockquote lang="fr" className="mt-3 text-base leading-relaxed text-stone-700 italic">
+                On a eu un super feedback sur la réunion de présentation que nous avons préparée ensemble.
+                Jérôme (le n+1 de ma cliente) nous a dit : &ldquo;Champagne !&rdquo;
+              </blockquote>
+              <footer className="mt-6">
+                <p className="text-sm font-semibold text-stone-900">Dorothée*</p>
+                <p className="text-xs text-stone-500 italic mt-0.5">Directrice Achats Beauty Retail</p>
+                <p className="text-xs text-stone-400 mt-1">* Prénom modifié</p>
+              </footer>
+            </div>
+          </div>
+        </section>
 
       </main>
       <Footer />
