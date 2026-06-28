@@ -84,21 +84,22 @@ export default function CoachingPage() {
       <main className="pt-[72px]">
 
         {/* HERO */}
-        <section className="relative bg-gradient-to-br from-[#f7f2e9] via-white to-[#eef5f3] py-24 md:py-32 overflow-hidden">
+        <section className="relative overflow-hidden bg-stone-900 py-24 md:py-32">
           <img
             src={c.hero_image || 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1600&q=80&auto=format&fit=crop'}
             alt="Bureau élégant, ambiance coaching professionnel"
-            className="absolute inset-0 h-full w-full object-cover opacity-[0.08]"
+            className="absolute inset-0 h-full w-full object-cover opacity-25"
           />
+          <div className="absolute inset-0 bg-gradient-to-b from-stone-900/60 via-stone-900/40 to-stone-900/70" />
           <div className="relative mx-auto max-w-6xl px-6 md:px-10">
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-[#8d5d2f]">Coaching</p>
-            <h1 className="max-w-4xl text-4xl font-serif font-light leading-tight text-stone-900 md:text-6xl">{c.hero_title}</h1>
-            <p className="mt-7 max-w-3xl text-lg leading-relaxed text-stone-700">{c.hero_subtitle}</p>
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">Coaching</p>
+            <h1 className="max-w-4xl text-4xl font-serif font-light leading-tight text-white md:text-6xl">{c.hero_title}</h1>
+            <p className="mt-7 max-w-3xl text-lg leading-relaxed text-stone-300">{c.hero_subtitle}</p>
             <div className="mt-10 flex flex-wrap gap-4">
               <Link href="/booking" className="rounded-full bg-[#2f6b61] px-7 py-3.5 text-sm font-semibold text-white shadow-md hover:bg-[#235249] transition">
                 Séance découverte gratuite (45 min)
               </Link>
-              <Link href="/contact" className="rounded-full border border-[#2f6b61] px-7 py-3.5 text-sm font-semibold text-[#2f6b61] hover:bg-[#2f6b61] hover:text-white transition">
+              <Link href="/contact" className="rounded-full border border-stone-400 px-7 py-3.5 text-sm font-semibold text-stone-200 hover:border-white hover:text-white transition">
                 Me contacter
               </Link>
             </div>
