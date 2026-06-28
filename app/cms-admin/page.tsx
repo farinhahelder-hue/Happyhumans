@@ -466,6 +466,9 @@ export default function CMSAdmin() {
   const [editedContent, setEditedContent] = useState<Record<string, string>>({});
   const [savingSettings, setSavingSettings] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  const [savedOk, setSavedOk] = useState(false);
+  const cleanHash = React.useRef('');
 
   const isArticleDirty = getArticleDraftSignature(editingArticle) !== articleBaseline;
   const articleWordCount = getWordCount(editingArticle?.content);
@@ -496,6 +499,37 @@ export default function CMSAdmin() {
     if (!isArticleDirty) return true;
     return confirm('Tu as des modifications non sauvegardées. Les quitter ?');
   }, [isArticleDirty]);
+  // ── Suivi dirty content/settings ────────────────────────
+  useEffect(() => {
+    if (!cleanHash.current) return; // pas encore chargé
+    const cur = JSON.stringify(editedContent) + '|' + JSON.stringify(editedSettings);
+    setIsDirty(cur !== cleanHash.current);
+  }, [editedContent, editedSettings]);
+
+  // ── Raccourci Cmd+S / Ctrl+S ─────────────────────────────
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        if (!isDirty || savingSettings) return;
+        if (tab === 'pages') savePageContent(activePage);
+        else if (tab === 'settings') saveSettings();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isDirty, savingSettings, tab, activePage]);
+
+  // ── Confirmation avant de quitter ────────────────────────
+  useEffect(() => {
+    if (isDirty) {
+      window.onbeforeunload = () => true;
+    } else {
+      window.onbeforeunload = null;
+    }
+    return () => { window.onbeforeunload = null; };
+  }, [isDirty]);
+
 
   const openArticleEditor = useCallback((article?: Partial<Article>) => {
     if ((editingArticle || tab === 'new') && !confirmDiscardArticleChanges()) return;
@@ -598,6 +632,37 @@ export default function CMSAdmin() {
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [isArticleDirty]);
+  // ── Suivi dirty content/settings ────────────────────────
+  useEffect(() => {
+    if (!cleanHash.current) return; // pas encore chargé
+    const cur = JSON.stringify(editedContent) + '|' + JSON.stringify(editedSettings);
+    setIsDirty(cur !== cleanHash.current);
+  }, [editedContent, editedSettings]);
+
+  // ── Raccourci Cmd+S / Ctrl+S ─────────────────────────────
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        if (!isDirty || savingSettings) return;
+        if (tab === 'pages') savePageContent(activePage);
+        else if (tab === 'settings') saveSettings();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isDirty, savingSettings, tab, activePage]);
+
+  // ── Confirmation avant de quitter ────────────────────────
+  useEffect(() => {
+    if (isDirty) {
+      window.onbeforeunload = () => true;
+    } else {
+      window.onbeforeunload = null;
+    }
+    return () => { window.onbeforeunload = null; };
+  }, [isDirty]);
+
 
   // Load articles
   const loadArticles = useCallback(async () => {
@@ -740,6 +805,7 @@ export default function CMSAdmin() {
       });
       setEditedSettings(initS);
       setEditedContent(initC);
+      setTimeout(() => { cleanHash.current = JSON.stringify(initC) + '|' + JSON.stringify(initS); setIsDirty(false); }, 50);
     } catch {
       showToast('Impossible de charger les contenus du CMS.');
     } finally {
@@ -788,6 +854,7 @@ export default function CMSAdmin() {
       const responses = await Promise.all(promises);
       if (responses.some(res => handleUnauthorized(res))) return;
       showToast('✅ Paramètres sauvegardés !');
+      cleanHash.current = JSON.stringify(editedContent) + '|' + JSON.stringify(editedSettings); setIsDirty(false); setSavedOk(true); setTimeout(() => setSavedOk(false), 2000);
       loadSettings();
     } catch {
       showToast('Impossible de sauvegarder les paramètres.');
@@ -828,6 +895,7 @@ export default function CMSAdmin() {
       }
 
       showToast(`✅ Page "${config.label}" sauvegardée !`);
+      cleanHash.current = JSON.stringify(editedContent) + '|' + JSON.stringify(editedSettings); setIsDirty(false); setSavedOk(true); setTimeout(() => setSavedOk(false), 2000);
       loadSettings();
     } catch {
       showToast('Impossible de sauvegarder cette page.');
@@ -1018,6 +1086,58 @@ export default function CMSAdmin() {
         </div>
         <button onClick={logout} style={{ background: 'rgba(255,255,255,.15)', border: 'none', color: 'white', padding: '.4rem .9rem', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>Déconnexion</button>
       </div>
+
+      {/* Bannière modifications non sauvegardées */}
+      {isDirty && (
+        <div style={{ background: '#fff8e1', borderBottom: '1px solid #f0c040', padding: '.6rem 2rem', display: 'flex', alignItems: 'center', gap: '.5rem', fontSize: '.85rem', color: '#7a5c00', fontWeight: 600 }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Modifications non sauvegardées — utilisez le bouton flottant ou Ctrl+S pour sauvegarder
+        </div>
+      )}
+
+      {/* Bouton flottant sticky */}
+      {(tab === 'pages' || tab === 'settings') && (
+        <div style={{
+          position: 'fixed', bottom: 24, right: 24, zIndex: 100,
+          display: isDirty || savedOk ? 'block' : 'none',
+          transition: 'opacity .2s',
+        }}>
+          <button
+            onClick={() => { if (tab === 'pages') savePageContent(activePage); else saveSettings(); }}
+            disabled={savingSettings || !isDirty}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '.5rem',
+              padding: '14px 28px', borderRadius: '9999px',
+              background: savedOk ? '#1a5c35' : '#2d5f54', color: 'white',
+              border: 'none', cursor: savingSettings ? 'wait' : 'pointer',
+              fontSize: '15px', fontWeight: 600,
+              boxShadow: '0 4px 16px rgba(0,0,0,.18)',
+              opacity: savingSettings ? .8 : 1,
+              transition: 'background .2s, transform .1s',
+            }}
+            onMouseEnter={e => { if (!savingSettings) (e.currentTarget as HTMLButtonElement).style.background = savedOk ? '#1a5c35' : '#1e4a40'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = savedOk ? '#1a5c35' : '#2d5f54'; }}
+          >
+            {savingSettings ? (
+              <>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 1s linear infinite' }}><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+                Sauvegarde…
+              </>
+            ) : savedOk ? (
+              <>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                Sauvegardé !
+              </>
+            ) : (
+              <>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Sauvegarder
+              </>
+            )}
+          </button>
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        </div>
+      )}
 
       {toast && (
         <div style={{ position: 'fixed', top: '5rem', right: '1.5rem', background: '#1a1a1a', color: 'white', padding: '.8rem 1.4rem', borderRadius: '.6rem', zIndex: 100, fontSize: '.9rem', boxShadow: '0 4px 16px rgba(0,0,0,.2)' }}>{toast}</div>
