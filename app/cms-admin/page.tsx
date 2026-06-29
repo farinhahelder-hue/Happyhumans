@@ -689,17 +689,20 @@ function NavigationEditor({ onSaved }: { onSaved?: () => void }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Drag & drop state
+  const [dragSrc, setDragSrc] = useState<number | null>(null);
+  const [dragOver, setDragOver] = useState<number | null>(null);
+  // Drag state for dropdown sub-items (parentId → dragged index)
+  const [dragSrcSub, setDragSrcSub] = useState<{ parentId: string; idx: number } | null>(null);
+  const [dragOverSub, setDragOverSub] = useState<{ parentId: string; idx: number } | null>(null);
 
   useEffect(() => {
     fetch('/api/cms/navigation')
       .then(r => r.json())
       .then(d => {
         const items = d.nav;
-        if (Array.isArray(items) && items.length > 0) {
-          setNav(items);
-        } else {
-          setNav([]);
-        }
+        if (Array.isArray(items) && items.length > 0) setNav(items);
+        else setNav([]);
       })
       .catch(() => setError('Impossible de charger la navigation'))
       .finally(() => setLoading(false));
@@ -709,54 +712,73 @@ function NavigationEditor({ onSaved }: { onSaved?: () => void }) {
     setNav(prev => prev.map(item => item.id === id ? { ...item, ...updates } : item));
   };
 
-  const moveItem = (id: string, direction: 'up' | 'down') => {
-    setNav(prev => {
-      const idx = prev.findIndex(i => i.id === id);
-      if (direction === 'up' && idx === 0) return prev;
-      if (direction === 'down' && idx === prev.length - 1) return prev;
-      const next = [...prev];
-      const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
-      [next[idx], next[targetIdx]] = [next[targetIdx], next[idx]];
-      next.forEach((item, i) => { item.position = i + 1; });
-      return next;
-    });
-  };
-
   const updateDropdownItem = (parentId: string, dropdownId: string, updates: Partial<NavItem>) => {
     setNav(prev => prev.map(item => {
       if (item.id !== parentId) return item;
-      return {
-        ...item,
-        dropdownItems: (item.dropdownItems || []).map(sub =>
-          sub.id === dropdownId ? { ...sub, ...updates } : sub
-        ),
-      };
+      return { ...item, dropdownItems: (item.dropdownItems || []).map(sub => sub.id === dropdownId ? { ...sub, ...updates } : sub) };
     }));
   };
 
-  const moveDropdownItem = (parentId: string, dropdownId: string, direction: 'up' | 'down') => {
+  // ── Drag & drop for top-level items ──────────────────────
+  const onItemDragStart = (e: React.DragEvent, idx: number) => {
+    setDragSrc(idx);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+  const onItemDragOver = (e: React.DragEvent, idx: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOver(idx);
+  };
+  const onItemDrop = (e: React.DragEvent, dropIdx: number) => {
+    e.preventDefault();
+    if (dragSrc === null || dragSrc === dropIdx) {
+      setDragSrc(null); setDragOver(null);
+      return;
+    }
+    setNav(prev => {
+      const next = [...prev];
+      const [moved] = next.splice(dragSrc, 1);
+      next.splice(dropIdx, 0, moved);
+      next.forEach((item, i) => { item.position = i + 1; });
+      return next;
+    });
+    setDragSrc(null); setDragOver(null);
+  };
+  const onItemDragEnd = () => { setDragSrc(null); setDragOver(null); };
+
+  // ── Drag & drop for dropdown sub-items ───────────────────
+  const onSubDragStart = (e: React.DragEvent, parentId: string, idx: number) => {
+    setDragSrcSub({ parentId, idx });
+    e.dataTransfer.effectAllowed = 'move';
+  };
+  const onSubDragOver = (e: React.DragEvent, parentId: string, idx: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverSub({ parentId, idx });
+  };
+  const onSubDrop = (e: React.DragEvent, parentId: string, dropIdx: number) => {
+    e.preventDefault();
+    if (!dragSrcSub || dragSrcSub.parentId !== parentId || dragSrcSub.idx === dropIdx) {
+      setDragSrcSub(null); setDragOverSub(null);
+      return;
+    }
     setNav(prev => prev.map(item => {
       if (item.id !== parentId) return item;
-      const subs = item.dropdownItems || [];
-      const idx = subs.findIndex(i => i.id === dropdownId);
-      if (direction === 'up' && idx === 0) return item;
-      if (direction === 'down' && idx === subs.length - 1) return item;
-      const next = [...subs];
-      const targetIdx = direction === 'up' ? idx - 1 : idx + 1;
-      [next[idx], next[targetIdx]] = [next[targetIdx], next[idx]];
-      next.forEach((sub, i) => { sub.position = i + 1; });
-      return { ...item, dropdownItems: next };
+      const subs = [...(item.dropdownItems || [])];
+      const [moved] = subs.splice(dragSrcSub.idx, 1);
+      subs.splice(dropIdx, 0, moved);
+      subs.forEach((sub, i) => { sub.position = i + 1; });
+      return { ...item, dropdownItems: subs };
     }));
+    setDragSrcSub(null); setDragOverSub(null);
   };
+  const onSubDragEnd = () => { setDragSrcSub(null); setDragOverSub(null); };
 
   const saveNav = async () => {
-    setSaving(true);
-    setError(null);
+    setSaving(true); setError(null);
     try {
       const res = await fetch('/api/cms/navigation', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nav }),
+        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nav }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -773,6 +795,15 @@ function NavigationEditor({ onSaved }: { onSaved?: () => void }) {
 
   if (loading) return <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement de la navigation…</p>;
 
+  const cardStyle = (isDragging: boolean, isOver: boolean): React.CSSProperties => ({
+    background: '#faf9f7',
+    border: isOver ? '2px solid #2d5f54' : '1px solid #e8e4df',
+    borderRadius: '.75rem',
+    padding: '1rem',
+    opacity: isDragging ? 0.4 : 1,
+    transition: 'border-color .1s, opacity .15s',
+  });
+
   return (
     <div>
       {error && (
@@ -780,85 +811,103 @@ function NavigationEditor({ onSaved }: { onSaved?: () => void }) {
           ❌ {error}
         </div>
       )}
-
-      <p style={{ fontSize: '.85rem', color: '#888', marginBottom: '1.5rem' }}>
-        Gérez les liens du menu de navigation. Modifiez l&apos;ordre, la visibilité et les liens de chaque élément.
+      <p style={{ fontSize: '.85rem', color: '#888', marginBottom: '1rem' }}>
+        Glissez-déposez les éléments pour changer l&apos;ordre. Modifiez visibilité et liens ci-dessous.
       </p>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0', marginBottom: '1.5rem' }}>
         {nav.map((item, idx) => (
-          <div key={item.id} style={{ background: '#faf9f7', border: '1px solid #e8e4df', borderRadius: '.75rem', padding: '1rem' }}>
-            <div style={{ display: 'flex', gap: '.5rem', alignItems: 'flex-start', marginBottom: '.75rem' }}>
-              {/* Move buttons */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '.25rem' }}>
-                <button
-                  onClick={() => moveItem(item.id, 'up')}
-                  disabled={idx === 0}
-                  style={{ padding: '.2rem .4rem', background: '#fff', border: '1px solid #ddd', borderRadius: '.3rem', cursor: idx === 0 ? 'not-allowed' : 'pointer', fontSize: '.8rem', opacity: idx === 0 ? .4 : 1 }}
-                >↑</button>
-                <button
-                  onClick={() => moveItem(item.id, 'down')}
-                  disabled={idx === nav.length - 1}
-                  style={{ padding: '.2rem .4rem', background: '#fff', border: '1px solid #ddd', borderRadius: '.3rem', cursor: idx === nav.length - 1 ? 'not-allowed' : 'pointer', fontSize: '.8rem', opacity: idx === nav.length - 1 ? .4 : 1 }}
-                >↓</button>
-              </div>
-
-              {/* Visibility toggle */}
-              <button
-                onClick={() => updateItem(item.id, { visible: !item.visible })}
-                title={item.visible ? 'Masquer' : 'Afficher'}
-                style={{ padding: '.35rem .5rem', background: item.visible ? '#ecfdf5' : '#fef2f2', border: `1px solid ${item.visible ? '#6ee7b7' : '#fca5a5'}`, borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}
-              >{item.visible ? '👁️' : '👁️‍🗨️'}</button>
-
-              {/* Fields */}
-              <div style={{ flex: 1, display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
-                <input
-                  value={item.label}
-                  onChange={e => updateItem(item.id, { label: e.target.value })}
-                  placeholder="Label du lien"
-                  style={{ ...inp, flex: 1, minWidth: 120 }}
-                />
-                <input
-                  value={item.href || ''}
-                  onChange={e => updateItem(item.id, { href: e.target.value })}
-                  placeholder="URL (ex: /contact)"
-                  style={{ ...inp, flex: 1, minWidth: 160 }}
-                />
-              </div>
-
-              {/* Badges */}
-              <div style={{ display: 'flex', gap: '.35rem', alignItems: 'center', flexShrink: 0 }}>
-                {item.isDropdown && <span style={{ padding: '.2rem .5rem', background: '#e0f2fe', color: '#0369a1', borderRadius: '.3rem', fontSize: '.7rem', fontWeight: 600 }}>Menu</span>}
-                {item.isCta && <span style={{ padding: '.2rem .5rem', background: '#dcfce7', color: '#15803d', borderRadius: '.3rem', fontSize: '.7rem', fontWeight: 600 }}>CTA</span>}
-              </div>
-            </div>
-
-            {/* Dropdown sub-items */}
-            {item.isDropdown && (
-              <div style={{ marginLeft: '2.5rem', display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
-                <p style={{ fontSize: '.75rem', fontWeight: 600, color: '#888', marginBottom: '.25rem' }}>Sous-éléments :</p>
-                {(item.dropdownItems || []).map((sub, subIdx) => (
-                  <div key={sub.id} style={{ display: 'flex', gap: '.4rem', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '.2rem' }}>
-                      <button onClick={() => moveDropdownItem(item.id, sub.id, 'up')} disabled={subIdx === 0} style={{ padding: '.15rem .3rem', background: '#fff', border: '1px solid #ddd', borderRadius: '.2rem', cursor: subIdx === 0 ? 'not-allowed' : 'pointer', fontSize: '.7rem', opacity: subIdx === 0 ? .4 : 1 }}>↑</button>
-                      <button onClick={() => moveDropdownItem(item.id, sub.id, 'down')} disabled={subIdx === (item.dropdownItems?.length || 1) - 1} style={{ padding: '.15rem .3rem', background: '#fff', border: '1px solid #ddd', borderRadius: '.2rem', cursor: subIdx === (item.dropdownItems?.length || 1) - 1 ? 'not-allowed' : 'pointer', fontSize: '.7rem', opacity: subIdx === (item.dropdownItems?.length || 1) - 1 ? .4 : 1 }}>↓</button>
-                    </div>
-                    <button onClick={() => updateDropdownItem(item.id, sub.id, { visible: !sub.visible })} style={{ padding: '.2rem .35rem', background: sub.visible ? '#ecfdf5' : '#fef2f2', border: `1px solid ${sub.visible ? '#6ee7b7' : '#fca5a5'}`, borderRadius: '.3rem', cursor: 'pointer', fontSize: '.75rem' }}>{sub.visible ? '👁️' : '👁️‍🗨️'}</button>
-                    <input value={sub.label} onChange={e => updateDropdownItem(item.id, sub.id, { label: e.target.value })} placeholder="Label" style={{ ...inp, flex: 1 }} />
-                    <input value={sub.href || ''} onChange={e => updateDropdownItem(item.id, sub.id, { href: e.target.value })} placeholder="URL" style={{ ...inp, flex: 1 }} />
-                  </div>
-                ))}
-              </div>
+          <div key={item.id}>
+            {/* Drop indicator above */}
+            {dragOver === idx && dragSrc !== null && dragSrc !== idx && (
+              <div style={{ height: 3, background: '#2d5f54', borderRadius: 2, margin: '0 .5rem' }} />
             )}
+            <div
+              draggable
+              onDragStart={e => onItemDragStart(e, idx)}
+              onDragOver={e => onItemDragOver(e, idx)}
+              onDrop={e => onItemDrop(e, idx)}
+              onDragEnd={onItemDragEnd}
+              style={cardStyle(dragSrc === idx, dragOver === idx)}
+            >
+              <div style={{ display: 'flex', gap: '.5rem', alignItems: 'flex-start', marginBottom: '.75rem' }}>
+                {/* Drag handle */}
+                <span style={{ cursor: 'grab', padding: '.35rem .2rem', color: '#bbb', fontSize: '1rem', lineHeight: 1, userSelect: 'none' }} title="Glisser pour réordonner">⠿</span>
+
+                {/* Visibility toggle */}
+                <button onClick={() => updateItem(item.id, { visible: !item.visible })}
+                  title={item.visible ? 'Masquer' : 'Afficher'}
+                  style={{ padding: '.35rem .5rem', background: item.visible ? '#ecfdf5' : '#fef2f2', border: `1px solid ${item.visible ? '#6ee7b7' : '#fca5a5'}`, borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>
+                  {item.visible ? '👁️' : '👁️‍🗨️'}
+                </button>
+
+                {/* Fields */}
+                <div style={{ flex: 1, display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
+                  <input value={item.label} onChange={e => updateItem(item.id, { label: e.target.value })}
+                    placeholder="Label du lien" style={{ ...inp, flex: 1, minWidth: 120 }} />
+                  <input value={item.href || ''} onChange={e => updateItem(item.id, { href: e.target.value })}
+                    placeholder="URL (ex: /contact)" style={{ ...inp, flex: 1, minWidth: 160 }} />
+                </div>
+
+                {/* Badges */}
+                <div style={{ display: 'flex', gap: '.35rem', alignItems: 'center', flexShrink: 0 }}>
+                  {item.isDropdown && <span style={{ padding: '.2rem .5rem', background: '#e0f2fe', color: '#0369a1', borderRadius: '.3rem', fontSize: '.7rem', fontWeight: 600 }}>Menu</span>}
+                  {item.isCta && <span style={{ padding: '.2rem .5rem', background: '#dcfce7', color: '#15803d', borderRadius: '.3rem', fontSize: '.7rem', fontWeight: 600 }}>CTA</span>}
+                </div>
+              </div>
+
+              {/* Dropdown sub-items */}
+              {item.isDropdown && (
+                <div style={{ marginLeft: '2.5rem', display: 'flex', flexDirection: 'column', gap: '0' }}>
+                  <p style={{ fontSize: '.75rem', fontWeight: 600, color: '#888', marginBottom: '.4rem' }}>Sous-éléments :</p>
+                  {(item.dropdownItems || []).map((sub, subIdx) => {
+                    const isSubDragging = dragSrcSub?.parentId === item.id && dragSrcSub.idx === subIdx;
+                    const isSubOver = dragOverSub?.parentId === item.id && dragOverSub.idx === subIdx;
+                    return (
+                      <div key={sub.id}>
+                        {isSubOver && dragSrcSub && !(dragSrcSub.parentId === item.id && dragSrcSub.idx === subIdx) && (
+                          <div style={{ height: 2, background: '#2d5f54', borderRadius: 2, margin: '2px .25rem' }} />
+                        )}
+                        <div
+                          draggable
+                          onDragStart={e => onSubDragStart(e, item.id, subIdx)}
+                          onDragOver={e => onSubDragOver(e, item.id, subIdx)}
+                          onDrop={e => onSubDrop(e, item.id, subIdx)}
+                          onDragEnd={onSubDragEnd}
+                          style={{
+                            display: 'flex', gap: '.4rem', alignItems: 'center',
+                            opacity: isSubDragging ? 0.4 : 1,
+                            background: isSubOver ? '#f0fdf4' : 'transparent',
+                            borderRadius: '.4rem',
+                            padding: isSubOver ? '.35rem .35rem' : '.35rem .35rem',
+                            transition: 'opacity .15s, background .1s',
+                          }}
+                        >
+                          <span style={{ cursor: 'grab', color: '#ccc', fontSize: '.85rem', padding: '0 .1rem', userSelect: 'none' }}>⠿</span>
+                          <button onClick={() => updateDropdownItem(item.id, sub.id, { visible: !sub.visible })}
+                            style={{ padding: '.2rem .35rem', background: sub.visible ? '#ecfdf5' : '#fef2f2', border: `1px solid ${sub.visible ? '#6ee7b7' : '#fca5a5'}`, borderRadius: '.3rem', cursor: 'pointer', fontSize: '.75rem' }}>
+                            {sub.visible ? '👁️' : '👁️‍🗨️'}
+                          </button>
+                          <input value={sub.label} onChange={e => updateDropdownItem(item.id, sub.id, { label: e.target.value })}
+                            placeholder="Label" style={{ ...inp, flex: 1 }} />
+                          <input value={sub.href || ''} onChange={e => updateDropdownItem(item.id, sub.id, { href: e.target.value })}
+                            placeholder="URL" style={{ ...inp, flex: 1 }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
         ))}
+        {/* Drop indicator at end */}
+        {dragOver === nav.length && dragSrc !== null && (
+          <div style={{ height: 3, background: '#2d5f54', borderRadius: 2, margin: '0 .5rem' }} />
+        )}
       </div>
 
-      <button
-        onClick={saveNav}
-        disabled={saving}
-        style={{ padding: '.7rem 2rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.9rem', opacity: saving ? .7 : 1 }}
-      >
+      <button onClick={saveNav} disabled={saving}
+        style={{ padding: '.7rem 2rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.9rem', opacity: saving ? .7 : 1 }}>
         {saving ? '⏳ Sauvegarde…' : '💾 Sauvegarder la navigation'}
       </button>
     </div>
