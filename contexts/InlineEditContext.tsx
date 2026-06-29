@@ -1,10 +1,9 @@
 'use client';
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import { bustCmsCache } from '@/hooks/useCmsContent';
 
 type InlineEditContextValue = {
   isEditing: boolean;
-  isVisible: boolean;
   toggleEditing: () => void;
   pendingChanges: Record<string, Record<string, string>>;
   updateField: (page: string, key: string, value: string) => void;
@@ -20,21 +19,7 @@ function countChanges(changes: Record<string, Record<string, string>>): number {
 
 export function InlineEditProvider({ children }: { children: React.ReactNode }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
   const [pendingChanges, setPendingChanges] = useState<Record<string, Record<string, string>>>({});
-
-  useEffect(() => {
-    async function checkAuth() {
-      try {
-        const res = await fetch('/api/cms/auth');
-        if (res.ok) {
-          const data = await res.json();
-          setIsVisible(!!data.ok);
-        }
-      } catch { /* silent */ }
-    }
-    checkAuth();
-  }, []);
 
   const toggleEditing = useCallback(() => {
     setIsEditing(prev => {
@@ -56,8 +41,6 @@ export function InlineEditProvider({ children }: { children: React.ReactNode }) 
 
     const errors: string[] = [];
     const count = countChanges(pendingChanges);
-
-    // Call PUT once per field (same as existing CMS admin)
     const allFields: { page: string; key: string; value: string }[] = [];
     for (const page of pages) {
       for (const [key, value] of Object.entries(pendingChanges[page])) {
@@ -92,7 +75,7 @@ export function InlineEditProvider({ children }: { children: React.ReactNode }) 
   }, [pendingChanges]);
 
   return (
-    <InlineEditContext.Provider value={{ isEditing, isVisible, toggleEditing, pendingChanges, updateField, saveAll, changeCount: countChanges(pendingChanges) }}>
+    <InlineEditContext.Provider value={{ isEditing, toggleEditing, pendingChanges, updateField, saveAll, changeCount: countChanges(pendingChanges) }}>
       {children}
     </InlineEditContext.Provider>
   );

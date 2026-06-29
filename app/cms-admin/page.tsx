@@ -1653,7 +1653,23 @@ export default function CMSAdmin() {
           <span style={{ fontWeight: 700, fontSize: '1.1rem', letterSpacing: '.03em' }}>Happy Humans CMS</span>
           <span style={{ background: 'rgba(255,255,255,.18)', fontSize: '.72rem', padding: '.2rem .6rem', borderRadius: '9999px', fontWeight: 600 }}>Supabase</span>
         </div>
-        <button onClick={logout} style={{ background: 'rgba(255,255,255,.15)', border: 'none', color: 'white', padding: '.4rem .9rem', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>Déconnexion</button>
+        <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center' }}>
+          <button
+            onClick={async () => {
+              const res = await fetch('/api/cms/auth');
+              if (!res.ok) return;
+              const data = await res.json();
+              if (data.token) {
+                window.open(`/?cms_edit_token=${encodeURIComponent(data.token)}`, '_blank');
+              }
+            }}
+            style={{ background: 'rgba(255,255,255,.22)', border: '1px solid rgba(255,255,255,.35)', color: 'white', padding: '.4rem .9rem', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '.35rem' }}
+            title="Ouvrir le site en mode édition inline"
+          >
+            ✏️ Éditer le site
+          </button>
+          <button onClick={logout} style={{ background: 'rgba(255,255,255,.15)', border: 'none', color: 'white', padding: '.4rem .9rem', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>Déconnexion</button>
+        </div>
       </div>
 
       {/* Bannière modifications non sauvegardées */}

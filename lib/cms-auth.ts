@@ -137,6 +137,16 @@ export function getCmsSessionToken() {
   return secret ? createSessionToken(secret) : null;
 }
 
+export function getCurrentSessionToken(req: Request): string | null {
+  const secret = getSessionSecret();
+  if (!secret) return null;
+  const cookies = parseCookies(req.headers.get('cookie'));
+  const sessionCookie = cookies[CMS_SESSION_COOKIE];
+  if (!sessionCookie) return null;
+  if (!parseSessionPayload(sessionCookie, secret)) return null;
+  return sessionCookie;
+}
+
 export function isValidCmsPassword(candidate: string | null | undefined) {
   const password = getConfiguredPassword();
 
