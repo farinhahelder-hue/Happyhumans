@@ -29,7 +29,7 @@ export default function EntreprisesPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
           <div className="relative z-10 max-w-3xl px-6 pb-14 md:px-16 md:pb-24">
             <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-amber-300">Entreprises</p>
-            <h1 className="mb-5 text-4xl font-serif font-light leading-[1.1] text-white md:text-5xl">{c.page_title}</h1>
+            <h1 className="mb-5 text-4xl font-serif font-light leading-[1.1] text-white md:text-6xl">{c.page_title}</h1>
             <p className="max-w-xl text-base leading-relaxed text-gray-300">{c.intro_text}</p>
           </div>
         </section>

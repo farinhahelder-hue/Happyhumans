@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -31,11 +31,11 @@ export default function TemoignagesPage() {
       <Header />
       <main>
         {/* HERO */}
-        <section className="relative flex h-[55vh] items-end overflow-hidden bg-stone-900 md:h-[60vh]">
+        <section className="relative flex h-[55vh] items-end overflow-hidden bg-stone-900 md:h-[65vh]">
           {c.hero_image && <img src={c.hero_image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-40" />}
           <div className="relative mx-auto w-full max-w-5xl px-6 pb-12 md:px-10">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-amber-400">Témoignages</p>
-            <h1 className="text-4xl font-serif font-light text-white md:text-5xl">{c.page_title}</h1>
+            <h1 className="text-4xl font-serif font-light leading-[1.1] text-white md:text-6xl">{c.page_title}</h1>
             <p className="mt-4 max-w-xl text-base text-stone-300">{c.intro_text}</p>
           </div>
         </section>

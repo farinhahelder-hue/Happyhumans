@@ -70,7 +70,7 @@ export default function FaqPage() {
       <Header />
       <main className="pt-[72px]">
         {/* Hero */}
-        <section className="relative overflow-hidden bg-stone-900 px-6 py-20 md:py-28 md:px-10 text-center">
+        <section className="relative overflow-hidden bg-stone-900 px-6 py-24 md:py-32 md:px-10 text-center">
           <img
             src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1600&q=80&auto=format&fit=crop"
             alt="Espace calme pour réfléchir"
@@ -79,7 +79,7 @@ export default function FaqPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-stone-900/60 via-stone-900/40 to-stone-900/70" />
           <div className="relative mx-auto max-w-3xl">
             <p className="mb-4 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">FAQ</p>
-            <h1 className="text-3xl font-serif font-light text-white md:text-5xl leading-tight">{c.page_title}</h1>
+            <h1 className="text-4xl font-serif font-light text-white md:text-6xl leading-tight">{c.page_title}</h1>
             <p className="mt-5 text-base text-stone-300 leading-relaxed max-w-xl mx-auto">{c.page_subtitle}</p>
           </div>
         </section>

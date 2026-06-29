@@ -56,7 +56,7 @@ export default function ContactPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
           <div className="relative z-10 max-w-3xl px-6 pb-12 md:px-16 md:pb-20">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-amber-300">Contact</p>
-            <h1 className="text-3xl font-serif font-light leading-[1.1] text-white md:text-5xl">{c.page_title}</h1>
+            <h1 className="text-4xl font-serif font-light leading-[1.1] text-white md:text-5xl">{c.page_title}</h1>
           </div>
         </section>
 

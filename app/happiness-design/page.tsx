@@ -33,7 +33,7 @@ export default function HappinessDesignPage() {
       <main className="pt-[72px]">
 
         {/* HERO */}
-        <section className="bg-stone-900 px-6 py-20 md:py-32 md:px-10 text-center relative overflow-hidden">
+        <section className="bg-stone-900 px-6 py-24 md:py-32 md:px-10 text-center relative overflow-hidden">
           <img
             src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=1600&q=80&auto=format&fit=crop"
             alt="Lumière dorée symbolisant la transformation et le bonheur"

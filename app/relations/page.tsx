@@ -212,7 +212,7 @@ export default function RelationsPage() {
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
               Relations &amp; Attachement
             </p>
-            <h1 className="text-3xl md:text-4xl font-serif font-light text-white mb-4">
+            <h1 className="text-4xl font-serif font-light leading-tight text-white mb-4 md:text-6xl">
               Comprendre vos liens pour les transformer
             </h1>
             <p className="text-stone-400 text-sm md:text-base leading-relaxed max-w-xl mx-auto">
