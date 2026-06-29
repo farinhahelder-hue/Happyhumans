@@ -1,14 +1,16 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, type ReactNode } from 'react';
+import dynamic from 'next/dynamic';
+
+const EditableField = dynamic(() => import('@/components/EditableField'), { ssr: false });
 
 type CmsContent = Record<string, string>;
 
 const memCache: Record<string, { data: CmsContent; ts: number }> = {};
 const MEM_TTL = 5 * 60 * 1000;
-const LS_TTL  = 30 * 1000;  // 30s only — CMS saves must be visible fast
+const LS_TTL  = 30 * 1000;
 const LS_PFX  = 'hh_cms_';
 
-// Called by the CMS admin after a successful save to bust the cache
 export function bustCmsCache(page: string) {
   delete memCache[page];
   if (typeof window !== 'undefined') {
@@ -39,7 +41,15 @@ function getInitial(page: string, defaults: CmsContent): CmsContent {
   return defaults;
 }
 
-export function useCmsContent(page: string, defaults: CmsContent = {}): CmsContent {
+type CmsResult = CmsContent & {
+  /**
+   * Returns an EditableField component when inline edit mode is active,
+   * otherwise returns the plain text string.
+   */
+  get(key: string, defaultValue?: string, opts?: { multiline?: boolean; as?: string }): ReactNode;
+};
+
+export function useCmsContent(page: string, defaults: CmsContent = {}): CmsResult {
   const [content, setContent] = useState<CmsContent>(() => getInitial(page, defaults));
   const done = useRef(false);
 
@@ -65,5 +75,21 @@ export function useCmsContent(page: string, defaults: CmsContent = {}): CmsConte
       .catch(() => {});
   }, [page]);
 
-  return content;
+  const get = useCallback((key: string, defaultValue?: string, opts?: { multiline?: boolean }): ReactNode => {
+    const val = content[key] ?? defaultValue ?? '';
+    return (
+      <EditableField
+        page={page}
+        fieldKey={key}
+        value={val}
+        multiline={opts?.multiline}
+      />
+    );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [content, page]);
+
+  // Return content spread + get method attached
+  const result = content as CmsResult;
+  result.get = get;
+  return result;
 }

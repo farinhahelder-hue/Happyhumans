@@ -4,6 +4,8 @@ import { AuthProvider } from '@/components/AuthProvider';
 import CookieConsentBanner from '@/components/CookieConsentBanner';
 import DynamicFavicon from '@/components/DynamicFavicon';
 import MaintenanceGate from '@/components/MaintenanceGate';
+import { InlineEditProvider } from '@/contexts/InlineEditContext';
+import InlineEditor from '@/components/InlineEditor';
 
 const SITE_URL = 'https://happyhumans.vercel.app';
 
@@ -157,11 +159,14 @@ export default function RootLayout({
       </head>
       <body>
         <MaintenanceGate>
-          <AuthProvider>
-            <DynamicFavicon />
-            {children}
-            <CookieConsentBanner />
-          </AuthProvider>
+          <InlineEditProvider>
+            <AuthProvider>
+              <DynamicFavicon />
+              {children}
+              <CookieConsentBanner />
+              <InlineEditor />
+            </AuthProvider>
+          </InlineEditProvider>
         </MaintenanceGate>
       </body>
     </html>
