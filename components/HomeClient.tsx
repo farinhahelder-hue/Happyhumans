@@ -38,12 +38,12 @@ export default function HomeClient() {
                 Monica Schneider · Executive Coach · Happy Humans
               </p>
               <h1 className="max-w-4xl text-4xl font-serif font-light leading-[1.05] text-stone-900 md:text-6xl">
-                {c.hero_title}
+              {c.get('hero_title')}
               </h1>
-              <p className="mt-7 max-w-2xl text-lg leading-relaxed text-stone-700">{c.hero_subtitle}</p>
+              <p className="mt-7 max-w-2xl text-lg leading-relaxed text-stone-700">{c.get('hero_subtitle', undefined, { multiline: true })}</p>
               <div className="mt-10 flex flex-wrap gap-4">
                 <Link href="/coaching" className="rounded-full bg-[#2f6b61] px-7 py-3.5 text-sm font-semibold text-white shadow-md transition hover:bg-[#235249]">
-                  {c.hero_cta}
+                  {c.get('hero_cta')}
                 </Link>
                 <Link href="/contact" className="rounded-full border border-stone-400 px-7 py-3.5 text-sm font-semibold text-stone-700 transition hover:border-stone-600">
                   Prendre contact
@@ -68,8 +68,8 @@ export default function HomeClient() {
             <div className="grid items-center gap-12 md:grid-cols-2">
               <div className="space-y-5">
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Monica Schneider</p>
-                <h2 className="text-3xl font-serif font-light leading-tight text-stone-900 md:text-4xl">{c.section_about_title}</h2>
-                <p className="text-base leading-relaxed text-stone-600">{c.section_about_text}</p>
+                <h2 className="text-3xl font-serif font-light leading-tight text-stone-900 md:text-4xl">{c.get('section_about_title')}</h2>
+                <p className="text-base leading-relaxed text-stone-600">{c.get('section_about_text', undefined, { multiline: true })}</p>
                 <Link href="/a-propos" className="inline-flex items-center gap-2 text-sm font-semibold text-[#2f6b61] hover:underline">
                   En savoir plus →
                 </Link>
@@ -90,8 +90,8 @@ export default function HomeClient() {
           <div className="mx-auto max-w-6xl px-6 md:px-10">
             <div className="mb-14 max-w-2xl">
               <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Accompagnement</p>
-              <h2 className="text-3xl font-serif font-light leading-tight text-stone-900 md:text-4xl">{c.services_title}</h2>
-              <p className="mt-4 text-base leading-relaxed text-stone-600">{c.services_subtitle}</p>
+              <h2 className="text-3xl font-serif font-light leading-tight text-stone-900 md:text-4xl">{c.get('services_title')}</h2>
+              <p className="mt-4 text-base leading-relaxed text-stone-600">{c.get('services_subtitle', undefined, { multiline: true })}</p>
             </div>
             <div className="grid gap-8 md:grid-cols-2">
               <div className="rounded-2xl bg-white p-8 shadow-sm">
@@ -111,8 +111,8 @@ export default function HomeClient() {
         {/* NEWSLETTER */}
         <section className="bg-[#2f6b61] py-20">
           <div className="mx-auto max-w-2xl px-6 text-center">
-            <h2 className="mb-4 text-3xl font-serif font-light text-white">{c.newsletter_title}</h2>
-            <p className="mb-8 text-base leading-relaxed text-emerald-100">{c.newsletter_subtitle}</p>
+            <h2 className="mb-4 text-3xl font-serif font-light text-white">{c.get('newsletter_title')}</h2>
+            <p className="mb-8 text-base leading-relaxed text-emerald-100">{c.get('newsletter_subtitle', undefined, { multiline: true })}</p>
             <form className="flex flex-col gap-3 sm:flex-row sm:gap-0" onSubmit={e => e.preventDefault()}>
               <input type="email" placeholder="Votre adresse email" className="flex-1 rounded-full px-5 py-3 text-sm text-stone-900 outline-none sm:rounded-r-none" />
               <button type="submit" className="rounded-full bg-amber-500 px-7 py-3 text-sm font-semibold text-white transition hover:bg-amber-400 sm:rounded-l-none">

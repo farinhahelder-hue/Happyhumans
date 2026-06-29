@@ -3,7 +3,6 @@ import './globals.css';
 import { AuthProvider } from '@/components/AuthProvider';
 import CookieConsentBanner from '@/components/CookieConsentBanner';
 import DynamicFavicon from '@/components/DynamicFavicon';
-import DynamicTheme from '@/components/DynamicTheme';
 import MaintenanceGate from '@/components/MaintenanceGate';
 import { InlineEditProvider } from '@/contexts/InlineEditContext';
 import InlineEditor from '@/components/InlineEditor';
@@ -163,7 +162,6 @@ export default function RootLayout({
           <InlineEditProvider>
             <AuthProvider>
               <DynamicFavicon />
-              <DynamicTheme />
               {children}
               <CookieConsentBanner />
               <InlineEditor />

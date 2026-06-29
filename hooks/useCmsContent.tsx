@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 
 const EditableField = dynamic(() => import('@/components/EditableField'), { ssr: false });
 
-export type CmsContent = Record<string, string>;
+type CmsContent = Record<string, string>;
 
 const memCache: Record<string, { data: CmsContent; ts: number }> = {};
 const MEM_TTL = 5 * 60 * 1000;
@@ -41,75 +41,79 @@ function getInitial(page: string, defaults: CmsContent): CmsContent {
   return defaults;
 }
 
-function loadFromApi(page: string, defaults: CmsContent, setContent: (c: CmsContent) => void) {
-  fetch(`/api/cms/public-content?page=${encodeURIComponent(page)}`, {
+async function fetchPageContent(page: string): Promise<CmsContent> {
+  const res = await fetch(`/api/cms/public-content?page=${encodeURIComponent(page)}`, {
     headers: { 'Cache-Control': 'no-cache' },
-  })
-    .then(r => r.ok ? r.json() : { content: [] })
-    .then(({ content: rows }) => {
-      const map: CmsContent = {};
-      (rows || []).forEach((r: { block_key: string; value: string }) => {
-        if (r.value) map[r.block_key] = r.value;
-      });
-      memCache[page] = { data: map, ts: Date.now() };
-      lsSet(page, map);
-      setContent({ ...defaults, ...map });
-    })
-    .catch(() => {});
+  });
+  if (!res.ok) return {};
+  const { content: rows } = await res.json();
+  const map: CmsContent = {};
+  (rows || []).forEach((r: { block_key: string; value: string }) => {
+    if (r.value) map[r.block_key] = r.value;
+  });
+  return map;
 }
 
-export type CmsResult = CmsContent & {
+export type CmsResult = {
+  content: CmsContent;
   /**
-   * Returns the raw string value (for href, src, alt, className, etc.).
+   * Returns an EditableField component when inline edit mode is active,
+   * otherwise returns the plain text string.
+   * Use this instead of `c.key` when you want inline editing support.
    */
-  get(key: string, defaultValue?: string): string;
-  /**
-   * Returns an EditableField when inline edit mode is active,
-   * otherwise returns the plain text ReactNode.
-   * Use for visual text elements (h1, h2, p, span).
-   */
-  field(key: string, defaultValue?: string, opts?: { multiline?: boolean; as?: 'span' | 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'div' }): ReactNode;
-};
+  get: (key: string, defaultValue?: string, opts?: { multiline?: boolean }) => ReactNode;
+} & CmsContent;
 
 export function useCmsContent(page: string, defaults: CmsContent = {}): CmsResult {
-  const [content, setContent] = useState<CmsContent>(() => getInitial(page, defaults));
-  const done = useRef(false);
-  // Keep defaults stable without adding it as a useEffect dependency
   const defaultsRef = useRef(defaults);
   defaultsRef.current = defaults;
 
+  const [content, setContent] = useState<CmsContent>(() => getInitial(page, defaults));
+  const fetchedRef = useRef(false);
+
+  const loadContent = useCallback(async () => {
+    const map = await fetchPageContent(page);
+    memCache[page] = { data: map, ts: Date.now() };
+    lsSet(page, map);
+    setContent({ ...defaultsRef.current, ...map });
+  }, [page]);
+
+  // Initial fetch
   useEffect(() => {
-    if (done.current) return;
-    done.current = true;
+    if (fetchedRef.current) return;
     const mem = memCache[page];
     if (mem && Date.now() - mem.ts < MEM_TTL) return;
-    loadFromApi(page, defaultsRef.current, setContent);
-  }, [page]);
+    fetchedRef.current = true;
+    loadContent().catch(() => {});
+  }, [page, loadContent]);
 
-  // Revalidate from API after a save
+  // Re-fetch after a successful inline save (for the pages concerned)
   useEffect(() => {
-    const handler = () => loadFromApi(page, defaultsRef.current, setContent);
-    window.addEventListener('inline-edit-saved', handler);
-    return () => window.removeEventListener('inline-edit-saved', handler);
-  }, [page]);
+    const onSaved = (e: Event) => {
+      const detail = (e as CustomEvent<{ pages?: string[] }>).detail;
+      const savedPages: string[] = detail?.pages ?? [];
+      if (savedPages.includes(page) || savedPages.length === 0) {
+        bustCmsCache(page);
+        fetchedRef.current = false;
+        loadContent().catch(() => {});
+      }
+    };
+    window.addEventListener('inline-edit-saved', onSaved);
+    return () => window.removeEventListener('inline-edit-saved', onSaved);
+  }, [page, loadContent]);
 
-  const get = useCallback((key: string, defaultValue?: string): string => {
-    return content[key] ?? defaultValue ?? '';
-  }, [content]);
-
-  const field = useCallback((key: string, defaultValue?: string, opts?: { multiline?: boolean; as?: 'span' | 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'div' }): ReactNode => {
-    const val = content[key] ?? defaultValue ?? '';
+  const get = useCallback((key: string, defaultValue?: string, opts?: { multiline?: boolean }): ReactNode => {
+    const val = content[key] ?? defaultValue ?? defaultsRef.current[key] ?? '';
     return (
       <EditableField
         page={page}
         fieldKey={key}
         value={val}
         multiline={opts?.multiline}
-        as={opts?.as}
       />
     );
   }, [content, page]);
 
-  // No mutation — use Object.assign on a fresh object
-  return Object.assign(Object.create(Object.getPrototypeOf(content)), content, { get, field });
+  // Build the result object without mutating a potentially-frozen object
+  return Object.assign(Object.create(null), content, { get, content }) as CmsResult;
 }

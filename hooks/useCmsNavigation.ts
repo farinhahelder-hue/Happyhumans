@@ -18,7 +18,7 @@ const DEFAULT_NAV: NavItem[] = [
   { id: '2', label: 'Coaching',      visible: true, position: 2,  isDropdown: true,
     dropdownItems: [
       { id: '2a', href: '/coaching',         label: 'Coaching individuel', visible: true, position: 1, icon: 'star' },
-      { id: '2b', href: '/temoignages',      label: 'Témoignages',        visible: false, position: 2, icon: 'chat' },
+      { id: '2b', href: '/temoignages',      label: 'Témoignages',        visible: true, position: 2, icon: 'chat' },
       { id: '2c', href: '/sparring-partner', label: 'Sparring Partner',   visible: true, position: 3, icon: 'users' },
     ]},
   { id: '3', href: '/entreprises',    label: 'Organisations',      visible: true, position: 3 },

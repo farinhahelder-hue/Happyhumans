@@ -169,21 +169,16 @@ export function getCmsAuthStatus(req: Request): CmsAuthStatus {
     return 'ok';
   }
 
-  // Allow writes from inline edit mode: the long-lived readiness cookie set by the
-  // middleware after HMAC token validation. Short-lived activation cookie + header
-  // x-cms-edit (set by middleware on every request) is also accepted.
-  const cookies = parseCookies(req.headers.get('cookie'));
-  if (
-    cookies['hh_cms_inline_ready'] === '1' ||
-    req.headers.get('x-cms-edit') === '1'
-  ) {
-    return 'ok';
-  }
-
   const secret = getSessionSecret();
+  const cookies = parseCookies(req.headers.get('cookie'));
   const sessionCookie = cookies[CMS_SESSION_COOKIE];
 
   if (secret && sessionCookie && parseSessionPayload(sessionCookie, secret)) {
+    return 'ok';
+  }
+
+  // Cookie posé par le middleware après validation du token d’édition inline (hh_cms_edit=1)
+  if (cookies['hh_cms_edit'] === '1') {
     return 'ok';
   }
 

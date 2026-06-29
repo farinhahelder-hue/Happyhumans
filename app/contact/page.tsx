@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { useCmsContent } from '@/hooks/useCmsContent'
@@ -55,8 +55,8 @@ export default function ContactPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
           <div className="relative z-10 max-w-3xl px-6 pb-12 md:px-16 md:pb-20">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-amber-300">{c.field('hero_badge')}</p>
-            <h1 className="text-4xl font-serif font-light leading-[1.1] text-white md:text-5xl">{c.field('page_title')}</h1>
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-amber-300">{c.get('hero_badge')}</p>
+            <h1 className="text-4xl font-serif font-light leading-[1.1] text-white md:text-5xl">{c.get('page_title')}</h1>
           </div>
         </section>
 
@@ -65,7 +65,7 @@ export default function ContactPage() {
           <div className="mx-auto max-w-5xl px-6 md:px-10">
             <div className="grid gap-16 md:grid-cols-[1fr_380px] items-start">
               <div>
-                <p className="mb-8 text-base leading-relaxed text-stone-600">{c.field('intro_text')}</p>
+                <p className="mb-8 text-base leading-relaxed text-stone-600">{c.get('intro_text', undefined, { multiline: true })}</p>
                 {sent ? (
                   <div className="rounded-2xl bg-[#eef5f3] border border-[#2d5f54]/20 p-8 text-center">
                     <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[#2d5f54] flex items-center justify-center">
@@ -73,18 +73,18 @@ export default function ContactPage() {
                         <polyline points="20 6 9 17 4 12"/>
                       </svg>
                     </div>
-                    <h3 className="text-lg font-semibold text-stone-900 mb-2">{c.field('success_title')}</h3>
-                    <p className="text-sm text-stone-600">{c.field('success_text')}</p>
+                    <h3 className="text-lg font-semibold text-stone-900 mb-2">{c.get('success_title')}</h3>
+                    <p className="text-sm text-stone-600">{c.get('success_text', undefined, { multiline: true })}</p>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-5">
                     <div className="grid gap-5 sm:grid-cols-2">
                       <div>
-                        <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">{c.field('form_name_label')}</label>
+                        <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">{c.get('form_name_label')}</label>
                         <input required value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder="Votre nom" />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">{c.field('form_email_label')}</label>
+                        <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">{c.get('form_email_label')}</label>
                         <input required type="email" value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder="votre@email.com" />
                       </div>
                     </div>
@@ -101,15 +101,15 @@ export default function ContactPage() {
                           <option value="autre">Autre question</option>
                         </select>
                       </div>
-                      <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">{c.field('form_subject_label')}</label>
+                      <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">{c.get('form_subject_label')}</label>
                       <input value={form.subject} onChange={e => setForm(f => ({...f, subject: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder="Objet de votre message" />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">{c.field('form_message_label')}</label>
+                      <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">{c.get('form_message_label')}</label>
                       <textarea required value={form.message} onChange={e => setForm(f => ({...f, message: e.target.value}))} rows={6} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54] resize-none" placeholder="Décrivez votre situation ou votre question…" />
                     </div>
                     <button type="submit" disabled={sending} className="rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white hover:bg-[#1e3a34] transition disabled:opacity-60">
-                      {sending ? 'Envoi…' : c.form_submit_label}
+                      {sending ? 'Envoi…' : c.get('form_submit_label')}
                     </button>
                   </form>
                 )}

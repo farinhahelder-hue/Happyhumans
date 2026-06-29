@@ -36,7 +36,7 @@ export async function PUT(req: NextRequest) {
 
   const body = await req.json();
   const { page, block_key, value } = body;
-  if (!page || block_key == null) {
+  if (!page || block_key === undefined || block_key === null) {
     return NextResponse.json({ error: 'page et block_key requis' }, { status: 400 });
   }
 

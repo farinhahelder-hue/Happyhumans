@@ -35,10 +35,10 @@ export default function BookingPage() {
         {/* HERO SOBRE */}
         <section className="bg-[#f5f0e8] px-6 py-16 md:py-20 text-center">
           <div className="mx-auto max-w-2xl">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-amber-800">{c.field('hero_badge')}</p>
-            <h1 className="text-3xl font-serif font-light text-stone-900 md:text-5xl">{c.field('hero_title')}</h1>
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-amber-800">{c.get('hero_badge')}</p>
+            <h1 className="text-3xl font-serif font-light text-stone-900 md:text-5xl">{c.get('hero_title')}</h1>
             <p className="mt-4 text-base text-stone-500">
-              {c.field('hero_subtitle')}
+              {c.get('hero_subtitle', undefined, { multiline: true })}
             </p>
           </div>
         </section>
@@ -74,21 +74,21 @@ export default function BookingPage() {
               {[
                 {
                   icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>,
-                  title: c.reassurance_1_title,
-                  desc: c.reassurance_1_desc,
+                  title: c.get('reassurance_1_title'),
+                  desc: c.get('reassurance_1_desc', undefined, { multiline: true }),
                 },
                 {
                   icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
-                  title: c.reassurance_2_title,
-                  desc: c.reassurance_2_desc,
+                  title: c.get('reassurance_2_title'),
+                  desc: c.get('reassurance_2_desc', undefined, { multiline: true }),
                 },
                 {
                   icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>,
-                  title: c.reassurance_3_title,
-                  desc: c.reassurance_3_desc,
+                  title: c.get('reassurance_3_title'),
+                  desc: c.get('reassurance_3_desc', undefined, { multiline: true }),
                 },
-              ].map(({ icon, title, desc }) => (
-                <div key={title} className="rounded-2xl bg-white p-6">
+              ].map(({ icon, title, desc }, i) => (
+                <div key={i} className="rounded-2xl bg-white p-6">
                   <div className="w-10 h-10 rounded-full bg-[#eef5f3] flex items-center justify-center shadow-sm mx-auto mb-3">{icon}</div>
                   <h3 className="text-sm font-semibold text-stone-900 mb-2">{title}</h3>
                   <p className="text-xs text-stone-500 leading-relaxed">{desc}</p>
@@ -96,7 +96,7 @@ export default function BookingPage() {
               ))}
             </div>
             <p className="mt-8 text-center text-xs text-stone-400">
-              {c.field('footer_note')}
+              {c.get('footer_note', undefined, { multiline: true })}
             </p>
           </div>
         </section>
@@ -105,7 +105,7 @@ export default function BookingPage() {
         <section className="bg-white py-8 text-center">
           <p className="text-sm text-stone-500 mb-3">Vous préférez réserver par email ?</p>
           <Link href="/contact" className="inline-flex items-center gap-2 text-sm font-semibold text-[#2d5f54] hover:underline">
-            {c.field('email_booking_text')}
+            {c.get('email_booking_text')}
           </Link>
         </section>
 

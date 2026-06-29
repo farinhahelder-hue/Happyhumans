@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
@@ -82,12 +82,12 @@ export default function BlogClientPage({ posts }: Props) {
         />
         <div className="absolute inset-0 bg-gradient-to-br from-stone-950/80 via-stone-900/75 to-amber-950/65" />
         <div className="relative mx-auto max-w-4xl text-center">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-amber-300">{c.hero_badge}</p>
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.24em] text-amber-300">{c.get('hero_badge')}</p>
           <h1 className="mb-6 text-5xl font-serif font-light leading-tight md:text-7xl whitespace-pre-line">
-            {c.hero_title}
+            {c.get('hero_title')}
           </h1>
           <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-white/75">
-            {c.hero_subtitle}
+            {c.get('hero_subtitle', undefined, { multiline: true })}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-white/65">
             <StatChip value={totalCarnets} label="Carnets" />
@@ -101,9 +101,9 @@ export default function BlogClientPage({ posts }: Props) {
         <section className="mx-auto max-w-7xl px-4 pb-4 pt-14">
           <div className="mb-5 flex items-end justify-between gap-4">
             <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">{c.featured_label}</p>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">{c.get('featured_label')}</p>
               <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">
-                {c.featured_title}
+                {c.get('featured_title')}
               </h2>
             </div>
           </div>
@@ -208,9 +208,9 @@ export default function BlogClientPage({ posts }: Props) {
       {filteredPosts.length === 0 ? (
         <div className="mx-auto max-w-7xl px-4 pb-20 text-center">
           <div className="rounded-[2rem] border border-stone-200 bg-white px-6 py-16 shadow-sm">
-            <h2 className="mb-3 text-2xl font-serif font-light text-stone-900">{c.empty_title}</h2>
+            <h2 className="mb-3 text-2xl font-serif font-light text-stone-900">{c.get('empty_title')}</h2>
             <p className="mx-auto max-w-md text-sm leading-relaxed text-stone-600">
-              {c.empty_text}
+              {c.get('empty_text', undefined, { multiline: true })}
             </p>
             <button
               onClick={() => {
@@ -219,7 +219,7 @@ export default function BlogClientPage({ posts }: Props) {
               }}
               className="mt-6 text-sm font-semibold text-amber-800 transition-colors duration-200 hover:text-amber-700"
             >
-              {c.empty_action}
+              {c.get('empty_action')}
             </button>
           </div>
         </div>
@@ -229,8 +229,8 @@ export default function BlogClientPage({ posts }: Props) {
             <section>
               <SectionHeader
                 eyebrow="Carnets"
-                title={c.carnets_title}
-                description={c.carnets_desc}
+                title={c.get('carnets_title')}
+                description={c.get('carnets_desc', undefined, { multiline: true })}
                 count={carnets.length}
               />
               <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -245,8 +245,8 @@ export default function BlogClientPage({ posts }: Props) {
             <section className="rounded-[2rem] bg-amber-50 px-4 py-12 md:px-8">
               <SectionHeader
                 eyebrow="Pépites"
-                title={c.pepites_title}
-                description={c.pepites_desc}
+                title={c.get('pepites_title')}
+                description={c.get('pepites_desc', undefined, { multiline: true })}
                 count={decouvertes.length}
               />
               <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -261,8 +261,8 @@ export default function BlogClientPage({ posts }: Props) {
             <section>
               <SectionHeader
                 eyebrow="Guides"
-                title={c.guides_title}
-                description={c.guides_desc}
+                title={c.get('guides_title')}
+                description={c.get('guides_desc', undefined, { multiline: true })}
                 count={guides.length}
               />
               <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -296,8 +296,8 @@ function SectionHeader({
   count,
 }: {
   eyebrow: string
-  title: string
-  description: string
+  title: React.ReactNode
+  description: React.ReactNode
   count: number
 }) {
   return (

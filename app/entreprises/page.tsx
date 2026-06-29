@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
@@ -80,8 +80,8 @@ export default function EntreprisesPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
           <div className="relative z-10 max-w-3xl px-6 pb-14 md:px-16 md:pb-24">
             <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-amber-300">Entreprises</p>
-            <h1 className="mb-5 text-4xl font-serif font-light leading-[1.1] text-white md:text-6xl">{c.field('page_title')}</h1>
-            <p className="max-w-xl text-base leading-relaxed text-gray-300">{c.field('intro_text')}</p>
+            <h1 className="mb-5 text-4xl font-serif font-light leading-[1.1] text-white md:text-6xl">{c.get('page_title')}</h1>
+            <p className="max-w-xl text-base leading-relaxed text-gray-300">{c.get('intro_text', undefined, { multiline: true })}</p>
           </div>
         </section>
 
@@ -91,7 +91,7 @@ export default function EntreprisesPage() {
             <div className="grid gap-12 md:grid-cols-2 items-center">
               <div className="space-y-5">
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Offres</p>
-                <h2 className="text-3xl font-serif font-light leading-tight text-stone-900">{c.field('section_title')}</h2>
+                <h2 className="text-3xl font-serif font-light leading-tight text-stone-900">{c.get('section_title')}</h2>
                 <div className="text-base leading-relaxed text-stone-600 space-y-4">
                   {c.section_text.split('\n').map((p, i) => p.trim() ? <p key={i}>{p}</p> : null)}
                 </div>
@@ -267,11 +267,11 @@ export default function EntreprisesPage() {
             <div className="bg-white rounded-2xl p-8 shadow-sm text-center">
               <span className="text-3xl font-serif leading-none text-[#2f6b61] select-none">&ldquo;</span>
               <blockquote lang="fr" className="mt-3 text-base leading-relaxed text-stone-700 italic">
-                {c.temoignage_dorothee_text || "On a eu un super feedback sur la réunion de présentation que nous avons préparée ensemble. Jérôme (le n+1 de ma cliente) nous a dit : \"Champagne !\""}
+                {c.get('temoignage_dorothee_text', undefined, { multiline: true })}
               </blockquote>
               <footer className="mt-6">
-                <p className="text-sm font-semibold text-stone-900">{c.temoignage_dorothee_author || 'Dorothée*'}</p>
-                <p className="text-xs text-stone-500 italic mt-0.5">{c.temoignage_dorothee_role || 'Directrice Achats Beauty Retail'}</p>
+                <p className="text-sm font-semibold text-stone-900">{c.get('temoignage_dorothee_author')}</p>
+                <p className="text-xs text-stone-500 italic mt-0.5">{c.get('temoignage_dorothee_role')}</p>
                 <p className="text-xs text-stone-400 mt-1">* Prénom modifié</p>
               </footer>
             </div>
