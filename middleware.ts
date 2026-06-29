@@ -2,60 +2,59 @@ import { NextRequest, NextResponse } from 'next/server'
 
 function getSecret(): string {
   return (
+    process.env.CMS_HMAC_SECRET?.trim() ||
     process.env.CMS_SESSION_SECRET?.trim() ||
     process.env.CMS_PASSWORD?.trim() ||
     ''
   )
 }
 
-function base64UrlDecode(value: string): string {
-  const padding = (4 - (value.length % 4)) % 4
-  return Buffer.from(value.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat(padding), 'base64').toString('utf8')
+function hex(buf: Uint8Array): string {
+  return Array.from(buf).map(b => b.toString(16).padStart(2, '0')).join('')
 }
 
-function isSessionValid(token: string, secret: string): boolean {
-  if (!secret) return false
-  const parts = token.split('.')
-  if (parts.length !== 2) return false
-  const [encodedPayload, signature] = parts
-  const { createHmac, timingSafeEqual } = require('crypto')
-  const expectedSig = createHmac('sha256', secret).update(encodedPayload).digest('hex')
+async function verifySignature(data: string, signature: string, secret: string): Promise<boolean> {
   try {
-    const a = Buffer.from(signature)
-    const b = Buffer.from(expectedSig)
-    if (a.length !== b.length || !timingSafeEqual(a, b)) return false
-  } catch { return false }
-  try {
-    const payload = JSON.parse(base64UrlDecode(encodedPayload))
-    if (!payload.exp || payload.exp < Math.floor(Date.now() / 1000)) return false
-    return true
+    const encoder = new TextEncoder()
+    const key = await crypto.subtle.importKey('raw', encoder.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
+    const expected = hex(new Uint8Array(await crypto.subtle.sign('HMAC', key, encoder.encode(data))))
+    return expected === signature
   } catch { return false }
 }
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
 
-  // 1. Check URL param ?cms_edit_token=... (passed from CMS admin)
+  // Check ?cms_edit_token=... param (passed from CMS admin via generate-edit-token)
   const tokenFromParam = req.nextUrl.searchParams.get('cms_edit_token')
   if (tokenFromParam) {
     const secret = getSecret()
-    // If no secret configured, log warning but allow access if CMS is working
-    // (secret is only missing if CMS_PASSWORD is also not set — misconfigured)
-    if (isSessionValid(tokenFromParam, secret)) {
-      res.cookies.set('hh_cms_edit', '1', {
-        httpOnly: false,
-        sameSite: 'lax',
-        maxAge: 60 * 60 * 2,
-        path: '/',
-      })
-      const url = req.nextUrl.clone()
-      url.searchParams.delete('cms_edit_token')
-      return NextResponse.redirect(url)
+    const parts = tokenFromParam.split('.')
+    const valid = parts.length === 2 && !!secret && await verifySignature(parts[0], parts[1], secret)
+
+    if (valid) {
+      try {
+        const payload = JSON.parse(atob(parts[0].replace(/-/g, '+').replace(/_/g, '/')))
+        if (payload?.exp && Math.floor(Date.now() / 1000) < payload.exp) {
+          res.cookies.set('hh_cms_edit', '1', {
+            httpOnly: false,
+            sameSite: 'lax',
+            maxAge: 60 * 60 * 2,
+            path: '/',
+          })
+          const url = req.nextUrl.clone()
+          url.searchParams.delete('cms_edit_token')
+          return NextResponse.redirect(url)
+        }
+      } catch { /* invalid payload */ }
     }
-    // Token invalid or secret missing — silently continue without setting cookie
+    // Token invalid — redirect without setting cookie
+    const url = req.nextUrl.clone()
+    url.searchParams.delete('cms_edit_token')
+    return NextResponse.redirect(url)
   }
 
-  // 2. Carry forward existing hh_cms_edit flag
+  // Carry forward existing hh_cms_edit flag
   const editCookie = req.cookies.get('hh_cms_edit')
   if (editCookie?.value === '1') {
     res.headers.set('x-cms-edit', '1')

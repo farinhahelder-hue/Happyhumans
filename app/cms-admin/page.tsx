@@ -1656,7 +1656,7 @@ export default function CMSAdmin() {
         <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center' }}>
           <button
             onClick={async () => {
-              const res = await fetch('/api/cms/auth');
+              const res = await fetch('/api/cms/generate-edit-token');
               if (!res.ok) return;
               const data = await res.json();
               if (data.token) {
