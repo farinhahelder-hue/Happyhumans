@@ -30,6 +30,7 @@ export const PAGE_DEFAULTS: Record<string, Record<string, string>> = {
     form_sending:        'Envoi en cours…',
     form_submit:         'Envoyer le message',
     contact_email:       'happyhumans.coaching@gmail.com',
+  // home_card_order_* are defined in app/page.tsx DEFAULTS
   },
   'a-propos': {
     hero_image:       '',
