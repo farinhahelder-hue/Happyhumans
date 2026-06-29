@@ -60,6 +60,7 @@ export function InlineEditProvider({ children }: { children: React.ReactNode }) 
         fetch('/api/cms/content', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({ page: field.page, block_key: field.key, value: field.value }),
         }).then(async res => {
           if (!res.ok) {

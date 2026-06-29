@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+const INLINE_EDIT_COOKIE = 'hh_cms_edit'
+const INLINE_READY_COOKIE = 'hh_cms_inline_ready'
+
 function getSecret(): string {
   return (
     process.env.CMS_HMAC_SECRET?.trim() ||
@@ -50,8 +53,17 @@ export async function middleware(req: NextRequest) {
             url.searchParams.delete('cms_edit_token')
             // Set cookie on the redirect response itself (not on discarded res)
             const redirectRes = NextResponse.redirect(url)
-            redirectRes.cookies.set('hh_cms_edit', '1', {
+            // Short-lived activation cookie (2h) — triggers inline editor UI
+            redirectRes.cookies.set(INLINE_EDIT_COOKIE, '1', {
               maxAge: 60 * 60 * 2,
+              path: '/',
+              sameSite: 'lax',
+              secure: true,
+              httpOnly: false,
+            })
+            // Long-lived readiness cookie (7d) — used by API auth to allow writes
+            redirectRes.cookies.set(INLINE_READY_COOKIE, '1', {
+              maxAge: 60 * 60 * 24 * 7,
               path: '/',
               sameSite: 'lax',
               secure: true,
@@ -69,8 +81,9 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Carry forward existing hh_cms_edit flag
-  const editCookie = req.cookies.get('hh_cms_edit')
+  // Carry forward inline-edit state as a request header (API routes can't read
+  // response-set cookies, so we forward it as a header the API can check)
+  const editCookie = req.cookies.get(INLINE_EDIT_COOKIE)
   if (editCookie?.value === '1') {
     res.headers.set('x-cms-edit', '1')
   }
