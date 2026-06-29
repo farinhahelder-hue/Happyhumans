@@ -49,7 +49,9 @@ export default function Footer() {
             <p className="text-xs uppercase tracking-widest mb-3" style={{ color: '#c9a96e' }}>Navigation</p>
             <div className="flex flex-col gap-2 text-xs" style={{ color: '#5a7a74' }}>
               <Link href="/" className="hover:text-white transition">Accueil</Link>
-              <Link href="/coaching" className="hover:text-white transition">Coaching</Link>
+              <Link href="/coaching" className="hover:text-white transition">Coaching individuel</Link>
+              <Link href="/happiness-design" className="hover:text-white transition">Happiness Design™</Link>
+              <Link href="/sparring-partner" className="hover:text-white transition">Sparring Partner</Link>
               <Link href="/entreprises" className="hover:text-white transition">Entreprises</Link>
               <Link href="/relations" className="hover:text-white transition">Relations</Link>
               <Link href="/temoignages" className="hover:text-white transition">Témoignages</Link>

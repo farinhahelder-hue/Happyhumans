@@ -120,6 +120,12 @@ export default function Header() {
                     {nav.label_coaching}
                   </Link>
                   <div className="mx-3 h-px bg-stone-100" />
+                  <Link href="/happiness-design" onClick={() => setDropOpen(false)}
+                    className="flex items-center gap-2 px-4 py-3 text-sm text-stone-700 hover:bg-[#f5f0e8] hover:text-[#2d5f54] transition-colors">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    Happiness Design™
+                  </Link>
+                  <div className="mx-3 h-px bg-stone-100" />
                   <Link href="/temoignages" onClick={() => setDropOpen(false)}
                     className="flex items-center gap-2 px-4 py-3 text-sm text-stone-700 hover:bg-[#f5f0e8] hover:text-[#2d5f54] transition-colors">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -194,6 +200,14 @@ export default function Header() {
                   <Link href="/coaching" onClick={() => setOpen(false)}
                     className="text-sm text-stone-600 hover:text-[#2d5f54] py-2">
                     {nav.label_coaching}
+                  </Link>
+                  <Link href="/happiness-design" onClick={() => setOpen(false)}
+                    className="text-sm text-stone-600 hover:text-[#2d5f54] py-2">
+                    Happiness Design™
+                  </Link>
+                  <Link href="/sparring-partner" onClick={() => setOpen(false)}
+                    className="text-sm text-stone-600 hover:text-[#2d5f54] py-2">
+                    Sparring Partner
                   </Link>
                   <Link href="/temoignages" onClick={() => setOpen(false)}
                     className="text-sm text-stone-600 hover:text-[#2d5f54] py-2">
