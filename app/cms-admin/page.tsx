@@ -1853,7 +1853,7 @@ export default function CMSAdmin() {
                           <div style={{ marginBottom: '2rem' }}>
                             {/* Prévisualisation live */}
                             <div style={{ marginBottom: '1.5rem', padding: '1rem 1.5rem', background: 'white', borderRadius: '.75rem', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                              <div style={{ width: 260, background: '#fff', borderBottom: '1px solid #f0ece8', borderRadius: '.5rem .5rem 0 0', padding: '.6rem 1rem', display: 'flex', alignItems: 'center', gap: '.75rem' }}>
+                              <div style={{ width: 260, background: '#fff', borderBottom: '1px solid #f0ece8', borderRadius: '.5rem .5rem 0 0', padding: '.6rem 1rem', display: 'flex', alignItems: 'center', gap: '.75rem', justifyContent: (editedSettings['logo_position'] || 'left') === 'center' ? 'center' : 'flex-start' }}>
                                 {editedSettings['logo_url'] ? (
                                   <img
                                     src={editedSettings['logo_url']}
@@ -1861,7 +1861,7 @@ export default function CMSAdmin() {
                                     style={{
                                       width: Number(editedSettings['logo_size'] || 44),
                                       height: Number(editedSettings['logo_size'] || 44),
-                                      borderRadius: '50%',
+                                      borderRadius: (editedSettings['logo_shape'] || 'circle') === 'circle' ? '50%' : (editedSettings['logo_shape'] === 'rounded' ? '12px' : '4px'),
                                       objectFit: 'cover',
                                       border: '1px solid #eee',
                                     }}
@@ -1870,7 +1870,7 @@ export default function CMSAdmin() {
                                   <div style={{
                                     width: Number(editedSettings['logo_size'] || 44),
                                     height: Number(editedSettings['logo_size'] || 44),
-                                    borderRadius: '50%',
+                                    borderRadius: (editedSettings['logo_shape'] || 'circle') === 'circle' ? '50%' : (editedSettings['logo_shape'] === 'rounded' ? '12px' : '4px'),
                                     background: '#2d5f54',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     color: 'white', fontSize: '.7rem', fontWeight: 700, flexShrink: 0,
@@ -1927,6 +1927,41 @@ export default function CMSAdmin() {
                                   </button>
                                 ))}
                               </div>
+
+                            {/* Position du logo */}
+                            <div style={{ marginBottom: '1.25rem' }}>
+                              <label style={lbl}>Position dans le header</label>
+                              <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
+                                {[['Gauche', 'left'], ['Centré', 'center']].map(([label, val]) => (
+                                  <button key={val} onClick={() => setEditedSettings(p => ({ ...p, logo_position: val }))}
+                                    style={{ padding: '.45rem 1.1rem', fontSize: '.82rem', fontWeight: 600, border: `1.5px solid ${(editedSettings['logo_position'] || 'left') === val ? '#2d5f54' : '#ddd'}`, borderRadius: '.5rem', cursor: 'pointer', background: (editedSettings['logo_position'] || 'left') === val ? '#2d5f54' : 'white', color: (editedSettings['logo_position'] || 'left') === val ? 'white' : '#555', transition: 'all .15s', display: 'flex', alignItems: 'center', gap: '.35rem' }}>
+                                    {val === 'left'
+                                      ? <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><line x1="14" y1="6" x2="21" y2="6"/></svg>{label}</>
+                                      : <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="3" y1="6" x2="8" y2="6"/><rect x="9" y="3" width="6" height="6" rx="1"/><line x1="16" y1="6" x2="21" y2="6"/></svg>{label}</>
+                                    }
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Forme du logo */}
+                            <div style={{ marginBottom: '1.25rem' }}>
+                              <label style={lbl}>Forme du logo</label>
+                              <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
+                                {[['Cercle', 'circle'], ['Arrondi', 'rounded'], ['Carré', 'square']].map(([label, val]) => {
+                                  const active = (editedSettings['logo_shape'] || 'circle') === val;
+                                  const size = 32;
+                                  const radius = val === 'circle' ? '50%' : val === 'rounded' ? '6px' : '2px';
+                                  return (
+                                    <button key={val} onClick={() => setEditedSettings(p => ({ ...p, logo_shape: val }))}
+                                      style={{ padding: '.45rem 1rem', fontSize: '.82rem', fontWeight: 600, border: `1.5px solid ${active ? '#2d5f54' : '#ddd'}`, borderRadius: '.5rem', cursor: 'pointer', background: active ? '#2d5f54' : 'white', color: active ? 'white' : '#555', display: 'flex', alignItems: 'center', gap: '.4rem' }}>
+                                      <div style={{ width: size, height: size, borderRadius: radius, background: active ? 'rgba(255,255,255,.3)' : '#e8e4df', border: `1px solid ${active ? 'rgba(255,255,255,.4)' : '#ccc'}`, flexShrink: 0 }} />
+                                      {label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
                             </div>
                           </div>
                         )}
@@ -1989,6 +2024,41 @@ export default function CMSAdmin() {
                               })} style={{ marginTop: '1rem', padding: '.4rem .9rem', background: '#f5f0eb', border: 'none', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.8rem', color: '#666' }}>
                                 Réinitialiser les couleurs personnalisées
                               </button>
+
+                            {/* Position du logo */}
+                            <div style={{ marginBottom: '1.25rem' }}>
+                              <label style={lbl}>Position dans le header</label>
+                              <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
+                                {[['Gauche', 'left'], ['Centré', 'center']].map(([label, val]) => (
+                                  <button key={val} onClick={() => setEditedSettings(p => ({ ...p, logo_position: val }))}
+                                    style={{ padding: '.45rem 1.1rem', fontSize: '.82rem', fontWeight: 600, border: `1.5px solid ${(editedSettings['logo_position'] || 'left') === val ? '#2d5f54' : '#ddd'}`, borderRadius: '.5rem', cursor: 'pointer', background: (editedSettings['logo_position'] || 'left') === val ? '#2d5f54' : 'white', color: (editedSettings['logo_position'] || 'left') === val ? 'white' : '#555', transition: 'all .15s', display: 'flex', alignItems: 'center', gap: '.35rem' }}>
+                                    {val === 'left'
+                                      ? <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><line x1="14" y1="6" x2="21" y2="6"/></svg>{label}</>
+                                      : <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="3" y1="6" x2="8" y2="6"/><rect x="9" y="3" width="6" height="6" rx="1"/><line x1="16" y1="6" x2="21" y2="6"/></svg>{label}</>
+                                    }
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Forme du logo */}
+                            <div style={{ marginBottom: '1.25rem' }}>
+                              <label style={lbl}>Forme du logo</label>
+                              <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
+                                {[['Cercle', 'circle'], ['Arrondi', 'rounded'], ['Carré', 'square']].map(([label, val]) => {
+                                  const active = (editedSettings['logo_shape'] || 'circle') === val;
+                                  const size = 32;
+                                  const radius = val === 'circle' ? '50%' : val === 'rounded' ? '6px' : '2px';
+                                  return (
+                                    <button key={val} onClick={() => setEditedSettings(p => ({ ...p, logo_shape: val }))}
+                                      style={{ padding: '.45rem 1rem', fontSize: '.82rem', fontWeight: 600, border: `1.5px solid ${active ? '#2d5f54' : '#ddd'}`, borderRadius: '.5rem', cursor: 'pointer', background: active ? '#2d5f54' : 'white', color: active ? 'white' : '#555', display: 'flex', alignItems: 'center', gap: '.4rem' }}>
+                                      <div style={{ width: size, height: size, borderRadius: radius, background: active ? 'rgba(255,255,255,.3)' : '#e8e4df', border: `1px solid ${active ? 'rgba(255,255,255,.4)' : '#ccc'}`, flexShrink: 0 }} />
+                                      {label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
                             </div>
                           </div>
                         )}

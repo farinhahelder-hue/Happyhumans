@@ -22,9 +22,11 @@ export default function Header() {
   const [mobileCoach, setMobileCoach] = useState(false) // coaching sub on mobile
   const dropRef = useRef<HTMLDivElement>(null)
   const { user, loading } = useAuth()
-  const [logoUrl, setLogoUrl]   = useState<string>('/logo-happy-humans.jpg')
-  const [siteName, setSiteName] = useState('Happy Humans')
-  const [logoSize, setLogoSize] = useState(44)
+  const [logoUrl, setLogoUrl]       = useState<string>('/logo-happy-humans.jpg')
+  const [siteName, setSiteName]     = useState('Happy Humans')
+  const [logoSize, setLogoSize]     = useState(44)
+  const [logoShape, setLogoShape]   = useState<'circle'|'rounded'|'square'>('circle')
+  const [logoPosition, setLogoPosition] = useState<'left'|'center'>('left')
   const nav = useCmsContent('navigation', NAV_DEFAULTS)
 
   const isCmsUser = !loading && !!user
@@ -33,9 +35,11 @@ export default function Header() {
     fetch('/api/cms/public-settings')
       .then(r => r.ok ? r.json() : { settings: {} })
       .then(({ settings }) => {
-        if (settings.logo_url)  setLogoUrl(settings.logo_url)
-        if (settings.site_name) setSiteName(settings.site_name)
-        if (settings.logo_size) setLogoSize(Number(settings.logo_size) || 44)
+        if (settings.logo_url)      setLogoUrl(settings.logo_url)
+        if (settings.site_name)    setSiteName(settings.site_name)
+        if (settings.logo_size)    setLogoSize(Number(settings.logo_size) || 44)
+        if (settings.logo_shape)   setLogoShape(settings.logo_shape as 'circle'|'rounded'|'square')
+        if (settings.logo_position) setLogoPosition(settings.logo_position as 'left'|'center')
       })
       .catch(() => {})
   }, [])
@@ -64,9 +68,19 @@ export default function Header() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 transition-colors duration-200" aria-label={`${siteName} accueil`}>
-            <Image src={logoUrl} alt={siteName} width={logoSize} height={logoSize}
-              className="rounded-full object-cover" style={{ height: logoSize, width: logoSize }} />
+          <Link href="/" className={`flex items-center gap-3 transition-colors duration-200 ${logoPosition === 'center' ? 'mx-auto' : ''}`} aria-label={`${siteName} accueil`}>
+            <Image
+              src={logoUrl}
+              alt={siteName}
+              width={logoSize}
+              height={logoSize}
+              className="object-cover flex-shrink-0"
+              style={{
+                height: logoSize,
+                width: logoSize,
+                borderRadius: logoShape === 'circle' ? '50%' : logoShape === 'rounded' ? '10px' : '4px',
+              }}
+            />
             <span className="text-xl font-serif font-bold tracking-tight text-stone-900">{siteName}</span>
           </Link>
 
