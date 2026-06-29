@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
@@ -24,7 +24,7 @@ export default function SparringPartnerPage() {
             <h1 className="text-4xl font-serif font-light leading-tight text-white md:text-6xl">Un regard exterieur strategique par une pair qui comprend vos enjeux</h1>
             <p className="mt-6 text-lg leading-relaxed text-stone-300 max-w-xl mx-auto">Ex-L&apos;Oreal, ex-LVMH, 5 langues, philo-coaching. Monica vous offre le recul qu&apos;un manager ne peut pas toujours trouver en interne.</p>
             <div className="mt-10 flex flex-wrap gap-4 justify-center">
-              <Link href="/booking" className="rounded-full bg-[#2f6b61] px-7 py-3.5 text-sm font-semibold text-white shadow-md hover:bg-[#235249] transition">Reserver une session</Link>
+              <Link href="/booking?from=sparring-partner" className="rounded-full bg-[#2f6b61] px-7 py-3.5 text-sm font-semibold text-white shadow-md hover:bg-[#235249] transition">Reserver une session</Link>
               <Link href="/contact" className="rounded-full border border-stone-400 px-7 py-3.5 text-sm font-semibold text-stone-200 hover:border-white hover:text-white transition">Poser une question</Link>
             </div>
           </div>
@@ -67,7 +67,7 @@ export default function SparringPartnerPage() {
             <h2 className="mb-3 text-2xl font-serif font-light text-white">Pret a challenger vos idees ?</h2>
             <p className="text-sm text-emerald-200 mb-8">Session 60 a 90 min. Conversation decouverte de 30 min offerte.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/booking" className="rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[#2f6b61] hover:bg-amber-50 transition shadow">Reserver une session</Link>
+              <Link href="/booking?from=sparring-partner" className="rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[#2f6b61] hover:bg-amber-50 transition shadow">Reserver une session</Link>
               <Link href="/contact" className="rounded-full border border-white px-8 py-3.5 text-sm font-semibold text-white hover:bg-white/10 transition">Poser une question</Link>
             </div>
           </div>

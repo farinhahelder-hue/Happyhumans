@@ -96,7 +96,7 @@ export default function CoachingPage() {
             <h1 className="text-4xl font-serif font-light leading-tight text-white md:text-6xl">{c.hero_title}</h1>
             <p className="mt-6 text-lg leading-relaxed text-stone-300">{c.hero_subtitle}</p>
             <div className="mt-10 flex flex-wrap gap-4 justify-center">
-              <Link href="/booking" className="rounded-full bg-[#2f6b61] px-7 py-3.5 text-sm font-semibold text-white shadow-md hover:bg-[#235249] transition">
+              <Link href="/booking?from=coaching" className="rounded-full bg-[#2f6b61] px-7 py-3.5 text-sm font-semibold text-white shadow-md hover:bg-[#235249] transition">
                 Séance découverte gratuite (45 min)
               </Link>
               <Link href="/contact" className="rounded-full border border-stone-400 px-7 py-3.5 text-sm font-semibold text-stone-200 hover:border-white hover:text-white transition">
@@ -166,7 +166,7 @@ export default function CoachingPage() {
               <p className="text-xs text-stone-500 mt-0.5">Séance découverte gratuite · 45 min · Sans engagement · Confirmation immédiate</p>
             </div>
             <div className="flex flex-wrap gap-3 flex-shrink-0">
-              <Link href="/booking" className="rounded-full bg-[#2f6b61] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#235249] transition shadow-sm">
+              <Link href="/booking?from=coaching" className="rounded-full bg-[#2f6b61] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#235249] transition shadow-sm">
                 Réserver maintenant →
               </Link>
               <Link href="/contact" className="rounded-full border border-[#2f6b61] px-6 py-2.5 text-sm font-semibold text-[#2f6b61] hover:bg-[#2f6b61] hover:text-white transition">
@@ -228,7 +228,7 @@ export default function CoachingPage() {
           <div className="mx-auto max-w-2xl px-6 text-center">
             <h2 className="mb-3 text-2xl font-serif font-light text-white">Prêt·e à commencer ?</h2>
             <p className="mb-6 text-emerald-100 text-sm">{c.form_intro}</p>
-            <Link href="/booking" className="rounded-full bg-white px-8 py-3 text-sm font-semibold text-[#2f6b61] hover:bg-amber-50 transition">
+            <Link href="/booking?from=coaching" className="rounded-full bg-white px-8 py-3 text-sm font-semibold text-[#2f6b61] hover:bg-amber-50 transition">
               Séance découverte gratuite (45 min)
             </Link>
           </div>

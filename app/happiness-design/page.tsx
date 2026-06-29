@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
@@ -63,7 +63,7 @@ export default function HappinessDesignPage() {
             <p className="mt-5 text-xl font-serif font-light text-amber-300 md:text-2xl">{c.page_subtitle} <em className="text-stone-400 text-base">— par Happy Humans</em></p>
             <p className="mt-7 text-base leading-relaxed text-stone-300 max-w-2xl mx-auto">{c.intro_text}</p>
             <div className="mt-10">
-              <Link href="/booking" className="rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition">
+              <Link href="/booking?from=happiness-design" className="rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition">
                 Séance découverte gratuite (45 min)
               </Link>
             </div>
@@ -172,7 +172,7 @@ export default function HappinessDesignPage() {
                     </li>
                   ))}
                 </ul>
-                <Link href="/booking" className="block rounded-full bg-[#2d5f54] py-3 text-center text-sm font-semibold text-white hover:bg-[#1e3a34] transition">
+                <Link href="/booking?from=happiness-design" className="block rounded-full bg-[#2d5f54] py-3 text-center text-sm font-semibold text-white hover:bg-[#1e3a34] transition">
                   Réserver une séance découverte →
                 </Link>
               </div>
@@ -188,7 +188,7 @@ export default function HappinessDesignPage() {
                     </li>
                   ))}
                 </ul>
-                <Link href="/booking" className="block rounded-full border border-[#2d5f54] py-3 text-center text-sm font-semibold text-[#2d5f54] hover:bg-[#2d5f54] hover:text-white transition">
+                <Link href="/booking?from=happiness-design" className="block rounded-full border border-[#2d5f54] py-3 text-center text-sm font-semibold text-[#2d5f54] hover:bg-[#2d5f54] hover:text-white transition">
                   Réserver maintenant →
                 </Link>
               </div>
@@ -202,7 +202,7 @@ export default function HappinessDesignPage() {
           <div className="mx-auto max-w-xl px-6">
             <h2 className="mb-4 text-2xl font-serif font-light text-white">Prêt·e à reprendre les rênes ?</h2>
             <p className="text-sm text-emerald-100 mb-7">Commençons par une séance découverte de 45 min — gratuite et sans engagement.</p>
-            <Link href="/booking" className="rounded-full bg-white px-8 py-3 text-sm font-semibold text-[#2d5f54] hover:bg-amber-50 transition">
+            <Link href="/booking?from=happiness-design" className="rounded-full bg-white px-8 py-3 text-sm font-semibold text-[#2d5f54] hover:bg-amber-50 transition">
               Réserver ma séance découverte →
             </Link>
           </div>

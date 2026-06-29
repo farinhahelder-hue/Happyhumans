@@ -1,9 +1,10 @@
 'use client'
 
+import { Suspense } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import Script from 'next/script'
 import Link from 'next/link'
+import CalendlyWidget from '@/components/CalendlyWidget'
 
 export default function BookingPage() {
   return (
@@ -25,15 +26,13 @@ export default function BookingPage() {
         {/* CALENDLY WIDGET OFFICIEL */}
         <section className="bg-white py-8">
           <div className="mx-auto max-w-4xl px-4">
-            <div
-              className="calendly-inline-widget rounded-2xl overflow-hidden"
-              data-url="https://calendly.com/happyhumans-coaching?hide_landing_page_details=1&hide_gdpr_banner=1&primary_color=2d5f54"
-              style={{ minWidth: 320, height: 700 }}
-            />
-            <Script
-              src="https://assets.calendly.com/assets/external/widget.js"
-              strategy="lazyOnload"
-            />
+            <Suspense fallback={
+              <div className="h-[700px] flex items-center justify-center text-stone-400 text-sm">
+                Chargement du calendrier…
+              </div>
+            }>
+              <CalendlyWidget />
+            </Suspense>
             <p className="mt-4 text-center text-xs text-stone-400">
               Problème d&apos;affichage ?{' '}
               <a
@@ -77,7 +76,7 @@ export default function BookingPage() {
               ))}
             </div>
             <p className="mt-8 text-center text-xs text-stone-400">
-              Toutes les séances se déroulent en ligne (Zoom) ou en présentiel à Paris, selon votre préférence.
+              Toutes les séances se déroulent en ligne (Google Meet) ou en présentiel à Paris, selon votre préférence.
             </p>
           </div>
         </section>

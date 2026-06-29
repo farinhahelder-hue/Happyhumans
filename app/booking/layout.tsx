@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Réserver une séance — Happy Humans | Monica Schneider",
+  title: "Réserver une séance — Monica Schneider",
   description: "Réservez une séance découverte gratuite (45 min) avec Monica Schneider. Executive coaching, philosophical counselling et Happiness Design™.",
 }
 
