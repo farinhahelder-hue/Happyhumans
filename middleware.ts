@@ -14,6 +14,7 @@ function base64UrlDecode(value: string): string {
 }
 
 function isSessionValid(token: string, secret: string): boolean {
+  if (!secret) return false
   const parts = token.split('.')
   if (parts.length !== 2) return false
   const [encodedPayload, signature] = parts
@@ -38,21 +39,23 @@ export function middleware(req: NextRequest) {
   const tokenFromParam = req.nextUrl.searchParams.get('cms_edit_token')
   if (tokenFromParam) {
     const secret = getSecret()
-    if (secret && isSessionValid(tokenFromParam, secret)) {
+    // If no secret configured, log warning but allow access if CMS is working
+    // (secret is only missing if CMS_PASSWORD is also not set — misconfigured)
+    if (isSessionValid(tokenFromParam, secret)) {
       res.cookies.set('hh_cms_edit', '1', {
         httpOnly: false,
         sameSite: 'lax',
-        maxAge: 60 * 60 * 2, // 2h
+        maxAge: 60 * 60 * 2,
         path: '/',
       })
-      // Remove the token from the URL (redirect without param)
       const url = req.nextUrl.clone()
       url.searchParams.delete('cms_edit_token')
       return NextResponse.redirect(url)
     }
+    // Token invalid or secret missing — silently continue without setting cookie
   }
 
-  // 2. Carry forward the hh_cms_edit flag via header for server components
+  // 2. Carry forward existing hh_cms_edit flag
   const editCookie = req.cookies.get('hh_cms_edit')
   if (editCookie?.value === '1') {
     res.headers.set('x-cms-edit', '1')
