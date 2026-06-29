@@ -4,6 +4,7 @@ import React from 'react';
 import { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import EnhancedRichContent from '@/components/EnhancedRichContent';
+import { bustCmsCache } from '@/hooks/useCmsContent';
 import MediaLibrary from '@/components/MediaLibrary';
 import { sanitizeHtml } from '@/lib/sanitize-html';
 import CarouselEditor from '@/components/admin/CarouselEditor';
@@ -101,6 +102,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'hero_image',            label: 'Hero — Image de fond',                                 type: 'image' },
       // Services
       { key: 'services_title',        label: 'Services — Titre section',                             type: 'text' },
+      { key: 'services_intro',        label: 'Services — Texte intro',                               type: 'textarea' },
       { key: 'services_b2c_title',    label: 'Services — Particuliers : Titre',                     type: 'text' },
       { key: 'services_b2c_text',     label: 'Services — Particuliers : Texte',                     type: 'textarea' },
       { key: 'services_b2c_cta',      label: 'Services — Particuliers : Bouton',                    type: 'text' },
@@ -946,6 +948,7 @@ export default function CMSAdmin() {
       }
 
       showToast(`✅ Page "${config.label}" sauvegardée !`);
+      bustCmsCache(pageKey);
       cleanHash.current = JSON.stringify(editedContent) + '|' + JSON.stringify(editedSettings); setIsDirty(false); setSavedOk(true); setTimeout(() => setSavedOk(false), 2000);
       loadSettings();
     } catch {

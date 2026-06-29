@@ -143,8 +143,8 @@ export default function LandingPage() {
           <div className="mx-auto max-w-5xl">
             <div className="mb-12 text-center">
               <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Accompagnement</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Un accompagnement pour deux contextes</h2>
-              <p className="mt-3 text-sm text-stone-500 max-w-xl mx-auto">Que vous soyez un individu en quête de clarté ou une organisation qui veut remettre de l&apos;alignement dans ses équipes.</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.services_title || 'Un accompagnement pour deux contextes'}</h2>
+              <p className="mt-3 text-sm text-stone-500 max-w-xl mx-auto">{c.services_intro || 'Que vous soyez un particulier en quête de clarté ou une organisation qui veut remettre de l&apos;alignement dans ses équipes.'}</p>
             </div>
             <div className="grid gap-6 md:grid-cols-2">
               <div className="rounded-2xl bg-white p-8 shadow-sm">

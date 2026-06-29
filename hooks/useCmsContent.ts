@@ -5,8 +5,16 @@ type CmsContent = Record<string, string>;
 
 const memCache: Record<string, { data: CmsContent; ts: number }> = {};
 const MEM_TTL = 5 * 60 * 1000;
-const LS_TTL  = 10 * 60 * 1000;
+const LS_TTL  = 30 * 1000;  // 30s only — CMS saves must be visible fast
 const LS_PFX  = 'hh_cms_';
+
+// Called by the CMS admin after a successful save to bust the cache
+export function bustCmsCache(page: string) {
+  delete memCache[page];
+  if (typeof window !== 'undefined') {
+    try { localStorage.removeItem(LS_PFX + page); } catch {}
+  }
+}
 
 function lsGet(page: string): CmsContent | null {
   if (typeof window === 'undefined') return null;
@@ -41,7 +49,9 @@ export function useCmsContent(page: string, defaults: CmsContent = {}): CmsConte
     const mem = memCache[page];
     if (mem && Date.now() - mem.ts < MEM_TTL) return;
 
-    fetch(`/api/cms/public-content?page=${encodeURIComponent(page)}`)
+    fetch(`/api/cms/public-content?page=${encodeURIComponent(page)}`, {
+      headers: { 'Cache-Control': 'no-cache' },
+    })
       .then(r => r.ok ? r.json() : { content: [] })
       .then(({ content: rows }) => {
         const map: CmsContent = {};
