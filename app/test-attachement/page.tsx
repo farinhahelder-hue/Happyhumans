@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import { AttachmentTest } from '@/components/attachment-test/AttachmentTest';
 
 export const metadata: Metadata = {
-  title: "Test de style d'attachement | Happy Humans",
+  title: "Test de style d'attachement",
   description:
     "Découvrez votre style d'attachement en 16 questions. Un outil de développement personnel pour mieux comprendre vos relations.",
   openGraph: {
