@@ -32,10 +32,10 @@ export default function Footer() {
               {c.site_name.toUpperCase()}
             </Link>
             <p className="text-xs italic mt-1" style={{ color: '#c9a96e', fontFamily: 'Cormorant Garamond, serif' }}>
-              {c.get('tagline')}
+              {c.field('tagline')}
             </p>
-            <p className="text-xs mt-2" style={{ color: '#5a7a74' }}>{c.get('description', undefined, { multiline: true })}</p>
-            <p className="text-xs mt-1" style={{ color: '#5a7a74' }}>{c.get('description_2', undefined, { multiline: true })}</p>
+            <p className="text-xs mt-2" style={{ color: '#5a7a74' }}>{c.description}</p>
+            <p className="text-xs mt-1" style={{ color: '#5a7a74' }}>{c.description_2}</p>
             {c.linkedin_url && (
               <a href={c.linkedin_url} target="_blank" rel="noopener noreferrer"
                 className="inline-block mt-3 text-xs hover:text-white transition" style={{ color: '#5a7a74' }}>
@@ -77,7 +77,7 @@ export default function Footer() {
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs" style={{ color: '#5a7a74' }}>
           <div>
-            <p>© {year} {c.get('copyright')}</p>
+            <p>© {year} {c.field('copyright')}</p>
             <p className="opacity-40 mt-1">Photos : <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition">Unsplash</a></p>
           </div>
           <div className="flex gap-6">

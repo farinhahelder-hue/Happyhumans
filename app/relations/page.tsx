@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useRef } from 'react';
 import BookingWidget from '@/components/BookingWidget';
 import { AttachmentTest } from '@/components/attachment-test/AttachmentTest';
@@ -262,27 +262,27 @@ export default function RelationsPage() {
           />
           <div className="relative mx-auto max-w-2xl">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
-              {c.get('hero_badge')}
+              {c.field('hero_badge')}
             </p>
             <h1 className="text-4xl font-serif font-light leading-tight text-white mb-4 md:text-6xl">
-              {c.get('hero_title')}
+              {c.field('hero_title')}
             </h1>
             <p className="text-stone-400 text-sm md:text-base leading-relaxed max-w-xl mx-auto">
-              {c.get('hero_description', undefined, { multiline: true })}
+              {c.field('hero_description')}
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={handleBook}
                 className="rounded-full bg-[#2d5f54] px-7 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
               >
-                {c.get('hero_cta_primary')}
+                {c.field('hero_cta_primary')}
               </button>
               <a
                 href="#quiz"
                 onClick={e => { e.preventDefault(); document.querySelector('[data-quiz]')?.scrollIntoView({ behavior: 'smooth' }); }}
                 className="rounded-full border border-stone-500 px-7 py-3.5 text-sm font-semibold text-stone-300 hover:border-white hover:text-white transition"
               >
-                {c.get('hero_cta_secondary')}
+                {c.field('hero_cta_secondary')}
               </a>
             </div>
           </div>
@@ -292,10 +292,10 @@ export default function RelationsPage() {
         <section className="bg-[#f5f0e8] px-6 py-16 md:px-10 md:py-20">
           <div className="mx-auto max-w-4xl">
             <div className="mb-10 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('styles_badge')}</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('styles_title')}</h2>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.field('styles_badge')}</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.field('styles_title')}</h2>
               <p className="mt-3 text-sm text-stone-500 max-w-xl mx-auto">
-                {c.get('styles_subtitle', undefined, { multiline: true })}
+                {c.field('styles_subtitle')}
               </p>
             </div>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -318,7 +318,7 @@ export default function RelationsPage() {
           <div className="mx-auto max-w-3xl">
             <div className="mb-10 text-center">
               <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
-                {c.get('quiz_badge')}
+                {c.field('quiz_badge')}
               </p>
             </div>
             <AttachmentTest onBook={handleBook} />
@@ -329,30 +329,30 @@ export default function RelationsPage() {
         <section className="bg-white px-6 py-16 md:px-10 md:py-20">
           <div className="mx-auto max-w-4xl">
             <div className="mb-10 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('manifestations_badge')}</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('manifestations_title')}</h2>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.field('manifestations_badge')}</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.field('manifestations_title')}</h2>
               <p className="mt-3 text-sm text-stone-500 max-w-xl mx-auto">
-                {c.get('manifestations_subtitle', undefined, { multiline: true })}
+                {c.field('manifestations_subtitle')}
               </p>
             </div>
             <div className="flex flex-col md:flex-row gap-6 items-stretch">
               <div className="flex-1 rounded-2xl p-7 text-center" style={{ background: 'rgba(180,83,9,0.07)', border: '1px solid rgba(180,83,9,0.15)' }}>
                 <div className="text-4xl mb-3">🌊</div>
-                <h3 className="font-semibold text-lg mb-2" style={{ color: '#b45309' }}>{c.get('manifestations_anxious_title')}</h3>
-                <p className="text-sm text-stone-600 leading-relaxed">{c.get('manifestations_anxious_desc', undefined, { multiline: true })}</p>
+                <h3 className="font-semibold text-lg mb-2" style={{ color: '#b45309' }}>{c.field('manifestations_anxious_title')}</h3>
+                <p className="text-sm text-stone-600 leading-relaxed">{c.field('manifestations_anxious_desc')}</p>
               </div>
               <div className="flex items-center justify-center text-3xl md:text-5xl text-stone-300 font-light select-none">
                 ⟷
               </div>
               <div className="flex-1 rounded-2xl p-7 text-center" style={{ background: 'rgba(29,78,216,0.07)', border: '1px solid rgba(29,78,216,0.12)' }}>
                 <div className="text-4xl mb-3">🌬️</div>
-                <h3 className="font-semibold text-lg mb-2" style={{ color: '#1d4ed8' }}>{c.get('manifestations_avoidant_title')}</h3>
-                <p className="text-sm text-stone-600 leading-relaxed">{c.get('manifestations_avoidant_desc', undefined, { multiline: true })}</p>
+                <h3 className="font-semibold text-lg mb-2" style={{ color: '#1d4ed8' }}>{c.field('manifestations_avoidant_title')}</h3>
+                <p className="text-sm text-stone-600 leading-relaxed">{c.field('manifestations_avoidant_desc')}</p>
               </div>
             </div>
             <div className="mt-8 rounded-2xl p-6 text-center" style={{ background: 'rgba(45,95,84,0.07)' }}>
               <p className="text-sm text-stone-700 leading-relaxed">
-                <strong style={{ color: '#2d5f54' }}>Bonne nouvelle :</strong> {c.get('manifestations_goodnews_text', undefined, { multiline: true })}
+                <strong style={{ color: '#2d5f54' }}>Bonne nouvelle :</strong> {c.field('manifestations_goodnews_text')}
               </p>
             </div>
           </div>
@@ -362,27 +362,27 @@ export default function RelationsPage() {
         <section className="bg-[#f5f0e8] px-6 py-16 md:px-10 md:py-20">
           <div className="mx-auto max-w-4xl">
             <div className="mb-10 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('healing_badge')}</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('healing_title')}</h2>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.field('healing_badge')}</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.field('healing_title')}</h2>
               <p className="mt-3 text-sm text-stone-500 max-w-xl mx-auto">
-                {c.get('healing_subtitle', undefined, { multiline: true })}
+                {c.field('healing_subtitle')}
               </p>
             </div>
             <div className="grid gap-5 md:grid-cols-3">
               <div className="rounded-2xl bg-white p-7 shadow-sm">
                 <div className="text-3xl mb-3">🔍</div>
-                <h3 className="font-semibold mb-2 text-stone-900">{c.get('healing_step1_title')}</h3>
-                <p className="text-sm text-stone-500 leading-relaxed">{c.get('healing_step1_desc', undefined, { multiline: true })}</p>
+                <h3 className="font-semibold mb-2 text-stone-900">{c.field('healing_step1_title')}</h3>
+                <p className="text-sm text-stone-500 leading-relaxed">{c.field('healing_step1_desc')}</p>
               </div>
               <div className="rounded-2xl bg-white p-7 shadow-sm">
                 <div className="text-3xl mb-3">🤝</div>
-                <h3 className="font-semibold mb-2 text-stone-900">{c.get('healing_step2_title')}</h3>
-                <p className="text-sm text-stone-500 leading-relaxed">{c.get('healing_step2_desc', undefined, { multiline: true })}</p>
+                <h3 className="font-semibold mb-2 text-stone-900">{c.field('healing_step2_title')}</h3>
+                <p className="text-sm text-stone-500 leading-relaxed">{c.field('healing_step2_desc')}</p>
               </div>
               <div className="rounded-2xl bg-white p-7 shadow-sm">
                 <div className="text-3xl mb-3">💫</div>
-                <h3 className="font-semibold mb-2 text-stone-900">{c.get('healing_step3_title')}</h3>
-                <p className="text-sm text-stone-500 leading-relaxed">{c.get('healing_step3_desc', undefined, { multiline: true })}</p>
+                <h3 className="font-semibold mb-2 text-stone-900">{c.field('healing_step3_title')}</h3>
+                <p className="text-sm text-stone-500 leading-relaxed">{c.field('healing_step3_desc')}</p>
               </div>
             </div>
           </div>
@@ -392,30 +392,30 @@ export default function RelationsPage() {
         <section className="bg-white px-6 py-16 md:px-10 md:py-20">
           <div className="mx-auto max-w-4xl">
             <div className="mb-10 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('comm_badge')}</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('comm_title')}</h2>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.field('comm_badge')}</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.field('comm_title')}</h2>
               <p className="mt-3 text-sm text-stone-500 max-w-xl mx-auto">
-                {c.get('comm_subtitle', undefined, { multiline: true })}
+                {c.field('comm_subtitle')}
               </p>
             </div>
             <div className="grid gap-5 md:grid-cols-3">
               <div key="comm1" className="rounded-2xl bg-[#f5f0e8] p-7">
                 <div className="text-3xl mb-3">🎯</div>
-                <h3 className="font-semibold mb-2 text-stone-900">{c.get('comm_rule1_title')}</h3>
-                <p className="text-sm text-stone-600 leading-relaxed mb-3">{c.get('comm_rule1_desc', undefined, { multiline: true })}</p>
-                <p className="text-xs text-stone-400 italic border-l-2 border-amber-300 pl-3 leading-relaxed">{c.get('comm_rule1_example')}</p>
+                <h3 className="font-semibold mb-2 text-stone-900">{c.field('comm_rule1_title')}</h3>
+                <p className="text-sm text-stone-600 leading-relaxed mb-3">{c.field('comm_rule1_desc')}</p>
+                <p className="text-xs text-stone-400 italic border-l-2 border-amber-300 pl-3 leading-relaxed">{c.field('comm_rule1_example')}</p>
               </div>
               <div key="comm2" className="rounded-2xl bg-[#f5f0e8] p-7">
                 <div className="text-3xl mb-3">💚</div>
-                <h3 className="font-semibold mb-2 text-stone-900">{c.get('comm_rule2_title')}</h3>
-                <p className="text-sm text-stone-600 leading-relaxed mb-3">{c.get('comm_rule2_desc', undefined, { multiline: true })}</p>
-                <p className="text-xs text-stone-400 italic border-l-2 border-amber-300 pl-3 leading-relaxed">{c.get('comm_rule2_example')}</p>
+                <h3 className="font-semibold mb-2 text-stone-900">{c.field('comm_rule2_title')}</h3>
+                <p className="text-sm text-stone-600 leading-relaxed mb-3">{c.field('comm_rule2_desc')}</p>
+                <p className="text-xs text-stone-400 italic border-l-2 border-amber-300 pl-3 leading-relaxed">{c.field('comm_rule2_example')}</p>
               </div>
               <div key="comm3" className="rounded-2xl bg-[#f5f0e8] p-7">
                 <div className="text-3xl mb-3">🦁</div>
-                <h3 className="font-semibold mb-2 text-stone-900">{c.get('comm_rule3_title')}</h3>
-                <p className="text-sm text-stone-600 leading-relaxed mb-3">{c.get('comm_rule3_desc', undefined, { multiline: true })}</p>
-                <p className="text-xs text-stone-400 italic border-l-2 border-amber-300 pl-3 leading-relaxed">{c.get('comm_rule3_example')}</p>
+                <h3 className="font-semibold mb-2 text-stone-900">{c.field('comm_rule3_title')}</h3>
+                <p className="text-sm text-stone-600 leading-relaxed mb-3">{c.field('comm_rule3_desc')}</p>
+                <p className="text-xs text-stone-400 italic border-l-2 border-amber-300 pl-3 leading-relaxed">{c.field('comm_rule3_example')}</p>
               </div>
             </div>
           </div>
@@ -426,15 +426,15 @@ export default function RelationsPage() {
           <div className="mx-auto max-w-4xl">
             <div className="flex flex-col md:flex-row gap-8 items-center">
               <div className="flex-1">
-                <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('work_section_badge')}</p>
-                <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl mb-4">{c.get('work_section_title')}</h2>
+                <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.field('work_section_badge')}</p>
+                <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl mb-4">{c.field('work_section_title')}</h2>
                 <p className="text-sm text-stone-600 leading-relaxed mb-4">
-                  {c.get('work_section_desc', undefined, { multiline: true })}
+                  {c.field('work_section_desc')}
                 </p>
                 <ul className="space-y-3 text-sm text-stone-600">
-                  <li className="flex items-start gap-2"><span style={{ color: '#2d5f54' }}>🌿</span><span><strong>{c.get('work_secure_label')}</strong> {c.get('work_secure_desc', undefined, { multiline: true })}</span></li>
-                  <li className="flex items-start gap-2"><span style={{ color: '#b45309' }}>🌊</span><span><strong>{c.get('work_anxious_label')}</strong> {c.get('work_anxious_desc', undefined, { multiline: true })}</span></li>
-                  <li className="flex items-start gap-2"><span style={{ color: '#1d4ed8' }}>🌬️</span><span><strong>{c.get('work_avoidant_label')}</strong> {c.get('work_avoidant_desc', undefined, { multiline: true })}</span></li>
+                  <li className="flex items-start gap-2"><span style={{ color: '#2d5f54' }}>🌿</span><span><strong>{c.field('work_secure_label')}</strong> {c.field('work_secure_desc')}</span></li>
+                  <li className="flex items-start gap-2"><span style={{ color: '#b45309' }}>🌊</span><span><strong>{c.field('work_anxious_label')}</strong> {c.field('work_anxious_desc')}</span></li>
+                  <li className="flex items-start gap-2"><span style={{ color: '#1d4ed8' }}>🌬️</span><span><strong>{c.field('work_avoidant_label')}</strong> {c.field('work_avoidant_desc')}</span></li>
                 </ul>
               </div>
               <div className="flex-shrink-0">
@@ -443,7 +443,7 @@ export default function RelationsPage() {
                   className="rounded-2xl bg-[#2d5f54] px-8 py-5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition text-center block"
                 >
                   <span className="text-2xl block mb-2">💼</span>
-                  {c.get('work_section_cta')}
+                  {c.field('work_section_cta')}
                 </button>
               </div>
             </div>
@@ -454,24 +454,24 @@ export default function RelationsPage() {
         <section className="bg-white px-6 py-16 md:px-10 md:py-20">
           <div className="mx-auto max-w-4xl">
             <div className="mb-10 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('steps_badge')}</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('steps_title')}</h2>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.field('steps_badge')}</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.field('steps_title')}</h2>
             </div>
             <div className="grid gap-6 md:grid-cols-3">
               <div key="step1" className="rounded-2xl bg-[#f5f0e8] p-7 shadow-sm">
                 <p className="mb-3 text-3xl font-serif font-light text-[#2d5f54] opacity-60">01</p>
-                <h3 className="mb-2 text-base font-semibold text-stone-900">{c.get('step1_title')}</h3>
-                <p className="text-sm text-stone-500">{c.get('step1_desc')}</p>
+                <h3 className="mb-2 text-base font-semibold text-stone-900">{c.field('step1_title')}</h3>
+                <p className="text-sm text-stone-500">{c.step1_desc}</p>
               </div>
               <div key="step2" className="rounded-2xl bg-[#f5f0e8] p-7 shadow-sm">
                 <p className="mb-3 text-3xl font-serif font-light text-[#2d5f54] opacity-60">02</p>
-                <h3 className="mb-2 text-base font-semibold text-stone-900">{c.get('step2_title')}</h3>
-                <p className="text-sm text-stone-500">{c.get('step2_desc')}</p>
+                <h3 className="mb-2 text-base font-semibold text-stone-900">{c.field('step2_title')}</h3>
+                <p className="text-sm text-stone-500">{c.step2_desc}</p>
               </div>
               <div key="step3" className="rounded-2xl bg-[#f5f0e8] p-7 shadow-sm">
                 <p className="mb-3 text-3xl font-serif font-light text-[#2d5f54] opacity-60">03</p>
-                <h3 className="mb-2 text-base font-semibold text-stone-900">{c.get('step3_title')}</h3>
-                <p className="text-sm text-stone-500">{c.get('step3_desc')}</p>
+                <h3 className="mb-2 text-base font-semibold text-stone-900">{c.field('step3_title')}</h3>
+                <p className="text-sm text-stone-500">{c.step3_desc}</p>
               </div>
             </div>
           </div>
@@ -481,10 +481,10 @@ export default function RelationsPage() {
         <section className="bg-white px-6 py-16 md:px-10 md:py-20">
           <div className="mx-auto max-w-5xl">
             <div className="mb-10 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('multiculture_badge')}</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('multiculture_title')}</h2>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.field('multiculture_badge')}</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.field('multiculture_title')}</h2>
               <p className="mt-3 text-sm text-stone-500 max-w-2xl mx-auto">
-                {c.get('multiculture_subtitle', undefined, { multiline: true })}
+                {c.field('multiculture_subtitle')}
               </p>
             </div>
             <div className="grid gap-6 md:grid-cols-2">
@@ -492,32 +492,32 @@ export default function RelationsPage() {
                 <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center mb-4 shadow-sm">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
                 </div>
-                <h3 className="text-base font-semibold text-stone-900 mb-3">{c.get('multiculture_entreprise_title')}</h3>
+                <h3 className="text-base font-semibold text-stone-900 mb-3">{c.field('multiculture_entreprise_title')}</h3>
                 <div className="text-sm text-stone-600 space-y-2">
-                  <p><strong>Sécure :</strong> {c.get('work_secure_desc', undefined, { multiline: true })}</p>
-                  <p><strong>Anxieux :</strong> {c.get('work_anxious_desc', undefined, { multiline: true })}</p>
-                  <p><strong>Évitant :</strong> {c.get('work_avoidant_desc', undefined, { multiline: true })}</p>
+                  <p><strong>Sécure :</strong> {c.field('work_secure_desc')}</p>
+                  <p><strong>Anxieux :</strong> {c.field('work_anxious_desc')}</p>
+                  <p><strong>Évitant :</strong> {c.field('work_avoidant_desc')}</p>
                 </div>
               </div>
               <div className="rounded-2xl bg-[#f5f0e8] p-7">
                 <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center mb-4 shadow-sm">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                 </div>
-                <h3 className="text-base font-semibold text-stone-900 mb-3">{c.get('multiculture_mc_title')}</h3>
+                <h3 className="text-base font-semibold text-stone-900 mb-3">{c.field('multiculture_mc_title')}</h3>
                 <p className="text-sm text-stone-600 leading-relaxed">
-                  {c.get('multiculture_mc_desc', undefined, { multiline: true })}
+                  {c.field('multiculture_mc_desc')}
                 </p>
               </div>
             </div>
             <div className="mt-8 rounded-2xl bg-[#eef5f3] border border-[#2d5f54]/20 p-6 text-center">
               <p className="text-sm text-stone-700 max-w-xl mx-auto">
-                <strong className="text-[#2d5f54]">{c.get('multiculture_note', undefined, { multiline: true })}</strong>
+                <strong className="text-[#2d5f54]">{c.field('multiculture_note')}</strong>
               </p>
               <button
                 onClick={handleBook}
                 className="mt-4 rounded-full bg-[#2d5f54] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#1e3a34] transition"
               >
-                {c.get('multiculture_cta')}
+                {c.field('multiculture_cta')}
               </button>
             </div>
           </div>
@@ -531,12 +531,12 @@ export default function RelationsPage() {
         >
           <div className="mx-auto max-w-4xl">
             <div className="mb-10 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('booking_badge')}</p>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.field('booking_badge')}</p>
               <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">
-                {c.get('booking_title')}
+                {c.field('booking_title')}
               </h2>
               <p className="mt-3 text-sm text-stone-500">
-                {c.get('booking_subtitle')}
+                {c.field('booking_subtitle')}
               </p>
             </div>
             {bookingOpen
@@ -547,7 +547,7 @@ export default function RelationsPage() {
                     onClick={() => setBookingOpen(true)}
                     className="rounded-full bg-[#2d5f54] px-8 py-4 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
                   >
-                    {c.get('booking_cta_button')}
+                    {c.field('booking_cta_button')}
                   </button>
                 </div>
               )
@@ -559,12 +559,12 @@ export default function RelationsPage() {
         <section className="bg-white px-6 py-16 md:px-10 md:py-20">
           <div className="mx-auto max-w-4xl">
             <div className="mb-10 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('theory_badge')}</p>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.field('theory_badge')}</p>
               <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">
-                {c.get('theory_title')}
+                {c.field('theory_title')}
               </h2>
               <p className="mt-3 text-sm text-stone-500 max-w-xl mx-auto">
-                {c.get('theory_subtitle', undefined, { multiline: true })}
+                {c.field('theory_subtitle')}
               </p>
             </div>
             <div className="grid gap-5 sm:grid-cols-3">
@@ -591,9 +591,9 @@ export default function RelationsPage() {
         <div className="mx-auto max-w-5xl flex flex-col items-center justify-between gap-4 text-xs text-stone-400 md:flex-row">
           <a href="/" className="flex items-center gap-2 hover:opacity-80 transition">
             <Image src="/logo-happy-humans.jpg" alt={c.footer_site_name} width={28} height={28} className="rounded-full opacity-80" />
-            <span className="font-serif text-base text-stone-300 font-semibold hover:text-white transition">{c.get('footer_site_name')}</span>
+            <span className="font-serif text-base text-stone-300 font-semibold hover:text-white transition">{c.field('footer_site_name')}</span>
           </a>
-          <p>{c.get('footer_copyright')}</p>
+          <p>{c.field('footer_copyright')}</p>
           <div className="flex gap-6">
             <a href="/mentions-legales" className="hover:text-stone-200 transition">Mentions légales</a>
             <a href="/politique-confidentialite" className="hover:text-stone-200 transition">Confidentialité</a>
@@ -630,7 +630,7 @@ export default function RelationsPage() {
                 onClick={() => { setActiveModal(null); handleBook(); }}
                 className="w-full rounded-full bg-[#2d5f54] py-3 text-sm font-semibold text-white hover:bg-[#1e3a34] transition"
               >
-                {c.get('theory_modal_cta')}
+                {c.field('theory_modal_cta')}
               </button>
             </div>
           </div>
