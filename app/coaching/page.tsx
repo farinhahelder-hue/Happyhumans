@@ -151,15 +151,15 @@ export default function CoachingPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-stone-900/60 via-stone-900/40 to-stone-900/70" />
           <div className="relative mx-auto max-w-3xl">
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">{c.hero_badge}</p>
-            <h1 className="text-4xl font-serif font-light leading-tight text-white md:text-6xl">{c.hero_title}</h1>
-            <p className="mt-6 text-lg leading-relaxed text-stone-300">{c.hero_subtitle}</p>
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">{c.field('hero_badge')}</p>
+            <h1 className="text-4xl font-serif font-light leading-tight text-white md:text-6xl">{c.field('hero_title')}</h1>
+            <p className="mt-6 text-lg leading-relaxed text-stone-300">{c.field('hero_subtitle', undefined, {multiline:true})}</p>
             <div className="mt-10 flex flex-wrap gap-4 justify-center">
               <Link href="/booking?from=coaching" className="rounded-full bg-[#2f6b61] px-7 py-3.5 text-sm font-semibold text-white shadow-md hover:bg-[#235249] transition">
-                {c.hero_cta_primary}
+                {c.field('hero_cta_primary')}
               </Link>
               <Link href="/contact" className="rounded-full border border-stone-400 px-7 py-3.5 text-sm font-semibold text-stone-200 hover:border-white hover:text-white transition">
-                {c.hero_cta_contact}
+                {c.field('hero_cta_contact')}
               </Link>
             </div>
           </div>
@@ -192,8 +192,8 @@ export default function CoachingPage() {
         <section className="bg-[#f7f4ef] py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-6 md:px-10">
             <div className="mb-10 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">{c.testimonials_badge}</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.testimonials_title}</h2>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">{c.field('testimonials_badge')}</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.field('testimonials_title', undefined, {as:'h2'})}</h2>
             </div>
             <div className="grid gap-6 md:grid-cols-3">
               {temoignages.map((t, i) => {
@@ -212,7 +212,7 @@ export default function CoachingPage() {
                 );
               })}
             </div>
-            <p className="text-center text-xs text-stone-400 mt-6">{c.testimonials_footnote}</p>
+            <p className="text-center text-xs text-stone-400 mt-6">{c.field('testimonials_footnote')}</p>
           </div>
         </section>
 
@@ -220,15 +220,15 @@ export default function CoachingPage() {
         <section className="bg-[#eef5f3] border-y border-[#2d5f54]/15 py-8 px-6 md:px-10">
           <div className="mx-auto max-w-5xl flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
-              <p className="text-sm font-semibold text-stone-900">{c.tunnel_title}</p>
-              <p className="text-xs text-stone-500 mt-0.5">{c.tunnel_reassurance}</p>
+              <p className="text-sm font-semibold text-stone-900">{c.field('tunnel_title')}</p>
+              <p className="text-xs text-stone-500 mt-0.5">{c.field('tunnel_reassurance')}</p>
             </div>
             <div className="flex flex-wrap gap-3 flex-shrink-0">
               <Link href="/booking?from=coaching" className="rounded-full bg-[#2f6b61] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#235249] transition shadow-sm">
-                {c.tunnel_cta_primary}
+                {c.field('tunnel_cta_primary')}
               </Link>
               <Link href="/contact" className="rounded-full border border-[#2f6b61] px-6 py-2.5 text-sm font-semibold text-[#2f6b61] hover:bg-[#2f6b61] hover:text-white transition">
-                {c.tunnel_cta_secondary}
+                {c.field('tunnel_cta_secondary')}
               </Link>
             </div>
           </div>
@@ -238,8 +238,8 @@ export default function CoachingPage() {
         <section className="bg-white py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-6 md:px-10">
             <div className="mb-10 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">{c.programs_badge}</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.programs_title}</h2>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">{c.field('programs_badge')}</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.field('programs_title', undefined, {as:'h2'})}</h2>
             </div>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               {programs.map(({ label, price, unit, desc, format, cta, href, highlight }) => (
@@ -284,10 +284,10 @@ export default function CoachingPage() {
         {/* CTA */}
         <section className="bg-[#2f6b61] py-16">
           <div className="mx-auto max-w-2xl px-6 text-center">
-            <h2 className="mb-3 text-2xl font-serif font-light text-white">{c.cta_title}</h2>
-            <p className="mb-6 text-emerald-100 text-sm">{c.form_cta_title}</p>
+            <h2 className="mb-3 text-2xl font-serif font-light text-white">{c.field('cta_title', undefined, {as:'h2'})}</h2>
+            <p className="mb-6 text-emerald-100 text-sm">{c.field('form_cta_title', undefined, {multiline:true})}</p>
             <Link href="/booking?from=coaching" className="rounded-full bg-white px-8 py-3 text-sm font-semibold text-[#2f6b61] hover:bg-amber-50 transition">
-              {c.form_cta_button}
+              {c.field('form_cta_button')}
             </Link>
           </div>
         </section>

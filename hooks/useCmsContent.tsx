@@ -43,10 +43,15 @@ function getInitial(page: string, defaults: CmsContent): CmsContent {
 
 type CmsResult = CmsContent & {
   /**
-   * Returns an EditableField component when inline edit mode is active,
-   * otherwise returns the plain text string.
+   * Returns the raw string value (for href, src, alt, className, etc.).
    */
-  get(key: string, defaultValue?: string, opts?: { multiline?: boolean; as?: string }): ReactNode;
+  get(key: string, defaultValue?: string): string;
+  /**
+   * Returns an EditableField when inline edit mode is active,
+   * otherwise returns the plain text ReactNode.
+   * Use for visual text elements (h1, h2, p, span).
+   */
+  field(key: string, defaultValue?: string, opts?: { multiline?: boolean; as?: 'span' | 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'div' }): ReactNode;
 };
 
 export function useCmsContent(page: string, defaults: CmsContent = {}): CmsResult {
@@ -75,7 +80,11 @@ export function useCmsContent(page: string, defaults: CmsContent = {}): CmsResul
       .catch(() => {});
   }, [page]);
 
-  const get = useCallback((key: string, defaultValue?: string, opts?: { multiline?: boolean }): ReactNode => {
+  const get = useCallback((key: string, defaultValue?: string): string => {
+    return content[key] ?? defaultValue ?? '';
+  }, [content]);
+
+  const field = useCallback((key: string, defaultValue?: string, opts?: { multiline?: boolean; as?: 'span' | 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'div' }): ReactNode => {
     const val = content[key] ?? defaultValue ?? '';
     return (
       <EditableField
@@ -83,13 +92,15 @@ export function useCmsContent(page: string, defaults: CmsContent = {}): CmsResul
         fieldKey={key}
         value={val}
         multiline={opts?.multiline}
+        as={opts?.as}
       />
     );
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content, page]);
 
-  // Return content spread + get method attached
+  // Return content spread + methods attached
   const result = content as CmsResult;
   result.get = get;
+  result.field = field;
   return result;
 }

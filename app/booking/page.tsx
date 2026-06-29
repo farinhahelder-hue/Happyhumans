@@ -35,10 +35,10 @@ export default function BookingPage() {
         {/* HERO SOBRE */}
         <section className="bg-[#f5f0e8] px-6 py-16 md:py-20 text-center">
           <div className="mx-auto max-w-2xl">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-amber-800">{c.hero_badge}</p>
-            <h1 className="text-3xl font-serif font-light text-stone-900 md:text-5xl">{c.hero_title}</h1>
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-amber-800">{c.field('hero_badge')}</p>
+            <h1 className="text-3xl font-serif font-light text-stone-900 md:text-5xl">{c.field('hero_title')}</h1>
             <p className="mt-4 text-base text-stone-500">
-              {c.hero_subtitle}
+              {c.field('hero_subtitle')}
             </p>
           </div>
         </section>
@@ -96,7 +96,7 @@ export default function BookingPage() {
               ))}
             </div>
             <p className="mt-8 text-center text-xs text-stone-400">
-              {c.footer_note}
+              {c.field('footer_note')}
             </p>
           </div>
         </section>
@@ -105,7 +105,7 @@ export default function BookingPage() {
         <section className="bg-white py-8 text-center">
           <p className="text-sm text-stone-500 mb-3">Vous préférez réserver par email ?</p>
           <Link href="/contact" className="inline-flex items-center gap-2 text-sm font-semibold text-[#2d5f54] hover:underline">
-            {c.email_booking_text}
+            {c.field('email_booking_text')}
           </Link>
         </section>
 

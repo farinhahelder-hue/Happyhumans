@@ -52,9 +52,9 @@ export default function AProposPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
           <div className="relative z-10 max-w-3xl px-6 pb-14 md:px-16 md:pb-24">
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-amber-300">{c.hero_badge}</p>
-            <h1 className="mb-5 text-4xl font-serif font-light leading-[1.1] text-white md:text-6xl">{c.page_title}</h1>
-            <p className="max-w-xl text-base leading-relaxed text-gray-300">{c.intro_text}</p>
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-amber-300">{c.field('hero_badge')}</p>
+            <h1 className="mb-5 text-4xl font-serif font-light leading-[1.1] text-white md:text-6xl">{c.field('page_title')}</h1>
+            <p className="max-w-xl text-base leading-relaxed text-gray-300">{c.field('intro_text')}</p>
           </div>
         </section>
 
@@ -63,8 +63,8 @@ export default function AProposPage() {
           <div className="mx-auto max-w-5xl px-6 md:px-10">
             <div className="grid items-start gap-12 md:grid-cols-5 md:gap-20">
               <div className="space-y-5 md:col-span-3">
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800">{c.bio_badge}</p>
-                <h2 className="text-3xl font-serif font-light leading-tight text-stone-900 md:text-4xl">{c.bio_title}</h2>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800">{c.field('bio_badge')}</p>
+                <h2 className="text-3xl font-serif font-light leading-tight text-stone-900 md:text-4xl">{c.field('bio_title')}</h2>
                 <div className="text-base leading-relaxed text-stone-600 space-y-4">
                   {c.bio_text.split('\n').map((p, i) => p.trim() ? <p key={i}>{p}</p> : null)}
                 </div>
@@ -106,9 +106,9 @@ export default function AProposPage() {
         <section className="bg-[#f7f4ef] py-20 md:py-28">
           <div className="mx-auto max-w-5xl px-6 md:px-10">
             <div className="mb-12 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">{c.acc_badge}</p>
-              <h2 className="text-3xl font-serif font-light text-stone-900 md:text-4xl">{c.acc_title}</h2>
-              <p className="mt-3 text-stone-500 text-sm">{c.acc_subtitle}</p>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">{c.field('acc_badge')}</p>
+              <h2 className="text-3xl font-serif font-light text-stone-900 md:text-4xl">{c.field('acc_title')}</h2>
+              <p className="mt-3 text-stone-500 text-sm">{c.field('acc_subtitle')}</p>
             </div>
             <div className="grid gap-8 md:grid-cols-2">
               {/* Coaching */}
@@ -116,13 +116,13 @@ export default function AProposPage() {
                 <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef5f3]">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
                 </div>
-                <h3 className="text-xl font-serif font-semibold text-stone-900 mb-4">{c.coaching_label}</h3>
+                <h3 className="text-xl font-serif font-semibold text-stone-900 mb-4">{c.field('coaching_label')}</h3>
                 <div className="text-sm leading-relaxed text-stone-600 space-y-3">
                   {(c.coaching_text1 || '').split('\n').map((p, i) => p.trim() ? <p key={`a-${i}`}>{p}</p> : null)}
                   {(c.coaching_text2 || '').split('\n').map((p, i) => p.trim() ? <p key={`b-${i}`}>{p}</p> : null)}
                 </div>
                 <Link href="/coaching" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#2f6b61] hover:underline">
-                  {c.coaching_cta}
+                  {c.field('coaching_cta')}
                 </Link>
               </div>
 
@@ -131,12 +131,12 @@ export default function AProposPage() {
                 <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef5f3]">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 </div>
-                <h3 className="text-xl font-serif font-semibold text-stone-900 mb-4">{c.mentoring_label}</h3>
+                <h3 className="text-xl font-serif font-semibold text-stone-900 mb-4">{c.field('mentoring_label')}</h3>
                 <div className="text-sm leading-relaxed text-stone-600 space-y-2">
                   {(c.mentoring_text || '').split('\n').map((p, i) => p.trim() ? <p key={i}>{p}</p> : null)}
                 </div>
                 <Link href="/contact" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#2f6b61] hover:underline">
-                  {c.mentoring_cta}
+                  {c.field('mentoring_cta')}
                 </Link>
               </div>
             </div>
@@ -147,12 +147,12 @@ export default function AProposPage() {
         <section className="bg-white py-16 md:py-20">
           <div className="mx-auto max-w-3xl px-6 md:px-10">
             <div className="rounded-2xl bg-[#f5f0e8] border border-amber-200 p-8 md:p-10">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800 mb-3">{c.hd_badge}</p>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800 mb-3">{c.field('hd_badge')}</p>
               <p className="text-base leading-relaxed text-stone-700 mb-6">
-                {c.hd_text}
+                {c.field('hd_text')}
               </p>
               <Link href="/happiness-design" className="inline-flex items-center gap-2 text-sm font-semibold text-[#2f6b61] hover:underline">
-                {c.hd_cta}
+                {c.field('hd_cta')}
               </Link>
             </div>
           </div>
@@ -161,13 +161,13 @@ export default function AProposPage() {
         {/* CTA FINAL */}
         <section className="bg-[#2f6b61] py-16 text-center">
           <div className="mx-auto max-w-2xl px-6">
-            <h2 className="mb-4 text-2xl font-serif font-light text-white">{c.footer_cta_title}</h2>
+            <h2 className="mb-4 text-2xl font-serif font-light text-white">{c.field('footer_cta_title')}</h2>
             <div className="flex flex-wrap justify-center gap-4 mt-6">
               <Link href="/coaching" className="rounded-full bg-white px-7 py-3 text-sm font-semibold text-[#2f6b61] hover:bg-amber-50 transition">
-                {c.footer_cta_coaching}
+                {c.field('footer_cta_coaching')}
               </Link>
               <Link href="/booking" className="rounded-full border border-white px-7 py-3 text-sm font-semibold text-white hover:bg-white/10 transition">
-                {c.footer_cta_booking}
+                {c.field('footer_cta_booking')}
               </Link>
             </div>
           </div>
