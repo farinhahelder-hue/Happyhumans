@@ -197,17 +197,16 @@ export default function CoachingPage() {
             </div>
             <div className="grid gap-6 md:grid-cols-3">
               {temoignages.map((t, i) => {
-                const isEn = !t.quote.match(/[àâäéèêëîïôùûüœç«»]/);
+                const isFr = !!t.quote.match(/[àâäéèêëîïôùûüœç«»]/);
                 return (
                   <div key={i} className="bg-white rounded-2xl p-7 shadow-sm flex flex-col">
                     <span className="text-4xl font-serif leading-none text-[#2f6b61] mb-4 select-none">&ldquo;</span>
-                    <blockquote lang={isEn ? 'en' : 'fr'} className="flex-1 text-sm leading-relaxed text-stone-600 italic mb-5">
+                    <blockquote lang={isFr ? 'fr' : 'en'} className="flex-1 text-sm leading-relaxed text-stone-600 italic mb-5">
                       {t.quote}
                     </blockquote>
                     <footer>
                       <p className="text-sm font-semibold text-stone-900">{t.name}</p>
                       <p className="text-xs text-stone-500 italic mt-0.5">{t.title}</p>
-                      {isEn && <p className="text-xs text-stone-400 mt-1">Version originale</p>}
                     </footer>
                   </div>
                 );
