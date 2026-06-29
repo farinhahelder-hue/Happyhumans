@@ -51,10 +51,11 @@ export async function middleware(req: NextRequest) {
             // Set cookie on the redirect response itself (not on discarded res)
             const redirectRes = NextResponse.redirect(url)
             redirectRes.cookies.set('hh_cms_edit', '1', {
-              httpOnly: false,
-              sameSite: 'lax',
               maxAge: 60 * 60 * 2,
               path: '/',
+              sameSite: 'lax',
+              secure: true,
+              httpOnly: false,
             })
             return redirectRes
           }
