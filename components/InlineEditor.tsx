@@ -24,18 +24,22 @@ export default function InlineEditor() {
       setToast({ type: 'success', message: `✅ ${detail.count} champ${detail.count > 1 ? 's' : ''} sauvegardé${detail.count > 1 ? 's' : ''} !` });
       setTimeout(() => setToast(null), 3500);
     };
+    const onPartial = (e: Event) => {
+      const detail = (e as CustomEvent<{ saved: number; errors: string[] }>).detail;
+      setToast({ type: 'partial', message: `⚠️ ${detail.saved} sauvegardé${detail.saved > 1 ? 's' : ''}, ${detail.errors.length} échoué${detail.errors.length > 1 ? 's' : ''}` });
+      setTimeout(() => setToast(null), 6000);
+    };
     const onError = (e: Event) => {
-      const detail = (e as CustomEvent<{ errors: string[]; partial?: boolean }>).detail;
-      const msg = detail.partial
-        ? `⚠️ Partiel : ${detail.errors[0]}`
-        : `❌ Erreur : ${detail.errors[0]}`;
-      setToast({ type: detail.partial ? 'partial' : 'error', message: msg });
+      const detail = (e as CustomEvent<{ errors: string[] }>).detail;
+      setToast({ type: 'error', message: `❌ Erreur : ${detail.errors[0]}` });
       setTimeout(() => setToast(null), 6000);
     };
     window.addEventListener('inline-edit-saved', onSaved);
+    window.addEventListener('inline-edit-partial', onPartial);
     window.addEventListener('inline-edit-error', onError);
     return () => {
       window.removeEventListener('inline-edit-saved', onSaved);
+      window.removeEventListener('inline-edit-partial', onPartial);
       window.removeEventListener('inline-edit-error', onError);
     };
   }, []);
@@ -43,6 +47,15 @@ export default function InlineEditor() {
   const handleSave = async () => {
     if (isSaving) return;
     await saveAll();
+  };
+
+  const handleQuit = () => {
+    if (changeCount > 0) {
+      if (!window.confirm(`Vous avez ${changeCount} modification${changeCount > 1 ? 's' : ''} non sauvegardée${changeCount > 1 ? 's' : ''}. Voulez-vous vraiment quitter sans sauvegarder ?`)) {
+        return;
+      }
+    }
+    toggleEditing();
   };
 
   const handleDiscard = () => {
@@ -108,7 +121,7 @@ export default function InlineEditor() {
 
       {/* ── Bouton Éditer / Quitter — bas gauche ── */}
       <button
-        onClick={toggleEditing}
+        onClick={handleQuit}
         style={{
           position: 'fixed',
           bottom: '1.5rem',

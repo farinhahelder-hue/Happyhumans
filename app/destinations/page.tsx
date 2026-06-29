@@ -149,13 +149,13 @@ export default function DestinationsPage() {
         <section className="bg-gradient-to-br from-cloud-dancer to-white py-20 md:py-28">
           <div className="container">
             <p className="text-xs uppercase tracking-[0.2em] text-eucalyptus font-semibold mb-4">
-              {c.page_badge}
+              {c.get('page_badge')}
             </p>
             <h1 className="text-4xl md:text-6xl font-serif text-mahogany mb-6">
-              {c.page_title}
+              {c.get('page_title')}
             </h1>
             <p className="text-charcoal/80 text-lg max-w-3xl leading-relaxed">
-              {c.page_subtitle}
+              {c.get('page_subtitle')}
             </p>
           </div>
         </section>
@@ -219,9 +219,9 @@ export default function DestinationsPage() {
           <div className="container">
             {filteredDestinations.length === 0 ? (
               <div className="rounded-2xl border border-stone-200 p-10 text-center">
-                <p className="text-lg font-semibold text-mahogany mb-2">{c.no_results_title}</p>
+                <p className="text-lg font-semibold text-mahogany mb-2">{c.get('no_results_title')}</p>
                 <p className="text-charcoal/70 mb-5">
-                  {c.no_results_text}
+                  {c.get('no_results_text')}
                 </p>
                 <Link
                   href="/travel-planning-form"

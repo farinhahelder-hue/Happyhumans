@@ -79,8 +79,8 @@ export default function FaqPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-stone-900/60 via-stone-900/40 to-stone-900/70" />
           <div className="relative mx-auto max-w-3xl">
             <p className="mb-4 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">FAQ</p>
-            <h1 className="text-4xl font-serif font-light text-white md:text-6xl leading-tight">{c.field('page_title')}</h1>
-            <p className="mt-5 text-base text-stone-300 leading-relaxed max-w-xl mx-auto">{c.field('page_subtitle')}</p>
+            <h1 className="text-4xl font-serif font-light text-white md:text-6xl leading-tight">{c.get('page_title')}</h1>
+            <p className="mt-5 text-base text-stone-300 leading-relaxed max-w-xl mx-auto">{c.get('page_subtitle')}</p>
           </div>
         </section>
 
@@ -109,8 +109,8 @@ export default function FaqPage() {
         {/* CTA */}
         <section className="bg-[#f5f0e8] px-6 py-14 md:px-10 text-center">
           <div className="mx-auto max-w-xl">
-            <h2 className="text-xl font-serif font-light text-stone-900 mb-2">{c.field('cta_title')}</h2>
-            <p className="text-sm text-stone-500 mb-6">{c.field('cta_text')}</p>
+            <h2 className="text-xl font-serif font-light text-stone-900 mb-2">{c.get('cta_title')}</h2>
+            <p className="text-sm text-stone-500 mb-6">{c.get('cta_text')}</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/contact" className="inline-block rounded-full border border-[#2d5f54] px-6 py-3 text-sm font-semibold text-[#2d5f54] hover:bg-[#2d5f54] hover:text-white transition">
                 Écrire à Monica →

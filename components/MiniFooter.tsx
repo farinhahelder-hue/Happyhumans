@@ -4,11 +4,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useCmsContent } from '@/hooks/useCmsContent'
 
-const DEFAULTS = {
-  site_name:  'Happy Humans',
-  tagline:    'philo-coaching',
-  copyright:  'Happy Humans — Monica Schneider. Tous droits réservés.',
-  logo_url:   '/logo-happy-humans.jpg',
+const DEFAULTS: Record<string, string> = {
+  site_name:     'Happy Humans',
+  tagline:      'philo-coaching',
+  copyright:    'Happy Humans \u2014 Monica Schneider. Tous droits r\u00e9serv\u00e9s.',
+  logo_url:     '/logo-happy-humans.jpg',
+  photos_label: 'Photos : ',
 }
 
 export default function MiniFooter() {
@@ -42,14 +43,14 @@ export default function MiniFooter() {
               {c.site_name.toUpperCase()}
             </Link>
             <span className="text-xs italic" style={{ color: '#c9a96e', fontFamily: 'Cormorant Garamond, serif', letterSpacing: '0.08em' }}>
-              {c.field('tagline')}
+              {c.get('tagline')}
             </span>
           </div>
         </div>
 
         <div className="text-center">
-          <p className="text-xs" style={{ color: '#5a7a74' }}>© {year} {c.field('copyright')}</p>
-          <p className="text-xs opacity-40 mt-1" style={{ color: '#5a7a74' }}>Photos : <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
+          <p className="text-xs" style={{ color: '#5a7a74' }}>© {year} {c.get('copyright')}</p>
+          <p className="text-xs opacity-40 mt-1" style={{ color: '#5a7a74' }}>{c.get('photos_label')}<a href="https://unsplash.com" target="_blank" rel="noopener noreferrer">Unsplash</a></p>
         </div>
 
         <div className="flex gap-6 text-xs" style={{ color: '#5a7a74' }}>
