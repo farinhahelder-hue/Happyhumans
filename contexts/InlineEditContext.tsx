@@ -2,11 +2,13 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { bustCmsCache } from '@/hooks/useCmsContent';
 
-type InlineEditContextValue = {
+export type InlineEditContextValue = {
   isEditing: boolean;
+  isSaving: boolean;
   toggleEditing: () => void;
   pendingChanges: Record<string, Record<string, string>>;
   updateField: (page: string, key: string, value: string) => void;
+  discardChanges: () => void;
   saveAll: () => Promise<void>;
   changeCount: number;
 };
@@ -19,7 +21,12 @@ function countChanges(changes: Record<string, Record<string, string>>): number {
 
 export function InlineEditProvider({ children }: { children: React.ReactNode }) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [pendingChanges, setPendingChanges] = useState<Record<string, Record<string, string>>>({});
+
+  const discardChanges = useCallback(() => {
+    setPendingChanges({});
+  }, []);
 
   const toggleEditing = useCallback(() => {
     setIsEditing(prev => {
@@ -39,8 +46,6 @@ export function InlineEditProvider({ children }: { children: React.ReactNode }) 
     const pages = Object.keys(pendingChanges);
     if (pages.length === 0) return;
 
-    const errors: string[] = [];
-    const count = countChanges(pendingChanges);
     const allFields: { page: string; key: string; value: string }[] = [];
     for (const page of pages) {
       for (const [key, value] of Object.entries(pendingChanges[page])) {
@@ -48,40 +53,67 @@ export function InlineEditProvider({ children }: { children: React.ReactNode }) 
       }
     }
 
-    for (const field of allFields) {
-      try {
-        const res = await fetch('/api/cms/content', {
+    setIsSaving(true);
+
+    const results = await Promise.allSettled(
+      allFields.map(field =>
+        fetch('/api/cms/content', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ page: field.page, block_key: field.key, value: field.value }),
-        });
-        if (!res.ok) {
-          const d = await res.json().catch(() => ({}));
-          errors.push(`${field.key} (${field.page}): ${d.error || res.status}`);
-        } else {
+        }).then(async res => {
+          if (!res.ok) {
+            const d = await res.json().catch(() => ({}));
+            throw new Error(`${field.key} (${field.page}): ${d.error || res.status}`);
+          }
           bustCmsCache(field.page);
-        }
-      } catch {
-        errors.push(`${field.key} (${field.page}): erreur réseau`);
+        })
+      )
+    );
+
+    const errors: string[] = [];
+    const succeeded = new Set<string>();
+    results.forEach((r, i) => {
+      if (r.status === 'fulfilled') {
+        succeeded.add(`${allFields[i].page}:${allFields[i].key}`);
+      } else {
+        errors.push(r.reason?.message ?? 'Erreur inconnue');
       }
+    });
+
+    // Remove succeeded fields from pending, keep failures
+    if (succeeded.size > 0) {
+      setPendingChanges(prev => {
+        const next: Record<string, Record<string, string>> = {};
+        for (const [page, fields] of Object.entries(prev)) {
+          const remaining = Object.fromEntries(
+            Object.entries(fields).filter(([k]) => !succeeded.has(`${page}:${k}`))
+          );
+          if (Object.keys(remaining).length > 0) next[page] = remaining;
+        }
+        return next;
+      });
     }
 
+    setIsSaving(false);
+
     if (errors.length === 0) {
-      setPendingChanges({});
-      window.dispatchEvent(new CustomEvent('inline-edit-saved', { detail: { count } }));
-    } else {
+      window.dispatchEvent(new CustomEvent('inline-edit-saved', { detail: { count: succeeded.size } }));
+    } else if (succeeded.size === 0) {
       window.dispatchEvent(new CustomEvent('inline-edit-error', { detail: { errors } }));
+    } else {
+      window.dispatchEvent(new CustomEvent('inline-edit-partial', { detail: { saved: succeeded.size, errors } }));
     }
   }, [pendingChanges]);
 
   return (
-    <InlineEditContext.Provider value={{ isEditing, toggleEditing, pendingChanges, updateField, saveAll, changeCount: countChanges(pendingChanges) }}>
+    <InlineEditContext.Provider value={{ isEditing, isSaving, toggleEditing, pendingChanges, updateField, discardChanges, saveAll, changeCount: countChanges(pendingChanges) }}>
       {children}
     </InlineEditContext.Provider>
   );
 }
 
-export function useInlineEdit() {
+export function useInlineEdit(): InlineEditContextValue {
   const ctx = useContext(InlineEditContext);
   if (!ctx) throw new Error('useInlineEdit must be used inside InlineEditProvider');
   return ctx;

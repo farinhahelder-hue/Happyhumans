@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 
 const EditableField = dynamic(() => import('@/components/EditableField'), { ssr: false });
 
-type CmsContent = Record<string, string>;
+export type CmsContent = Record<string, string>;
 
 const memCache: Record<string, { data: CmsContent; ts: number }> = {};
 const MEM_TTL = 5 * 60 * 1000;
@@ -41,7 +41,24 @@ function getInitial(page: string, defaults: CmsContent): CmsContent {
   return defaults;
 }
 
-type CmsResult = CmsContent & {
+function loadFromApi(page: string, defaults: CmsContent, setContent: (c: CmsContent) => void) {
+  fetch(`/api/cms/public-content?page=${encodeURIComponent(page)}`, {
+    headers: { 'Cache-Control': 'no-cache' },
+  })
+    .then(r => r.ok ? r.json() : { content: [] })
+    .then(({ content: rows }) => {
+      const map: CmsContent = {};
+      (rows || []).forEach((r: { block_key: string; value: string }) => {
+        if (r.value) map[r.block_key] = r.value;
+      });
+      memCache[page] = { data: map, ts: Date.now() };
+      lsSet(page, map);
+      setContent({ ...defaults, ...map });
+    })
+    .catch(() => {});
+}
+
+export type CmsResult = CmsContent & {
   /**
    * Returns the raw string value (for href, src, alt, className, etc.).
    */
@@ -57,27 +74,23 @@ type CmsResult = CmsContent & {
 export function useCmsContent(page: string, defaults: CmsContent = {}): CmsResult {
   const [content, setContent] = useState<CmsContent>(() => getInitial(page, defaults));
   const done = useRef(false);
+  // Keep defaults stable without adding it as a useEffect dependency
+  const defaultsRef = useRef(defaults);
+  defaultsRef.current = defaults;
 
   useEffect(() => {
     if (done.current) return;
     done.current = true;
     const mem = memCache[page];
     if (mem && Date.now() - mem.ts < MEM_TTL) return;
+    loadFromApi(page, defaultsRef.current, setContent);
+  }, [page]);
 
-    fetch(`/api/cms/public-content?page=${encodeURIComponent(page)}`, {
-      headers: { 'Cache-Control': 'no-cache' },
-    })
-      .then(r => r.ok ? r.json() : { content: [] })
-      .then(({ content: rows }) => {
-        const map: CmsContent = {};
-        (rows || []).forEach((r: { block_key: string; value: string }) => {
-          if (r.value) map[r.block_key] = r.value;
-        });
-        memCache[page] = { data: map, ts: Date.now() };
-        lsSet(page, map);
-        setContent({ ...defaults, ...map });
-      })
-      .catch(() => {});
+  // Revalidate from API after a save
+  useEffect(() => {
+    const handler = () => loadFromApi(page, defaultsRef.current, setContent);
+    window.addEventListener('inline-edit-saved', handler);
+    return () => window.removeEventListener('inline-edit-saved', handler);
   }, [page]);
 
   const get = useCallback((key: string, defaultValue?: string): string => {
@@ -95,12 +108,8 @@ export function useCmsContent(page: string, defaults: CmsContent = {}): CmsResul
         as={opts?.as}
       />
     );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content, page]);
 
-  // Return content spread + methods attached
-  const result = content as CmsResult;
-  result.get = get;
-  result.field = field;
-  return result;
+  // No mutation — use Object.assign on a fresh object
+  return Object.assign(Object.create(Object.getPrototypeOf(content)), content, { get, field });
 }

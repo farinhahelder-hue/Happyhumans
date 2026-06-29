@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useInlineEdit } from '@/contexts/InlineEditContext';
 
 type EditableFieldProps = {
@@ -19,22 +19,44 @@ export default function EditableField({
   const { isEditing, updateField, pendingChanges } = useInlineEdit();
   const [focused, setFocused] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Pending value overrides server value
   const pending = pendingChanges[page]?.[fieldKey];
+  const isDirty = pending !== undefined;
   const displayValue = pending !== undefined ? pending : value;
 
-  const handleClick = useCallback((e: React.MouseEvent) => {
+  // Auto-resize textarea to content
+  useEffect(() => {
+    if (focused && textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [focused, displayValue]);
+
+  const openEditor = useCallback((e: React.MouseEvent) => {
     if (!isEditing) return;
     e.preventDefault();
     e.stopPropagation();
     setFocused(true);
-    setTimeout(() => textareaRef.current?.focus(), 0);
-  }, [isEditing]);
+    setTimeout(() => {
+      if (multiline && textareaRef.current) {
+        textareaRef.current.focus();
+        textareaRef.current.style.height = 'auto';
+        textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+      } else if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 0);
+  }, [isEditing, multiline]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     updateField(page, fieldKey, e.target.value);
-  }, [page, fieldKey, updateField]);
+    // Auto-resize textarea
+    if (multiline && textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [page, fieldKey, updateField, multiline]);
 
   const handleBlur = useCallback(() => {
     setFocused(false);
@@ -43,82 +65,76 @@ export default function EditableField({
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
       setFocused(false);
+      if (multiline && textareaRef.current) textareaRef.current.blur();
+      else if (inputRef.current) inputRef.current.blur();
+    }
+    if (multiline && e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      setFocused(false);
       textareaRef.current?.blur();
     }
-    // Tab moves to next editable field (browser default)
-  }, []);
+  }, [multiline]);
 
-  // Inline edit mode: show textarea or input
-  if (isEditing) {
-    if (focused) {
-      if (multiline) {
-        return (
-          <textarea
-            ref={textareaRef}
-            value={pending ?? value}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            onKeyDown={handleKeyDown}
-            rows={3}
-            style={{
-              ...style,
-              width: '100%',
-              outline: '2px dashed #2d5f54',
-              border: 'none',
-              borderRadius: '4px',
-              padding: '4px 8px',
-              fontFamily: 'inherit',
-              fontSize: 'inherit',
-              fontWeight: 'inherit',
-              lineHeight: 'inherit',
-              color: 'inherit',
-              background: '#f0fff4',
-              resize: 'vertical',
-            }}
-          />
-        );
-      }
+  if (!isEditing) {
+    return <Tag style={style} className={className}>{displayValue}</Tag>;
+  }
+
+  if (focused) {
+    const baseStyle = {
+      ...style,
+      outline: '2px dashed #16a34a',
+      border: 'none',
+      borderRadius: '4px',
+      fontFamily: 'inherit',
+      fontSize: 'inherit',
+      fontWeight: 'inherit',
+      lineHeight: 'inherit',
+      color: 'inherit',
+      background: 'rgba(22, 163, 74, 0.06)',
+    };
+
+    if (multiline) {
       return (
-        <input
-          ref={undefined as unknown as React.Ref<HTMLInputElement>}
-          value={pending ?? value}
+        <textarea
+          ref={textareaRef}
+          value={displayValue}
           onChange={handleChange}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
-          style={{
-            ...style,
-            outline: '2px dashed #2d5f54',
-            border: 'none',
-            borderRadius: '4px',
-            padding: '2px 6px',
-            fontFamily: 'inherit',
-            fontSize: 'inherit',
-            fontWeight: 'inherit',
-            color: 'inherit',
-            background: '#f0fff4',
-          }}
+          rows={3}
+          style={{ ...baseStyle, width: '100%', padding: '4px 8px', resize: 'vertical', minHeight: '3.5rem' }}
         />
       );
     }
-
-    // Non-focused: show clickable text with dashed underline
     return (
-      <Tag
-        onClick={handleClick}
-        style={{
-          ...style,
-          cursor: 'pointer',
-          borderBottom: '2px dashed #2d5f54',
-          display: 'inline',
-        }}
-        className={className}
-        title="Cliquez pour modifier"
-      >
-        {displayValue}
-      </Tag>
+      <input
+        ref={inputRef}
+        value={displayValue}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        onKeyDown={handleKeyDown}
+        style={{ ...baseStyle, padding: '2px 6px', width: '100%' }}
+      />
     );
   }
 
-  // Normal mode
-  return <Tag style={style} className={className}>{displayValue}</Tag>;
+  return (
+    <Tag
+      onClick={openEditor}
+      style={{
+        ...style,
+        cursor: 'pointer',
+        outline: isDirty ? '2px solid #16a34a' : '2px solid rgba(45, 95, 84, 0.4)',
+        outlineOffset: '2px',
+        borderRadius: '3px',
+        display: 'inline',
+      }}
+      className={className}
+      title={isDirty ? '✎ Modifié — cliquez pour éditer' : '✎ Cliquez pour modifier'}
+    >
+      {displayValue}
+      {isDirty && (
+        <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: '#16a34a', marginLeft: '4px', verticalAlign: 'super', fontSize: '0.5em', flexShrink: 0 }} />
+      )}
+    </Tag>
+  );
 }
