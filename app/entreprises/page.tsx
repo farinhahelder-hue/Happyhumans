@@ -28,6 +28,14 @@ const DEFAULTS = {
   temoignage_dorothee_text:   "On a eu un super feedback sur la réunion de présentation que nous avons préparée ensemble. Jérôme (le n+1 de ma cliente) nous a dit : \"Champagne !\"",
   temoignage_dorothee_author: "Dorothée*",
   temoignage_dorothee_role:   "Directrice Achats Beauty Retail",
+  // Tarification
+  price_1_label: 'Coaching dirigeant',
+  price_1_price: 'À partir de 350 €',
+  price_1_unit: '/ séance',
+  price_2_label: 'Programme équipe',
+  price_2_price: 'Sur devis',
+  price_3_label: 'Conférence & formation',
+  price_3_price: 'Sur devis',
 }
 
 export default function EntreprisesPage() {
@@ -216,9 +224,9 @@ export default function EntreprisesPage() {
             </div>
             <div className="grid gap-6 md:grid-cols-3">
               {[
-                { label: 'Coaching dirigeant', price: 'À partir de 350 €', unit: '/ séance', desc: 'Accompagnement individuel de dirigeants, managers et hauts potentiels. Programme sur 3 à 6 mois.', items: ['Bilan de départ et objectifs', 'Séances bimensuelles 90 min', 'Disponibilité inter-séances', 'Rapport de progression'], cta: 'Demander un devis', highlight: false },
-                { label: 'Programme équipe', price: 'Sur devis', unit: '', desc: 'Ateliers collectifs, séminaires de cohésion et accompagnement du changement pour vos équipes.', items: ["Diagnostic d'équipe", 'Ateliers sur mesure', 'Coaching de groupe', 'Suivi post-programme'], cta: 'Discutons-en', highlight: true },
-                { label: 'Conférence & formation', price: 'À partir de 1 500 €', unit: '/ demi-journée', desc: 'Interventions sur le leadership, la transformation, la qualité de présence et le philosophical counselling.', items: ['Format keynote ou atelier', 'Contenu personnalisé', 'Support de présentation', 'Session Q&R incluse'], cta: 'Voir les thèmes', highlight: false },
+                { label: c.get('price_1_label', 'Coaching dirigeant'), price: c.get('price_1_price', 'À partir de 350 €'), unit: c.get('price_1_unit', '/ séance'), desc: 'Accompagnement individuel de dirigeants, managers et hauts potentiels. Programme sur 3 à 6 mois.', items: ['Bilan de départ et objectifs', 'Séances bimensuelles 90 min', 'Disponibilité inter-séances', 'Rapport de progression'], cta: 'Demander un devis', highlight: false },
+                { label: c.get('price_2_label', 'Programme équipe'), price: c.get('price_2_price', 'Sur devis'), unit: '', desc: 'Ateliers collectifs, séminaires de cohésion et accompagnement du changement pour vos équipes.', items: ["Diagnostic d'équipe", 'Ateliers sur mesure', 'Coaching de groupe', 'Suivi post-programme'], cta: 'Discutons-en', highlight: true },
+                { label: c.get('price_3_label', 'Conférence & formation'), price: c.get('price_3_price', 'Sur devis'), unit: '', desc: 'Interventions sur le leadership, la transformation, la qualité de présence et le philosophical counselling.', items: ['Format keynote ou atelier', 'Contenu personnalisé', 'Support de présentation', 'Session Q&R incluse'], cta: 'Voir les thèmes', highlight: false },
               ].map(({ label, price, unit, desc, items, cta, highlight }) => (
                 <div key={label} className={`rounded-2xl p-7 flex flex-col ${highlight ? 'bg-[#2f6b61] text-white shadow-lg ring-2 ring-[#2f6b61]' : 'bg-[#f7f4ef] text-stone-900'}`}>
                   <p className={`text-xs font-bold uppercase tracking-[0.2em] mb-3 ${highlight ? 'text-emerald-200' : 'text-amber-800'}`}>{label}</p>
