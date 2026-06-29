@@ -407,6 +407,52 @@ export default function RelationsPage() {
           </div>
         </section>
 
+        {/* ══ ATTACHEMENT & MONDE PROFESSIONNEL ═══════════════════════ */}
+        <section className="bg-white px-6 py-16 md:px-10 md:py-20">
+          <div className="mx-auto max-w-5xl">
+            <div className="mb-10 text-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Application professionnelle</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">L&apos;attachement au travail — et dans les équipes multiculturelles</h2>
+              <p className="mt-3 text-sm text-stone-500 max-w-2xl mx-auto">
+                Les styles d&apos;attachement ne s&apos;arrêtent pas à la porte du bureau. Ils façonnent votre rapport au management, à l&apos;autorité, au feedback, et à la collaboration.
+              </p>
+            </div>
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="rounded-2xl bg-[#f5f0e8] p-7">
+                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center mb-4 shadow-sm">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                </div>
+                <h3 className="text-base font-semibold text-stone-900 mb-3">En entreprise : leadership et style d&apos;attachement</h3>
+                <div className="text-sm text-stone-600 space-y-2">
+                  <p><strong>Sécure :</strong> inspire confiance, délègue bien, crée un environnement de sécurité psychologique.</p>
+                  <p><strong>Anxieux :</strong> cherche la validation hiérarchique, risque le burn-out par surengagement.</p>
+                  <p><strong>Évitant :</strong> valorise l&apos;autonomie au détriment de la collaboration et du feedback.</p>
+                </div>
+              </div>
+              <div className="rounded-2xl bg-[#f5f0e8] p-7">
+                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center mb-4 shadow-sm">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                </div>
+                <h3 className="text-base font-semibold text-stone-900 mb-3">En équipe multiculturelle : l&apos;attachement amplifié</h3>
+                <p className="text-sm text-stone-600 leading-relaxed">
+                  Dans un environnement international, les styles d&apos;attachement se heurtent aux cultures de communication — directe vs indirecte, individuelle vs collective, explicite vs implicite. Monica, forte de 10 ans d&apos;expérience dans des équipes européennes et internationales, accompagne ces frictions avec une approche qui combine théorie de l&apos;attachement et intelligence interculturelle.
+                </p>
+              </div>
+            </div>
+            <div className="mt-8 rounded-2xl bg-[#eef5f3] border border-[#2d5f54]/20 p-6 text-center">
+              <p className="text-sm text-stone-700 max-w-xl mx-auto">
+                <strong className="text-[#2d5f54]">Monica accompagne les marketers et professionnels internationaux</strong> qui jonglent entre cultures, organisations matricielles et transitions de poste — là où les styles d&apos;attachement sont les plus visibles.
+              </p>
+              <button
+                onClick={handleBook}
+                className="mt-4 rounded-full bg-[#2d5f54] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#1e3a34] transition"
+              >
+                Prendre rendez-vous →
+              </button>
+            </div>
+          </div>
+        </section>
+
         {/* ══ RÉSERVER — BOOKING ════════════════════════════════════════ */}
         <section
           ref={bookingRef}

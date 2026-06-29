@@ -79,6 +79,39 @@ export default function TemoignagesPage() {
           </div>
         </section>
 
+        {/* TÉMOIGNAGES LINKEDIN */}
+        <section className="bg-white py-16 md:py-20 px-6 md:px-10">
+          <div className="mx-auto max-w-5xl">
+            <div className="mb-10 text-center">
+              <div className="inline-flex items-center gap-2 bg-[#0077b5] text-white text-xs font-bold px-3 py-1.5 rounded-full mb-4">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                Témoignages LinkedIn
+              </div>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Ce qu&apos;ils écrivent en public</h2>
+              <p className="mt-3 text-sm text-stone-500">Verbatim issus des recommandations LinkedIn — en version originale.</p>
+            </div>
+            <div className="grid gap-6 md:grid-cols-2">
+              {[
+                { quote: "J'étais le bon élève typique : attendre d'avoir tout compris et tout structuré avant d'agir, ce qui me freinait clairement dans mon rôle. Grâce à mes échanges avec Monica, j'ai compris mes mécanismes limitants et découvert de nouvelles perspectives. Le déclic du « cancre intelligent » m'a permis de voir mes forces autrement : j'ose proposer, tester, décider plus vite. Résultat : plus d'impact, plus de visibilité, et des résultats business concrets.", name: "Thibault*", role: "Directeur Marketing, Tech", lang: "fr" },
+                { quote: "I highly recommend the coaching sessions that Monica Schneider offers. My experience with her has been greatly satisfactory and has allowed me to achieve goals and mindsets that would have been very difficult to accomplish otherwise. She has a vast knowledge of the questioning technique and made every session worth and developmental. Monica's coaching style reflects her professionalism and her engaging nature that has allowed me to express myself openly. She provided a psychological safe environment.", name: "Maria*", role: "Learning & Development Director, Banking", lang: "en" },
+                { quote: "I want to thank Monica for her inspiring, relieving, insightful and energizing sessions! She opened up valuable new perspectives on my current situation and helped me get to know myself better. It is amazing, but just in a few sessions I was able to view my situation from a completely new angle, and suddenly see the road to my new self.", name: "David*", role: "Governmental Think Tank", lang: "en" },
+                { quote: "On a eu un super feedback sur la réunion de présentation que nous avons préparée ensemble. Jérôme (le n+1 de ma cliente) nous a dit : « Champagne ! »", name: "Dorothée*", role: "Directrice Achats Beauty Retail", lang: "fr" },
+              ].map(({ quote, name, role, lang }) => (
+                <div key={name} className="bg-[#f7f4ef] rounded-2xl p-7 flex flex-col">
+                  <span className="text-3xl font-serif leading-none text-[#2f6b61] mb-4 select-none">&ldquo;</span>
+                  <blockquote lang={lang} className="flex-1 text-sm leading-relaxed text-stone-700 italic mb-5">{quote}</blockquote>
+                  <footer>
+                    <p className="text-sm font-semibold text-stone-900">{name}</p>
+                    <p className="text-xs text-stone-500 italic mt-0.5">{role}</p>
+                    {lang === 'en' && <p className="text-xs text-stone-400 mt-1">Version originale</p>}
+                  </footer>
+                </div>
+              ))}
+            </div>
+            <p className="text-center text-xs text-stone-400 mt-6">* Prénom modifié · Témoignages publiés avec accord</p>
+          </div>
+        </section>
+
         {/* CTA */}
         <section className="bg-[#2f6b61] py-16 text-center">
           <div className="mx-auto max-w-xl px-6">

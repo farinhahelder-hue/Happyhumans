@@ -64,6 +64,46 @@ export default function AProposPage() {
           </div>
         </section>
 
+        {/* TIMELINE */}
+        <section className="bg-[#f5f0e8] py-16 md:py-20 px-6 md:px-10">
+          <div className="mx-auto max-w-4xl">
+            <div className="mb-10 text-center">
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Parcours</p>
+              <h2 className="text-3xl font-serif font-light text-stone-900 md:text-4xl">Une trajectoire entre deux continents et trois disciplines</h2>
+            </div>
+            <div className="relative">
+              <div className="absolute left-5 top-0 bottom-0 w-px bg-[#2d5f54]/20 md:left-1/2" />
+              <div className="space-y-8">
+                {[
+                  { year: '2008–2013', role: 'Brand Manager — Henkel', place: 'Allemagne · France · UK', desc: 'Développement de marques FMCG en Europe. Premières expériences de management multiculturel et de communication internationale.' },
+                  { year: '2013–2017', role: 'Marketing Director — LVMH', place: 'Paris · Europe de l\'Est', desc: 'Direction marketing pour des marques de luxe. Management d\'équipes transversales, lancements produits, stratégie de communication.' },
+                  { year: '2017–2020', role: 'Senior Director — L\'Oréal', place: 'Paris · International', desc: 'Responsabilité de P&L, équipes internationales, présence devant les comités de direction. La pression du haut niveau, vécue de l\'intérieur.' },
+                  { year: '2020', role: 'Transition & exploration', place: 'Paris', desc: 'Fin de l\'aventure L\'Oréal. Exploration de nouvelles directions : coaching, philosophie, design du bonheur.' },
+                  { year: '2021–2022', role: 'Formation Executive Coaching — AoEC', place: 'Paris · London', desc: 'Certification executive coaching. EMCC Practitioner. Début de la pratique de coaching avec les premiers clients.' },
+                  { year: '2022–2024', role: 'Master Pratique Philosophique', place: 'Paris', desc: 'Mémoire sur le bonheur. Naissance de la méthode Happiness Design™ — fruit de 6 ans d\'expérimentation personnelle et professionnelle.' },
+                  { year: '2024 →', role: 'Happy Humans', place: 'Paris · Distanciel', desc: 'Coaching individuel, sparring partner, Happiness Design™. Accompagnement de marketers, managers et dirigeants en transition.', current: true },
+                ].map(({ year, role, place, desc, current }, i) => (
+                  <div key={year} className={`relative flex gap-6 ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
+                    <div className={`flex-1 ${i % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
+                      <div className="bg-white rounded-2xl p-5 shadow-sm ml-12 md:ml-0">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <span className="text-xs font-bold text-[#2d5f54]">{year}</span>
+                          {current && <span className="bg-[#2d5f54] text-white text-xs px-2 py-0.5 rounded-full font-semibold">Aujourd&apos;hui</span>}
+                        </div>
+                        <p className="text-sm font-semibold text-stone-900">{role}</p>
+                        <p className="text-xs text-amber-700 mb-2">{place}</p>
+                        <p className="text-xs text-stone-500 leading-relaxed">{desc}</p>
+                      </div>
+                    </div>
+                    <div className="absolute left-5 md:left-1/2 w-4 h-4 rounded-full border-2 border-[#2d5f54] bg-white transform md:-translate-x-1/2 mt-4 z-10 flex-shrink-0" style={{ background: current ? '#2d5f54' : 'white' }} />
+                    <div className="flex-1 hidden md:block" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* MES COACHINGS ET MENTORINGS */}
         <section className="bg-[#f7f4ef] py-20 md:py-28">
           <div className="mx-auto max-w-5xl px-6 md:px-10">

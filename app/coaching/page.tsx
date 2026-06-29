@@ -158,6 +158,24 @@ export default function CoachingPage() {
           </div>
         </section>
 
+        {/* TUNNEL RAPIDE */}
+        <section className="bg-[#eef5f3] border-y border-[#2d5f54]/15 py-8 px-6 md:px-10">
+          <div className="mx-auto max-w-5xl flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <p className="text-sm font-semibold text-stone-900">Prête à commencer ?</p>
+              <p className="text-xs text-stone-500 mt-0.5">Séance découverte gratuite · 45 min · Sans engagement · Confirmation immédiate</p>
+            </div>
+            <div className="flex flex-wrap gap-3 flex-shrink-0">
+              <Link href="/booking" className="rounded-full bg-[#2f6b61] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#235249] transition shadow-sm">
+                Réserver maintenant →
+              </Link>
+              <Link href="/contact" className="rounded-full border border-[#2f6b61] px-6 py-2.5 text-sm font-semibold text-[#2f6b61] hover:bg-[#2f6b61] hover:text-white transition">
+                Poser une question
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* PROGRAMMES */}
         <section className="bg-white py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-6 md:px-10">
