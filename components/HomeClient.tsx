@@ -95,7 +95,7 @@ export default function HomeClient() {
             </div>
             <div className="grid gap-8 md:grid-cols-2">
               <div className="rounded-2xl bg-white p-8 shadow-sm">
-                <h3 className="mb-3 text-xl font-serif font-semibold text-stone-900">Pour les individus</h3>
+                <h3 className="mb-3 text-xl font-serif font-semibold text-stone-900">Pour les particuliers</h3>
                 <p className="mb-4 text-sm leading-relaxed text-stone-600">Managers, dirigeants, entrepreneurs ou personnes en transition qui veulent retrouver de la clarté, de la confiance et une direction qui leur ressemble vraiment.</p>
                 <Link href="/coaching" className="text-sm font-semibold text-[#2f6b61] hover:underline">Découvrir le coaching →</Link>
               </div>

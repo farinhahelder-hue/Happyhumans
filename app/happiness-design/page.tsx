@@ -8,21 +8,35 @@ const DEFAULTS = {
   page_title:    'Happiness Design™',
   page_subtitle: '12 séances pour reprendre les rênes de votre vie et de votre bonheur — au boulot et ailleurs.',
   intro_text:    "Neurosciences, psychologie positive, philosophie pratique, design thinking — toutes les disciplines au service d'une transformation durable, pour que vous repreniez pleinement les rênes de votre vie.",
+  program_hd_price:    'À partir de 2 400 €',
+  program_poste_price: 'À partir de 1 700 €',
+  step_01_title: 'Comment ça marche',
+  step_02_title: 'Audit de sa vie',
+  step_03_title: 'Audit du boulot',
+  step_04_title: 'Audit des forces',
+  step_05_title: 'Forces pratiquées',
+  step_06_title: "L'échec",
+  step_07_title: 'Audit des freins',
+  step_08_title: 'Homo risibilis',
+  step_09_title: 'V1 / V2',
+  step_10_title: 'Les 3 métamorphoses',
+  step_11_title: "Child's Plan",
+  step_12_title: 'Follow-ups × 4',
 }
 
-const STEPS = [
-  { n: '01', title: 'Comment ça marche', desc: 'Neurosciences + gratitude' },
-  { n: '02', title: 'Audit de sa vie', desc: 'Life Design / Bonheur' },
-  { n: '03', title: 'Audit du boulot', desc: 'Design Thinking appliqué à votre vie professionnelle' },
-  { n: '04', title: 'Audit des forces', desc: 'Identifier vos ressources et atouts profonds' },
-  { n: '05', title: 'Forces pratiquées', desc: "Via Character Strengths — lesquelles activez-vous vraiment ?" },
-  { n: '06', title: "L'échec", desc: "Changer son rapport à l'échec — audit des freins" },
-  { n: '07', title: 'Audit des freins', desc: "Syndrome de l'imposteur · Attachement (TA) · Peurs (fears)" },
-  { n: '08', title: 'Homo risibilis', desc: "Imparfait mais impactant — l'action salvatrice" },
-  { n: '09', title: 'V1 / V2', desc: 'Qui je suis, qui je veux devenir' },
-  { n: '10', title: 'Les 3 métamorphoses', desc: 'Les trois transformations clés de votre parcours' },
-  { n: '11', title: "Child's Plan", desc: 'Jalons avec rappels pour ancrer les engagements' },
-  { n: '12', title: 'Follow-ups × 4', desc: '4 sessions de suivi pour consolider et ancrer le changement' },
+const STEP_DESCS = [
+  'Neurosciences + gratitude',
+  'Life Design / Bonheur',
+  'Design Thinking appliqué à votre vie professionnelle',
+  'Identifier vos ressources et atouts profonds',
+  "Via Character Strengths — lesquelles activez-vous vraiment ?",
+  "Changer son rapport à l'échec — audit des freins",
+  "Syndrome de l'imposteur · Attachement (TA) · Peurs (fears)",
+  "Imparfait mais impactant — l'action salvatrice",
+  'Qui je suis, qui je veux devenir',
+  'Les trois transformations clés de votre parcours',
+  'Jalons avec rappels pour ancrer les engagements',
+  '4 sessions de suivi pour consolider et ancrer le changement',
 ]
 
 const POUR_QUI = [
@@ -45,6 +59,18 @@ const POUR_QUI = [
 
 export default function HappinessDesignPage() {
   const c = useCmsContent('happiness-design', DEFAULTS)
+
+  const getStepTitle = (i: number): string => {
+    const key = `step_${String(i + 1).padStart(2, '0')}_title` as keyof typeof DEFAULTS
+    return (c[key] as string) || (DEFAULTS[key] as string) || ''
+  }
+
+  const steps = STEP_DESCS.map((desc, i) => ({
+    n: String(i + 1).padStart(2, '0'),
+    title: getStepTitle(i),
+    desc,
+  }))
+
   return (
     <>
       <Header />
@@ -99,7 +125,7 @@ export default function HappinessDesignPage() {
               <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">12 séances, 12 transformations</h2>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
-              {STEPS.map(({ n, title, desc }) => (
+              {steps.map(({ n, title, desc }) => (
                 <div key={n} className="flex gap-5 bg-white rounded-2xl p-6 shadow-sm">
                   <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[#2d5f54] flex items-center justify-center text-white text-xs font-bold">
                     {n}
@@ -163,7 +189,7 @@ export default function HappinessDesignPage() {
                   <span className="bg-[#2d5f54] text-white text-xs font-semibold px-3 py-1 rounded-full">Le plus populaire</span>
                 </div>
                 <p className="text-xs font-bold uppercase tracking-[0.15em] text-amber-800 mb-2 mt-3">Programme complet</p>
-                <p className="text-3xl font-serif font-semibold text-stone-900">À partir de 2 400 €</p>
+                <p className="text-3xl font-serif font-semibold text-stone-900">{c.program_hd_price || 'À partir de 2 400 €'}</p>
                 <p className="text-xs text-stone-400 mb-6">soit 200€/séance · 12 séances + 4 follow-ups</p>
                 <ul className="space-y-2 mb-8">
                   {["12 séances d'1h en individuel", '4 sessions de suivi post-programme', 'Outils et exercices entre les séances', 'En ligne ou en présentiel (Paris)'].map(item => (

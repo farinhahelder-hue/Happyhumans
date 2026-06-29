@@ -12,6 +12,9 @@ const DEFAULTS = {
   bio_title:        'Deviens qui tu es',
   bio_text:         "Les 10 premières années de ma carrière ont été dédiées au marketing international : développement de produits, de marques, d'histoires et d'expériences inoubliables, en Allemagne, en France, au Royaume-Uni et en Europe de l'Est pour Henkel, LVMH et L'Oréal.\n\nEn 2020, j'ai mis fin à l'aventure L'Oréal et j'ai exploré de nouvelles vies.\n\nJe me suis formée à l'Executive Coaching. Une des choses qui m'avait le plus animée a été le développement des individus et des équipes. À travers cette formation et le début de ma pratique, j'ai découvert que ce métier était fait pour moi.\n\nDans le coaching, j'arrivais à créer un espace où mes clients trouvent le courage de se confronter à leurs limites, à leurs doutes et à leurs vulnérabilités pour réaliser une transformation libératrice qui les rapproche de qui ils sont, de leur puissance et de leur sourire le plus confiant.\n\nÊtre témoin et guide dans cette démarche est un honneur qui m'anime plus que tout.\n\nPour enrichir mon approche et retrouver un de mes amours de jeunesse, j'ai également entrepris un Master de Pratique Philosophique. J'ai fait mon mémoire sur le bonheur.\n\nDeux grandes conclusions :\n1. Ce n'est pas le bonheur qui fait la différence, mais comment on réagit dans l'adversité — quand la vie ne va pas comme on veut.\n2. Une discipline ne suffit pas. Il faut comprendre son cerveau (neurosciences), savoir créer son bonheur (psychologie positive), repérer quand son inconscient reprend le dessus (psychologie classique), entraîner le cerveau à réduire le cortisol (méditation) et challenger ses pensées (pratique philosophique).\n\nJe me suis construit une boîte à outils que j'ai appliquée à ma propre vie au cours des 6 dernières années — Happiness Design. Je l'ai aussi intégrée dans mes coachings, et cela a fait la différence pour mes clients.\n\nAujourd'hui je continue à accompagner des individus ou des entreprises aux moments clés des carrières (promotion et prise de poste, transitions, reconversion), pour booster le sens et l'engagement (conseil en communication interne, team coaching) et même pendant les moments clés du reste de la vie (mariage, séparation, parentalité, deuil, retraite, fin de vie).\n\nMa conviction, ligne directrice dans toutes mes interventions, est simple. Pour chaque nouvelle étape, nous devons entreprendre une transformation en tant qu'individu ou en tant qu'équipe. Je suis à vos côtés avec ma boîte à outils multidisciplinaire pour coller au mieux à votre chemin unique.\n\nJe souhaite aussi rendre cette boîte à outils du bonheur, même dans une vie chaotique, accessible au plus grand nombre. Ce projet s'appelle Happiness Design.",
   photo:            '',
+  mentoring_text:   "Je vous offre mes conseils sur une problématique alignée avec mon expertise : comment être visible tout en restant authentique, comment démontrer du leadership, quel plan de communication interne mettre en place, comment naviguer les différences culturelles.",
+  coaching_text1:  "Le coaching est une danse entre le coach et le coaché. À travers les questions du coach, le coaché réfléchit, change de perspective, fait l'expérience de révélations. Il ou elle trouve en soi les meilleures solutions pour avancer sereinement vers son objectif.",
+  coaching_text2:  "À noter : ma pratique de coaching est enrichie, quand la situation s'y prête, par de la philosophie pratique.",
 }
 
 export default function AProposPage() {
@@ -120,8 +123,8 @@ export default function AProposPage() {
                 </div>
                 <h3 className="text-xl font-serif font-semibold text-stone-900 mb-4">Coaching</h3>
                 <div className="text-sm leading-relaxed text-stone-600 space-y-3">
-                  <p>Le coaching est une danse entre le coach et le coaché. À travers les questions du coach, le coaché réfléchit, change de perspective, fait l&apos;expérience de révélations, de &ldquo;aha moments&rdquo; et d&apos;eurêkas. Il ou elle trouve en soi les meilleures solutions pour avancer sereinement vers son objectif. Le coaché dessine un plan d&apos;action clair et daté. Il ressort de la séance avec un sentiment de clarté, une énergie renouvelée et souvent un sourire confiant.</p>
-                  <p>À noter : ma pratique de coaching est enrichie, quand la situation s&apos;y prête, par de la philosophie pratique.</p>
+                  {(c.coaching_text1 || '').split('\n').map((p, i) => p.trim() ? <p key={`a-${i}`}>{p}</p> : null)}
+                  {(c.coaching_text2 || '').split('\n').map((p, i) => p.trim() ? <p key={`b-${i}`}>{p}</p> : null)}
                 </div>
                 <Link href="/coaching" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#2f6b61] hover:underline">
                   Voir le coaching →
@@ -134,20 +137,9 @@ export default function AProposPage() {
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 </div>
                 <h3 className="text-xl font-serif font-semibold text-stone-900 mb-4">Mentoring</h3>
-                <p className="text-sm leading-relaxed text-stone-600 mb-4">Je vous offre mes conseils sur une problématique alignée avec mon expertise :</p>
-                <ul className="space-y-2 text-sm text-stone-600">
-                  {[
-                    "Comment être visible tout en restant authentique ?",
-                    "Comment démontrer du leadership et signaler que nous sommes prêts pour la next step ?",
-                    "Quel plan de communication interne mettre en place pour rebooster l'engagement ?",
-                    "Comment naviguer les différences de communication au sein d'environnements multiculturels ?",
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="text-amber-500 mt-0.5">→</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="text-sm leading-relaxed text-stone-600 space-y-2">
+                  {(c.mentoring_text || '').split('\n').map((p, i) => p.trim() ? <p key={i}>{p}</p> : null)}
+                </div>
                 <Link href="/contact" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#2f6b61] hover:underline">
                   Me contacter →
                 </Link>

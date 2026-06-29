@@ -28,7 +28,7 @@ type Demande = {
   mois_depart: string; notes: string; statut: string; created_at: string;
 };
 
-type Setting = { id: number; key: string; value: string; label: string; group_name: string; };
+type Setting = { id: number; key: string; value: string; label: string; group_name: string; type?: string; };
 type SiteContent = { id: number; page: string; block_key: string; value: string; label: string; type: string; };
 
 type BookingSlot = {
@@ -86,6 +86,8 @@ function getReadTimeMinutes(content?: string) {
 
 // ─── Config pages CMS ─────────────────────────────────────────
 const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'richtext' }[] }> = {
+  // ── Ordre du panneau gauche ──────────────────────────────────
+  // 1. Accueil
   'home': {
     label: 'Accueil',
     emoji: '🏠',
@@ -99,12 +101,17 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'hero_image',            label: 'Hero — Image de fond',                                 type: 'image' },
       // Services
       { key: 'services_title',        label: 'Services — Titre section',                             type: 'text' },
-      { key: 'services_b2c_title',    label: 'Services — Individus : Titre',                         type: 'text' },
-      { key: 'services_b2c_text',     label: 'Services — Individus : Texte',                         type: 'textarea' },
-      { key: 'services_b2c_cta',      label: 'Services — Individus : Bouton',                        type: 'text' },
-      { key: 'services_b2b_title',    label: 'Services — Organisations : Titre',                     type: 'text' },
+      { key: 'services_b2c_title',    label: 'Services — Particuliers : Titre',                     type: 'text' },
+      { key: 'services_b2c_text',     label: 'Services — Particuliers : Texte',                     type: 'textarea' },
+      { key: 'services_b2c_cta',      label: 'Services — Particuliers : Bouton',                    type: 'text' },
+      { key: 'services_b2b_title',    label: 'Services — Organisations : Titre',                   type: 'text' },
       { key: 'services_b2b_text',     label: 'Services — Organisations : Texte',                     type: 'textarea' },
       { key: 'services_b2b_cta',      label: 'Services — Organisations : Bouton',                    type: 'text' },
+      // Ordre des rubriques accueil
+      { key: 'home_card_order_1',    label: 'Rubrique accueil — Position 1',   type: 'text' },
+      { key: 'home_card_order_2',    label: 'Rubrique accueil — Position 2',   type: 'text' },
+      { key: 'home_card_order_3',    label: 'Rubrique accueil — Position 3',   type: 'text' },
+      { key: 'home_card_order_4',    label: 'Rubrique accueil — Position 4',   type: 'text' },
       // Section test attachement
       { key: 'test_title',            label: 'Test attachement — Titre',                             type: 'text' },
       { key: 'test_subtitle',         label: 'Test attachement — Sous-titre',                        type: 'textarea' },
@@ -121,69 +128,116 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'section_about_text',    label: 'À propos — Texte',                                     type: 'richtext' },
     ],
   },
+  // 2. À propos
   'a-propos': {
     label: 'À propos',
     emoji: '👋',
     sections: [
-      { key: 'hero_image',    label: 'Photo principale (hero)',         type: 'image' },
-      { key: 'page_title',    label: 'Titre de la page',                type: 'text' },
-      { key: 'intro_text',    label: "Texte d'introduction",            type: 'richtext' },
-      { key: 'photo_1',       label: 'Photo 1',                         type: 'image' },
-      { key: 'photo_2',       label: 'Photo 2',                         type: 'image' },
-      { key: 'photo_3',       label: 'Photo 3',                         type: 'image' },
-      { key: 'bio_title',     label: 'Section biographie — Titre',      type: 'text' },
-      { key: 'bio_text',      label: 'Section biographie — Texte',      type: 'richtext' },
-      { key: 'valeurs_title', label: 'Section valeurs — Titre',         type: 'text' },
-      { key: 'valeurs_text',  label: 'Section valeurs — Texte',         type: 'richtext' },
+      { key: 'hero_image',     label: 'Photo principale (hero)',         type: 'image' },
+      { key: 'page_title',     label: 'Titre de la page',                type: 'text' },
+      { key: 'intro_text',     label: "Texte d'introduction",            type: 'richtext' },
+      { key: 'photo_1',        label: 'Photo 1',                         type: 'image' },
+      { key: 'photo_2',        label: 'Photo 2',                         type: 'image' },
+      { key: 'photo_3',        label: 'Photo 3',                         type: 'image' },
+      { key: 'bio_title',      label: 'Section biographie — Titre',      type: 'text' },
+      { key: 'bio_text',       label: 'Section biographie — Texte',      type: 'richtext' },
+      { key: 'mentoring_text', label: 'Section Mentoring — Texte',      type: 'richtext' },
+      { key: 'coaching_text1', label: 'Section Coaching — Texte 1',      type: 'richtext' },
+      { key: 'coaching_text2', label: 'Section Coaching — Texte 2',      type: 'richtext' },
+      { key: 'valeurs_title',  label: 'Section valeurs — Titre',         type: 'text' },
+      { key: 'valeurs_text',   label: 'Section valeurs — Texte',         type: 'richtext' },
     ],
   },
+  // 3. Coaching
   'coaching': {
     label: 'Coaching',
-    emoji: '✈️',
+    emoji: '⭐',
     sections: [
-      { key: 'hero_image',        label: 'Image hero',                  type: 'image' },
-      { key: 'hero_title',        label: 'Hero — Titre',                type: 'text' },
-      { key: 'hero_subtitle',     label: 'Hero — Sous-titre',           type: 'textarea' },
-      { key: 'coaching_b2c_image',label: 'Coaching individuel — Image', type: 'image' },
-      { key: 'coaching_b2c_title',label: 'Coaching individuel — Titre', type: 'text' },
-      { key: 'coaching_b2c_text', label: 'Coaching individuel — Texte', type: 'richtext' },
-      { key: 'coaching_b2b_image',label: 'Coaching entreprises — Image',type: 'image' },
-      { key: 'coaching_b2b_title',label: 'Coaching entreprises — Titre',type: 'text' },
-      { key: 'coaching_b2b_text', label: 'Coaching entreprises — Texte',type: 'richtext' },
-      { key: 'form_intro',        label: 'Intro formulaire',            type: 'textarea' },
-      { key: 'reassurance',       label: 'Texte réassurance',           type: 'text' },
+      { key: 'hero_image',         label: 'Image hero',                    type: 'image' },
+      { key: 'hero_title',         label: 'Hero — Titre',                type: 'text' },
+      { key: 'hero_subtitle',      label: 'Hero — Sous-titre',           type: 'textarea' },
+      { key: 'coaching_b2c_image', label: 'Coaching individuel — Image',  type: 'image' },
+      { key: 'coaching_b2c_title', label: 'Coaching individuel — Titre',  type: 'text' },
+      { key: 'coaching_b2c_text',  label: 'Coaching individuel — Texte',  type: 'richtext' },
+      { key: 'coaching_b2b_image', label: 'Coaching entreprises — Image', type: 'image' },
+      { key: 'coaching_b2b_title', label: 'Coaching entreprises — Titre',type: 'text' },
+      { key: 'coaching_b2b_text',  label: 'Coaching entreprises — Texte',type: 'richtext' },
+      // Tarifs programmes
+      { key: 'program_discovery_price', label: 'Programme découverte — Prix',  type: 'text' },
+      { key: 'program_discovery_unit',  label: 'Programme découverte — Unité',type: 'text' },
+      { key: 'program_single_price',     label: 'Programme single — Prix',     type: 'text' },
+      { key: 'program_single_unit',      label: 'Programme single — Unité',    type: 'text' },
+      { key: 'program_poste_price',      label: 'Programme poste — Prix',      type: 'text' },
+      { key: 'program_poste_unit',       label: 'Programme poste — Unité',     type: 'text' },
+      // Tunnel CTA
+      { key: 'tunnel_title',              label: 'Tunnel rapide — Titre',       type: 'text' },
+      { key: 'tunnel_cta_primary',       label: 'Tunnel rapide — Bouton principal', type: 'text' },
+      { key: 'tunnel_cta_secondary',    label: 'Tunnel rapide — Bouton secondaire',type: 'text' },
+      // Témoignages
+      { key: 'testimonial_1_quote',  label: 'Témoignage 1 — Texte',  type: 'textarea' },
+      { key: 'testimonial_1_name',   label: 'Témoignage 1 — Auteur', type: 'text' },
+      { key: 'testimonial_1_title', label: 'Témoignage 1 — Poste',  type: 'text' },
+      { key: 'testimonial_2_quote', label: 'Témoignage 2 — Texte (anglais OK)', type: 'textarea' },
+      { key: 'testimonial_2_name',  label: 'Témoignage 2 — Auteur', type: 'text' },
+      { key: 'testimonial_2_title',label: 'Témoignage 2 — Poste',  type: 'text' },
+      { key: 'testimonial_3_quote', label: 'Témoignage 3 — Texte (anglais OK)', type: 'textarea' },
+      { key: 'testimonial_3_name',  label: 'Témoignage 3 — Auteur', type: 'text' },
+      { key: 'testimonial_3_title',label: 'Témoignage 3 — Poste',  type: 'text' },
+      // Misc
+      { key: 'form_intro',    label: 'Intro formulaire',     type: 'textarea' },
+      { key: 'reassurance',  label: 'Texte réassurance',   type: 'text' },
     ],
   },
+  // 4. Organisations (Entreprises)
   'entreprises': {
-    label: 'Entreprises',
+    label: 'Organisations',
     emoji: '🏢',
     sections: [
-      { key: 'hero_image',    label: 'Image hero',                type: 'image' },
-      { key: 'page_title',    label: 'Titre de la page',          type: 'text' },
-      { key: 'intro_text',    label: "Texte d'introduction",      type: 'richtext' },
-      { key: 'section_image', label: 'Image section principale',  type: 'image' },
-      { key: 'section_title', label: 'Titre section',             type: 'text' },
-      { key: 'section_text',  label: 'Texte section',             type: 'richtext' },
+      { key: 'hero_image',   label: 'Image hero',                   type: 'image' },
+      { key: 'page_title',   label: 'Titre de la page',             type: 'text' },
+      { key: 'intro_text',   label: "Texte d'introduction",           type: 'richtext' },
+      { key: 'section_image',label: 'Image section principale',      type: 'image' },
+      { key: 'section_title',label: 'Titre section',                type: 'text' },
+      { key: 'section_text', label: 'Texte section',                type: 'richtext' },
+      // Domaines
+      { key: 'domain_1_title', label: 'Domaine 1 — Titre',  type: 'text' },
+      { key: 'domain_1_text',  label: 'Domaine 1 — Texte',  type: 'textarea' },
+      { key: 'domain_2_title', label: 'Domaine 2 — Titre',  type: 'text' },
+      { key: 'domain_2_text',  label: 'Domaine 2 — Texte',  type: 'textarea' },
+      { key: 'domain_3_title', label: 'Domaine 3 — Titre',  type: 'text' },
+      { key: 'domain_3_text',  label: 'Domaine 3 — Texte',  type: 'textarea' },
+      { key: 'domain_4_title', label: 'Domaine 4 — Titre',  type: 'text' },
+      { key: 'domain_4_text',  label: 'Domaine 4 — Texte',  type: 'textarea' },
+      { key: 'domain_5_title', label: 'Domaine 5 — Titre',  type: 'text' },
+      { key: 'domain_5_text',  label: 'Domaine 5 — Texte',  type: 'textarea' },
+      { key: 'domain_6_title', label: 'Domaine 6 — Titre',  type: 'text' },
+      { key: 'domain_6_text',  label: 'Domaine 6 — Texte',  type: 'textarea' },
+      // Témoignage Dorothée
+      { key: 'temoignage_dorothee_text',   label: 'Témoignage Dorothée — Texte', type: 'textarea' },
+      { key: 'temoignage_dorothee_author', label: 'Témoignage Dorothée — Auteur', type: 'text' },
+      { key: 'temoignage_dorothee_role',   label: 'Témoignage Dorothée — Poste', type: 'text' },
     ],
   },
+  // 5. Happiness Design
   'happiness-design': {
     label: 'Happiness Design',
     emoji: '☀️',
     sections: [
-      { key: 'page_title',   label: 'Titre principal',                    type: 'text' },
-      { key: 'page_subtitle',label: 'Sous-titre / accroche',              type: 'textarea' },
-      { key: 'intro_text',   label: 'Texte introduction',                 type: 'textarea' },
+      { key: 'page_title',    label: 'Titre principal',             type: 'text' },
+      { key: 'page_subtitle', label: 'Sous-titre / accroche',       type: 'textarea' },
+      { key: 'intro_text',    label: 'Texte introduction',          type: 'textarea' },
+      // Tarifs
+      { key: 'program_hd_price',   label: 'Programme complet — Prix (ex: À partir de 2 400 €)', type: 'text' },
+      { key: 'program_poste_price',label: 'Programme poste — Prix (ex: À partir de 1 700 €)',   type: 'text' },
+      // 14 séances (on stocke 12 titres dans block_key = step_01_title … step_12_title)
+      ...Array.from({ length: 12 }, (_, i) => ({
+        key:   `step_${String(i + 1).padStart(2, '0')}_title` as string,
+        label: `Séance ${i + 1} — Titre` as string,
+        type:  'text' as const,
+      })),
     ],
   },
-  'temoignages': {
-    label: 'Témoignages',
-    emoji: '💬',
-    sections: [
-      { key: 'hero_image',   label: 'Image hero',          type: 'image' },
-      { key: 'page_title',   label: 'Titre de la page',    type: 'text' },
-      { key: 'intro_text',   label: 'Texte introduction',  type: 'textarea' },
-    ],
-  },
+  // 6. Relations
   'relations': {
     label: 'Relations & Attachement',
     emoji: '💚',
@@ -209,26 +263,37 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'theory_card_3_text',  label: 'Carte théorie 3 — Texte',            type: 'textarea' },
     ],
   },
+  // 7. Témoignages
+  'temoignages': {
+    label: 'Témoignages',
+    emoji: '💬',
+    sections: [
+      { key: 'hero_image',  label: 'Image hero',          type: 'image' },
+      { key: 'page_title',  label: 'Titre de la page',    type: 'text' },
+      { key: 'intro_text',  label: 'Texte introduction',  type: 'textarea' },
+    ],
+  },
+  // 8. Réservation
   'booking': {
     label: 'Réservation',
     emoji: '📅',
     sections: [
-      { key: 'hero_badge',          label: 'Badge hero',                          type: 'text' },
-      { key: 'hero_title',          label: 'Titre hero',                          type: 'text' },
-      { key: 'hero_subtitle',       label: 'Sous-titre hero',                     type: 'textarea' },
-      { key: 'filter_all',          label: 'Onglet filtre — Toutes',              type: 'text' },
-      { key: 'filter_discovery',    label: 'Onglet filtre — Découverte',          type: 'text' },
-      { key: 'filter_coaching',     label: 'Onglet filtre — Coaching',            type: 'text' },
-      { key: 'filter_enterprise',   label: 'Onglet filtre — Entreprises',         type: 'text' },
-      { key: 'empty_slots_text',    label: 'Message aucun créneau',               type: 'textarea' },
-      { key: 'form_name_label',     label: 'Formulaire — Label Nom',              type: 'text' },
-      { key: 'form_email_label',    label: 'Formulaire — Label Email',            type: 'text' },
-      { key: 'form_phone_label',    label: 'Formulaire — Label Téléphone',        type: 'text' },
-      { key: 'form_message_label',  label: 'Formulaire — Label Message',          type: 'text' },
-      { key: 'form_submit_label',   label: 'Formulaire — Bouton Envoyer',         type: 'text' },
-      { key: 'success_title',       label: 'Message succès — Titre',              type: 'text' },
-      { key: 'success_text',        label: 'Message succès — Texte',              type: 'textarea' },
-      { key: 'reassurance_1_title', label: 'Réassurance 1 — Titre',              type: 'text' },
+      { key: 'hero_badge',           label: 'Badge hero',                          type: 'text' },
+      { key: 'hero_title',           label: 'Titre hero',                          type: 'text' },
+      { key: 'hero_subtitle',        label: 'Sous-titre hero',                     type: 'textarea' },
+      { key: 'filter_all',           label: 'Onglet filtre — Toutes',              type: 'text' },
+      { key: 'filter_discovery',     label: 'Onglet filtre — Découverte',          type: 'text' },
+      { key: 'filter_coaching',      label: 'Onglet filtre — Coaching',            type: 'text' },
+      { key: 'filter_enterprise',    label: 'Onglet filtre — Entreprises',         type: 'text' },
+      { key: 'empty_slots_text',     label: 'Message aucun créneau',               type: 'textarea' },
+      { key: 'form_name_label',      label: 'Formulaire — Label Nom',              type: 'text' },
+      { key: 'form_email_label',     label: 'Formulaire — Label Email',            type: 'text' },
+      { key: 'form_phone_label',     label: 'Formulaire — Label Téléphone',        type: 'text' },
+      { key: 'form_message_label',   label: 'Formulaire — Label Message',          type: 'text' },
+      { key: 'form_submit_label',    label: 'Formulaire — Bouton Envoyer',         type: 'text' },
+      { key: 'success_title',        label: 'Message succès — Titre',              type: 'text' },
+      { key: 'success_text',         label: 'Message succès — Texte',              type: 'textarea' },
+      { key: 'reassurance_1_title',  label: 'Réassurance 1 — Titre',              type: 'text' },
       { key: 'reassurance_1_text',  label: 'Réassurance 1 — Texte',              type: 'textarea' },
       { key: 'reassurance_2_title', label: 'Réassurance 2 — Titre',              type: 'text' },
       { key: 'reassurance_2_text',  label: 'Réassurance 2 — Texte',              type: 'textarea' },
@@ -236,45 +301,32 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'reassurance_3_text',  label: 'Réassurance 3 — Texte',              type: 'textarea' },
     ],
   },
+  // 9. Contact
   'contact': {
     label: 'Contact',
     emoji: '📧',
     sections: [
-      { key: 'hero_image',  label: 'Image hero',                type: 'image' },
-      { key: 'page_title',  label: 'Titre de la page',          type: 'text' },
-      { key: 'intro_text',  label: "Texte d'introduction",      type: 'richtext' },
-      { key: 'photo',       label: 'Photo Monica (sidebar)',     type: 'image' },
+      { key: 'hero_image', label: 'Image hero',                  type: 'image' },
+      { key: 'page_title', label: 'Titre de la page',            type: 'text' },
+      { key: 'intro_text', label: "Texte d'introduction",        type: 'richtext' },
+      { key: 'photo',      label: 'Photo Monica (sidebar)',       type: 'image' },
     ],
   },
-  'mentions-legales': {
-    label: 'Mentions légales',
-    emoji: '⚖️',
-    sections: [
-      { key: 'page_title', label: 'Titre de la page', type: 'text' },
-      { key: 'content',    label: 'Contenu complet',  type: 'richtext' },
-    ],
-  },
-  'politique-confidentialite': {
-    label: 'Politique de confidentialité',
-    emoji: '🔒',
-    sections: [
-      { key: 'page_title', label: 'Titre de la page', type: 'text' },
-      { key: 'content',    label: 'Contenu complet',  type: 'richtext' },
-    ],
-  },
+  // 10. Navigation
   'navigation': {
     label: 'Navigation',
     emoji: '🧭',
     sections: [
       { key: 'label_apropos',     label: 'Lien — À propos (ex: Monica)',       type: 'text' },
       { key: 'label_coaching',    label: 'Lien — Coaching',                    type: 'text' },
-      { key: 'label_entreprises', label: 'Lien — Entreprises',                 type: 'text' },
+      { key: 'label_entreprises', label: 'Lien — Organisations',              type: 'text' },
       { key: 'label_relations',   label: 'Lien — Relations',                   type: 'text' },
       { key: 'label_temoignages', label: 'Lien — Témoignages',                 type: 'text' },
       { key: 'label_contact',     label: 'Lien — Contact',                     type: 'text' },
       { key: 'label_cta',         label: 'Bouton CTA (ex: Réserver une séance)', type: 'text' },
     ],
   },
+  // 11. Footer
   'footer': {
     label: 'Footer',
     emoji: '🦶',
@@ -282,7 +334,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'site_name',     label: 'Nom du site',                        type: 'text' },
       { key: 'tagline',       label: 'Tagline (ex: philo-coaching)',        type: 'text' },
       { key: 'description',   label: 'Description courte',                  type: 'textarea' },
-      { key: 'description_2', label: 'Description longue',                  type: 'textarea' },
+      { key: 'description_2',label: 'Description longue',                  type: 'textarea' },
       { key: 'linkedin_url',  label: 'URL LinkedIn',                        type: 'text' },
       { key: 'service_1',     label: 'Service 1',                           type: 'text' },
       { key: 'service_2',     label: 'Service 2',                           type: 'text' },
@@ -293,28 +345,19 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'logo_url',      label: 'Logo (MiniFooter)',                   type: 'image' },
     ],
   },
+  // 12. FAQ
   'faq': {
     label: 'FAQ',
     emoji: '❓',
     sections: [
-      { key: 'page_title',   label: 'Titre de la page',     type: 'text' },
-      { key: 'page_subtitle',label: 'Sous-titre de la page', type: 'textarea' },
-      { key: 'cta_title',    label: 'Section CTA — Titre',  type: 'text' },
-      { key: 'cta_text',     label: 'Section CTA — Texte',  type: 'textarea' },
+      { key: 'page_title',    label: 'Titre de la page',                      type: 'text' },
+      { key: 'page_subtitle',label: 'Sous-titre de la page',                  type: 'textarea' },
+      { key: 'cta_title',    label: 'Section CTA — Titre',                    type: 'text' },
+      { key: 'cta_text',     label: 'Section CTA — Texte',                    type: 'textarea' },
       { key: 'faqs_json',    label: 'FAQ — JSON (voir format dans le panneau)', type: 'textarea' },
     ],
   },
-  'destinations': {
-    label: 'Destinations',
-    emoji: '🗺',
-    sections: [
-      { key: 'page_badge',        label: 'Badge (ex: Hub destinations)',    type: 'text' },
-      { key: 'page_title',        label: 'Titre principal',                 type: 'text' },
-      { key: 'page_subtitle',     label: 'Sous-titre principal',            type: 'textarea' },
-      { key: 'no_results_title',  label: 'Message aucun résultat — Titre',  type: 'text' },
-      { key: 'no_results_text',   label: 'Message aucun résultat — Texte',  type: 'textarea' },
-    ],
-  },
+  // 13. Blog
   'blog': {
     label: 'Blog',
     emoji: '📝',

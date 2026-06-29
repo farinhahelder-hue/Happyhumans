@@ -8,7 +8,7 @@ export const PAGE_DEFAULTS: Record<string, Record<string, string>> = {
     hero_cta_primary:     "Découvrir l'approche →",
     hero_cta_secondary:   'Séance découverte gratuite',
     services_title:       'Comment puis-je vous aider ?',
-    services_b2c_title:   'Pour les individus',
+    services_b2c_title:   'Pour les particuliers',
     services_b2c_text:    "Managers, dirigeants, entrepreneurs ou personnes en transition qui veulent retrouver de la clarté, de la confiance et une direction qui leur ressemble vraiment.",
     services_b2c_cta:     'Réserver une séance découverte →',
     services_b2b_title:   'Pour les organisations',

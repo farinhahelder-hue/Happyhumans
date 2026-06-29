@@ -11,43 +11,61 @@ const DEFAULTS = {
   section_image: '',
   section_title: 'Ce que nous proposons',
   section_text:  "Quand une équipe perd de sa cohérence, les résultats s'en ressentent toujours.\n\nAvec 10 ans passés à développer des marques internationales pour Henkel, LVMH et L'Oréal — en Allemagne, France, Royaume-Uni et Europe de l'Est — j'ai vécu de l'intérieur les dynamiques de transformation d'équipe, de prise de poste et de communication interculturelle.\n\nAujourd'hui j'apporte cette expérience dans ma pratique de coaching. Je travaille avec les dirigeants et les organisations pour remettre de l'alignement — entre les personnes, entre les objectifs et les moyens, entre ce qu'on dit et ce qu'on fait — ou tout simplement pour rebooster l'engagement et l'élan commun.",
+  // Domaines
+  domain_1_title: 'Coaching de dirigeants',
+  domain_1_text:  'Accompagnement individuel sur 3 à 6 mois. Prise de poste, leadership, transitions, gestion de l\'ambiguïté.',
+  domain_2_title: 'Communication interculturelle',
+  domain_2_text:  "Décoder les différences de communication au sein d'équipes multiculturelles. Issu de 10 ans d'expérience internationale.",
+  domain_3_title: 'Communication interne',
+  domain_3_text:  "Construire une communication interne qui engage vraiment. Du sens, pas du bruit. Pour rebooster l'adhésion des équipes.",
+  domain_4_title: 'Sparring partner',
+  domain_4_text:  "Un regard externe sur vos décisions stratégiques, votre positionnement et votre communication de dirigeant.",
+  domain_5_title: "Cohésion d'équipe",
+  domain_5_text:  "Ateliers et séminaires sur mesure. Diagnostic d'équipe, identification des blocages, plan de transformation.",
+  domain_6_title: "Happiness Design™ en entreprise",
+  domain_6_text:  "Remettre du sens et de l'engagement au travail. Programme basé sur les neurosciences, la psychologie positive et la philosophie pratique.",
+  // Témoignage Dorothée
+  temoignage_dorothee_text:   "On a eu un super feedback sur la réunion de présentation que nous avons préparée ensemble. Jérôme (le n+1 de ma cliente) nous a dit : \"Champagne !\"",
+  temoignage_dorothee_author: "Dorothée*",
+  temoignage_dorothee_role:   "Directrice Achats Beauty Retail",
 }
-
-const DOMAINS = [
-  {
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
-    title: 'Coaching de dirigeants',
-    text: 'Accompagnement individuel sur 3 à 6 mois. Prise de poste, leadership, transitions, gestion de l\'ambiguïté.',
-  },
-  {
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
-    title: 'Communication interculturelle',
-    text: 'Décoder les différences de communication au sein d\'équipes multiculturelles. Issu de 10 ans d\'expérience internationale.',
-  },
-  {
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
-    title: 'Communication interne',
-    text: 'Construire une communication interne qui engage vraiment. Du sens, pas du bruit. Pour rebooster l\'adhésion des équipes.',
-  },
-  {
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
-    title: 'Sparring partner',
-    text: 'Un regard externe sur vos décisions stratégiques, votre positionnement et votre communication de dirigeant.',
-  },
-  {
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
-    title: 'Cohésion d\'équipe',
-    text: 'Ateliers et séminaires sur mesure. Diagnostic d\'équipe, identification des blocages, plan de transformation.',
-  },
-  {
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>,
-    title: 'Happiness Design™ en entreprise',
-    text: 'Remettre du sens et de l\'engagement au travail. Programme basé sur les neurosciences, la psychologie positive et la philosophie pratique.',
-  },
-]
 
 export default function EntreprisesPage() {
   const c = useCmsContent('entreprises', DEFAULTS)
+
+  const domains = [
+    {
+      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+      title: c.domain_1_title || 'Coaching de dirigeants',
+      text: c.domain_1_text || '',
+    },
+    {
+      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
+      title: c.domain_2_title || 'Communication interculturelle',
+      text: c.domain_2_text || '',
+    },
+    {
+      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+      title: c.domain_3_title || 'Communication interne',
+      text: c.domain_3_text || '',
+    },
+    {
+      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
+      title: c.domain_4_title || 'Sparring partner',
+      text: c.domain_4_text || '',
+    },
+    {
+      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+      title: c.domain_5_title || "Cohésion d'équipe",
+      text: c.domain_5_text || '',
+    },
+    {
+      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>,
+      title: c.domain_6_title || "Happiness Design™ en entreprise",
+      text: c.domain_6_text || '',
+    },
+  ]
+
   return (
     <>
       <Header />
@@ -103,7 +121,7 @@ export default function EntreprisesPage() {
               <p className="mt-3 text-sm text-stone-500 max-w-xl mx-auto">Une approche ancrée dans la réalité du terrain</p>
             </div>
             <div className="grid gap-6 md:grid-cols-3">
-              {DOMAINS.map(({ icon, title, text }) => (
+              {domains.map(({ icon, title, text }) => (
                 <div key={title} className="bg-white rounded-2xl p-6 shadow-sm">
                   <div className="w-10 h-10 rounded-full bg-[#eef5f3] flex items-center justify-center mb-4 flex-shrink-0">
                     {icon}
@@ -249,12 +267,11 @@ export default function EntreprisesPage() {
             <div className="bg-white rounded-2xl p-8 shadow-sm text-center">
               <span className="text-3xl font-serif leading-none text-[#2f6b61] select-none">&ldquo;</span>
               <blockquote lang="fr" className="mt-3 text-base leading-relaxed text-stone-700 italic">
-                On a eu un super feedback sur la réunion de présentation que nous avons préparée ensemble.
-                Jérôme (le n+1 de ma cliente) nous a dit : &ldquo;Champagne !&rdquo;
+                {c.temoignage_dorothee_text || "On a eu un super feedback sur la réunion de présentation que nous avons préparée ensemble. Jérôme (le n+1 de ma cliente) nous a dit : \"Champagne !\""}
               </blockquote>
               <footer className="mt-6">
-                <p className="text-sm font-semibold text-stone-900">Dorothée*</p>
-                <p className="text-xs text-stone-500 italic mt-0.5">Directrice Achats Beauty Retail</p>
+                <p className="text-sm font-semibold text-stone-900">{c.temoignage_dorothee_author || 'Dorothée*'}</p>
+                <p className="text-xs text-stone-500 italic mt-0.5">{c.temoignage_dorothee_role || 'Directrice Achats Beauty Retail'}</p>
                 <p className="text-xs text-stone-400 mt-1">* Prénom modifié</p>
               </footer>
             </div>

@@ -16,68 +16,92 @@ const DEFAULTS = {
   coaching_b2b_text:  "Coaching de dirigeants, ateliers de cohésion, accompagnement du changement et séminaires sur mesure.\n\nQuand une équipe perd de sa cohérence, les résultats s'en ressentent toujours. Je travaille avec les dirigeants et les organisations pour remettre de l'alignement — entre les personnes, entre les objectifs et les moyens, entre ce qu'on dit et ce qu'on fait.",
   form_intro:         'Décrivez votre enjeu ou posez une question — je vous répondrai sous 48h.',
   reassurance:        '100% confidentiel · Sans engagement · Réponse sous 48h · Séance découverte offerte',
+  // Programs
+  program_discovery_price:  'Gratuit',
+  program_discovery_unit:    '45 min',
+  program_single_price:      '120 €',
+  program_single_unit:       '60 min',
+  program_poste_price:       '1 700 € TTC',
+  program_poste_unit:        'ou 3 × 567 €',
+  // CTA tunnel
+  tunnel_title:              'Prête à commencer ?',
+  tunnel_cta_primary:        'Réserver maintenant →',
+  tunnel_cta_secondary:       'Poser une question',
 }
 
-const PROGRAMS = [
-  {
-    label: 'Séance découverte',
-    price: 'Gratuit',
-    unit: '45 min',
-    desc: 'Premier échange pour clarifier votre situation, vos attentes et voir si le coaching vous convient.',
-    cta: 'Réserver une séance découverte',
-    href: '/booking',
-    highlight: false,
-  },
-  {
-    label: 'Séance individuelle',
-    price: '120 €',
-    unit: '60 min',
-    desc: 'Séance ponctuelle pour travailler sur un sujet précis ou maintenir une dynamique engagée.',
-    cta: 'Réserver une séance',
-    href: '/booking',
-    highlight: false,
-  },
-  {
-    label: 'Programme prise de poste',
-    price: '1 700 € TTC',
-    unit: 'ou 3 × 567 €',
-    desc: 'Structurer ses 90 premiers jours, asseoir son leadership et incarner pleinement son nouveau rôle — avec clarté et confiance.',
-    format: '6 séances + 1 point hebdo de 30 min pendant les 90 premiers jours',
-    cta: 'Réserver une séance découverte',
-    href: '/booking',
-    highlight: true,
-  },
-  {
-    label: 'Happiness Design',
-    price: '',
-    unit: '12 séances individuelles',
-    desc: '12 séances pour reprendre les rênes de votre vie et de votre bonheur — au boulot et ailleurs.',
-    cta: 'En savoir plus',
-    href: '/happiness-design',
-    highlight: false,
-  },
-]
-
-const TEMOIGNAGES = [
-  {
-    quote: "J'étais le bon élève typique : attendre d'avoir tout compris et tout structuré avant d'agir, ce qui me freinait clairement dans mon rôle. Grâce à mes échanges avec Monica, j'ai compris mes mécanismes limitants et découvert de nouvelles perspectives. Le déclic du « cancre intelligent » m'a permis de voir mes forces autrement : j'ose proposer, tester, décider plus vite. Résultat : plus d'impact, plus de visibilité, et des résultats business concrets.",
-    name: "Thibault*",
-    title: "Directeur Marketing, Tech",
-  },
-  {
-    quote: "I highly recommend the coaching sessions that Monica Schneider offers. My experience with her has been greatly satisfactory and has allowed me to achieve goals and mindsets that would have been very difficult to accomplish otherwise. She has a vast knowledge of the questioning technique and made every session worth and developmental. Monica's coaching style reflects her professionalism and her engaging nature that has allowed me to express myself openly. She provided a psychological safe environment.",
-    name: "Maria*",
-    title: "Learning & Development Director, Banking",
-  },
-  {
-    quote: "I want to thank Monica for her inspiring, relieving, insightful and energizing sessions! She opened up valuable new perspectives on my current situation and helped me get to know myself better. It is amazing, but just in a few sessions I was able to view my situation from a completely new angle, and suddenly see the road to my new self.",
-    name: "David*",
-    title: "Governmental Think Tank",
-  },
-]
+const DEFAULTS_TEMOIGNAGES = {
+  testimonial_1_quote:  "J'étais le bon élève typique : attendre d'avoir tout compris et tout structuré avant d'agir, ce qui me freinait clairement dans mon rôle. Grâce à mes échanges avec Monica, j'ai compris mes mécanismes limitants et découvert de nouvelles perspectives. Le déclic du « cancre intelligent » m'a permis de voir mes forces autrement : j'ose proposer, tester, décider plus vite. Résultat : plus d'impact, plus de visibilité, et des résultats business concrets.",
+  testimonial_1_name:   "Thibault*",
+  testimonial_1_title:  "Directeur Marketing, Tech",
+  testimonial_2_quote:  "I highly recommend the coaching sessions that Monica Schneider offers. My experience with her has been greatly satisfactory and has allowed me to achieve goals and mindsets that would have been very difficult to accomplish otherwise. She has a vast knowledge of the questioning technique and made every session worth and developmental. Monica's coaching style reflects her professionalism and her engaging nature that has allowed me to express myself openly. She provided a psychological safe environment.",
+  testimonial_2_name:   "Maria*",
+  testimonial_2_title:  "Learning & Development Director, Banking",
+  testimonial_3_quote:  "I want to thank Monica for her inspiring, relieving, insightful and energizing sessions! She opened up valuable new perspectives on my current situation and helped me get to know myself better. It is amazing, but just in a few sessions I was able to view my situation from a completely new angle, and suddenly see the road to my new self.",
+  testimonial_3_name:   "David*",
+  testimonial_3_title:  "Governmental Think Tank",
+}
 
 export default function CoachingPage() {
-  const c = useCmsContent('coaching', DEFAULTS)
+  const c = useCmsContent('coaching', { ...DEFAULTS_TEMOIGNAGES, ...DEFAULTS })
+
+  const programs = [
+    {
+      label: 'Séance découverte',
+      price: c.program_discovery_price || 'Gratuit',
+      unit: c.program_discovery_unit || '45 min',
+      desc: 'Premier échange pour clarifier votre situation, vos attentes et voir si le coaching vous convient.',
+      cta: 'Réserver une séance découverte',
+      href: '/booking',
+      highlight: false,
+    },
+    {
+      label: 'Séance individuelle',
+      price: c.program_single_price || '120 €',
+      unit: c.program_single_unit || '60 min',
+      desc: 'Séance ponctuelle pour travailler sur un sujet précis ou maintenir une dynamique engagée.',
+      cta: 'Réserver une séance',
+      href: '/booking',
+      highlight: false,
+    },
+    {
+      label: 'Programme prise de poste',
+      price: c.program_poste_price || '1 700 € TTC',
+      unit: c.program_poste_unit || 'ou 3 × 567 €',
+      desc: 'Structurer ses 90 premiers jours, asseoir son leadership et incarner pleinement son nouveau rôle — avec clarté et confiance.',
+      format: '6 séances + 1 point hebdo de 30 min pendant les 90 premiers jours',
+      cta: 'Réserver une séance découverte',
+      href: '/booking',
+      highlight: true,
+    },
+    {
+      label: 'Happiness Design',
+      price: '',
+      unit: '12 séances individuelles',
+      desc: '12 séances pour reprendre les rênes de votre vie et de votre bonheur — au boulot et ailleurs.',
+      cta: 'En savoir plus',
+      href: '/happiness-design',
+      highlight: false,
+    },
+  ]
+
+  const temoignages = [
+    {
+      quote: c.testimonial_1_quote,
+      name: c.testimonial_1_name || 'Témoignage 1',
+      title: c.testimonial_1_title || '',
+    },
+    {
+      quote: c.testimonial_2_quote,
+      name: c.testimonial_2_name || 'Témoignage 2',
+      title: c.testimonial_2_title || '',
+    },
+    {
+      quote: c.testimonial_3_quote,
+      name: c.testimonial_3_name || 'Témoignage 3',
+      title: c.testimonial_3_title || '',
+    },
+  ]
+
   return (
     <>
       <Header />
@@ -137,7 +161,7 @@ export default function CoachingPage() {
               <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Ce qu&apos;ils en disent</h2>
             </div>
             <div className="grid gap-6 md:grid-cols-3">
-              {TEMOIGNAGES.map((t, i) => {
+              {temoignages.map((t, i) => {
                 const isEn = !t.quote.match(/[àâäéèêëîïôùûüœç«»]/);
                 return (
                   <div key={i} className="bg-white rounded-2xl p-7 shadow-sm flex flex-col">
@@ -162,15 +186,15 @@ export default function CoachingPage() {
         <section className="bg-[#eef5f3] border-y border-[#2d5f54]/15 py-8 px-6 md:px-10">
           <div className="mx-auto max-w-5xl flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
-              <p className="text-sm font-semibold text-stone-900">Prête à commencer ?</p>
+              <p className="text-sm font-semibold text-stone-900">{c.tunnel_title}</p>
               <p className="text-xs text-stone-500 mt-0.5">Séance découverte gratuite · 45 min · Sans engagement · Confirmation immédiate</p>
             </div>
             <div className="flex flex-wrap gap-3 flex-shrink-0">
               <Link href="/booking?from=coaching" className="rounded-full bg-[#2f6b61] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#235249] transition shadow-sm">
-                Réserver maintenant →
+                {c.tunnel_cta_primary}
               </Link>
               <Link href="/contact" className="rounded-full border border-[#2f6b61] px-6 py-2.5 text-sm font-semibold text-[#2f6b61] hover:bg-[#2f6b61] hover:text-white transition">
-                Poser une question
+                {c.tunnel_cta_secondary}
               </Link>
             </div>
           </div>
@@ -184,7 +208,7 @@ export default function CoachingPage() {
               <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Programmes & investissement</h2>
             </div>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {PROGRAMS.map(({ label, price, unit, desc, format, cta, href, highlight }) => (
+              {programs.map(({ label, price, unit, desc, format, cta, href, highlight }) => (
                 <div key={label} className={`rounded-2xl p-6 flex flex-col ${highlight ? 'bg-[#2f6b61] text-white shadow-lg ring-2 ring-[#2f6b61]' : 'bg-[#f7f4ef] text-stone-900 shadow-sm'}`}>
                   <p className={`text-xs font-bold uppercase tracking-[0.15em] mb-3 ${highlight ? 'text-emerald-200' : 'text-amber-800'}`}>{label}</p>
                   {price && <p className={`text-2xl font-serif font-semibold mb-0.5 ${highlight ? 'text-white' : 'text-stone-900'}`}>{price}</p>}
