@@ -55,7 +55,7 @@ export default function ContactPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
           <div className="relative z-10 max-w-3xl px-6 pb-12 md:px-16 md:pb-20">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-amber-300">Contact</p>
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-amber-300">{c.hero_badge}</p>
             <h1 className="text-4xl font-serif font-light leading-[1.1] text-white md:text-5xl">{c.page_title}</h1>
           </div>
         </section>
@@ -73,18 +73,18 @@ export default function ContactPage() {
                         <polyline points="20 6 9 17 4 12"/>
                       </svg>
                     </div>
-                    <h3 className="text-lg font-semibold text-stone-900 mb-2">Message envoyé !</h3>
-                    <p className="text-sm text-stone-600">Je vous répondrai sous 48h. Merci de votre confiance.</p>
+                    <h3 className="text-lg font-semibold text-stone-900 mb-2">{c.success_title}</h3>
+                    <p className="text-sm text-stone-600">{c.success_text}</p>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-5">
                     <div className="grid gap-5 sm:grid-cols-2">
                       <div>
-                        <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">Nom</label>
+                        <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">{c.form_name_label}</label>
                         <input required value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder="Votre nom" />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">Email</label>
+                        <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">{c.form_email_label}</label>
                         <input required type="email" value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder="votre@email.com" />
                       </div>
                     </div>
@@ -101,15 +101,15 @@ export default function ContactPage() {
                           <option value="autre">Autre question</option>
                         </select>
                       </div>
-                      <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">Sujet</label>
+                      <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">{c.form_subject_label}</label>
                       <input value={form.subject} onChange={e => setForm(f => ({...f, subject: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder="Objet de votre message" />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">Message</label>
+                      <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">{c.form_message_label}</label>
                       <textarea required value={form.message} onChange={e => setForm(f => ({...f, message: e.target.value}))} rows={6} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54] resize-none" placeholder="Décrivez votre situation ou votre question…" />
                     </div>
                     <button type="submit" disabled={sending} className="rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white hover:bg-[#1e3a34] transition disabled:opacity-60">
-                      {sending ? 'Envoi…' : 'Envoyer le message'}
+                      {sending ? 'Envoi…' : c.form_submit_label}
                     </button>
                   </form>
                 )}

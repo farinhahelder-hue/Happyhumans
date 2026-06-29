@@ -38,34 +38,43 @@ const DEFAULTS = {
   hero_badge:           'Monica Schneider · Executive Coach · Happy Humans',
   hero_title:           'Clarté, confiance et relations qui vous ressemblent',
   hero_subtitle:        'Executive Coach certifiée AoEC · EMCC Practitioner · Philosophical Counselling',
-  hero_cta_primary:     'Découvrir l\'approche →',
-  hero_cta_secondary:   'Séance découverte gratuite',
+  hero_cta_primary:     'Séance découverte gratuite',
+  hero_cta_contact:     'Me contacter',
   // Services
+  services_badge:       'Accompagnement',
   services_title:       'Comment puis-je vous aider ?',
-  services_b2c_title:   'Pour les particuliers',
+  services_b2c_title:  'Pour les particuliers',
   services_b2c_text:    'Managers, dirigeants, entrepreneurs ou personnes en transition qui veulent retrouver de la clarté, de la confiance et une direction qui leur ressemble vraiment.',
-  services_b2c_cta:     'Réserver une séance découverte →',
-  services_b2b_title:   'Pour les organisations',
-  services_b2b_text:    'Coaching de leadership, ateliers, séminaires et accompagnement du changement pour remettre de l\'alignement et de l\'élan dans les équipes.',
-  services_b2b_cta:     'Discuter d\'un projet →',
-  // Test
-  test_title:           'Quel est votre style d\'attachement ?',
-  test_subtitle:        'Découvrez si vous êtes sécure, anxieux ou évitant — et ce que cela change dans vos relations. 16 questions · 5 minutes · Résultat immédiat.',
-  test_cta:             'Faire le test gratuit',
-  // Réservation
-  booking_title:        'Prenez rendez-vous',
-  booking_subtitle:     'Séance découverte offerte · 45 minutes · Sans engagement',
+  services_b2c_cta:    'Réserver une séance découverte →',
+  services_b2b_title:  'Pour les organisations',
+  services_b2b_text:    "Coaching de leadership, ateliers, séminaires et accompagnement du changement pour remettre de l'alignement et de l'élan dans les équipes.",
+  services_b2b_cta:     "Discuter d'un projet →",
+  // Cards section
+  cards_section_badge:  'Aller plus loin',
+  cards_section_title: 'Explorez les thématiques',
+  cards_link_label:    'Découvrir →',
+  // Booking
+  booking_badge:        'Agenda',
+  booking_widget_title: 'Choisissez votre créneau',
+  booking_widget_subtitle: 'Séance découverte offerte (45 min) ou programme de coaching.',
   // Contact
-  contact_title:        'Une question ? Écrivez-nous',
-  contact_intro:        'Je réponds personnellement à chaque message sous 48h. — Monica',
+  contact_section_badge: 'Contact',
+  contact_section_title: 'Une question ? Écrivez-nous',
+  contact_section_subtitle: 'Réponse sous 48h.',
+  form_success_title:  'Message envoyé !',
+  form_success_body:   'Monica vous répondra sous 48h à {email}.',
+  form_sending:        'Envoi en cours…',
+  form_submit:         'Envoyer le message',
   // Card order (Explorez les thématiques)
-  home_card_order_1:  'coaching',
-  home_card_order_2:  'organisations',
-  home_card_order_3:  'happiness-design',
-  home_card_order_4:  'relations',
+  home_card_order_1:   'coaching',
+  home_card_order_2:   'organisations',
+  home_card_order_3:   'happiness-design',
+  home_card_order_4:   'relations',
   // Misc
-  logo_url:             '',
-  contact_email:        'happyhumans.coaching@gmail.com',
+  logo_url:            '',
+  contact_email:       'happyhumans.coaching@gmail.com',
+  booking_modal_title: 'Choisissez votre créneau',
+  booking_modal_subtitle: 'Séance découverte offerte · 45 minutes · Sans engagement',
 }
 
 export default function LandingPage() {
@@ -115,7 +124,7 @@ export default function LandingPage() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(43,111,98,0.35),transparent_50%),radial-gradient(circle_at_bottom_left,rgba(182,140,94,0.2),transparent_40%)]" />
           <div className="relative mx-auto max-w-3xl">
             <p className="mb-5 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
-              Monica Schneider · Executive Coach · Happy Humans
+              {c.hero_badge}
             </p>
             <h1 className="text-4xl font-serif font-light leading-tight text-white md:text-6xl">
               {c.hero_title}
@@ -126,13 +135,13 @@ export default function LandingPage() {
                 onClick={() => setBookingOpen(true)}
                 className="rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
               >
-                Séance découverte gratuite
+                {c.hero_cta_primary}
               </button>
               <Link
                 href="/contact"
                 className="rounded-full border border-stone-500 px-8 py-3.5 text-sm font-semibold text-stone-200 hover:border-white hover:text-white transition"
               >
-                Me contacter
+                {c.hero_cta_contact}
               </Link>
             </div>
           </div>
@@ -142,9 +151,8 @@ export default function LandingPage() {
         <section className="bg-[#f5f0e8] px-6 py-20 md:px-10 md:py-24" id="services">
           <div className="mx-auto max-w-5xl">
             <div className="mb-12 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Accompagnement</p>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.services_badge}</p>
               <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.services_title || 'Un accompagnement pour deux contextes'}</h2>
-              <p className="mt-3 text-sm text-stone-500 max-w-xl mx-auto">{c.services_intro || 'Que vous soyez un particulier en quête de clarté ou une organisation qui veut remettre de l&apos;alignement dans ses équipes.'}</p>
             </div>
             <div className="grid gap-6 md:grid-cols-2">
               <div className="rounded-2xl bg-white p-8 shadow-sm">
@@ -175,8 +183,8 @@ export default function LandingPage() {
         <section className="bg-white px-6 py-20 md:px-10 md:py-24">
           <div className="mx-auto max-w-5xl">
             <div className="mb-12 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Aller plus loin</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Explorez les thématiques</h2>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.cards_section_badge}</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.cards_section_title}</h2>
             </div>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {orderedCards.map((card) => (
@@ -186,7 +194,7 @@ export default function LandingPage() {
                   </div>
                   <h3 className="mb-2 text-lg font-serif font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">{card.title}</h3>
                   <p className="text-sm text-stone-500 leading-relaxed mb-4">{card.desc}</p>
-                  <span className="text-sm font-semibold text-[#2d5f54]">Découvrir →</span>
+                  <span className="text-sm font-semibold text-[#2d5f54]">{c.cards_link_label}</span>
                 </Link>
               ))}
             </div>
@@ -197,9 +205,9 @@ export default function LandingPage() {
         <section className="bg-[#f5f0e8] px-6 py-20 md:px-10 md:py-24" id="booking">
           <div className="mx-auto max-w-4xl">
             <div className="mb-10 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Agenda</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Choisissez votre créneau</h2>
-              <p className="mt-3 text-sm text-stone-500">Séance découverte offerte (45 min) ou programme de coaching.</p>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.booking_badge}</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.booking_widget_title}</h2>
+              <p className="mt-3 text-sm text-stone-500">{c.booking_widget_subtitle}</p>
             </div>
             <BookingWidget />
           </div>
@@ -209,15 +217,15 @@ export default function LandingPage() {
         <section className="bg-white px-6 py-20 md:px-10 md:py-24" id="contact">
           <div className="mx-auto max-w-xl">
             <div className="mb-10 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">Contact</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Une question ? Écrivez-nous</h2>
-              <p className="mt-3 text-sm text-stone-500">Réponse sous 48h.</p>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.contact_section_badge}</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.contact_section_title}</h2>
+              <p className="mt-3 text-sm text-stone-500">{c.contact_section_subtitle}</p>
             </div>
             {sent ? (
               <div className="rounded-2xl bg-emerald-50 border border-emerald-200 p-10 text-center">
                 <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[#2d5f54] flex items-center justify-center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <h3 className="text-lg font-semibold text-stone-900 mb-2">Message envoyé !</h3>
-                <p className="text-sm text-stone-500">Monica vous répondra sous 48h à <strong>{form.email}</strong>.</p>
+                <h3 className="text-lg font-semibold text-stone-900 mb-2">{c.form_success_title}</h3>
+                <p className="text-sm text-stone-500">{c.form_success_body.replace('{email}', form.email)}</p>
               </div>
             ) : (
               <form onSubmit={handleContact} className="space-y-4">
@@ -236,7 +244,7 @@ export default function LandingPage() {
                   <textarea required value={form.message} onChange={e => setForm(f => ({...f, message: e.target.value}))} rows={4} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54] resize-none" placeholder="Votre question ou demande…" />
                 </div>
                 <button type="submit" disabled={sending} className="w-full rounded-full bg-[#2d5f54] py-3.5 text-sm font-semibold text-white hover:bg-[#1e3a34] disabled:opacity-60 transition">
-                  {sending ? 'Envoi en cours…' : 'Envoyer le message'}
+                  {sending ? c.form_sending : c.form_submit}
                 </button>
                 {s.contact_email && (
                   <p className="text-center text-xs text-stone-400">
@@ -269,8 +277,8 @@ export default function LandingPage() {
               ✕
             </button>
             <div className="mb-6">
-              <h2 className="text-xl font-semibold text-stone-900">Choisissez votre créneau</h2>
-              <p className="text-sm text-stone-500 mt-1">Séance découverte offerte · 45 minutes · Sans engagement</p>
+              <h2 className="text-xl font-semibold text-stone-900">{c.booking_modal_title}</h2>
+              <p className="text-sm text-stone-500 mt-1">{c.booking_modal_subtitle}</p>
             </div>
             <BookingWidget defaultType="discovery" />
           </div>

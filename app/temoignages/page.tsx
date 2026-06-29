@@ -10,6 +10,20 @@ const DEFAULTS = {
   hero_image:  'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1400&q=80&auto=format&fit=crop',
   page_title:  'Ils témoignent',
   intro_text:  'Des parcours différents, une même expérience : retrouver de la clarté et avancer avec confiance.',
+  // Grid
+  grid_badge:      'Témoignages',
+  grid_empty_state: 'Les témoignages arrivent bientôt.',
+  // LinkedIn section
+  linkedin_badge:       'Témoignages LinkedIn',
+  linkedin_title:       "Ce qu'ils écrivent en public",
+  linkedin_subtitle:    'Verbatim issus des recommandations LinkedIn — en version originale.',
+  linkedin_footnote:    '* Prénom modifié · Témoignages publiés avec accord',
+  linkedin_intro_note:  '',
+  // CTA
+  cta_title:     "Prêt·e à écrire votre propre histoire ?",
+  cta_subtitle:  'Réservez une séance découverte gratuite de 30 minutes.',
+  cta_coaching: 'Découvrir le coaching',
+  cta_contact:  'Prendre contact',
 }
 
 const STARS = (n: number) => '★'.repeat(n) + '☆'.repeat(5 - n)
@@ -34,7 +48,7 @@ export default function TemoignagesPage() {
         <section className="relative flex h-[55vh] items-end overflow-hidden bg-stone-900 md:h-[65vh]">
           {c.hero_image && <img src={c.hero_image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-40" />}
           <div className="relative mx-auto w-full max-w-5xl px-6 pb-12 md:px-10">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-amber-400">Témoignages</p>
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-amber-400">{c.grid_badge}</p>
             <h1 className="text-4xl font-serif font-light leading-[1.1] text-white md:text-6xl">{c.page_title}</h1>
             <p className="mt-4 max-w-xl text-base text-stone-300">{c.intro_text}</p>
           </div>
@@ -48,7 +62,7 @@ export default function TemoignagesPage() {
                 <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#2f6b61] border-t-transparent" />
               </div>
             ) : items.length === 0 ? (
-              <p className="text-center text-stone-500 py-16">Les témoignages arrivent bientôt.</p>
+              <p className="text-center text-stone-500 py-16">{c.grid_empty_state}</p>
             ) : (
               <div className="columns-1 gap-6 md:columns-2 lg:columns-3">
                 {items.map(t => (
@@ -85,10 +99,10 @@ export default function TemoignagesPage() {
             <div className="mb-10 text-center">
               <div className="inline-flex items-center gap-2 bg-[#0077b5] text-white text-xs font-bold px-3 py-1.5 rounded-full mb-4">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-                Témoignages LinkedIn
+                {c.linkedin_badge}
               </div>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Ce qu&apos;ils écrivent en public</h2>
-              <p className="mt-3 text-sm text-stone-500">Verbatim issus des recommandations LinkedIn — en version originale.</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.linkedin_title}</h2>
+              <p className="mt-3 text-sm text-stone-500">{c.linkedin_subtitle}</p>
             </div>
             <div className="grid gap-6 md:grid-cols-2">
               {[
@@ -108,21 +122,22 @@ export default function TemoignagesPage() {
                 </div>
               ))}
             </div>
-            <p className="text-center text-xs text-stone-400 mt-6">* Prénom modifié · Témoignages publiés avec accord</p>
+            {c.linkedin_footnote && <p className="text-center text-xs text-stone-400 mt-6">{c.linkedin_footnote}</p>}
+            {c.linkedin_intro_note && <p className="text-center text-xs text-stone-400 mt-4">{c.linkedin_intro_note}</p>}
           </div>
         </section>
 
         {/* CTA */}
         <section className="bg-[#2f6b61] py-16 text-center">
           <div className="mx-auto max-w-xl px-6">
-            <h2 className="mb-4 text-2xl font-serif font-light text-white">Prêt·e à écrire votre propre histoire ?</h2>
-            <p className="mb-7 text-sm text-emerald-100">Réservez une séance découverte gratuite de 30 minutes.</p>
+            <h2 className="mb-4 text-2xl font-serif font-light text-white">{c.cta_title}</h2>
+            <p className="mb-7 text-sm text-emerald-100">{c.cta_subtitle}</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <a href="/coaching" className="inline-block rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-[#2f6b61] shadow hover:bg-stone-50">
-                Découvrir le coaching
+                {c.cta_coaching}
               </a>
               <a href="/contact" className="inline-block rounded-full border border-white px-8 py-3.5 text-sm font-semibold text-white hover:bg-white/10">
-                Prendre contact
+                {c.cta_contact}
               </a>
             </div>
           </div>

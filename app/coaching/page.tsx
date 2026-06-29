@@ -6,27 +6,49 @@ import { useCmsContent } from '@/hooks/useCmsContent'
 
 const DEFAULTS = {
   hero_image:         '',
+  hero_badge:         'Coaching',
   hero_title:         "Il y a des moments où il faut réapprendre à habiter son rôle.",
   hero_subtitle:      "Executive Coach certifiée AoEC · EMCC Practitioner · Monica Schneider accompagne des managers, dirigeants et personnes en transition qui veulent retrouver clarté, confiance et une direction qui leur ressemble vraiment.",
+  hero_cta_primary:   'Séance découverte gratuite (45 min)',
+  hero_cta_contact:   'Me contacter',
   coaching_b2c_image: '',
+  coaching_b2c_badge: 'Individuel',
   coaching_b2c_title: 'Coaching individuel',
   coaching_b2c_text:  "Un espace pour ralentir, regarder ce qui se passe vraiment — et construire un mouvement qui tient dans la durée.\n\nLe coaching que je propose n'est pas un conseil. C'est un accompagnement qui part de là où vous êtes vraiment.\n\nJe m'appuie sur des techniques classiques d'executive coaching (modèles GROW, Gestalt, Solutions Focused, Co-active…) mais aussi sur des outils rencontrés plus rarement — méditation, philosophie, psychologie, design thinking — pour travailler sur la transformation que vous devez accomplir au plus profond de vous pour réaliser vos objectifs.\n\nPour offrir du recul, de la clarté et de nouvelles perspectives. Vous y voyez plus clair, y compris sur les prochaines actions à mettre en place.\n\nVous vous retrouvez — et vous êtes prêt·e à accélérer avec un élan et une clarté revigorants.",
+  coaching_b2c_cta_link: 'Me contacter →',
   coaching_b2b_image: '',
+  coaching_b2b_badge: 'Organisations',
   coaching_b2b_title: 'Pour les organisations',
   coaching_b2b_text:  "Coaching de dirigeants, ateliers de cohésion, accompagnement du changement et séminaires sur mesure.\n\nQuand une équipe perd de sa cohérence, les résultats s'en ressentent toujours. Je travaille avec les dirigeants et les organisations pour remettre de l'alignement — entre les personnes, entre les objectifs et les moyens, entre ce qu'on dit et ce qu'on fait.",
+  coaching_b2b_cta_link: 'Découvrir →',
   form_intro:         'Décrivez votre enjeu ou posez une question — je vous répondrai sous 48h.',
   reassurance:        '100% confidentiel · Sans engagement · Réponse sous 48h · Séance découverte offerte',
   // Programs
+  programs_badge:     'Tarifs',
+  programs_title:     'Programmes & investissement',
   program_discovery_price:  'Gratuit',
   program_discovery_unit:    '45 min',
   program_single_price:      '120 €',
   program_single_unit:       '60 min',
   program_poste_price:       '1 700 € TTC',
   program_poste_unit:        'ou 3 × 567 €',
+  program_hd_label:   'Happiness Design',
+  program_hd_unit:    '12 séances individuelles',
+  program_hd_desc:    '12 séances pour reprendre les rênes de votre vie et de votre bonheur — au boulot et ailleurs.',
+  program_hd_cta:    'En savoir plus',
   // CTA tunnel
   tunnel_title:              'Prête à commencer ?',
   tunnel_cta_primary:        'Réserver maintenant →',
   tunnel_cta_secondary:       'Poser une question',
+  tunnel_reassurance:        'Séance découverte gratuite · 45 min · Sans engagement · Confirmation immédiate',
+  // Témoignages
+  testimonials_badge:     'Témoignages',
+  testimonials_title:     "Ce qu'ils en disent",
+  testimonials_footnote: "* Prénom modifié",
+  // CTA final
+  cta_title:         'Prêt·e à commencer ?',
+  form_cta_title:    "Commençons par une séance découverte de 45 min — gratuite et sans engagement.",
+  form_cta_button:   'Séance découverte gratuite (45 min)',
 }
 
 const DEFAULTS_TEMOIGNAGES = {
@@ -41,44 +63,57 @@ const DEFAULTS_TEMOIGNAGES = {
   testimonial_3_title:  "Governmental Think Tank",
 }
 
+const DEFAULTS_PROGRAMS = {
+  program_1_label: 'Séance découverte',
+  program_1_desc:  'Premier échange pour clarifier votre situation, vos attentes et voir si le coaching vous convient.',
+  program_1_cta:   'Réserver une séance découverte',
+  program_2_label: 'Séance individuelle',
+  program_2_desc:  'Séance ponctuelle pour travailler sur un sujet précis ou maintenir une dynamique engagée.',
+  program_2_cta:   'Réserver une séance',
+  program_3_label: 'Programme prise de poste',
+  program_3_desc:  'Structurer ses 90 premiers jours, asseoir son leadership et incarner pleinement son nouveau rôle — avec clarté et confiance.',
+  program_3_format: '6 séances + 1 point hebdo de 30 min pendant les 90 premiers jours',
+  program_3_cta:   'Réserver une séance découverte',
+}
+
 export default function CoachingPage() {
-  const c = useCmsContent('coaching', { ...DEFAULTS_TEMOIGNAGES, ...DEFAULTS })
+  const c = useCmsContent('coaching', { ...DEFAULTS_TEMOIGNAGES, ...DEFAULTS, ...DEFAULTS_PROGRAMS })
 
   const programs = [
     {
-      label: 'Séance découverte',
+      label: c.program_1_label || 'Séance découverte',
       price: c.program_discovery_price || 'Gratuit',
       unit: c.program_discovery_unit || '45 min',
-      desc: 'Premier échange pour clarifier votre situation, vos attentes et voir si le coaching vous convient.',
-      cta: 'Réserver une séance découverte',
+      desc: c.program_1_desc,
+      cta: c.program_1_cta || 'Réserver une séance découverte',
       href: '/booking',
       highlight: false,
     },
     {
-      label: 'Séance individuelle',
+      label: c.program_2_label || 'Séance individuelle',
       price: c.program_single_price || '120 €',
       unit: c.program_single_unit || '60 min',
-      desc: 'Séance ponctuelle pour travailler sur un sujet précis ou maintenir une dynamique engagée.',
-      cta: 'Réserver une séance',
+      desc: c.program_2_desc,
+      cta: c.program_2_cta || 'Réserver une séance',
       href: '/booking',
       highlight: false,
     },
     {
-      label: 'Programme prise de poste',
+      label: c.program_3_label || 'Programme prise de poste',
       price: c.program_poste_price || '1 700 € TTC',
       unit: c.program_poste_unit || 'ou 3 × 567 €',
-      desc: 'Structurer ses 90 premiers jours, asseoir son leadership et incarner pleinement son nouveau rôle — avec clarté et confiance.',
-      format: '6 séances + 1 point hebdo de 30 min pendant les 90 premiers jours',
-      cta: 'Réserver une séance découverte',
+      desc: c.program_3_desc,
+      format: c.program_3_format,
+      cta: c.program_3_cta || 'Réserver une séance découverte',
       href: '/booking',
       highlight: true,
     },
     {
-      label: 'Happiness Design',
+      label: c.program_hd_label || 'Happiness Design',
       price: '',
-      unit: '12 séances individuelles',
-      desc: '12 séances pour reprendre les rênes de votre vie et de votre bonheur — au boulot et ailleurs.',
-      cta: 'En savoir plus',
+      unit: c.program_hd_unit || '12 séances individuelles',
+      desc: c.program_hd_desc,
+      cta: c.program_hd_cta || 'En savoir plus',
       href: '/happiness-design',
       highlight: false,
     },
@@ -116,15 +151,15 @@ export default function CoachingPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-stone-900/60 via-stone-900/40 to-stone-900/70" />
           <div className="relative mx-auto max-w-3xl">
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">Coaching</p>
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">{c.hero_badge}</p>
             <h1 className="text-4xl font-serif font-light leading-tight text-white md:text-6xl">{c.hero_title}</h1>
             <p className="mt-6 text-lg leading-relaxed text-stone-300">{c.hero_subtitle}</p>
             <div className="mt-10 flex flex-wrap gap-4 justify-center">
               <Link href="/booking?from=coaching" className="rounded-full bg-[#2f6b61] px-7 py-3.5 text-sm font-semibold text-white shadow-md hover:bg-[#235249] transition">
-                Séance découverte gratuite (45 min)
+                {c.hero_cta_primary}
               </Link>
               <Link href="/contact" className="rounded-full border border-stone-400 px-7 py-3.5 text-sm font-semibold text-stone-200 hover:border-white hover:text-white transition">
-                Me contacter
+                {c.hero_cta_contact}
               </Link>
             </div>
           </div>
@@ -135,13 +170,13 @@ export default function CoachingPage() {
           <div className="mx-auto max-w-5xl px-6 md:px-10">
             <div className="grid gap-12 md:grid-cols-2 items-center">
               <div className="space-y-5">
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Individuel</p>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800">{c.coaching_b2c_badge}</p>
                 <h2 className="text-3xl font-serif font-light leading-tight text-stone-900">{c.coaching_b2c_title}</h2>
                 <div className="text-base leading-relaxed text-stone-600 space-y-3">
                   {c.coaching_b2c_text.split('\n').map((p, i) => p.trim() ? <p key={i}>{p}</p> : null)}
                 </div>
                 <Link href="/contact" className="inline-flex items-center gap-2 text-sm font-semibold text-[#2f6b61] hover:underline">
-                  Me contacter →
+                  {c.coaching_b2c_cta_link}
                 </Link>
               </div>
               <img
@@ -157,8 +192,8 @@ export default function CoachingPage() {
         <section className="bg-[#f7f4ef] py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-6 md:px-10">
             <div className="mb-10 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Témoignages</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Ce qu&apos;ils en disent</h2>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">{c.testimonials_badge}</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.testimonials_title}</h2>
             </div>
             <div className="grid gap-6 md:grid-cols-3">
               {temoignages.map((t, i) => {
@@ -178,7 +213,7 @@ export default function CoachingPage() {
                 );
               })}
             </div>
-            <p className="text-center text-xs text-stone-400 mt-6">* Prénom modifié</p>
+            <p className="text-center text-xs text-stone-400 mt-6">{c.testimonials_footnote}</p>
           </div>
         </section>
 
@@ -187,7 +222,7 @@ export default function CoachingPage() {
           <div className="mx-auto max-w-5xl flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <p className="text-sm font-semibold text-stone-900">{c.tunnel_title}</p>
-              <p className="text-xs text-stone-500 mt-0.5">Séance découverte gratuite · 45 min · Sans engagement · Confirmation immédiate</p>
+              <p className="text-xs text-stone-500 mt-0.5">{c.tunnel_reassurance}</p>
             </div>
             <div className="flex flex-wrap gap-3 flex-shrink-0">
               <Link href="/booking?from=coaching" className="rounded-full bg-[#2f6b61] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#235249] transition shadow-sm">
@@ -204,8 +239,8 @@ export default function CoachingPage() {
         <section className="bg-white py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-6 md:px-10">
             <div className="mb-10 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Tarifs</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">Programmes & investissement</h2>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">{c.programs_badge}</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.programs_title}</h2>
             </div>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               {programs.map(({ label, price, unit, desc, format, cta, href, highlight }) => (
@@ -234,13 +269,13 @@ export default function CoachingPage() {
                 className="rounded-2xl object-cover shadow-lg h-72 w-full order-2 md:order-1"
               />
               <div className="space-y-5 order-1 md:order-2">
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Organisations</p>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800">{c.coaching_b2b_badge}</p>
                 <h2 className="text-3xl font-serif font-light leading-tight text-stone-900">{c.coaching_b2b_title}</h2>
                 <div className="text-base leading-relaxed text-stone-600 space-y-3">
                   {c.coaching_b2b_text.split('\n').map((p, i) => p.trim() ? <p key={i}>{p}</p> : null)}
                 </div>
                 <Link href="/entreprises" className="inline-flex items-center gap-2 text-sm font-semibold text-[#2f6b61] hover:underline">
-                  Découvrir →
+                  {c.coaching_b2b_cta_link}
                 </Link>
               </div>
             </div>
@@ -250,10 +285,10 @@ export default function CoachingPage() {
         {/* CTA */}
         <section className="bg-[#2f6b61] py-16">
           <div className="mx-auto max-w-2xl px-6 text-center">
-            <h2 className="mb-3 text-2xl font-serif font-light text-white">Prêt·e à commencer ?</h2>
-            <p className="mb-6 text-emerald-100 text-sm">{c.form_intro}</p>
+            <h2 className="mb-3 text-2xl font-serif font-light text-white">{c.cta_title}</h2>
+            <p className="mb-6 text-emerald-100 text-sm">{c.form_cta_title}</p>
             <Link href="/booking?from=coaching" className="rounded-full bg-white px-8 py-3 text-sm font-semibold text-[#2f6b61] hover:bg-amber-50 transition">
-              Séance découverte gratuite (45 min)
+              {c.form_cta_button}
             </Link>
           </div>
         </section>

@@ -5,8 +5,28 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 import CalendlyWidget from '@/components/CalendlyWidget'
+import { useCmsContent } from '@/hooks/useCmsContent'
+
+const DEFAULTS = {
+  hero_badge:         'Réservation',
+  hero_title:         'Réserver une séance',
+  hero_subtitle:      'Séance découverte offerte · 45 min · Sans engagement',
+  reassurance_1_icon: '',
+  reassurance_1_title: 'Séance découverte gratuite',
+  reassurance_1_desc:  '45 minutes sans engagement pour vous présenter et voir si le coaching vous correspond.',
+  reassurance_2_icon: '',
+  reassurance_2_title: 'Confirmation immédiate',
+  reassurance_2_desc:  'La réservation est confirmée instantanément dans votre agenda Google ou Outlook.',
+  reassurance_3_icon: '',
+  reassurance_3_title: 'Annulation libre',
+  reassurance_3_desc:  "Vous pouvez reporter ou annuler jusqu'à 24h avant la séance, sans frais.",
+  footer_note:         'Toutes les séances se déroulent en ligne (Google Meet) ou en présentiel à Paris, selon votre préférence.',
+  email_booking_text:  'Écrire à Monica →',
+}
 
 export default function BookingPage() {
+  const c = useCmsContent('booking', DEFAULTS)
+
   return (
     <>
       <Header />
@@ -15,10 +35,10 @@ export default function BookingPage() {
         {/* HERO SOBRE */}
         <section className="bg-[#f5f0e8] px-6 py-16 md:py-20 text-center">
           <div className="mx-auto max-w-2xl">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-amber-800">Réservation</p>
-            <h1 className="text-3xl font-serif font-light text-stone-900 md:text-5xl">Réserver une séance</h1>
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-amber-800">{c.hero_badge}</p>
+            <h1 className="text-3xl font-serif font-light text-stone-900 md:text-5xl">{c.hero_title}</h1>
             <p className="mt-4 text-base text-stone-500">
-              Séance découverte offerte · 45 min · Sans engagement
+              {c.hero_subtitle}
             </p>
           </div>
         </section>
@@ -54,18 +74,18 @@ export default function BookingPage() {
               {[
                 {
                   icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>,
-                  title: 'Séance découverte gratuite',
-                  desc: '45 minutes sans engagement pour vous présenter et voir si le coaching vous correspond.',
+                  title: c.reassurance_1_title,
+                  desc: c.reassurance_1_desc,
                 },
                 {
                   icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
-                  title: 'Confirmation immédiate',
-                  desc: 'La réservation est confirmée instantanément dans votre agenda Google ou Outlook.',
+                  title: c.reassurance_2_title,
+                  desc: c.reassurance_2_desc,
                 },
                 {
                   icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>,
-                  title: 'Annulation libre',
-                  desc: "Vous pouvez reporter ou annuler jusqu'à 24h avant la séance, sans frais.",
+                  title: c.reassurance_3_title,
+                  desc: c.reassurance_3_desc,
                 },
               ].map(({ icon, title, desc }) => (
                 <div key={title} className="rounded-2xl bg-white p-6">
@@ -76,7 +96,7 @@ export default function BookingPage() {
               ))}
             </div>
             <p className="mt-8 text-center text-xs text-stone-400">
-              Toutes les séances se déroulent en ligne (Google Meet) ou en présentiel à Paris, selon votre préférence.
+              {c.footer_note}
             </p>
           </div>
         </section>
@@ -85,7 +105,7 @@ export default function BookingPage() {
         <section className="bg-white py-8 text-center">
           <p className="text-sm text-stone-500 mb-3">Vous préférez réserver par email ?</p>
           <Link href="/contact" className="inline-flex items-center gap-2 text-sm font-semibold text-[#2d5f54] hover:underline">
-            Écrire à Monica →
+            {c.email_booking_text}
           </Link>
         </section>
 
