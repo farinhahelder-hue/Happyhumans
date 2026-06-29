@@ -2527,6 +2527,25 @@ export default function CMSAdmin() {
                                 ))}
                               </div>
 
+                            {/* Taille logo footer */}
+                            <div style={{ marginBottom: '1.25rem' }}>
+                              <label style={lbl}>Taille logo footer — {editedSettings['logo_footer_size'] || 36}px</label>
+                              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                <span style={{ fontSize: '.75rem', color: '#aaa' }}>20px</span>
+                                <input type="range" min="20" max="72" step="4"
+                                  value={Number(editedSettings['logo_footer_size'] || 36)}
+                                  onChange={e => setEditedSettings(p => ({ ...p, logo_footer_size: e.target.value }))}
+                                  style={{ flex: 1, accentColor: '#2d5f54' }} />
+                                <span style={{ fontSize: '.75rem', color: '#aaa' }}>72px</span>
+                                {[['S', '24'], ['M', '36'], ['L', '48']].map(([label, val]) => (
+                                  <button key={val} onClick={() => setEditedSettings(p => ({ ...p, logo_footer_size: val }))}
+                                    style={{ padding: '.2rem .5rem', fontSize: '.72rem', border: `1px solid ${editedSettings['logo_footer_size'] === val ? '#2d5f54' : '#ddd'}`, borderRadius: '.3rem', cursor: 'pointer', background: editedSettings['logo_footer_size'] === val ? '#2d5f54' : 'white', color: editedSettings['logo_footer_size'] === val ? 'white' : '#555' }}>
+                                    {label}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
                             {/* Position du logo */}
                             <div style={{ marginBottom: '1.25rem' }}>
                               <label style={lbl}>Position dans le header</label>
