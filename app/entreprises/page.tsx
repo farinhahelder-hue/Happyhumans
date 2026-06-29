@@ -61,6 +61,68 @@ export default function EntreprisesPage() {
           </div>
         </section>
 
+        {/* ── PROGRAMME PRISE DE POSTE ── */}
+        <section className="bg-[#f5f0e8] py-16 md:py-20">
+          <div className="mx-auto max-w-5xl px-6 md:px-10">
+            <div className="grid gap-10 md:grid-cols-2 items-center">
+              <div className="space-y-5">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800">Programme phare</p>
+                <h2 className="text-3xl font-serif font-light leading-tight text-stone-900">Coaching Flash<br />Prise de poste</h2>
+                <p className="text-base leading-relaxed text-stone-600">
+                  Vous venez de prendre un nouveau poste — ou vous êtes sur le point de le faire. Les 90 premiers jours sont décisifs.
+                  Ce programme intensif de 5 séances vous aide à asseoir votre légitimité, définir vos priorités et transformer
+                  le syndrome de l&apos;imposteur en carburant.
+                </p>
+                <ul className="space-y-2 text-sm text-stone-600">
+                  {['Clarifier votre vision et vos objectifs 90 jours', 'Identifier vos alliés et cartographier les dynamiques', 'Construire votre posture de leadership', 'Gérer la pression et les attentes sans perdre pied', 'Suivi Notion inclus entre les séances'].map(item => (
+                    <li key={item} className="flex items-start gap-2">
+                      <span className="text-[#2f6b61] mt-0.5 font-bold">→</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex flex-wrap gap-3 pt-2">
+                  <div className="rounded-xl bg-white border border-stone-200 px-4 py-2.5 text-center">
+                    <p className="text-xs text-stone-400 uppercase tracking-wider">Format</p>
+                    <p className="text-sm font-semibold text-stone-900 mt-0.5">5 séances · 60 min</p>
+                  </div>
+                  <div className="rounded-xl bg-white border border-stone-200 px-4 py-2.5 text-center">
+                    <p className="text-xs text-stone-400 uppercase tracking-wider">Rythme</p>
+                    <p className="text-sm font-semibold text-stone-900 mt-0.5">1 séance / 2 semaines</p>
+                  </div>
+                  <div className="rounded-xl bg-[#2f6b61] border border-[#2f6b61] px-4 py-2.5 text-center">
+                    <p className="text-xs text-emerald-200 uppercase tracking-wider">Tarif</p>
+                    <p className="text-sm font-semibold text-white mt-0.5">Sur devis</p>
+                  </div>
+                </div>
+                <Link href="/contact" className="inline-flex items-center gap-2 text-sm font-semibold text-[#2f6b61] hover:underline">
+                  En savoir plus ou demander un devis →
+                </Link>
+              </div>
+              <div className="rounded-2xl bg-white p-8 shadow-sm border border-stone-100">
+                <p className="text-xs font-bold uppercase tracking-[0.15em] text-amber-800 mb-4">Sparring Partner — pour les marketers</p>
+                <h3 className="text-xl font-serif font-semibold text-stone-900 mb-4">Un regard extérieur stratégique</h3>
+                <p className="text-sm leading-relaxed text-stone-600 mb-5">
+                  Vous êtes marketer·euse et vous avez besoin d&apos;un interlocuteur de confiance pour tester vos idées, challenger
+                  votre stratégie ou vous préparer à une prise de parole importante. Monica, ex-L&apos;Oréal / LVMH, vous offre
+                  le recul d&apos;une pair qui connaît vos enjeux.
+                </p>
+                <ul className="space-y-2 text-sm text-stone-600 mb-6">
+                  {['Préparer un pitch ou une présentation', 'Challenger une stratégie marketing', 'Naviguer une transition de poste', 'Communication en environnement multiculturel'].map(item => (
+                    <li key={item} className="flex items-start gap-2">
+                      <span className="text-amber-600 mt-0.5">•</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link href="/sparring-partner" className="inline-block rounded-full bg-[#2f6b61] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#235249] transition">
+                  En savoir plus →
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* CTA */}
         <section className="bg-[#2f6b61] py-16 text-center">
           <div className="mx-auto max-w-xl px-6">

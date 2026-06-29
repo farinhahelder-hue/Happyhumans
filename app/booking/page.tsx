@@ -3,6 +3,7 @@
 import BookingWidget from '@/components/BookingWidget'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import Script from 'next/script'
 
 import { useCmsContent } from '@/hooks/useCmsContent'
 
@@ -53,8 +54,33 @@ export default function BookingPage() {
           </div>
         </section>
 
-        <section className="bg-[#f5f0e8] py-16 md:py-24">
+        {/* Calendly — réservation directe */}
+        <section className="bg-[#f5f0e8] py-16 md:py-20">
+          <div className="mx-auto max-w-4xl px-6 md:px-10">
+            <div className="mb-8 text-center">
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-amber-800 mb-2">Calendrier disponible</p>
+              <h2 className="text-2xl font-serif font-light text-stone-900">Choisissez votre créneau</h2>
+              <p className="text-sm text-stone-500 mt-2">Réservation instantanée — confirmation immédiate dans votre agenda</p>
+            </div>
+            {/* Calendly inline widget */}
+            <div
+              className="calendly-inline-widget rounded-2xl overflow-hidden shadow-sm"
+              data-url="https://calendly.com/happyhumans-coaching?hide_landing_page_details=1&hide_gdpr_banner=1&primary_color=2d5f54"
+              style={{ minWidth: 320, height: 700 }}
+            />
+            <Script
+              src="https://assets.calendly.com/assets/external/widget.js"
+              strategy="lazyOnload"
+            />
+          </div>
+        </section>
+
+        {/* Booking widget alternatif */}
+        <section className="bg-white py-12 md:py-16">
           <div className="mx-auto max-w-3xl px-6 md:px-10">
+            <div className="mb-6 text-center">
+              <p className="text-xs text-stone-400 uppercase tracking-wider">Ou sélectionner parmi les créneaux disponibles</p>
+            </div>
             <BookingWidget />
           </div>
         </section>
