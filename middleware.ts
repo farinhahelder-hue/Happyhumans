@@ -13,6 +13,14 @@ function hex(buf: Uint8Array): string {
   return Array.from(buf).map(b => b.toString(16).padStart(2, '0')).join('')
 }
 
+function base64UrlDecode(value: string): string {
+  const padding = (4 - (value.length % 4)) % 4
+  const normalized = `${value}${'='.repeat(padding)}`
+    .replace(/-/g, '+')
+    .replace(/_/g, '/')
+  return atob(normalized)
+}
+
 async function verifySignature(data: string, signature: string, secret: string): Promise<boolean> {
   try {
     const encoder = new TextEncoder()
@@ -25,30 +33,36 @@ async function verifySignature(data: string, signature: string, secret: string):
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
 
-  // Check ?cms_edit_token=... param (passed from CMS admin via generate-edit-token)
+  // Check ?cms_edit_token=... param (passed from CMS admin)
   const tokenFromParam = req.nextUrl.searchParams.get('cms_edit_token')
   if (tokenFromParam) {
     const secret = getSecret()
     const parts = tokenFromParam.split('.')
-    const valid = parts.length === 2 && !!secret && await verifySignature(parts[0], parts[1], secret)
 
-    if (valid) {
-      try {
-        const payload = JSON.parse(atob(parts[0].replace(/-/g, '+').replace(/_/g, '/')))
-        if (payload?.exp && Math.floor(Date.now() / 1000) < payload.exp) {
-          res.cookies.set('hh_cms_edit', '1', {
-            httpOnly: false,
-            sameSite: 'lax',
-            maxAge: 60 * 60 * 2,
-            path: '/',
-          })
-          const url = req.nextUrl.clone()
-          url.searchParams.delete('cms_edit_token')
-          return NextResponse.redirect(url)
-        }
-      } catch { /* invalid payload */ }
+    if (parts.length === 2 && secret) {
+      const valid = await verifySignature(parts[0], parts[1], secret)
+
+      if (valid) {
+        try {
+          const payload = JSON.parse(base64UrlDecode(parts[0]))
+          if (payload?.exp && Math.floor(Date.now() / 1000) < payload.exp) {
+            const url = req.nextUrl.clone()
+            url.searchParams.delete('cms_edit_token')
+            // Set cookie on the redirect response itself (not on discarded res)
+            const redirectRes = NextResponse.redirect(url)
+            redirectRes.cookies.set('hh_cms_edit', '1', {
+              httpOnly: false,
+              sameSite: 'lax',
+              maxAge: 60 * 60 * 2,
+              path: '/',
+            })
+            return redirectRes
+          }
+        } catch { /* invalid payload */ }
+      }
     }
-    // Token invalid — redirect without setting cookie
+
+    // Token invalid or secret missing — strip param and continue without cookie
     const url = req.nextUrl.clone()
     url.searchParams.delete('cms_edit_token')
     return NextResponse.redirect(url)
