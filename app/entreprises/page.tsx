@@ -238,7 +238,7 @@ export default function EntreprisesPage() {
                 </div>
               ))}
             </div>
-            <p className="mt-6 text-center text-xs text-stone-400">Prise en charge possible via OPCO selon éligibilité · Devis établi sous 48h</p>
+
           </div>
         </section>
 

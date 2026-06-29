@@ -7,13 +7,14 @@ import { useAuth } from '@/components/AuthProvider'
 import { useCmsContent } from '@/hooks/useCmsContent'
 
 const NAV_DEFAULTS = {
-  label_apropos:      'Monica',
-  label_coaching:     'Coaching',
-  label_entreprises:  'Entreprises',
-  label_relations:    'Relations',
-  label_temoignages:  'Témoignages',
-  label_contact:      'Contact',
-  label_cta:          'Réserver une séance',
+  label_apropos:             'Monica',
+  label_coaching:            'Coaching',
+  label_entreprises:         'Entreprises',
+  label_happiness_design:    'Happiness Design™',
+  label_relations:           'Relations',
+  label_temoignages:         'Témoignages',
+  label_contact:             'Contact',
+  label_cta:                 'Réserver une séance',
 }
 
 export default function Header() {
@@ -57,9 +58,10 @@ export default function Header() {
 
   const topLinksLeft  = [{ href: '/a-propos', label: nav.label_apropos }]
   const topLinksRight = [
-    { href: '/relations',   label: nav.label_relations },
-    { href: '/entreprises', label: nav.label_entreprises },
-    { href: '/contact',     label: nav.label_contact },
+    { href: '/entreprises',       label: nav.label_entreprises },
+    { href: '/happiness-design',  label: nav.label_happiness_design },
+    { href: '/relations',         label: nav.label_relations },
+    { href: '/contact',           label: nav.label_contact },
   ]
 
   return (
@@ -118,12 +120,6 @@ export default function Header() {
                     className="flex items-center gap-2 px-4 py-3 text-sm text-stone-700 hover:bg-[#f5f0e8] hover:text-[#2d5f54] transition-colors">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
                     {nav.label_coaching}
-                  </Link>
-                  <div className="mx-3 h-px bg-stone-100" />
-                  <Link href="/happiness-design" onClick={() => setDropOpen(false)}
-                    className="flex items-center gap-2 px-4 py-3 text-sm text-stone-700 hover:bg-[#f5f0e8] hover:text-[#2d5f54] transition-colors">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-                    Happiness Design™
                   </Link>
                   <div className="mx-3 h-px bg-stone-100" />
                   <Link href="/temoignages" onClick={() => setDropOpen(false)}
@@ -201,17 +197,13 @@ export default function Header() {
                     className="text-sm text-stone-600 hover:text-[#2d5f54] py-2">
                     {nav.label_coaching}
                   </Link>
-                  <Link href="/happiness-design" onClick={() => setOpen(false)}
+                  <Link href="/temoignages" onClick={() => setOpen(false)}
                     className="text-sm text-stone-600 hover:text-[#2d5f54] py-2">
-                    Happiness Design™
+                    {nav.label_temoignages}
                   </Link>
                   <Link href="/sparring-partner" onClick={() => setOpen(false)}
                     className="text-sm text-stone-600 hover:text-[#2d5f54] py-2">
                     Sparring Partner
-                  </Link>
-                  <Link href="/temoignages" onClick={() => setOpen(false)}
-                    className="text-sm text-stone-600 hover:text-[#2d5f54] py-2">
-                    {nav.label_temoignages}
                   </Link>
                 </div>
               )}

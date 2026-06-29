@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     template: '%s | Happy Humans',
   },
   description:
-    "Philo-coaching avec Monica Schneider. Executive coaching, philosophical counselling et sparring partner pour individus et organisations. Retrouvez clarté, alignement et relations épanouissantes.",
+    "Philo-coaching avec Monica Schneider. Executive coaching, philosophical counselling et sparring partner pour particuliers et organisations. Retrouvez clarté, alignement et relations épanouissantes.",
   keywords: [
     'executive coach',
     'coaching dirigeant',

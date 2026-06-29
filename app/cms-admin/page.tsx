@@ -85,7 +85,7 @@ function getReadTimeMinutes(content?: string) {
 }
 
 // ─── Config pages CMS ─────────────────────────────────────────
-const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'richtext' }[] }> = {
+const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'richtext' | 'select'; options?: string[]; optionLabels?: string[] }[] }> = {
   // ── Ordre du panneau gauche ──────────────────────────────────
   // 1. Accueil
   'home': {
@@ -108,10 +108,18 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'services_b2b_text',     label: 'Services — Organisations : Texte',                     type: 'textarea' },
       { key: 'services_b2b_cta',      label: 'Services — Organisations : Bouton',                    type: 'text' },
       // Ordre des rubriques accueil
-      { key: 'home_card_order_1',    label: 'Rubrique accueil — Position 1',   type: 'text' },
-      { key: 'home_card_order_2',    label: 'Rubrique accueil — Position 2',   type: 'text' },
-      { key: 'home_card_order_3',    label: 'Rubrique accueil — Position 3',   type: 'text' },
-      { key: 'home_card_order_4',    label: 'Rubrique accueil — Position 4',   type: 'text' },
+      { key: 'home_card_order_1',    label: 'Rubrique accueil — Position 1',   type: 'select',
+        options: ['coaching', 'organisations', 'happiness-design', 'relations'],
+        optionLabels: ['Coaching', 'Organisations', 'Happiness Design', 'Relations'] },
+      { key: 'home_card_order_2',    label: 'Rubrique accueil — Position 2',   type: 'select',
+        options: ['coaching', 'organisations', 'happiness-design', 'relations'],
+        optionLabels: ['Coaching', 'Organisations', 'Happiness Design', 'Relations'] },
+      { key: 'home_card_order_3',    label: 'Rubrique accueil — Position 3',   type: 'select',
+        options: ['coaching', 'organisations', 'happiness-design', 'relations'],
+        optionLabels: ['Coaching', 'Organisations', 'Happiness Design', 'Relations'] },
+      { key: 'home_card_order_4',    label: 'Rubrique accueil — Position 4',   type: 'select',
+        options: ['coaching', 'organisations', 'happiness-design', 'relations'],
+        optionLabels: ['Coaching', 'Organisations', 'Happiness Design', 'Relations'] },
       // Section test attachement
       { key: 'test_title',            label: 'Test attachement — Titre',                             type: 'text' },
       { key: 'test_subtitle',         label: 'Test attachement — Sous-titre',                        type: 'textarea' },
@@ -2106,10 +2114,12 @@ export default function CMSAdmin() {
                           </div>
                         )}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
-                          {groupItems.map(s => (
+                          {groupItems.map(s => {
+                            const field = s as { key: string; label: string; type: string; options?: string[]; optionLabels?: string[] };
+                            return (
                             <div key={s.key}>
                               <label style={lbl}>{s.label}</label>
-                              {s.type === 'image' ? (
+                              {field.type === 'image' ? (
                                 <div>
                                   {editedSettings[s.key] && (
                                     <div style={{ marginBottom: '.5rem' }}>
@@ -2133,15 +2143,26 @@ export default function CMSAdmin() {
                                     {editedSettings[s.key] && <button onClick={() => setEditedSettings(prev => ({ ...prev, [s.key]: '' }))} style={{ padding: '.5rem .8rem', background: '#fee', color: '#c0392b', border: '1px solid #fcc', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>✕ Supprimer</button>}
                                   </div>
                                 </div>
-                              ) : s.type === 'textarea' ? (
+                              ) : field.type === 'textarea' ? (
                                 <textarea value={editedSettings[s.key] || ''} onChange={e => setEditedSettings(prev => ({ ...prev, [s.key]: e.target.value }))} style={{ ...inp, height: 100, resize: 'vertical' }} placeholder={s.label} />
+                              ) : field.type === 'select' && field.options ? (
+                                <select
+                                  value={editedSettings[s.key] || field.options[0]}
+                                  onChange={e => setEditedSettings(prev => ({ ...prev, [s.key]: e.target.value }))}
+                                  style={{ ...inp, cursor: 'pointer' }}
+                                >
+                                  {field.options.map((opt: string, i: number) => (
+                                    <option key={opt} value={opt}>{field.optionLabels?.[i] || opt}</option>
+                                  ))}
+                                </select>
                               ) : (
                                 <input value={editedSettings[s.key] || ''}
                                   onChange={e => setEditedSettings(prev => ({ ...prev, [s.key]: e.target.value }))}
                                   style={inp} placeholder={s.label} />
                               )}
                             </div>
-                          ))}
+                            );
+                          })}
                           {groupItems.length === 0 && (
                             <p style={{ color: '#aaa', fontSize: '.9rem', textAlign: 'center', padding: '2rem' }}>Aucun paramètre dans ce groupe.</p>
                           )}

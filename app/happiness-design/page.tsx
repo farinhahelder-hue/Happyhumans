@@ -219,7 +219,7 @@ export default function HappinessDesignPage() {
                 </Link>
               </div>
             </div>
-            <p className="mt-6 text-center text-xs text-stone-400">Prise en charge possible via CPF selon éligibilité · Devis établi sous 48h pour les entreprises</p>
+
           </div>
         </section>
 
