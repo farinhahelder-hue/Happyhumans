@@ -18,6 +18,13 @@ export default function MediaManager({ data, onSave }: any) {
 
     const newMedia = [...media];
 
+    // Get CMS session cookie for authentication
+    const getCmsCookie = () => {
+      if (typeof document === 'undefined') return '';
+      const match = document.cookie.match(/happyhumans_cms_session=([^;]+)/);
+      return match ? match[1] : '';
+    };
+
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       setUploadProgress(`Upload ${i + 1}/${files.length}...`);
@@ -29,12 +36,14 @@ export default function MediaManager({ data, onSave }: any) {
         const response = await fetch('/api/cms/upload', {
           method: 'POST',
           body: formData,
+          credentials: 'include', // Include cookies
         });
 
         if (!response.ok) {
           const error = await response.json();
           console.error('Upload failed:', error);
-          alert(`Échec de l'upload pour ${file.name}: ${error.error}`);
+          const errorMsg = error?.error || error?.message || 'Erreur inconnue';
+          alert(`Échec de l'upload pour ${file.name}: ${errorMsg}`);
           continue;
         }
 
