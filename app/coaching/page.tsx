@@ -14,11 +14,7 @@ const DEFAULTS = {
   coaching_b2c_image: '',
   coaching_b2c_badge: 'Individuel',
   coaching_b2c_title: 'Coaching individuel',
-  coaching_b2c_text:  "Un espace pour ralentir, regarder ce qui se passe vraiment — et construire un mouvement qui tient dans la durée.\n\nLe coaching que je propose n'est pas un conseil. C'est un accompagnement qui part de là où vous êtes vraiment.\n\nJe m'appuie sur des techniques classiques d'executive coaching (modèles GROW, Gestalt, Solutions Focused, Co-active…) mais aussi sur des outils rencontrés plus rarement — méditation, philosophie, psychologie, design thinking) pour travailler aussi sur la transformation que vous devez accomplir au plus profond de vous pour réaliser vos objectifs.\n\nPour offrir du recul, de la clarté et de nouvelles perspectives.
-
-Vous y voyez plus clair, y compris sur les prochaines actions à mettre en place.
-
-Vous ressentez des moments de révélations, d'alignement profonds.\n\nVous vous retrouvez — et vous êtes prêt·e à accélérer avec un élan et une clarté revigorants.",
+  coaching_b2c_text: `Un espace pour ralentir, regarder ce qui se passe vraiment — et construire un mouvement qui tient dans la durée.\n\nLe coaching que je propose n'est pas un conseil. C'est un accompagnement qui part de là où vous êtes vraiment.\n\nJe m'appuie sur des techniques classiques d'executive coaching (modèles GROW, Gestalt, Solutions Focused, Co-active…) mais aussi sur des outils rencontrés plus rarement — méditation, philosophie, psychologie, design thinking) pour travailler aussi sur la transformation que vous devez accomplir au plus profond de vous pour réaliser vos objectifs.\n\nPour offrir du recul, de la clarté et de nouvelles perspectives.\n\nVous y voyez plus clair, y compris sur les prochaines actions à mettre en place.\n\nVous ressentez des moments de révélations, d'alignement profonds.\n\nVous vous retrouvez — et vous êtes prêt·e à accélérer avec un élan et une clarté revigorants.`,
   coaching_b2c_cta_link: 'Me contacter →',
   coaching_b2b_image: '',
   coaching_b2b_badge: 'Organisations',
