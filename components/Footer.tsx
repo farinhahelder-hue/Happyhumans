@@ -7,7 +7,7 @@ const DEFAULTS: Record<string, string> = {
   tagline:                'philo-coaching',
   description:            'Coaching & transformation avec Monica Schneider.',
   description_2:          'Une pratique qui relie leadership, authenticite, philosophie et transformation humaine.',
-  linkedin_url:           'https://fr.linkedin.com/monica-schneider-philo-coaching',
+  linkedin_url:           'https://fr.linkedin.com/in/monica-schneider-philo-coaching',
   photos_label:           'Photos : ',
   footer_nav_title:       'Navigation',
   footer_nav_home:        'Accueil',

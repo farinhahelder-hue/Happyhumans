@@ -29,20 +29,19 @@ const DEFAULT_NAV: NavItem[] = [
 ];
 
 export function useCmsNavigation(): { nav: NavItem[]; loading: boolean } {
-  const [nav, setNav] = useState<NavItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [nav, setNav] = useState<NavItem[]>(DEFAULT_NAV);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     fetch('/api/cms/navigation')
       .then(r => r.ok ? r.json() : { nav: null })
       .then(({ nav: items }) => {
         if (items && Array.isArray(items) && items.length > 0) {
           setNav(items);
-        } else {
-          setNav(DEFAULT_NAV);
         }
       })
-      .catch(() => setNav(DEFAULT_NAV))
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 

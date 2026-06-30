@@ -55,7 +55,7 @@ const DEFAULTS = {
   // Booking
   booking_badge:        'Agenda',
   booking_widget_title: 'Choisissez votre créneau',
-  booking_widget_subtitle: 'Séance découverte offerte (45 min) ou programme de coaching.',
+  booking_widget_subtitle: 'Séance découverte offerte (1h) ou programme de coaching.',
   // Contact
   contact_section_badge: 'Contact',
   contact_section_title: 'Une question ? Écrivez-moi',
@@ -73,7 +73,7 @@ const DEFAULTS = {
   logo_url:            '',
   contact_email:       'happyhumans.coaching@gmail.com',
   booking_modal_title: 'Choisissez votre créneau',
-  booking_modal_subtitle: 'Séance découverte offerte · 45 minutes · Sans engagement',
+  booking_modal_subtitle: 'Séance découverte offerte · 1h · Sans engagement',
 }
 
 export default function LandingPage() {
@@ -219,7 +219,7 @@ export default function LandingPage() {
                 Réserver via Calendly →
               </a>
               <p className="mt-3 text-xs text-stone-500">
-                Séance découverte gratuite · 45 min · Sans engagement
+                Séance découverte gratuite · 1h · Sans engagement
               </p>
             </div>
           </div>

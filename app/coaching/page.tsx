@@ -9,7 +9,7 @@ const DEFAULTS = {
   hero_badge:         'Coaching',
   hero_title:         "Il y a des moments où il faut réapprendre à habiter son rôle.",
   hero_subtitle:      "Executive Coach certifiée AoEC · EMCC Practitioner · Monica Schneider accompagne des managers, dirigeants et personnes en transition qui veulent retrouver clarté, confiance et une direction qui leur ressemble vraiment.",
-  hero_cta_primary:   'Séance découverte gratuite (45 min)',
+  hero_cta_primary:   'Séance découverte gratuite (1h)',
   hero_cta_contact:   'Me contacter',
   coaching_b2c_image: '',
   coaching_b2c_badge: 'Individuel',
@@ -27,7 +27,7 @@ const DEFAULTS = {
   programs_badge:     'Tarifs',
   programs_title:     'Programmes & investissement',
   program_discovery_price:  'Gratuit',
-  program_discovery_unit:    '45 min',
+  program_discovery_unit:    '1h',
   program_single_price:      '120 €',
   program_single_unit:       '60 min',
   program_poste_price:       '1 700 € TTC',
@@ -40,11 +40,11 @@ const DEFAULTS = {
   tunnel_title:              'Prête à commencer ?',
   tunnel_cta_primary:        'Réserver maintenant →',
   tunnel_cta_secondary:       'Poser une question',
-  tunnel_reassurance:        'Séance découverte gratuite · 45 min · Sans engagement · Confirmation immédiate',
+  tunnel_reassurance:        'Séance découverte gratuite · 1h · Sans engagement · Confirmation immédiate',
   // CTA final
   cta_title:         'Prêt·e à commencer ?',
-  form_cta_title:    "Commençons par une séance découverte de 45 min — gratuite et sans engagement.",
-  form_cta_button:   'Séance découverte gratuite (45 min)',
+  form_cta_title:    "Commençons par une séance découverte de 1h — gratuite et sans engagement.",
+  form_cta_button:   'Séance découverte gratuite (1h)',
 }
 
 const DEFAULTS_TEMOIGNAGES = {
