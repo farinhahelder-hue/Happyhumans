@@ -1763,8 +1763,7 @@ export default function CMSAdmin() {
       )}
 
       {showMediaLibrary && (
-        <MediaLibrary 
-          cmsPassword={apiPwd}
+        <MediaLibrary
           onClose={() => setShowMediaLibrary(false)}
           onSelect={(url) => {
             setEditingArticle(prev => prev ? { ...prev, featured_image: url } : prev);

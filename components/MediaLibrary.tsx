@@ -13,7 +13,6 @@ type MediaFile = {
 type Props = {
   onSelect: (url: string) => void;
   onClose: () => void;
-  cmsPassword?: string;
 };
 
 const FOLDERS = [
@@ -23,7 +22,7 @@ const FOLDERS = [
   { value: 'coulisses', label: '📁 coulisses/' },
 ];
 
-export default function MediaLibrary({ onSelect, onClose, cmsPassword }: Props) {
+export default function MediaLibrary({ onSelect, onClose }: Props) {
   const [tab, setTab] = useState<'library' | 'url'>('library');
   const [files, setFiles] = useState<MediaFile[]>([]);
   const [loading, setLoading] = useState(false);
@@ -39,7 +38,9 @@ export default function MediaLibrary({ onSelect, onClose, cmsPassword }: Props) 
   const loadFiles = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/cms/media?prefix=${encodeURIComponent(folder)}`);
+      const res = await fetch(`/api/cms/media?prefix=${encodeURIComponent(folder)}`, {
+        credentials: 'include',
+      });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
       setFiles(data.files || []);
@@ -68,6 +69,7 @@ export default function MediaLibrary({ onSelect, onClose, cmsPassword }: Props) 
     try {
       const res = await fetch('/api/cms/media-upload', {
         method: 'POST',
+        credentials: 'include',
         body: fd,
         headers,
       });
@@ -82,13 +84,10 @@ export default function MediaLibrary({ onSelect, onClose, cmsPassword }: Props) 
     const filename = `import-${Date.now()}.jpg`;
     setImporting(true);
     try {
-      const headers: HeadersInit = { 'Content-Type': 'application/json' };
-      if (cmsPassword) {
-        headers['x-cms-auth'] = cmsPassword;
-      }
       const res = await fetch('/api/cms/media', {
         method: 'POST',
-        headers,
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ imageUrl: imageUrl, filename, folder }),
       });
       const data = await res.json();
@@ -109,6 +108,7 @@ export default function MediaLibrary({ onSelect, onClose, cmsPassword }: Props) 
     try {
       const res = await fetch('/api/cms/media', {
         method: 'DELETE',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key }),
       });
