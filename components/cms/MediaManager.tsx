@@ -20,6 +20,7 @@ export default function MediaManager({ data, onSave }: any) {
 
     // Get CMS password from localStorage
     const cmsPassword = typeof window !== 'undefined' ? localStorage.getItem('cms_password') : null;
+    console.log('[MediaManager] Uploading, cmsPassword:', cmsPassword ? 'SET' : 'NULL');
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];

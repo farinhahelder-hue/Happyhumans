@@ -1006,6 +1006,7 @@ export default function CMSAdmin() {
   const [checkingSession, setCheckingSession] = useState(true);
   const [authed, setAuthed] = useState(false);
   const [pwd, setPwd] = useState('');
+  const [apiPwd, setApiPwd] = useState(''); // Kept for API calls
   const [authErr, setAuthErr] = useState('');
   const [tab, setTab] = useState('articles');
   const [toast, setToast] = useState('');
@@ -1064,6 +1065,7 @@ export default function CMSAdmin() {
     if (res.status !== 401) return false;
     setAuthed(false);
     setPwd('');
+    setApiPwd('');
     setAuthErr(message);
     showToast(message);
     return true;
@@ -1178,6 +1180,7 @@ export default function CMSAdmin() {
       if (res.ok) {
         setAuthed(true);
         setPwd('');
+        setApiPwd(pwd); // Keep for API calls
         // Store password for API auth (used by upload endpoints)
         if (typeof window !== 'undefined') {
           localStorage.setItem('cms_password', pwd);
@@ -1196,6 +1199,7 @@ export default function CMSAdmin() {
     await fetch('/api/cms/auth', { method: 'DELETE' }).catch(() => {});
     setAuthed(false);
     setPwd('');
+    setApiPwd('');
     setAuthErr('');
     setShowMediaLibrary(false);
     resetArticleEditor();
@@ -1751,7 +1755,7 @@ export default function CMSAdmin() {
 
       {showMediaLibrary && (
         <MediaLibrary 
-          cmsPassword={pwd}
+          cmsPassword={apiPwd}
           onClose={() => setShowMediaLibrary(false)}
           onSelect={(url) => {
             setEditingArticle(prev => prev ? { ...prev, featured_image: url } : prev);

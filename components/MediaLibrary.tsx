@@ -59,10 +59,17 @@ export default function MediaLibrary({ onSelect, onClose, cmsPassword }: Props) 
     const fd = new FormData();
     fd.append('file', file);
     fd.append('folder', folder);
+    
+    const headers: HeadersInit = {};
+    if (cmsPassword) {
+      headers['x-cms-auth'] = cmsPassword;
+    }
+    
     try {
       const res = await fetch('/api/cms/media-upload', {
         method: 'POST',
         body: fd,
+        headers,
       });
       const data = await res.json();
       if (data.url) { showToast('✅ Image uploadée sur Supabase !'); loadFiles(); }
