@@ -211,7 +211,9 @@ export default function LandingPage() {
             </div>
             <div className="text-center">
               <a
-                href="/booking"
+                href="https://calendly.com/happyhumans-coaching/seance-decouverte-coaching"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
               >
                 Réserver via Calendly →
@@ -291,7 +293,9 @@ export default function LandingPage() {
               <h2 className="text-xl font-semibold text-stone-900 mb-2">{c.get('booking_modal_title')}</h2>
               <p className="text-sm text-stone-500 mt-1 mb-6">{c.get('booking_modal_subtitle')}</p>
               <a
-                href="/booking"
+                href="https://calendly.com/happyhumans-coaching/seance-decouverte-coaching"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
                 onClick={() => setBookingOpen(false)}
               >

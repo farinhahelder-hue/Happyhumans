@@ -100,7 +100,8 @@ export default function CoachingPage() {
       unit: c.program_1_unit || '45 min',
       desc: c.program_1_desc,
       cta: c.program_1_cta || 'Réserver une séance découverte',
-      href: '/booking',
+      href: 'https://calendly.com/happyhumans-coaching/seance-decouverte-coaching',
+      calendly: true,
       highlight: false,
     },
     {
@@ -110,6 +111,7 @@ export default function CoachingPage() {
       desc: c.program_2_desc,
       cta: c.program_2_cta || 'Réserver une séance',
       href: '/booking',
+      calendly: false,
       highlight: false,
     },
     {
@@ -120,6 +122,7 @@ export default function CoachingPage() {
       desc: c.program_3_desc,
       cta: c.program_3_cta || 'Réserver ce programme',
       href: '/booking',
+      calendly: false,
       highlight: true,
     },
     {
@@ -130,6 +133,7 @@ export default function CoachingPage() {
       desc: c.program_4_desc,
       cta: c.program_4_cta || 'En savoir plus',
       href: '/happiness-design',
+      calendly: false,
       highlight: false,
     },
   ]
@@ -262,16 +266,22 @@ export default function CoachingPage() {
               <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('programs_title')}</h2>
             </div>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {programs.map(({ label, subtitle, price, unit, desc, cta, href, highlight }) => (
+              {programs.map(({ label, subtitle, price, unit, desc, cta, href, calendly, highlight }) => (
                 <div key={label} className={`rounded-2xl p-6 flex flex-col ${highlight ? 'bg-[#2f6b61] text-white shadow-lg ring-2 ring-[#2f6b61]' : 'bg-[#f7f4ef] text-stone-900 shadow-sm'}`}>
                   <p className={`text-xs font-bold uppercase tracking-[0.15em] mb-1 ${highlight ? 'text-emerald-200' : 'text-amber-800'}`}>{label}</p>
                   {subtitle && <p className={`text-xs mb-3 ${highlight ? 'text-emerald-200' : 'text-stone-500'}`}>{subtitle}</p>}
                   {price && <p className={`text-2xl font-serif font-semibold mb-0.5 ${highlight ? 'text-white' : 'text-stone-900'}`}>{price}</p>}
                   <p className={`text-xs mb-4 ${highlight ? 'text-emerald-200' : 'text-stone-500'}`}>{unit}</p>
                   <p className={`text-sm leading-relaxed flex-1 mb-3 ${highlight ? 'text-emerald-100' : 'text-stone-600'}`}>{desc}</p>
-                  <Link href={href} className={`mt-auto rounded-full py-2.5 text-center text-sm font-semibold transition ${highlight ? 'bg-white text-[#2f6b61] hover:bg-stone-50' : 'bg-[#2f6b61] text-white hover:bg-[#235249]'}`}>
-                    {cta}
-                  </Link>
+                  {calendly ? (
+                    <a href={href} target="_blank" rel="noopener noreferrer" className={`mt-auto rounded-full py-2.5 text-center text-sm font-semibold transition bg-[#2f6b61] text-white hover:bg-[#235249]'}`}>
+                      {cta}
+                    </a>
+                  ) : (
+                    <Link href={href} className={`mt-auto rounded-full py-2.5 text-center text-sm font-semibold transition ${highlight ? 'bg-white text-[#2f6b61] hover:bg-stone-50' : 'bg-[#2f6b61] text-white hover:bg-[#235249]'}`}>
+                      {cta}
+                    </Link>
+                  )}
                 </div>
               ))}
             </div>
