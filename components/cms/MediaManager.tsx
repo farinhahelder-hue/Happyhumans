@@ -40,9 +40,14 @@ export default function MediaManager({ data, onSave }: any) {
         });
 
         if (!response.ok) {
-          const error = await response.json();
-          console.error('Upload failed:', error);
-          const errorMsg = error?.error || error?.message || 'Erreur inconnue';
+          let errorMsg = 'Erreur inconnue';
+          try {
+            const error = await response.json();
+            errorMsg = error?.error || error?.message || `Erreur ${response.status}`;
+          } catch (e) {
+            errorMsg = `Erreur ${response.status}: ${response.statusText}`;
+          }
+          console.error('Upload failed:', response.status, errorMsg);
           alert(`Échec de l'upload pour ${file.name}: ${errorMsg}`);
           continue;
         }
