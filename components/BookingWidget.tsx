@@ -9,8 +9,8 @@ import { useState, useEffect, useMemo } from 'react'
 type Slot = { id: string; slot_date: string; slot_time: string; slot_type: string; duration_minutes: number }
 
 const TYPE_LABELS: Record<string, string> = {
-  discovery: 'Séance découverte — Gratuite — 45 min',
-  coaching:  'Séance coaching — 120 € — 45 min',
+  discovery: 'Séance découverte — Gratuite — 1h',
+  coaching:  'Séance coaching — 120 € — 1h',
   enterprise: 'Coaching entreprises — sur devis',
 }
 const TYPE_COLORS: Record<string, string> = {

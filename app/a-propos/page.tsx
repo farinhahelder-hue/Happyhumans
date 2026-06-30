@@ -41,7 +41,7 @@ const DEFAULTS = {
   // Final CTA
   footer_cta_title: "Envie d'en savoir plus ?",
   footer_cta_coaching: 'Voir le coaching',
-  footer_cta_booking:  'Réserver une séance (45 min)',
+  footer_cta_booking:  'Réserver une séance (1h)',
 }
 
 export default function AProposPage() {

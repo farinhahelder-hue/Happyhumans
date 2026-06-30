@@ -8,7 +8,7 @@ import { useCmsContent } from '@/hooks/useCmsContent'
 const DEFAULT_FAQS = [
   {
     q: "C'est quoi exactement une séance découverte ?",
-    a: "C'est un premier échange gratuit de 45 minutes, sans engagement. On parle de vous, de votre situation, de ce qui vous amène. C'est l'occasion de voir si le coaching vous correspond et si on a envie de travailler ensemble.",
+    a: "C'est un premier échange gratuit d'1h, sans engagement. On parle de vous, de votre situation, de ce qui vous amène. C'est l'occasion de voir si le coaching vous correspond et si on a envie de travailler ensemble.",
   },
   {
     q: "À qui s'adresse le coaching avec Monica ?",

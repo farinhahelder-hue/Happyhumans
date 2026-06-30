@@ -190,7 +190,7 @@ const DEFAULTS_RELATIONS = {
   step1_title:         'Faites le test',
   step1_desc:          '16 questions · 3 à 5 minutes · Résultat immédiat',
   step2_title:         'Session découverte',
-  step2_desc:          'Séance offerte de 45 min pour découvrir vos 3 actions',
+  step2_desc:          "Séance offerte d'1h pour découvrir vos 3 actions",
   step3_title:         'Passez à l\'action',
   step3_desc:          'Un plan clair et des outils pour des relations épanouissantes',
   // Multiculture section
@@ -206,7 +206,7 @@ const DEFAULTS_RELATIONS = {
   // Booking
   booking_badge:       'Agenda',
   booking_title:       'Choisissez votre créneau',
-  booking_subtitle:    'Séance découverte offerte · 45 minutes · Sans engagement',
+  booking_subtitle:    'Séance découverte offerte · 1h · Sans engagement',
   booking_cta_button:  'Voir les créneaux disponibles →',
   // Theory
   theory_badge:        'Références',
@@ -218,13 +218,13 @@ const DEFAULTS_RELATIONS = {
   theory_card_2_text:  'L\'écoute inconditionnelle',
   theory_card_3_title: '❤️ Erich Fromm',
   theory_card_3_text:  'L\'art d\'aimer',
-  theory_modal_cta:    'Réserver une séance découverte de 45 min →',
+  theory_modal_cta:    "Réserver une séance découverte d'1h →",
   // Footer
   footer_site_name:    'Happy Humans',
   footer_copyright:    '© Happy Humans — Monica Schneider',
   // Result CTA (for quiz)
   result_cta_title:    'Passez à l\'étape suivante',
-  result_cta_subtitle: 'Séance découverte offerte de 45 minutes avec Monica',
+  result_cta_subtitle: "Séance découverte offerte d'1h avec Monica",
   result_cta_button:   'Réserver ma séance découverte gratuite →',
 };
 

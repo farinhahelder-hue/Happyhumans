@@ -16,7 +16,7 @@ const DEFAULTS = {
   grid_footnote:   '* Prénom modifié · Témoignages publiés avec accord',
   // CTA
   cta_title:     "Prêt·e à écrire votre propre histoire ?",
-  cta_subtitle:  'Réservez une séance découverte gratuite de 45 minutes.',
+  cta_subtitle:  "Réservez une séance découverte gratuite d'1h.",
   cta_coaching: 'Découvrir le coaching',
   cta_contact:  'Prendre contact',
 }

@@ -69,7 +69,7 @@ const DEFAULTS_PROGRAMS = {
   program_1_label: 'Séance découverte',
   program_1_desc:  'Premier échange pour clarifier votre situation, vos attentes et voir si le coaching vous convient.',
   program_1_price: 'Gratuit',
-  program_1_unit: '45 min',
+  program_1_unit: '1h',
   program_1_cta:   'Réserver une séance découverte',
   program_2_label: 'Séance individuelle',
   program_2_desc:  'Séance ponctuelle pour travailler sur un sujet précis ou maintenir une dynamique engagée.',
@@ -97,7 +97,7 @@ export default function CoachingPage() {
     {
       label: c.program_1_label || 'Séance découverte',
       price: c.program_1_price || 'Gratuit',
-      unit: c.program_1_unit || '45 min',
+      unit: c.program_1_unit || '1h',
       desc: c.program_1_desc,
       cta: c.program_1_cta || 'Réserver une séance découverte',
       href: 'https://calendly.com/happyhumans-coaching/seance-decouverte-coaching',

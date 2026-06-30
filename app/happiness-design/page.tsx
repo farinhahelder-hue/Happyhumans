@@ -10,7 +10,7 @@ const DEFAULTS = {
   page_title:    'Happiness Design',
   page_subtitle: '12 séances pour reprendre les rênes de votre vie et de votre bonheur — au boulot et ailleurs.',
   intro_text:    "Neurosciences, psychologie positive, philosophie pratique, design thinking — toutes les disciplines au service d'une transformation durable, pour que vous repreniez pleinement les rênes de votre vie.",
-  hero_cta:      'Séance découverte gratuite (45 min)',
+  hero_cta:      'Séance découverte gratuite (1h)',
   // Pour qui section
   pourqui_badge:   'Pour qui',
   pourqui_title:   'Ce programme est fait pour vous si…',
@@ -62,12 +62,12 @@ const DEFAULTS = {
   program_complete_cta:    'Réserver une séance découverte →',
   discovery_label:         'Séance découverte',
   discovery_price:         'Offerte',
-  discovery_unit:          '45 min · Sans engagement',
+  discovery_unit:          '1h · Sans engagement',
   discovery_features:      "Échange sur votre situation\nPrésentation du programme\nQuestions / réponses\nDécision libre à l'issue",
   discovery_cta:           'Réserver maintenant →',
   // CTA
   cta_title:    "Prêt·e à reprendre les rênes ?",
-  cta_subtitle: 'Commençons par une séance découverte de 45 min — gratuite et sans engagement.',
+  cta_subtitle: "Commençons par une séance découverte d'1h — gratuite et sans engagement.",
   cta_button:   'Réserver ma séance découverte →',
 }
 

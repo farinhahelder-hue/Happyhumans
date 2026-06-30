@@ -104,7 +104,7 @@ export function ResultCard({ result, onRestart, onBook }: ResultCardProps) {
         <div className="text-3xl mb-3">🗓</div>
         <h3 className="text-xl font-semibold text-white mb-2">Passez à l&apos;étape suivante</h3>
         <p className="text-emerald-100 text-sm mb-5 leading-relaxed">
-          Lors d&apos;une <strong>séance découverte offerte de 45 minutes</strong>, Monica vous accompagne pour identifier vos 3 actions concrètes vers des relations plus épanouissantes.
+          Lors d&apos;une <strong>séance découverte offerte d&apos;1h</strong>, Monica vous accompagne pour identifier vos 3 actions concrètes vers des relations plus épanouissantes.
         </p>
         <button
           onClick={onBook}

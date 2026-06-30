@@ -10,10 +10,10 @@ import { useCmsContent } from '@/hooks/useCmsContent'
 const DEFAULTS = {
   hero_badge:         'Réservation',
   hero_title:         'Réserver une séance',
-  hero_subtitle:      'Séance découverte offerte · 45 min · Sans engagement',
+  hero_subtitle:      'Séance découverte offerte · 1h · Sans engagement',
   reassurance_1_icon: '',
   reassurance_1_title: 'Séance découverte gratuite',
-  reassurance_1_desc:  '45 minutes sans engagement pour vous présenter et voir si le coaching vous correspond.',
+  reassurance_1_desc:  '1h sans engagement pour vous présenter et voir si le coaching vous correspond.',
   reassurance_2_icon: '',
   reassurance_2_title: 'Confirmation immédiate',
   reassurance_2_desc:  'La réservation est confirmée instantanément dans votre agenda Google ou Outlook.',
