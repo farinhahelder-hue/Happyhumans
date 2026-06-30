@@ -6,7 +6,7 @@ import { useCmsContent } from '@/hooks/useCmsContent'
 
 const DEFAULTS = {
   // Hero
-  hero_badge:    'Programme',
+  hero_badge:    'Programme phare',
   page_title:    'Happiness Design',
   page_subtitle: '12 séances pour reprendre les rênes de votre vie et de votre bonheur — au boulot et ailleurs.',
   intro_text:    "Neurosciences, psychologie positive, philosophie pratique, design thinking — toutes les disciplines au service d'une transformation durable, pour que vous repreniez pleinement les rênes de votre vie.",
@@ -21,21 +21,20 @@ const DEFAULTS = {
   pourqui_3_title: 'Vous voulez reprendre les rênes',
   pourqui_3_desc:  "Pas juste 'aller mieux' — reprendre activement en main votre bonheur, vos relations, votre impact. Avec des outils concrets, pas du développement personnel vague.",
   // Program section
-  program_badge:           'Le programme',
-  program_title:           '12 séances, 12 transformations',
-  program_followups_note:   '+ 4 sessions de suivi incluses pour ancrer durablement les changements.',
-  step_01_title: 'Comment ça marche',
-  step_02_title: 'Audit de sa vie',
-  step_03_title: 'Audit du boulot',
-  step_04_title: 'Audit des forces',
-  step_05_title: 'Forces pratiquées',
-  step_06_title: "L'échec",
-  step_07_title: 'Audit des freins',
-  step_08_title: 'Homo risibilis',
-  step_09_title: 'V1 / V2',
-  step_10_title: 'Les 3 métamorphoses',
-  step_11_title: "Child's Plan",
-  step_12_title: 'Follow-ups × 4',
+  program_badge:       'Le programme',
+  program_title:       '12 séances + 4 follow-ups',
+  step_01_num: '01', step_01_title: 'Comment ça marche',       step_01_desc: 'Neurosciences + gratitude',
+  step_02_num: '02', step_02_title: 'Audit de sa vie',         step_02_desc: 'Life Design / Bonheur',
+  step_03_num: '03', step_03_title: 'Audit du boulot',         step_03_desc: 'Design Thinking appliqué à votre vie professionnelle',
+  step_04_num: '04', step_04_title: 'Audit des forces',       step_04_desc: 'Identifier vos ressources et atouts profonds',
+  step_05_num: '05', step_05_title: 'Forces pratiquées',       step_05_desc: "Via Character Strengths — lesquelles activez-vous vraiment ?",
+  step_06_num: '06', step_06_title: "L'échec",                 step_06_desc: "Changer son rapport à l'échec — audit des freins",
+  step_07_num: '07', step_07_title: 'Audit des freins',       step_07_desc: "Syndrome de l'imposteur · Attachement (TA) · Peurs (fears)",
+  step_08_num: '08', step_08_title: 'Homo risibilis',          step_08_desc: "Imparfait mais impactant — l'action salvatrice",
+  step_09_num: '09', step_09_title: 'V1 / V2',                step_09_desc: 'Qui je suis, qui je veux devenir',
+  step_10_num: '10', step_10_title: 'Les 3 métamorphoses',    step_10_desc: 'Les trois transformations clés de votre parcours',
+  step_11_num: '11', step_11_title: "Child's Plan",            step_11_desc: 'Jalons avec rappels pour ancrer les engagements',
+  step_12_num: '12', step_12_title: 'Follow-ups × 4',         step_12_desc: '4 sessions de suivi pour consolider et ancrer le changement',
   // Boîte à outils
   tools_badge:       'Programme',
   tools_title:       'Une boîte à outils multidisciplinaire',
@@ -43,8 +42,15 @@ const DEFAULTS = {
   // Pricing section
   pricing_badge:           'Investissement',
   pricing_title:           'Un programme sur mesure',
-  program_complete_label:  'Programme complet',
-  program_complete_unit:   'soit 200€/séance · 12 séances + 4 follow-ups',
+  format_label:            'Format',
+  format_value:            '12 séances + 4 follow-ups',
+  duration_label:          'Durée',
+  duration_value:          '60 min',
+  rhythm_label:            'Rythme',
+  rhythm_value:            '1 séance / 2 semaines',
+  price_label:             'Tarif',
+  price_value:             'Sur devis',
+  cta_label:               'Demander un devis →',
   program_complete_features: "12 séances d'1h en individuel\n4 sessions de suivi post-programme\nOutils et exercices entre les séances\nEn ligne ou en présentiel (Paris)",
   program_complete_cta:    'Réserver une séance découverte →',
   discovery_label:         'Séance découverte',
@@ -94,16 +100,18 @@ const POUR_QUI = [
 export default function HappinessDesignPage() {
   const c = useCmsContent('happiness-design', DEFAULTS)
 
-  const getStepTitle = (i: number): string => {
-    const key = `step_${String(i + 1).padStart(2, '0')}_title` as keyof typeof DEFAULTS
-    return (c[key] as string) || (DEFAULTS[key] as string) || ''
+  const getStep = (i: number) => {
+    const num = String(i + 1).padStart(2, '0')
+    const titleKey = `step_${num}_title` as keyof typeof DEFAULTS
+    const descKey = `step_${num}_desc` as keyof typeof DEFAULTS
+    return {
+      n: num,
+      title: (c[titleKey] as string) || (DEFAULTS[titleKey] as string) || '',
+      desc: (c[descKey] as string) || (DEFAULTS[descKey] as string) || '',
+    }
   }
 
-  const steps = STEP_DESCS.map((desc, i) => ({
-    n: String(i + 1).padStart(2, '0'),
-    title: getStepTitle(i),
-    desc,
-  }))
+  const steps = Array.from({ length: 12 }, (_, i) => getStep(i))
 
   return (
     <>
@@ -183,11 +191,6 @@ export default function HappinessDesignPage() {
                 </div>
               ))}
             </div>
-            <div className="mt-8 rounded-2xl bg-amber-50 border border-amber-200 p-6 text-center">
-              <p className="text-sm text-stone-700">
-                <strong className="text-[#2d5f54]">{c.get('program_followups_note', undefined, { multiline: true })}</strong>
-              </p>
-            </div>
           </div>
         </section>
 
@@ -230,22 +233,28 @@ export default function HappinessDesignPage() {
             </div>
             <div className="grid gap-6 md:grid-cols-2">
               {/* Programme complet */}
-              <div className="bg-white rounded-2xl p-8 shadow-sm relative">
-                <div className="absolute -top-3 left-6">
-                  <span className="bg-[#2d5f54] text-white text-xs font-semibold px-3 py-1 rounded-full">Le plus populaire</span>
+              <div className="bg-white rounded-2xl p-8 shadow-sm">
+                <p className="text-xs font-bold uppercase tracking-[0.15em] text-amber-800 mb-2 mt-3">{c.get('pricing_title')}</p>
+                <div className="space-y-3 mb-6">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-stone-500">{c.get('format_label')}</span>
+                    <span className="font-medium text-stone-900">{c.get('format_value')}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-stone-500">{c.get('duration_label')}</span>
+                    <span className="font-medium text-stone-900">{c.get('duration_value')}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-stone-500">{c.get('rhythm_label')}</span>
+                    <span className="font-medium text-stone-900">{c.get('rhythm_value')}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-stone-500">{c.get('price_label')}</span>
+                    <span className="font-medium text-stone-900">{c.get('price_value')}</span>
+                  </div>
                 </div>
-                <p className="text-xs font-bold uppercase tracking-[0.15em] text-amber-800 mb-2 mt-3">{c.get('program_complete_label')}</p>
-                <p className="text-3xl font-serif font-semibold text-stone-900">{c.program_hd_price || 'À partir de 2 400 €'}</p>
-                <p className="text-xs text-stone-400 mb-6">{c.get('program_complete_unit')}</p>
-                <ul className="space-y-2 mb-8">
-                  {c.program_complete_features.split('\n').map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-stone-600">
-                      <span className="text-[#2d5f54] font-bold mt-0.5">✓</span>{item}
-                    </li>
-                  ))}
-                </ul>
-                <Link href="/booking?from=happiness-design" className="block rounded-full bg-[#2d5f54] py-3 text-center text-sm font-semibold text-white hover:bg-[#1e3a34] transition">
-                  {c.get('program_complete_cta')}
+                <Link href="/contact" className="block rounded-full bg-[#2d5f54] py-3 text-center text-sm font-semibold text-white hover:bg-[#1e3a34] transition">
+                  {c.get('cta_label')}
                 </Link>
               </div>
               {/* Séance découverte */}
