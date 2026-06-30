@@ -9,17 +9,25 @@ export async function POST(req: NextRequest) {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const cmsPassword = process.env.CMS_PASSWORD;
 
-  console.log('[DEBUG upload] Start', { hasUrl: !!url, hasKey: !!key, hasPassword: !!cmsPassword });
-
   if (!url || !key) {
-    console.error('[DEBUG upload] Supabase credentials missing:', { url: !!url, key: !!key });
     return NextResponse.json({ error: 'Supabase non configuré', message: 'NEXT_PUBLIC_SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY manquant' }, { status: 500 });
   }
 
-  const authError = requireCmsAuth(req);
-  if (authError) {
-    console.log('[DEBUG upload] Auth failed. Cookies:', req.headers.get('cookie'));
-    return NextResponse.json({ error: 'Non autorisé', message: 'Session CMS invalide ou expirée' }, { status: 401 });
+  // Check auth - accept cookie OR x-cms-auth header
+  const authHeader = req.headers.get('x-cms-auth');
+  if (authHeader) {
+    // Validate the password header
+    if (cmsPassword && authHeader === cmsPassword) {
+      // Valid
+    } else {
+      return NextResponse.json({ error: 'Mot de passe incorrect' }, { status: 401 });
+    }
+  } else {
+    // Try cookie auth
+    const authError = requireCmsAuth(req);
+    if (authError) {
+      return NextResponse.json({ error: 'Non autorisé', message: 'Session CMS invalide ou expirée' }, { status: 401 });
+    }
   }
 
   try {

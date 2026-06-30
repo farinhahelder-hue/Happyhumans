@@ -1178,6 +1178,10 @@ export default function CMSAdmin() {
       if (res.ok) {
         setAuthed(true);
         setPwd('');
+        // Store password for API auth (used by upload endpoints)
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('cms_password', pwd);
+        }
       } else {
         setAuthErr(data.error || 'Mot de passe incorrect');
       }
@@ -1195,6 +1199,10 @@ export default function CMSAdmin() {
     setAuthErr('');
     setShowMediaLibrary(false);
     resetArticleEditor();
+    // Clear stored password
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('cms_password');
+    }
   };
 
   useEffect(() => {

@@ -18,12 +18,8 @@ export default function MediaManager({ data, onSave }: any) {
 
     const newMedia = [...media];
 
-    // Get CMS session cookie for authentication
-    const getCmsCookie = () => {
-      if (typeof document === 'undefined') return '';
-      const match = document.cookie.match(/happyhumans_cms_session=([^;]+)/);
-      return match ? match[1] : '';
-    };
+    // Get CMS password from localStorage
+    const cmsPassword = typeof window !== 'undefined' ? localStorage.getItem('cms_password') : null;
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -33,10 +29,15 @@ export default function MediaManager({ data, onSave }: any) {
         const formData = new FormData();
         formData.append('file', file);
 
+        const headers: HeadersInit = {};
+        if (cmsPassword) {
+          headers['x-cms-auth'] = cmsPassword;
+        }
+
         const response = await fetch('/api/cms/upload', {
           method: 'POST',
           body: formData,
-          credentials: 'include', // Include cookies
+          headers,
         });
 
         if (!response.ok) {
