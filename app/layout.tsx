@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+﻿import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { AuthProvider } from '@/components/AuthProvider';
 import CookieConsentBanner from '@/components/CookieConsentBanner';
@@ -9,9 +9,12 @@ import InlineEditor from '@/components/InlineEditor';
 
 const SITE_URL = 'https://happyhumans.vercel.app';
 
+export const viewport: Viewport = {
+  themeColor: '#2d5f54',
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  themeColor: '#2d5f54',
   title: {
     default: 'Happy Humans — Monica Schneider',
     template: '%s | Happy Humans',
