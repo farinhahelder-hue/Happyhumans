@@ -198,12 +198,17 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'programs_title',      label: 'Tarifs — Titre',               type: 'text' },
       { key: 'program_1_label',     label: 'Programme 1 — Label',          type: 'text' },
       { key: 'program_1_desc',      label: 'Programme 1 — Description',   type: 'textarea' },
+      { key: 'program_1_price',     label: 'Programme 1 — Prix',           type: 'text' },
+      { key: 'program_1_unit',      label: 'Programme 1 — Unité',          type: 'text' },
       { key: 'program_1_cta',       label: 'Programme 1 — CTA',            type: 'text' },
       { key: 'program_2_label',     label: 'Programme 2 — Label',          type: 'text' },
       { key: 'program_2_desc',      label: 'Programme 2 — Description',   type: 'textarea' },
+      { key: 'program_2_price',     label: 'Programme 2 — Prix',           type: 'text' },
+      { key: 'program_2_unit',     label: 'Programme 2 — Unité',          type: 'text' },
       { key: 'program_2_cta',       label: 'Programme 2 — CTA',            type: 'text' },
       { key: 'program_3_label',     label: 'Programme 3 — Label',          type: 'text' },
       { key: 'program_3_desc',      label: 'Programme 3 — Description',   type: 'textarea' },
+      { key: 'program_3_price',     label: 'Programme 3 — Prix',           type: 'text' },
       { key: 'program_3_format',    label: 'Programme 3 — Format',        type: 'text' },
       { key: 'program_3_cta',       label: 'Programme 3 — CTA',            type: 'text' },
       { key: 'program_hd_label',    label: 'Programme HD — Label',         type: 'text' },
@@ -336,6 +341,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'cta_desc',           label: 'CTA final — Description',       type: 'textarea' },
       { key: 'cta_primary',        label: 'CTA final — Bouton principal',  type: 'text' },
       { key: 'cta_secondary',     label: 'CTA final — Bouton secondaire', type: 'text' },
+      { key: 'sparring_price',    label: 'Prix',                         type: 'text' },
     ],
   },
   // 5. Organisations (Entreprises)
@@ -472,6 +478,8 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       // Footer
       { key: 'footer_site_name',    label: 'Footer — Nom du site',            type: 'text' },
       { key: 'footer_copyright',    label: 'Footer — Copyright',              type: 'text' },
+      // Prix
+      { key: 'relations_price',    label: 'Prix (ex: Sur devis)',             type: 'text' },
     ],
   },
   // 8. Témoignages
@@ -564,6 +572,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'service_5',     label: 'Service 5',                           type: 'text' },
       { key: 'copyright',     label: 'Texte copyright',                     type: 'text' },
       { key: 'logo_url',      label: 'Logo (MiniFooter)',                   type: 'image' },
+      { key: 'footer_nav_show_temoignages', label: 'Afficher page Témoignages dans le footer', type: 'toggle' },
     ],
   },
   // 12. FAQ

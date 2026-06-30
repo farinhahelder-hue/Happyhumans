@@ -226,6 +226,7 @@ const DEFAULTS_RELATIONS = {
   result_cta_title:    'Passez à l\'étape suivante',
   result_cta_subtitle: "Séance découverte offerte d'1h avec Monica",
   result_cta_button:   'Réserver ma séance découverte gratuite →',
+  relations_price:     'Sur devis',
 };
 
 export default function RelationsPage() {

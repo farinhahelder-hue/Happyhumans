@@ -29,6 +29,7 @@ const DEFAULTS = {
   cta_desc:           'Session 60 à 90 min. Conversation découverte de 30 min offerte.',
   cta_primary:       'Réserver une session',
   cta_secondary:     'Poser une question',
+  sparring_price:    'Sur devis',
 }
 
 export default function SparringPartnerPage() {

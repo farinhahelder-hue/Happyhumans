@@ -17,6 +17,7 @@ const DEFAULTS: Record<string, string> = {
   footer_nav_entreprises: 'Entreprises',
   footer_nav_relations:   'Relations',
   footer_nav_temoignages: 'Temoignages',
+  footer_nav_show_temoignages: 'false',
   footer_nav_contact:     'Contact',
   footer_nav_blog:        'Ressources',
   footer_nav_faq:         'FAQ',
@@ -67,7 +68,9 @@ export default function Footer() {
               <Link href="/sparring-partner" className="hover:text-white transition">{c.get('footer_nav_sparring')}</Link>
               <Link href="/entreprises" className="hover:text-white transition">{c.get('footer_nav_entreprises')}</Link>
               <Link href="/relations" className="hover:text-white transition">{c.get('footer_nav_relations')}</Link>
-              <Link href="/temoignages" className="hover:text-white transition">{c.get('footer_nav_temoignages')}</Link>
+              {c.get('footer_nav_show_temoignages') !== 'false' && (
+                <Link href="/temoignages" className="hover:text-white transition">{c.get('footer_nav_temoignages')}</Link>
+              )}
               <Link href="/contact" className="hover:text-white transition">{c.get('footer_nav_contact')}</Link>
               <Link href="/blog" className="hover:text-white transition">{c.get('footer_nav_blog')}</Link>
               <Link href="/faq" className="hover:text-white transition">{c.get('footer_nav_faq')}</Link>

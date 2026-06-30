@@ -9,7 +9,6 @@ export default function MiniNav() {
   const links = [
     { href: '/coaching',    label: 'Coaching' },
     { href: '/relations',   label: 'Relations' },
-    { href: '/temoignages', label: 'Témoignages' },
     { href: '/a-propos',    label: 'Monica' },
     { href: '/contact',     label: 'Contact' },
   ]
