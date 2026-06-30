@@ -141,7 +141,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
-        <link rel="icon" href="/logo-happy-humans.jpg" sizes="any" />
+        <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%232d5f54'/%3E%3Cstop offset='100%25' stop-color='%233d7a72'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='22' cy='22' r='20' fill='url(%23g)'/%3E%3Cg stroke='white' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='11' y='13' width='22' height='20' rx='3'/%3E%3Cline x1='11' y1='19' x2='33' y2='19'/%3E%3Cline x1='16' y1='9' x2='16' y2='15'/%3E%3Cline x1='28' y1='9' x2='28' y2='15'/%3E%3Cpath d='M17 26L20 29L27 22' stroke-width='2'/%3E%3C/g%3E%3C/svg%3E" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="preconnect" href="https://images.unsplash.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
