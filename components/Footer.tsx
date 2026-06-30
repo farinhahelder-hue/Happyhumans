@@ -68,7 +68,7 @@ export default function Footer() {
               <Link href="/sparring-partner" className="hover:text-white transition">{c.get('footer_nav_sparring')}</Link>
               <Link href="/entreprises" className="hover:text-white transition">{c.get('footer_nav_entreprises')}</Link>
               <Link href="/relations" className="hover:text-white transition">{c.get('footer_nav_relations')}</Link>
-              {c.get('footer_nav_show_temoignages') !== 'false' && (
+              {c.get('footer_nav_show_temoignages') === 'true' && (
                 <Link href="/temoignages" className="hover:text-white transition">{c.get('footer_nav_temoignages')}</Link>
               )}
               <Link href="/contact" className="hover:text-white transition">{c.get('footer_nav_contact')}</Link>

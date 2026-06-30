@@ -572,7 +572,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'service_5',     label: 'Service 5',                           type: 'text' },
       { key: 'copyright',     label: 'Texte copyright',                     type: 'text' },
       { key: 'logo_url',      label: 'Logo (MiniFooter)',                   type: 'image' },
-      { key: 'footer_nav_show_temoignages', label: 'Afficher page Témoignages dans le footer', type: 'toggle' },
+      { key: 'footer_nav_show_temoignages', label: 'Afficher page Témoignages dans le footer', type: 'text' },
     ],
   },
   // 12. FAQ
