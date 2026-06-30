@@ -32,9 +32,16 @@ export default function Header() {
   const { user, loading } = useAuth()
   const [logoUrl, setLogoUrl] = useState('/logo-happy-humans.jpg')
   const [siteName, setSiteName] = useState('Happy Humans')
-  const [logoSize, setLogoSize] = useState(44)
+  const [logoSize, setLogoSize] = useState(52)
   const [logoShape, setLogoShape] = useState<'circle'|'rounded'|'square'>('circle')
   const [logoPosition, setLogoPosition] = useState<'left'|'center'>('left')
+  const [logoTextSize, setLogoTextSize] = useState('2xl')
+  const [logoTextWeight, setLogoTextWeight] = useState('semibold')
+  const [logoTextColor, setLogoTextColor] = useState('#1c1917')
+  const [logoTextFont, setLogoTextFont] = useState('serif')
+  const [logoTextTracking, setLogoTextTracking] = useState('tight')
+  const [logoTextLineHeight, setLogoTextLineHeight] = useState('none')
+  const [logoTextSpacing, setLogoTextSpacing] = useState('0')
 
   const { nav } = useCmsNavigation()
   const isCmsUser = !loading && !!user
@@ -43,11 +50,18 @@ export default function Header() {
     fetch('/api/cms/public-settings')
       .then(r => r.ok ? r.json() : { settings: {} })
       .then(({ settings }) => {
-        if (settings?.logo_url)      setLogoUrl(settings.logo_url)
-        if (settings?.site_name)     setSiteName(settings.site_name)
-        if (settings?.logo_size)     setLogoSize(Number(settings.logo_size) || 44)
-        if (settings?.logo_shape)    setLogoShape(settings.logo_shape as 'circle'|'rounded'|'square')
-        if (settings?.logo_position)  setLogoPosition(settings.logo_position as 'left'|'center')
+        if (settings?.logo_url)           setLogoUrl(settings.logo_url)
+        if (settings?.site_name)          setSiteName(settings.site_name)
+        if (settings?.logo_size)          setLogoSize(Number(settings.logo_size) || 52)
+        if (settings?.logo_shape)          setLogoShape(settings.logo_shape as 'circle'|'rounded'|'square')
+        if (settings?.logo_position)       setLogoPosition(settings.logo_position as 'left'|'center')
+        if (settings?.logo_text_size)      setLogoTextSize(settings.logo_text_size)
+        if (settings?.logo_text_weight)    setLogoTextWeight(settings.logo_text_weight)
+        if (settings?.logo_text_color)      setLogoTextColor(settings.logo_text_color || '#1c1917')
+        if (settings?.logo_text_font)       setLogoTextFont(settings.logo_text_font || 'serif')
+        if (settings?.logo_text_tracking)    setLogoTextTracking(settings.logo_text_tracking)
+        if (settings?.logo_text_line_height) setLogoTextLineHeight(settings.logo_text_line_height)
+        if (settings?.logo_text_spacing)    setLogoTextSpacing(settings.logo_text_spacing || '0')
       })
       .catch(() => {})
   }, [])
@@ -77,7 +91,12 @@ export default function Header() {
             <Image src={logoUrl} alt={siteName} width={logoSize} height={logoSize}
               className="object-cover flex-shrink-0"
               style={{ height: logoSize, width: logoSize, borderRadius: logoShape === 'circle' ? '50%' : logoShape === 'rounded' ? '10px' : '4px' }} />
-            <span className="text-xl font-serif font-bold tracking-tight text-stone-900">{siteName}</span>
+            <span
+              className={`text-${logoTextSize} font-${logoTextWeight} ${logoTextFont === 'serif' ? 'font-serif' : 'font-sans'} tracking-${logoTextTracking} ${logoTextLineHeight !== 'none' ? `leading-${logoTextLineHeight}` : ''}`}
+              style={{ color: logoTextColor, letterSpacing: logoTextSpacing !== '0' ? `${logoTextSpacing}em` : undefined }}
+            >
+              {siteName}
+            </span>
           </Link>
 
           <div className="hidden items-center gap-6 md:flex">

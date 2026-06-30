@@ -12,8 +12,12 @@ export async function GET() {
   const { data } = await sb
     .from('cms_settings_kv')
     .select('key, value')
-    .in('key', ['logo_url', 'logo_size', 'logo_shape', 'logo_position', 'logo_footer_size', 'site_name', 'tagline',
-                 'theme_preset', 'theme_primary', 'theme_accent', 'theme_dark', 'theme_bg', 'favicon_url']);
+    .in('key', [
+      'logo_url', 'logo_size', 'logo_shape', 'logo_position', 'logo_footer_size', 'site_name', 'tagline',
+      'theme_preset', 'theme_primary', 'theme_accent', 'theme_dark', 'theme_bg', 'favicon_url',
+      'logo_text_size', 'logo_text_weight', 'logo_text_color', 'logo_text_font',
+      'logo_text_tracking', 'logo_text_line_height', 'logo_text_spacing',
+    ]);
 
   const settings: Record<string, string> = {};
   (data || []).forEach((r: { key: string; value: string }) => { if (r.value) settings[r.key] = r.value; });
