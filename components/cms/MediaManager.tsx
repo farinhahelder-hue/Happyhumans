@@ -7,34 +7,56 @@ import { Input } from '@/components/ui/input';
 export default function MediaManager({ data, onSave }: any) {
   const [media, setMedia] = useState(data?.media || []);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<string>('');
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files) return;
+    if (!files || files.length === 0) return;
 
     setUploading(true);
+    setUploadProgress('');
+
+    const newMedia = [...media];
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      const reader = new FileReader();
+      setUploadProgress(`Upload ${i + 1}/${files.length}...`);
 
-      reader.onload = (event) => {
-        const newMedia = {
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch('/api/cms/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          console.error('Upload failed:', error);
+          alert(`Échec de l'upload pour ${file.name}: ${error.error}`);
+          continue;
+        }
+
+        const result = await response.json();
+        
+        newMedia.push({
           id: `media-${Date.now()}-${i}`,
           name: file.name,
           type: file.type.startsWith('image') ? 'image' : 'video',
-          url: event.target?.result,
+          url: result.url,
           size: file.size,
           uploadedAt: new Date().toISOString(),
-        };
-
-        setMedia([...media, newMedia]);
-      };
-
-      reader.readAsDataURL(file);
+        });
+      } catch (err) {
+        console.error('Upload error:', err);
+        alert(`Erreur lors de l'upload de ${file.name}`);
+      }
     }
 
+    setMedia(newMedia);
     setUploading(false);
+    setUploadProgress('');
   };
 
   const removeMedia = (id: string) => {
@@ -77,6 +99,11 @@ export default function MediaManager({ data, onSave }: any) {
           <p className="text-sm text-gray-600 mt-2">
             Glissez-déposez vos images ou vidéos ici
           </p>
+          {uploadProgress && (
+            <p className="text-sm text-eucalyptus mt-2 font-medium">
+              {uploadProgress}
+            </p>
+          )}
         </div>
       </div>
 

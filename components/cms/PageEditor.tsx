@@ -4,16 +4,25 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { uploadFileWithPreview } from '@/lib/upload-utils';
 
 export default function PageEditor({ data, onSave }: any) {
   const [selectedPage, setSelectedPage] = useState(data?.pages?.[0]);
   const [editingPage, setEditingPage] = useState(selectedPage);
+  const [uploading, setUploading] = useState(false);
 
   const handlePageChange = (field: string, value: any) => {
     setEditingPage({
       ...editingPage,
       [field]: value,
     });
+  };
+
+  const handleImageUpload = async (sectionIndex: number, file: File) => {
+    setUploading(true);
+    const { url, preview } = await uploadFileWithPreview(file);
+    handleSectionChange(sectionIndex, 'image', url || preview);
+    setUploading(false);
   };
 
   const handleSectionChange = (sectionIndex: number, field: string, value: any) => {
@@ -196,18 +205,11 @@ export default function PageEditor({ data, onSave }: any) {
                             <Input
                               type="file"
                               accept="image/*"
+                              disabled={uploading}
                               onChange={(e) => {
                                 const file = e.target.files?.[0];
                                 if (file) {
-                                  const reader = new FileReader();
-                                  reader.onload = (event) => {
-                                    handleSectionChange(
-                                      index,
-                                      'image',
-                                      event.target?.result
-                                    );
-                                  };
-                                  reader.readAsDataURL(file);
+                                  handleImageUpload(index, file);
                                 }
                               }}
                             />

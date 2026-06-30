@@ -4,15 +4,33 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { uploadFileWithPreview } from '@/lib/upload-utils';
 
 export default function SiteSettings({ data, onSave }: any) {
   const [settings, setSettings] = useState(data?.site || {});
+  const [uploading, setUploading] = useState(false);
 
   const handleChange = (field: string, value: string) => {
     setSettings({
       ...settings,
       [field]: value,
     });
+  };
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    const { url, preview } = await uploadFileWithPreview(file);
+    
+    if (url) {
+      handleChange('logo', url);
+    } else {
+      // Fallback to preview if upload fails
+      handleChange('logo', preview);
+    }
+    setUploading(false);
   };
 
   const handleSave = () => {
@@ -94,16 +112,8 @@ export default function SiteSettings({ data, onSave }: any) {
           <Input
             type="file"
             accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                  handleChange('logo', event.target?.result as string);
-                };
-                reader.readAsDataURL(file);
-              }
-            }}
+            onChange={handleLogoUpload}
+            disabled={uploading}
           />
           {settings.logo && (
             <div className="mt-4">
