@@ -45,10 +45,6 @@ Vous ressentez des moments de révélations, d'alignement profonds.\n\nVous vous
   tunnel_cta_primary:        'Réserver maintenant →',
   tunnel_cta_secondary:       'Poser une question',
   tunnel_reassurance:        'Séance découverte gratuite · 45 min · Sans engagement · Confirmation immédiate',
-  // Témoignages
-  testimonials_badge:     'Témoignages',
-  testimonials_title:     "Ce qu'ils en disent",
-  testimonials_footnote: "* Prénom modifié",
   // CTA final
   cta_title:         'Prêt·e à commencer ?',
   form_cta_title:    "Commençons par une séance découverte de 45 min — gratuite et sans engagement.",
@@ -56,18 +52,21 @@ Vous ressentez des moments de révélations, d'alignement profonds.\n\nVous vous
 }
 
 const DEFAULTS_TEMOIGNAGES = {
+  testimonial_section_title: "Ils témoignent",
+  testimonial_section_desc:  "Des parcours différents, une même expérience : retrouver de la clarté et avancer avec confiance.",
   testimonial_1_quote:  "J'étais le bon élève typique : attendre d'avoir tout compris et tout structuré avant d'agir, ce qui me freinait clairement dans mon rôle. Grâce à mes échanges avec Monica, j'ai compris mes mécanismes limitants et découvert de nouvelles perspectives. Le déclic du \"cancre intelligent\" m'a permis de voir mes forces autrement : j'ose proposer, tester, décider plus vite. Résultat : plus d'impact, plus de visibilité, et des résultats business concrets.",
   testimonial_1_name:   "Thibault*",
-  testimonial_1_role:   "Directeur marketing (tech)",
+  testimonial_1_role:   "Directeur marketing, secteur tech",
   testimonial_2_quote:  "I highly recommend the coaching sessions that Monica Schneider offers. My experience with her has been greatly satisfactory and has allowed me to achieve goals and mindsets that would have been very difficult to accomplish otherwise. She has a vast knowledge of the questioning technique and made every session worth and developmental. Monica's coaching style reflects her professionalism and her engaging nature that has allowed me to express myself openly. She provided a psychological safe environment.",
   testimonial_2_name:   "Maria*",
-  testimonial_2_role:   "Learning and Development Director, Banking",
+  testimonial_2_role:   "Learning & Development Director, Banking",
   testimonial_3_quote:  "On a eu un super feedback sur la réunion de présentation que nous avons préparée ensemble. Jérôme (le n+1 de ma cliente) nous a dit : \"Champagne !\"",
   testimonial_3_name:   "Dorothée*",
   testimonial_3_role:   "Directrice Achats Beauty Retail",
-  testimonial_4_quote:  "I want to thank Monica for her inspiring, relieving, insightful and energizing sessions! She opened up valuable new perspectives on my current situation and helped me get to know myself better. It is amazing, but just in a few sessions I was able to view my situation from a completely new angle, and suddenly see the road to my new self.",
+  testimonial_4_quote:  "I want to thank Monica for her inspiring, relieving, insightful and energizing sessions! She opened up valuable new perspectives on my current situation and helped me get to know myself better. Just in a few sessions I was able to view my situation from a completely new angle, and suddenly see the road to my new self.",
   testimonial_4_name:   "David*",
   testimonial_4_role:   "Governmental Think Tank",
+  testimonial_note:     "* Prénom modifié",
 }
 
 const DEFAULTS_PROGRAMS = {
@@ -217,8 +216,8 @@ export default function CoachingPage() {
         <section className="bg-[#f7f4ef] py-16 md:py-20">
           <div className="mx-auto max-w-5xl px-6 md:px-10">
             <div className="mb-10 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-amber-800">{c.get('testimonials_badge')}</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('testimonials_title')}</h2>
+              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('testimonial_section_title')}</h2>
+              <p className="mt-3 text-sm text-stone-500">{c.get('testimonial_section_desc')}</p>
             </div>
             <div className="grid gap-6 md:grid-cols-2">
               {temoignages.map((t, i) => {
@@ -232,7 +231,7 @@ export default function CoachingPage() {
                     <footer>
                       <p className="text-sm font-semibold text-stone-900">{t.name}</p>
                       <p className="text-xs text-stone-500 italic mt-0.5">{t.role}</p>
-                      <p className="text-xs text-stone-400 mt-1">* Prénom modifié</p>
+                      <p className="text-xs text-stone-400 mt-1">{c.get('testimonial_note')}</p>
                     </footer>
                   </div>
                 );
