@@ -55,8 +55,10 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Carry forward existing hh_cms_edit flag
+  // Check for CMS edit flag or active session
   const editCookie = req.cookies.get('hh_cms_edit')
+  
+  // If we already have the edit cookie, pass through
   if (editCookie?.value === '1') {
     res.headers.set('x-cms-edit', '1')
   }
