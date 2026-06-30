@@ -201,7 +201,6 @@ export default function LandingPage() {
         </section>
 
         {/* ══ BOOKING ═══════════════════════════════════════════════════ */}
-        {/* TODO: Réactiver le système inhouse si besoin */}
         <section className="bg-[#f5f0e8] px-6 py-20 md:px-10 md:py-24" id="booking">
           <div className="mx-auto max-w-4xl">
             <div className="mb-10 text-center">
@@ -209,19 +208,67 @@ export default function LandingPage() {
               <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('booking_widget_title')}</h2>
               <p className="mt-3 text-sm text-stone-500">{c.get('booking_widget_subtitle')}</p>
             </div>
-            <div className="text-center">
-              <a
-                href="https://calendly.com/happyhumans-coaching/seance-decouverte-coaching"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
-              >
-                Réserver via Calendly →
-              </a>
-              <p className="mt-3 text-xs text-stone-500">
-                Séance découverte gratuite · 1h · Sans engagement
+            
+            {/* Calendly CTA Card */}
+            <a
+              href="https://calendly.com/happyhumans-coaching/seance-decouverte-coaching"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative mx-auto flex max-w-sm flex-col items-center rounded-2xl bg-gradient-to-br from-[#2d5f54] via-[#2f6b61] to-[#3d7a72] p-8 text-center shadow-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#2d5f54]/20"
+            >
+              {/* Decorative circles */}
+              <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/10 blur-2xl" />
+              <div className="absolute -left-4 -bottom-4 h-20 w-20 rounded-full bg-white/5 blur-xl" />
+              
+              {/* Calendar icon */}
+              <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+                <svg className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                  <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>
+                </svg>
+              </div>
+              
+              {/* Title */}
+              <p className="mb-2 font-serif text-xl font-semibold tracking-wide text-white">
+                Séance découverte
               </p>
-            </div>
+              <p className="mb-6 text-sm text-emerald-100">
+                gratuite · 1h · sans engagement
+              </p>
+              
+              {/* Button */}
+              <span className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#2d5f54] shadow-lg transition-all duration-200 group-hover:gap-3">
+                Réserver maintenant
+                <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </span>
+              
+              {/* Trust badges */}
+              <div className="mt-6 flex items-center justify-center gap-4 text-xs text-emerald-200">
+                <span className="flex items-center gap-1">
+                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M20 6L9 17l-5-5"/>
+                  </svg>
+                  Confidentiel
+                </span>
+                <span className="flex items-center gap-1">
+                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M20 6L9 17l-5-5"/>
+                  </svg>
+                  Sans engagement
+                </span>
+                <span className="flex items-center gap-1">
+                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M20 6L9 17l-5-5"/>
+                  </svg>
+                  Réponse 48h
+                </span>
+              </div>
+            </a>
           </div>
         </section>
 
