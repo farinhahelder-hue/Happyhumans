@@ -89,8 +89,9 @@ export default function Header() {
 
           <Link href="/" className={`flex items-center gap-3 transition-colors duration-200 ${logoPosition === 'center' ? 'mx-auto' : ''}`} aria-label={`${siteName} accueil`}>
             <Image src={logoUrl} alt={siteName} width={logoSize} height={logoSize}
+              priority
               className="object-cover flex-shrink-0"
-              style={{ height: logoSize, width: logoSize, borderRadius: logoShape === 'circle' ? '50%' : logoShape === 'rounded' ? '10px' : '4px' }} />
+              style={{ height: logoSize, width: logoSize, borderRadius: logoShape === 'circle' ? '50%' : logoShape === 'rounded' ? '10px' : '4px', imageRendering: 'auto', willChange: 'auto' }} />
             <span
               className={`text-${logoTextSize} font-${logoTextWeight} ${logoTextFont === 'serif' ? 'font-serif' : 'font-sans'} tracking-${logoTextTracking} ${logoTextLineHeight !== 'none' ? `leading-${logoTextLineHeight}` : ''}`}
               style={{ color: logoTextColor, letterSpacing: logoTextSpacing !== '0' ? `${logoTextSpacing}em` : undefined }}
