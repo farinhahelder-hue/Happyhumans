@@ -11,7 +11,7 @@ const EVENT_TYPES: Record<string, string> = {
 }
 
 export const SERVICE_LABELS: Record<string, string> = {
-  'happiness-design': 'Programme Happiness Design™',
+  'happiness-design': 'Programme Happiness Design',
   'coaching':         'Coaching individuel',
   'sparring-partner': 'Sparring Partner',
   'entreprises':      'Coaching entreprises',

@@ -22,7 +22,7 @@ const DEFAULTS = {
   domain_4_text:  "Un regard externe sur vos décisions stratégiques, votre positionnement et votre communication de dirigeant.",
   domain_5_title: "Cohésion d'équipe",
   domain_5_text:  "Ateliers et séminaires sur mesure. Diagnostic d'équipe, identification des blocages, plan de transformation.",
-  domain_6_title: "Happiness Design™ en entreprise",
+  domain_6_title: "Happiness Design en entreprise",
   domain_6_text:  "Remettre du sens et de l'engagement au travail. Programme basé sur les neurosciences, la psychologie positive et la philosophie pratique.",
   // Témoignage Dorothée
   temoignage_dorothee_text:   "On a eu un super feedback sur la réunion de présentation que nous avons préparée ensemble. Jérôme (le n+1 de ma cliente) nous a dit : \"Champagne !\"",
@@ -69,7 +69,7 @@ export default function EntreprisesPage() {
     },
     {
       icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>,
-      title: c.domain_6_title || "Happiness Design™ en entreprise",
+      title: c.domain_6_title || "Happiness Design en entreprise",
       text: c.domain_6_text || '',
     },
   ]

@@ -7,7 +7,7 @@ import { useCmsContent } from '@/hooks/useCmsContent'
 const DEFAULTS = {
   // Hero
   hero_badge:    'Programme',
-  page_title:    'Happiness Design™',
+  page_title:    'Happiness Design',
   page_subtitle: '12 séances pour reprendre les rênes de votre vie et de votre bonheur — au boulot et ailleurs.',
   intro_text:    "Neurosciences, psychologie positive, philosophie pratique, design thinking — toutes les disciplines au service d'une transformation durable, pour que vous repreniez pleinement les rênes de votre vie.",
   hero_cta:      'Séance découverte gratuite (45 min)',
