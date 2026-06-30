@@ -1,6 +1,5 @@
 ﻿'use client';
-import { useState, useRef } from 'react';
-import BookingWidget from '@/components/BookingWidget';
+import { useRef } from 'react';
 import { AttachmentTest } from '@/components/attachment-test/AttachmentTest';
 import Header from '@/components/Header';
 import Image from 'next/image';
@@ -233,11 +232,10 @@ export default function RelationsPage() {
   const c = useCmsContent('relations', DEFAULTS_RELATIONS);
 
   const [activeModal, setActiveModal] = useState<string | null>(null);
-  const [bookingOpen, setBookingOpen] = useState(false);
   const bookingRef = useRef<HTMLDivElement>(null);
 
   const handleBook = () => {
-    setBookingOpen(true);
+    // Scroll to booking section
     setTimeout(() => {
       bookingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
@@ -524,6 +522,7 @@ export default function RelationsPage() {
         </section>
 
         {/* ══ RÉSERVER — BOOKING ════════════════════════════════════════ */}
+        {/* TODO: Réactiver le système inhouse si besoin */}
         <section
           ref={bookingRef}
           className="bg-[#f5f0e8] px-6 py-16 md:px-10 md:py-20"
@@ -539,19 +538,14 @@ export default function RelationsPage() {
                 {c.get('booking_subtitle')}
               </p>
             </div>
-            {bookingOpen
-              ? <BookingWidget defaultType="discovery" />
-              : (
-                <div className="text-center">
-                  <button
-                    onClick={() => setBookingOpen(true)}
-                    className="rounded-full bg-[#2d5f54] px-8 py-4 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
-                  >
-                    {c.get('booking_cta_button')}
-                  </button>
-                </div>
-              )
-            }
+            <div className="text-center">
+              <a
+                href="/booking"
+                className="inline-flex items-center gap-2 rounded-full bg-[#2d5f54] px-8 py-4 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
+              >
+                {c.get('booking_cta_button')}
+              </a>
+            </div>
           </div>
         </section>
 

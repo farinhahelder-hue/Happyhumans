@@ -3,7 +3,6 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import BookingWidget from '@/components/BookingWidget'
 import { useCmsContent } from '@/hooks/useCmsContent'
 
 const CARD_DEFS = {
@@ -202,6 +201,7 @@ export default function LandingPage() {
         </section>
 
         {/* ══ BOOKING ═══════════════════════════════════════════════════ */}
+        {/* TODO: Réactiver le système inhouse si besoin */}
         <section className="bg-[#f5f0e8] px-6 py-20 md:px-10 md:py-24" id="booking">
           <div className="mx-auto max-w-4xl">
             <div className="mb-10 text-center">
@@ -209,7 +209,17 @@ export default function LandingPage() {
               <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('booking_widget_title')}</h2>
               <p className="mt-3 text-sm text-stone-500">{c.get('booking_widget_subtitle')}</p>
             </div>
-            <BookingWidget />
+            <div className="text-center">
+              <a
+                href="/booking"
+                className="inline-flex items-center gap-2 rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
+              >
+                Réserver via Calendly →
+              </a>
+              <p className="mt-3 text-xs text-stone-500">
+                Séance découverte gratuite · 45 min · Sans engagement
+              </p>
+            </div>
           </div>
         </section>
 
@@ -261,6 +271,7 @@ export default function LandingPage() {
       <Footer />
 
       {/* ══ MODAL BOOKING ═════════════════════════════════════════════════ */}
+      {/* TODO: Réactiver le système inhouse si besoin */}
       {bookingOpen && (
         <div
           className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-stone-900/70 backdrop-blur-sm p-4 pt-16"
@@ -276,11 +287,17 @@ export default function LandingPage() {
             >
               ✕
             </button>
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold text-stone-900">{c.get('booking_modal_title')}</h2>
-              <p className="text-sm text-stone-500 mt-1">{c.get('booking_modal_subtitle')}</p>
+            <div className="text-center py-8">
+              <h2 className="text-xl font-semibold text-stone-900 mb-2">{c.get('booking_modal_title')}</h2>
+              <p className="text-sm text-stone-500 mt-1 mb-6">{c.get('booking_modal_subtitle')}</p>
+              <a
+                href="/booking"
+                className="inline-flex items-center gap-2 rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
+                onClick={() => setBookingOpen(false)}
+              >
+                Réserver via Calendly →
+              </a>
             </div>
-            <BookingWidget defaultType="discovery" />
           </div>
         </div>
       )}
