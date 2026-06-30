@@ -13,13 +13,13 @@ export async function POST(req: NextRequest) {
 
   if (!url || !key) {
     console.error('[DEBUG upload] Supabase credentials missing:', { url: !!url, key: !!key });
-    return NextResponse.json({ error: 'Configuration Supabase manquante. Vérifiez SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY.' }, { status: 500 });
+    return NextResponse.json({ error: 'Supabase non configuré', message: 'NEXT_PUBLIC_SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY manquant' }, { status: 500 });
   }
 
   const authError = requireCmsAuth(req);
   if (authError) {
-    console.log('[DEBUG upload] Auth failed, returning:', authError);
-    return authError;
+    console.log('[DEBUG upload] Auth failed. Cookies:', req.headers.get('cookie'));
+    return NextResponse.json({ error: 'Non autorisé', message: 'Session CMS invalide ou expirée' }, { status: 401 });
   }
 
   try {
