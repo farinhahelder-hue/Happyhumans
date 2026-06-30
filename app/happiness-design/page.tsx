@@ -6,7 +6,7 @@ import { useCmsContent } from '@/hooks/useCmsContent'
 
 const DEFAULTS = {
   // Hero
-  hero_badge:    'Programme phare',
+  hero_badge:    'Programme',
   page_title:    'Happiness Design',
   page_subtitle: '12 séances pour reprendre les rênes de votre vie et de votre bonheur — au boulot et ailleurs.',
   intro_text:    "Neurosciences, psychologie positive, philosophie pratique, design thinking — toutes les disciplines au service d'une transformation durable, pour que vous repreniez pleinement les rênes de votre vie.",
@@ -38,7 +38,14 @@ const DEFAULTS = {
   // Boîte à outils
   tools_badge:       'Programme',
   tools_title:       'Une boîte à outils multidisciplinaire',
+  tools_intro_1:     "Ce n'est pas le bonheur qui fait la différence, mais comment on réagit dans l'adversité. Et une seule discipline ne suffit pas.",
+  tools_intro_2:     "Happiness Design mêle neurosciences, psychologie positive, psychologie classique, méditation, pratique philosophique et design thinking — pour coller au plus près de votre chemin unique.",
+  tools_origin_label:'L\'origine',
   tools_origin_text: "Cette méthode est née d'un mémoire de Master de Pratique Philosophique sur le bonheur, et de 6 ans d'expérimentation personnelle par Monica Schneider.",
+  tools_conclusions_label: "Deux conclusions fondatrices :",
+  tools_conclusion_1: "Ce n'est pas le bonheur qui fait la différence, c'est comment on réagit dans l'adversité.",
+  tools_conclusion_2: "Une seule discipline ne suffit pas. Il faut comprendre son cerveau, savoir créer son bonheur, repérer quand l'inconscient reprend le dessus, entraîner son cerveau à réduire le cortisol et challenger ses pensées.",
+  tools_claim:       "Happy Humans est la seule pratique de coaching en France qui intègre ces 6 disciplines dans un programme cohérent.",
   // Pricing section
   pricing_badge:           'Investissement',
   pricing_title:           'Un programme sur mesure',
@@ -200,25 +207,21 @@ export default function HappinessDesignPage() {
             <div className="text-center mb-8">
               <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('tools_badge')}</p>
               <h2 className="text-2xl font-serif font-light text-stone-900 mb-6 md:text-3xl">{c.get('tools_title')}</h2>
-              <p className="text-base leading-relaxed text-stone-600 mb-4">
-                Ce n&apos;est pas le bonheur qui fait la différence, mais comment on réagit dans l&apos;adversité. Et une seule discipline ne suffit pas.
-              </p>
-              <p className="text-base leading-relaxed text-stone-600">
-                Happiness Design mêle <strong>neurosciences</strong>, <strong>psychologie positive</strong>, <strong>psychologie classique</strong>, <strong>méditation</strong>, <strong>pratique philosophique</strong> et <strong>design thinking</strong> — pour coller au plus près de votre chemin unique.
-              </p>
+              <p className="text-base leading-relaxed text-stone-600 mb-4">{c.get('tools_intro_1')}</p>
+              <p className="text-base leading-relaxed text-stone-600">{c.get('tools_intro_2')}</p>
             </div>
 
             {/* L'ORIGINE */}
             <div className="rounded-2xl bg-[#f5f0e8] border border-amber-200 p-8">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800 mb-4">L&apos;origine</p>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800 mb-4">{c.get('tools_origin_label')}</p>
               <div className="text-sm leading-relaxed text-stone-600 space-y-4">
                 <p>{c.get('tools_origin_text', undefined, { multiline: true })}</p>
-                <p><strong className="text-stone-800">Deux conclusions fondatrices :</strong></p>
+                <p><strong className="text-stone-800">{c.get('tools_conclusions_label')}</strong></p>
                 <ol className="space-y-2 ml-4 list-decimal">
-                  <li>Ce n&apos;est pas le bonheur qui fait la différence, c&apos;est comment on réagit dans l&apos;adversité.</li>
-                  <li>Une seule discipline ne suffit pas. Il faut comprendre son cerveau, savoir créer son bonheur, repérer quand l&apos;inconscient reprend le dessus, entraîner son cerveau à réduire le cortisol et challenger ses pensées.</li>
+                  <li>{c.get('tools_conclusion_1')}</li>
+                  <li>{c.get('tools_conclusion_2')}</li>
                 </ol>
-                <p className="font-medium text-stone-700">Happy Humans est la seule pratique de coaching en France qui intègre ces 6 disciplines dans un programme cohérent.</p>
+                <p className="font-medium text-stone-700">{c.get('tools_claim')}</p>
               </div>
             </div>
           </div>

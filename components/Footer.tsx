@@ -12,7 +12,7 @@ const DEFAULTS: Record<string, string> = {
   footer_nav_title:       'Navigation',
   footer_nav_home:        'Accueil',
   footer_nav_coaching:    'Coaching individuel',
-  footer_nav_hd:          "Happiness Design\u2122",
+  footer_nav_hd:          "Happiness Design",
   footer_nav_sparring:    'Sparring Partner',
   footer_nav_entreprises: 'Entreprises',
   footer_nav_relations:   'Relations',
