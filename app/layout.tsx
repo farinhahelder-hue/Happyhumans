@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   publisher: 'Happy Humans',
   icons: {
     icon: [
-      { url: '/logo-happy-humans.jpg' },
+      { url: '/og-images/og-default.svg' },
       { url: '/favicon.ico' },
       { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
       { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
       "Accompagnement individuel et collectif pour managers, dirigeants et organisations en quete d'alignement, de clarte et de transformation durable.",
     images: [
       {
-        url: '/logo-happy-humans.jpg',
+        url: '/og-images/og-default.svg',
         width: 1200,
         height: 630,
         alt: 'Happy Humans - coaching et transformation avec Monica Schneider',
@@ -83,7 +83,7 @@ export const metadata: Metadata = {
     title: 'Happy Humans | Coaching & transformation avec Monica Schneider',
     description:
       'Executive coaching, philosophical counselling et accompagnement des organisations avec Monica Schneider.',
-    images: ['/logo-happy-humans.jpg'],
+    images: ['/og-images/og-default.svg'],
   },
 };
 
@@ -102,7 +102,7 @@ const schemaOrganization = {
   '@type': 'Organization',
   name: 'Happy Humans',
   url: SITE_URL,
-  logo: `${SITE_URL}/logo-happy-humans.jpg`,
+  logo: `${SITE_URL}/og-images/og-default.svg`,
   sameAs: [
     'https://fr.linkedin.com/in/monica-schneider-philo-coaching',
     'https://monicaschneider.me/',

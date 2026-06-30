@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2d5f54"/>
+      <stop offset="100%" stop-color="#3d7a72"/>
+    </linearGradient>
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2d5f54"/>
+      <stop offset="100%" stop-color="#3d7a72"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  
+  <!-- Decorative elements -->
+  <circle cx="1100" cy="100" r="200" fill="white" fill-opacity="0.05"/>
+  <circle cx="100" cy="530" r="150" fill="white" fill-opacity="0.05"/>
+  
+  <!-- Logo circle -->
+  <circle cx="600" cy="200" r="80" fill="white"/>
+  <circle cx="600" cy="200" r="70" fill="url(#logoGrad)"/>
+  
+  <!-- Calendar icon in logo -->
+  <g stroke="white" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="565" y="175" width="70" height="60" rx="8"/>
+    <line x1="565" y1="200" x2="635" y2="200"/>
+    <line x1="580" y1="160" x2="580" y2="180"/>
+    <line x1="620" y1="160" x2="620" y2="180"/>
+    <path d="M575 220L590 235L625 200" stroke-width="4"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="600" y="360" font-family="Georgia, serif" font-size="72" font-weight="300" fill="white" text-anchor="middle">Happy Humans</text>
+  <text x="600" y="420" font-family="Georgia, serif" font-size="28" fill="white" fill-opacity="0.8" text-anchor="middle">Coaching &amp; Transformation</text>
+  <text x="600" y="520" font-family="Arial, sans-serif" font-size="22" fill="white" fill-opacity="0.6" text-anchor="middle">monicaschneider.me</text>
+</svg>
