@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useAuth } from '@/components/AuthProvider'
 import { useCmsNavigation, type NavItem } from '@/hooks/useCmsNavigation'
+import LogoSVG from '@/components/LogoSVG'
 
 const ICONS: Record<string, string> = {
   star: '<path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>',
@@ -88,35 +88,7 @@ export default function Header() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
 
           <Link href="/" className={`flex items-center gap-3 transition-colors duration-200 ${logoPosition === 'center' ? 'mx-auto' : ''}`} aria-label={`${siteName} accueil`}>
-            {/* Elegant Logo SVG */}
-            <svg 
-              width="44" 
-              height="44" 
-              viewBox="0 0 44 44" 
-              fill="none" 
-              xmlns="http://www.w3.org/2000/svg"
-              className="flex-shrink-0"
-            >
-              {/* Gradient background circle */}
-              <defs>
-                <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#2d5f54"/>
-                  <stop offset="50%" stopColor="#2f6b61"/>
-                  <stop offset="100%" stopColor="#3d7a72"/>
-                </linearGradient>
-              </defs>
-              <circle cx="22" cy="22" r="20" fill="url(#logoGradient)"/>
-              
-              {/* Calendar icon */}
-              <g stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none">
-                <rect x="11" y="13" width="22" height="20" rx="3"/>
-                <line x1="11" y1="19" x2="33" y2="19"/>
-                <line x1="16" y1="9" x2="16" y2="15"/>
-                <line x1="28" y1="9" x2="28" y2="15"/>
-                {/* Checkmark */}
-                <path d="M17 26L20 29L27 22" strokeWidth="2"/>
-              </g>
-            </svg>
+            <LogoSVG size={44} className="flex-shrink-0" />
             <span
               className={`text-${logoTextSize} font-${logoTextWeight} ${logoTextFont === 'serif' ? 'font-serif' : 'font-sans'} tracking-${logoTextTracking} ${logoTextLineHeight !== 'none' ? `leading-${logoTextLineHeight}` : ''}`}
               style={{ color: logoTextColor, letterSpacing: logoTextSpacing !== '0' ? `${logoTextSpacing}em` : undefined }}

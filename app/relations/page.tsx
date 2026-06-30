@@ -2,7 +2,7 @@
 import { useState, useRef } from 'react';
 import { AttachmentTest } from '@/components/attachment-test/AttachmentTest';
 import Header from '@/components/Header';
-import Image from 'next/image';
+import LogoSVG from '@/components/LogoSVG';
 
 const SOURCES = [
   {
@@ -584,7 +584,7 @@ export default function RelationsPage() {
       <footer className="border-t border-stone-800 bg-stone-900 px-6 py-8 md:px-10">
         <div className="mx-auto max-w-5xl flex flex-col items-center justify-between gap-4 text-xs text-stone-400 md:flex-row">
           <a href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-            <Image src="/logo-happy-humans.jpg" alt={c.footer_site_name} width={28} height={28} className="rounded-full opacity-80" />
+            <LogoSVG size={28} />
             <span className="font-serif text-base text-stone-300 font-semibold hover:text-white transition">{c.get('footer_site_name')}</span>
           </a>
           <p>{c.get('footer_copyright')}</p>

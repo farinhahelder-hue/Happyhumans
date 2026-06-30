@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
+import LogoSVG from '@/components/LogoSVG'
 
 export default function MiniNav() {
   const [open, setOpen] = useState(false)
@@ -21,7 +21,7 @@ export default function MiniNav() {
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
-          <Image src="/logo-happy-humans.jpg" alt="Happy Humans" width={36} height={36} className="rounded-full object-cover" />
+          <LogoSVG size={36} />
           <div className="flex flex-col">
             <span className="font-serif text-base font-semibold tracking-wide"
               style={{ color: '#1e3a34', fontFamily: 'Cormorant Garamond, serif' }}>

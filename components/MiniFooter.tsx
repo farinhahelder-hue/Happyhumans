@@ -1,8 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useCmsContent } from '@/hooks/useCmsContent'
+import LogoSVG from '@/components/LogoSVG'
 
 const DEFAULTS: Record<string, string> = {
   site_name:     'Happy Humans',
@@ -26,7 +26,6 @@ export default function MiniFooter() {
   }, [])
 
   const year = new Date().getFullYear()
-  const logo = c.logo_url || '/logo-happy-humans.jpg'
 
   return (
     <footer className="border-t px-6 py-10 md:px-10"
@@ -35,7 +34,7 @@ export default function MiniFooter() {
 
         <div className="flex items-center gap-3">
           <Link href="/" className="transition">
-            <Image src={logo} alt={c.site_name} width={logoFooterSize} height={logoFooterSize} className="object-cover" style={{ borderRadius: '50%' }} />
+            <LogoSVG size={logoFooterSize} />
           </Link>
           <div className="flex flex-col">
             <Link href="/" className="transition"
