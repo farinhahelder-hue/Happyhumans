@@ -7,13 +7,13 @@ export default function Services() {
     <section className="py-20 md:py-28 bg-stone-50">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
-          <p className="text-amber-800 text-xs font-bold tracking-[0.2em] uppercase mb-3">Nos services</p>
+          <p className="text-amber-800 text-xs font-bold tracking-[0.2em] uppercase mb-3">Mes services</p>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-stone-900 mb-4">
             Deux expertises, une même philosophie
           </h2>
           <p className="text-stone-600 max-w-2xl mx-auto">
             Que vous cherchiez à vivre une aventure unique ou à transformer votre établissement, 
-            nous apportons la même exigence de qualité et d&apos;authenticité.
+            j'apporte la même exigence de qualité et d&apos;authenticité.
           </p>
         </div>
 
@@ -87,7 +87,7 @@ export default function Services() {
 
         {/* Note */}
         <p className="text-center text-stone-500 text-sm mt-12">
-          Une question ? <Link href="/contact" className="text-amber-800 hover:underline">Contactez-nous</Link>
+          Une question ? <Link href="/contact" className="text-amber-800 hover:underline">Contactez-moi</Link>
         </p>
       </div>
     </section>

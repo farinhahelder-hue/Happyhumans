@@ -23,7 +23,7 @@ export const PAGE_DEFAULTS: Record<string, Record<string, string>> = {
     booking_modal_title: 'Choisissez votre créneau',
     booking_modal_subtitle: 'Séance découverte offerte · 45 minutes · Sans engagement',
     contact_section_badge: 'Contact',
-    contact_section_title: 'Une question ? Écrivez-nous',
+    contact_section_title: 'Une question ? Écrivez-moi',
     contact_section_subtitle: 'Réponse sous 48h.',
     form_success_title:  'Message envoyé !',
     form_success_body:   'Monica vous répondra sous 48h à {email}.',

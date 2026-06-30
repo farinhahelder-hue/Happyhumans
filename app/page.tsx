@@ -58,7 +58,7 @@ const DEFAULTS = {
   booking_widget_subtitle: 'Séance découverte offerte (45 min) ou programme de coaching.',
   // Contact
   contact_section_badge: 'Contact',
-  contact_section_title: 'Une question ? Écrivez-nous',
+  contact_section_title: 'Une question ? Écrivez-moi',
   contact_section_subtitle: 'Réponse sous 48h.',
   form_success_title:  'Message envoyé !',
   form_success_body:   'Monica vous répondra sous 48h à {email}.',

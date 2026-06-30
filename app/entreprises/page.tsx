@@ -9,7 +9,7 @@ const DEFAULTS = {
   page_title:    "Remettre de l'alignement et de l'élan dans vos équipes.",
   intro_text:    "Coaching de dirigeants, ateliers de cohésion, accompagnement du changement et séminaires sur mesure.",
   section_image: '',
-  section_title: 'Ce que nous proposons',
+  section_title: 'Ce que je propose',
   section_text:  "Quand une équipe perd de sa cohérence, les résultats s'en ressentent toujours.\n\nAvec 10 ans passés à développer des marques internationales pour Henkel, LVMH et L'Oréal — en Allemagne, France, Royaume-Uni et Europe de l'Est — j'ai vécu de l'intérieur les dynamiques de transformation d'équipe, de prise de poste et de communication interculturelle.\n\nAujourd'hui j'apporte cette expérience dans ma pratique de coaching. Je travaille avec les dirigeants et les organisations pour remettre de l'alignement — entre les personnes, entre les objectifs et les moyens, entre ce qu'on dit et ce qu'on fait — ou tout simplement pour rebooster l'engagement et l'élan commun.",
   // Domaines
   domain_1_title: 'Coaching de dirigeants',
