@@ -29,12 +29,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await getPostBySlug(params.slug)
   if (!post) return { title: 'Article introuvable | Happy Humans' }
 
-  const ogImage = post.featured_image ?? DEFAULT_OG
+  const ogImage = post.og_image ?? post.featured_image ?? DEFAULT_OG
   const canonical = `${SITE_URL}/blog/${post.slug}`
-  const description = post.excerpt ?? 'Un carnet Happy Humans écrit depuis le terrain.'
+  const description = post.seo_description ?? post.excerpt ?? 'Un article Happy Humans — coaching, bonheur et leadership.'
+  const seoTitle = post.seo_title ?? `${post.title} | Happy Humans`
 
   return {
-    title: `${post.title} | Happy Humans`,
+    title: seoTitle,
     description,
     alternates: { canonical },
     authors: post.author ? [{ name: post.author }] : [{ name: 'Happy Humans' }],

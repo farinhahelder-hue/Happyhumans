@@ -21,6 +21,7 @@ type Article = {
   id: number; title: string; slug: string; category: string;
   published: boolean; published_at: string; created_at: string;
   excerpt: string; featured_image: string; content?: string; voice_notes?: string;
+  seo_title?: string; seo_description?: string; og_image?: string;
 };
 
 type Demande = {
@@ -68,6 +69,9 @@ function normalizeArticleDraft(article: Partial<Article> | null | undefined) {
     featured_image: article?.featured_image ?? '',
     content: article?.content ?? '',
     voice_notes: article?.voice_notes ?? '',
+    seo_title: article?.seo_title ?? '',
+    seo_description: article?.seo_description ?? '',
+    og_image: article?.og_image ?? '',
     published: Boolean(article?.published),
   };
 }
@@ -643,12 +647,14 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
 };
 
 const SETTINGS_GROUPS: Record<string, { label: string; emoji: string }> = {
-  theme:    { label: 'Thème & Couleurs', emoji: '🎨' },
-  branding: { label: 'Logo & Identité',  emoji: '🖼' },
-  general:  { label: 'Général',          emoji: '🌍' },
-  social:   { label: 'Réseaux sociaux',  emoji: '📱' },
-  seo:      { label: 'SEO',              emoji: '🔍' },
-  footer:   { label: 'Footer',           emoji: '📄' },
+  theme:      { label: 'Thème & Couleurs',  emoji: '🎨' },
+  branding:   { label: 'Logo & Identité',   emoji: '🖼' },
+  general:    { label: 'Général',           emoji: '🌍' },
+  social:     { label: 'Réseaux sociaux',   emoji: '📱' },
+  seo:        { label: 'SEO global',        emoji: '🔍' },
+  geo:        { label: 'Géo & Business',    emoji: '📍' },
+  visibility: { label: 'Visibilité pages',  emoji: '👁️' },
+  footer:     { label: 'Footer',            emoji: '📄' },
 };
 
 // ─── Maintenance Mode Toggle ──────────────────────────────────
@@ -1921,13 +1927,14 @@ export default function CMSAdmin() {
                   style={inp}
                 >
                   <option value="">— Choisir —</option>
-                  <option value="Slow Travel">Slow Travel</option>
-                  <option value="Europe">Europe</option>
-                  <option value="Escapades">Escapades</option>
-                  <option value="Carnets de voyage">Carnets de voyage</option>
-                  <option value="Coulisses">Coulisses</option>
-                  <option value="Conseils">Conseils</option>
-                  <option value="Destinations">Destinations</option>
+                  <option value="Coaching">Coaching</option>
+                  <option value="Leadership">Leadership</option>
+                  <option value="Bonheur">Bonheur & Bien-être</option>
+                  <option value="Relations">Relations</option>
+                  <option value="Entreprises">Entreprises</option>
+                  <option value="Happiness Design">Happiness Design</option>
+                  <option value="Réflexions">Réflexions</option>
+                  <option value="Outils">Outils & Méthodes</option>
                 </select>
               </div>
               <div style={{ gridColumn: '1/-1' }}>
@@ -1972,21 +1979,17 @@ export default function CMSAdmin() {
                     Guide de rédaction Monica
                   </p>
                   <ul style={{ margin: '.75rem 0 0', paddingLeft: '1.1rem', color: '#6d625a', fontSize: '.88rem', lineHeight: 1.7 }}>
-                    <li>Ouverture : un moment précis ou une observation concrète.</li>
-                    <li>Corps : des scènes qui avancent, une idée par paragraphe.</li>
-                    <li>Détail signature : ce qu'on a vu, senti, raté ou retenu.</li>
-                    <li>Fin : une impression juste, sans CTA forcé.</li>
+                    <li>Ouverture : une anecdote client, une question déstabilisante ou un constat concret.</li>
+                    <li>Corps : une idée centrale par section, avec un outil ou une perspective coaching.</li>
+                    <li>Détail signature : ce que Monica a observé en séance, la formule qui fait mouche.</li>
+                    <li>Fin : une invitation à l'action douce — réflexion, contact ou séance découverte.</li>
                   </ul>
                 </div>
-                <label style={lbl}>Voice notes / détail signature</label>
+                <label style={lbl}>Note d'angle / fil conducteur</label>
                 <textarea value={editingArticle?.voice_notes || ''}
                   onChange={e => setEditingArticle(p => ({ ...p, voice_notes: e.target.value }))}
                   style={{ ...inp, height: 96, resize: 'vertical' }}
-                  placeholder="Détail terrain, texture, hésitation, micro-verdict, ou rappel d'angle vécu..." />
-                <p style={{ margin: '.4rem 0 0', color: '#6d625a', fontSize: '.8rem', lineHeight: 1.6 }}>
-                  Si la migration Supabase `voice_notes` n'est pas encore appliquée, ce champ peut être ignoré
-                  temporairement à l'enregistrement.
-                </p>
+                  placeholder="Angle personnel, anecdote de séance, citation qui inspire l'article, ou note brouillon…" />
               </div>
               <div style={{ gridColumn: '1/-1' }}>
                 <label style={lbl}>Contenu</label>
@@ -2024,6 +2027,45 @@ export default function CMSAdmin() {
                   onChange={html => setEditingArticle(p => ({ ...p, content: html }))}
                   placeholder="Commence à écrire ton article ici…" />
               </div>
+              {/* SEO Panel */}
+              <div style={{ gridColumn: '1/-1', border: '1.5px solid #e8e3dc', borderRadius: '1rem', padding: '1.25rem 1.5rem', background: '#fafaf8' }}>
+                <p style={{ margin: '0 0 1rem', fontSize: '.78rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.08em', color: '#2d5f54' }}>🔍 SEO — Référencement Google</p>
+                <div style={{ display: 'grid', gap: '1rem' }}>
+                  <div>
+                    <label style={lbl}>Titre SEO (optionnel — remplace le titre dans Google)</label>
+                    <input value={editingArticle?.seo_title ?? ''}
+                      onChange={e => setEditingArticle(p => ({ ...p, seo_title: e.target.value }))}
+                      style={inp} placeholder={`${editingArticle?.title || 'Titre de l\'article'} | Happy Humans`}
+                      maxLength={70} />
+                    <p style={{ margin: '.3rem 0 0', fontSize: '.75rem', color: (editingArticle?.seo_title?.length ?? 0) > 60 ? '#dc2626' : '#aaa' }}>
+                      {editingArticle?.seo_title?.length ?? 0}/70 caractères · idéal : 50–60
+                    </p>
+                  </div>
+                  <div>
+                    <label style={lbl}>Description SEO (optionnel — affiché sous le titre dans Google)</label>
+                    <textarea value={editingArticle?.seo_description ?? ''}
+                      onChange={e => setEditingArticle(p => ({ ...p, seo_description: e.target.value }))}
+                      style={{ ...inp, height: 72, resize: 'vertical' }}
+                      placeholder={editingArticle?.excerpt ?? 'Description courte et engageante pour les résultats de recherche…'}
+                      maxLength={160} />
+                    <p style={{ margin: '.3rem 0 0', fontSize: '.75rem', color: (editingArticle?.seo_description?.length ?? 0) > 150 ? '#dc2626' : '#aaa' }}>
+                      {editingArticle?.seo_description?.length ?? 0}/160 caractères · idéal : 120–155
+                    </p>
+                  </div>
+                  <div>
+                    <label style={lbl}>Image Open Graph / réseaux sociaux (laissez vide = image à la une)</label>
+                    <div style={{ display: 'flex', gap: '.75rem', alignItems: 'center' }}>
+                      <input value={editingArticle?.og_image ?? ''}
+                        onChange={e => setEditingArticle(p => ({ ...p, og_image: e.target.value }))}
+                        style={{ ...inp, flex: 1 }} placeholder="URL image 1200×630px pour Facebook, LinkedIn…" />
+                      {(editingArticle?.og_image || editingArticle?.featured_image) && (
+                        <img src={editingArticle?.og_image || editingArticle?.featured_image || ''} alt="" style={{ width: 60, height: 38, objectFit: 'cover', borderRadius: '.4rem', border: '1px solid #ddd', flexShrink: 0 }} />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '.5rem', cursor: 'pointer', fontWeight: 600, color: '#444', fontSize: '.9rem' }}>
                   <input type="checkbox" checked={!!editingArticle?.published}
@@ -2745,8 +2787,42 @@ export default function CMSAdmin() {
                             </div>
                           </div>
                         )}
+                        {/* ── VISIBILITÉ — toggles ── */}
+                        {settingsGroup === 'visibility' && (
+                          <div style={{ marginBottom: '1.5rem' }}>
+                            <p style={{ fontSize: '.82rem', color: '#888', marginBottom: '1.25rem', lineHeight: 1.5 }}>
+                              Contrôlez si chaque page est indexée par Google (robots meta). La navigation et le footer se gèrent dans l&apos;onglet <strong>Pages → Navigation</strong>.
+                            </p>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '.75rem' }}>
+                              {groupItems.map(s => {
+                                const isOn = (editedSettings[s.key] ?? 'true') !== 'false';
+                                return (
+                                  <div key={s.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '.75rem 1rem', background: '#faf9f7', borderRadius: '.65rem', border: '1.5px solid #ece8e2' }}>
+                                    <span style={{ fontSize: '.88rem', color: '#444', fontWeight: 500 }}>{s.label}</span>
+                                    <button
+                                      onClick={() => setEditedSettings(prev => ({ ...prev, [s.key]: isOn ? 'false' : 'true' }))}
+                                      style={{
+                                        position: 'relative', width: 46, height: 26, borderRadius: 9999,
+                                        border: 'none', cursor: 'pointer', flexShrink: 0,
+                                        background: isOn ? '#2d5f54' : '#d1d5db', transition: 'background .18s',
+                                      }}
+                                      title={isOn ? 'Indexé — cliquer pour désindexer' : 'Non indexé — cliquer pour indexer'}
+                                    >
+                                      <div style={{
+                                        position: 'absolute', top: 3, left: isOn ? 23 : 3,
+                                        width: 20, height: 20, borderRadius: '50%', background: 'white',
+                                        boxShadow: '0 1px 3px rgba(0,0,0,.2)', transition: 'left .18s',
+                                      }} />
+                                    </button>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
-                          {groupItems.map(s => {
+                          {settingsGroup !== 'visibility' && groupItems.map(s => {
                             const field = s as { key: string; label: string; type: string; options?: string[]; optionLabels?: string[] };
                             return (
                             <div key={s.key}>
@@ -2795,7 +2871,7 @@ export default function CMSAdmin() {
                             </div>
                             );
                           })}
-                          {groupItems.length === 0 && (
+                          {settingsGroup !== 'visibility' && groupItems.length === 0 && (
                             <p style={{ color: '#aaa', fontSize: '.9rem', textAlign: 'center', padding: '2rem' }}>Aucun paramètre dans ce groupe.</p>
                           )}
                         </div>
