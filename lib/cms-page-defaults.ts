@@ -137,7 +137,7 @@ export const PAGE_DEFAULTS: Record<string, Record<string, string>> = {
     testimonial_3_name:   "David*",
     testimonial_3_title:  "Governmental Think Tank",
   },
-  sparring_partner: {
+  'sparring-partner': {
     hero_badge:         'Sparring Partner',
     hero_title:         "Un regard extérieur stratégique par une pair qui comprend vos enjeux",
     hero_desc:          "Ex-L'Oreal, ex-LVMH, 5 langues, philo-coaching. Monica vous offre le recul qu'un manager ne peut pas toujours trouver en interne.",
