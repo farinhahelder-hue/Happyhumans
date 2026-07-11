@@ -6,6 +6,7 @@ import DynamicFavicon from '@/components/DynamicFavicon';
 import MaintenanceGate from '@/components/MaintenanceGate';
 import { InlineEditProvider } from '@/contexts/InlineEditContext';
 import InlineEditor from '@/components/InlineEditor';
+import { getKvSettings } from '@/lib/cms-settings-server';
 
 const SITE_URL = 'https://happyhumans.vercel.app';
 
@@ -13,14 +14,53 @@ export const viewport: Viewport = {
   themeColor: '#2d5f54',
 };
 
-export const metadata: Metadata = {
+const DEFAULT_TITLE = 'Happy Humans — Monica Schneider';
+const DEFAULT_DESCRIPTION =
+  "Philo-coaching avec Monica Schneider. Executive coaching, philosophical counselling et sparring partner pour particuliers et organisations. Retrouvez clarté, alignement et relations épanouissantes.";
+
+// SEO global piloté par le CMS (Paramètres → SEO global), avec fallback
+export async function generateMetadata(): Promise<Metadata> {
+  const kv = await getKvSettings();
+  const seoTitle = kv.seo_title || DEFAULT_TITLE;
+  const seoDescription = kv.seo_description || DEFAULT_DESCRIPTION;
+  const ogImage = kv.og_image || '/og-images/og-default.svg';
+
+  return {
+    ...baseMetadata,
+    title: {
+      default: seoTitle,
+      template: '%s | Happy Humans',
+    },
+    description: seoDescription,
+    openGraph: {
+      ...baseMetadata.openGraph,
+      title: seoTitle,
+      description: seoDescription,
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: seoTitle,
+        },
+      ],
+    },
+    twitter: {
+      ...baseMetadata.twitter,
+      title: seoTitle,
+      description: seoDescription,
+      images: [ogImage],
+    },
+  };
+}
+
+const baseMetadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'Happy Humans — Monica Schneider',
+    default: DEFAULT_TITLE,
     template: '%s | Happy Humans',
   },
-  description:
-    "Philo-coaching avec Monica Schneider. Executive coaching, philosophical counselling et sparring partner pour particuliers et organisations. Retrouvez clarté, alignement et relations épanouissantes.",
+  description: DEFAULT_DESCRIPTION,
   keywords: [
     'executive coach',
     'coaching dirigeant',
