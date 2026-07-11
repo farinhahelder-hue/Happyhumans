@@ -127,57 +127,83 @@ const baseMetadata: Metadata = {
   },
 };
 
-const schemaWebSite = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: 'Happy Humans',
-  alternateName: 'Happy Humans - Monica Schneider',
-  url: SITE_URL,
-  description: 'Plateforme de coaching et de transformation portee par Monica Schneider.',
-  inLanguage: 'fr-FR',
-};
+// Schemas JSON-LD — enrichis par les réglages Géo du CMS (Paramètres → Géo & Business)
+function buildSchemas(kv: Record<string, string>) {
+  const businessName = kv.geo_business_name || 'Happy Humans - Monica Schneider';
+  const locale = kv.geo_default_locale || 'fr-FR';
+  const address = kv.geo_address || 'Paris, France';
+  const [locality, country] = address.split(',').map(s => s.trim());
+  const geo = kv.geo_lat && kv.geo_lng
+    ? { '@type': 'GeoCoordinates', latitude: kv.geo_lat, longitude: kv.geo_lng }
+    : undefined;
+  const areaServed = (kv.geo_service_area || 'Paris, France, Europe')
+    .split(',').map(s => s.trim()).filter(Boolean);
 
-const schemaOrganization = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'Happy Humans',
-  url: SITE_URL,
-  logo: `${SITE_URL}/og-images/og-default.svg`,
-  sameAs: [
-    'https://fr.linkedin.com/in/monica-schneider-philo-coaching',
-    'https://monicaschneider.me/',
-  ],
-  contactPoint: {
-    '@type': 'ContactPoint',
-    contactType: 'customer service',
-    email: 'happyhumans.coaching@gmail.com',
-    availableLanguage: ['French', 'English', 'Romanian'],
-  },
-};
-
-const schemaPerson = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: 'Monica Schneider',
-  jobTitle: 'Executive Coach',
-  url: SITE_URL,
-  image: `${SITE_URL}/og-default.jpg`,
-  sameAs: [
-    'https://fr.linkedin.com/in/monica-schneider-philo-coaching',
-    'https://monicaschneider.me/',
-  ],
-  knowsLanguage: ['fr', 'en', 'ro'],
-  worksFor: {
-    '@type': 'Organization',
+  const schemaWebSite = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
     name: 'Happy Humans',
-  },
-};
+    alternateName: businessName,
+    url: SITE_URL,
+    description: 'Plateforme de coaching et de transformation portee par Monica Schneider.',
+    inLanguage: locale,
+  };
 
-export default function RootLayout({
+  const schemaOrganization = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    name: businessName,
+    url: SITE_URL,
+    logo: `${SITE_URL}/og-images/og-default.svg`,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: locality || 'Paris',
+      addressCountry: country || 'France',
+    },
+    ...(geo ? { geo } : {}),
+    areaServed,
+    ...(kv.geo_price_range ? { priceRange: kv.geo_price_range } : {}),
+    sameAs: [
+      'https://fr.linkedin.com/in/monica-schneider-philo-coaching',
+      'https://monicaschneider.me/',
+    ],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer service',
+      email: 'happyhumans.coaching@gmail.com',
+      availableLanguage: ['French', 'English', 'Romanian'],
+    },
+  };
+
+  const schemaPerson = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Monica Schneider',
+    jobTitle: 'Executive Coach',
+    url: SITE_URL,
+    image: `${SITE_URL}/og-default.jpg`,
+    ...(locality ? { workLocation: { '@type': 'Place', address: { '@type': 'PostalAddress', addressLocality: locality } } } : {}),
+    sameAs: [
+      'https://fr.linkedin.com/in/monica-schneider-philo-coaching',
+      'https://monicaschneider.me/',
+    ],
+    knowsLanguage: ['fr', 'en', 'ro'],
+    worksFor: {
+      '@type': 'Organization',
+      name: 'Happy Humans',
+    },
+  };
+
+  return { schemaWebSite, schemaOrganization, schemaPerson };
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const kv = await getKvSettings();
+  const { schemaWebSite, schemaOrganization, schemaPerson } = buildSchemas(kv);
   return (
     <html lang="fr">
       <head>

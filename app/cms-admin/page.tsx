@@ -1745,6 +1745,27 @@ export default function CMSAdmin() {
     }
   };
 
+  const duplicateArticle = async (a: Article) => {
+    try {
+      // Récupère le contenu complet avant de dupliquer
+      const res = await fetch(`/api/cms/articles/${a.id}`);
+      if (handleUnauthorized(res)) return;
+      const { article } = await res.json();
+      if (!article) { showToast('Impossible de charger cet article.'); return; }
+      openArticleEditor({
+        ...article,
+        id: undefined,
+        title: `${article.title} (copie)`,
+        slug: `${article.slug}-copie`,
+        published: false,
+        published_at: undefined,
+      });
+      showToast('📄 Copie créée — pensez à l’enregistrer !');
+    } catch {
+      showToast('Impossible de dupliquer cet article.');
+    }
+  };
+
   const deleteArticle = async (id: number) => {
     if (!confirm('Supprimer cet article ?')) return;
     try {
@@ -2127,10 +2148,15 @@ export default function CMSAdmin() {
                       <span style={{ padding: '.3rem .8rem', borderRadius: '9999px', fontSize: '.78rem', fontWeight: 600, background: a.published ? '#d4edda' : '#fff3cd', color: a.published ? '#155724' : '#856404' }}>
                         {a.published ? '✅ Publié' : '📦 Brouillon'}
                       </span>
-                      <div style={{ display: 'flex', gap: '.5rem' }}>
-                        <button onClick={() => openArticleEditor(a)} style={{ padding: '.35rem .8rem', border: '1px solid #ddd', borderRadius: '.4rem', background: 'white', cursor: 'pointer', fontSize: '.82rem' }}>✏️ Ã‰diter</button>
+                      <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
+                        {a.published && (
+                          <a href={`/blog/${a.slug}`} target="_blank" rel="noopener noreferrer"
+                            style={{ padding: '.35rem .8rem', border: '1px solid #b8ddd6', borderRadius: '.4rem', background: '#f0faf8', color: '#01696f', textDecoration: 'none', fontSize: '.82rem' }}>👁 Voir</a>
+                        )}
+                        <button onClick={() => openArticleEditor(a)} style={{ padding: '.35rem .8rem', border: '1px solid #ddd', borderRadius: '.4rem', background: 'white', cursor: 'pointer', fontSize: '.82rem' }}>✏️ Éditer</button>
+                        <button onClick={() => duplicateArticle(a)} style={{ padding: '.35rem .8rem', border: '1px solid #ddd', borderRadius: '.4rem', background: 'white', cursor: 'pointer', fontSize: '.82rem' }}>⧉ Dupliquer</button>
                         <button onClick={() => togglePublish(a)} style={{ padding: '.35rem .8rem', border: '1px solid #ddd', borderRadius: '.4rem', background: 'white', cursor: 'pointer', fontSize: '.82rem' }}>{a.published ? '📦 Dépublier' : '🚀 Publier'}</button>
-                        <button onClick={() => deleteArticle(a.id)} style={{ padding: '.35rem .8rem', border: '1px solid #fcc', borderRadius: '.4rem', background: '#fff5f5', color: '#c0392b', cursor: 'pointer', fontSize: '.82rem' }}>🗑ï¸</button>
+                        <button onClick={() => deleteArticle(a.id)} style={{ padding: '.35rem .8rem', border: '1px solid #fcc', borderRadius: '.4rem', background: '#fff5f5', color: '#c0392b', cursor: 'pointer', fontSize: '.82rem' }}>🗑️</button>
                       </div>
                     </div>
                   ))}

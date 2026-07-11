@@ -1,9 +1,11 @@
+import { cache } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
 // Lecture server-side des réglages clé/valeur du CMS (cms_settings_kv).
 // Retourne un objet vide en cas d'indisponibilité (Supabase en pause, etc.)
 // pour que sitemap/robots/metadata retombent sur leurs valeurs par défaut.
-export async function getKvSettings(): Promise<Record<string, string>> {
+// cache() : une seule requête par rendu même si appelé par metadata + layout.
+export const getKvSettings = cache(async (): Promise<Record<string, string>> => {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) return {};
@@ -17,7 +19,7 @@ export async function getKvSettings(): Promise<Record<string, string>> {
   } catch {
     return {};
   }
-}
+});
 
 // Une page est indexable sauf si le CMS dit explicitement 'false'
 export function isPageIndexable(kv: Record<string, string>, page: string): boolean {
