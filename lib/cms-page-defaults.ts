@@ -290,9 +290,15 @@ export const PAGE_DEFAULTS: Record<string, Record<string, string>> = {
     pourqui_2_desc:  "Le boulot tourne, mais quelque chose sonne creux. Vous fonctionnez, mais vous n'habitez plus vraiment votre vie.",
     pourqui_3_title: 'Vous voulez reprendre les rênes',
     pourqui_3_desc:  "Pas juste 'aller mieux' — reprendre activement en main votre bonheur, vos relations, votre impact. Avec des outils concrets, pas du développement personnel vague.",
+    // Ordre des sections
+    section_order_1: 'pourqui',
+    section_order_2: 'program',
+    section_order_3: 'tools',
+    section_order_4: 'pricing',
     // Programme
     program_badge: 'Le programme',
     program_title: '12 séances + 4 follow-ups',
+    program_followups_note: '+ 4 sessions de suivi incluses pour ancrer durablement les changements.',
     // 12 étapes
     step_01_title: 'Comment ça marche',       step_01_desc: 'Neurosciences + gratitude',
     step_02_title: 'Audit de sa vie',         step_02_desc: 'Life Design / Bonheur',

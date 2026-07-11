@@ -29,9 +29,10 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://api.fontshare.com https://fonts.googleapis.com https://assets.calendly.com",
       "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co https://happyhumans.vercel.app https://behold.pictures https://cdn2.behold.pictures https://*.calendly.com",
       "font-src 'self' https://api.fontshare.com https://fonts.gstatic.com",
-      "frame-src https://calendly.com https://*.calendly.com",
+      "frame-src 'self' https://calendly.com https://*.calendly.com",
       "connect-src 'self' https://*.supabase.co https://api.perplexity.ai https://api.unsplash.com https://api.bufferapp.com https://calendly.com https://*.calendly.com",
-      "frame-ancestors 'none'",
+      // 'self' (au lieu de 'none') : permet l'aperçu iframe du site dans /cms-admin
+      "frame-ancestors 'self'",
       "base-uri 'self'",
       "form-action 'self'",
     ].join('; '),

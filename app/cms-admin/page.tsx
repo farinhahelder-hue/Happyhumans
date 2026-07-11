@@ -335,9 +335,23 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'pourqui_2_desc',  label: 'Pour qui 2 — Description',  type: 'textarea' },
       { key: 'pourqui_3_title', label: 'Pour qui 3 — Titre',        type: 'text' },
       { key: 'pourqui_3_desc',  label: 'Pour qui 3 — Description',  type: 'textarea' },
+      // Ordre des sections de la page
+      { key: 'section_order_1', label: 'Ordre — Section 1', type: 'select',
+        options: ['pourqui', 'program', 'tools', 'pricing'],
+        optionLabels: ['👥 Pour qui', '🔢 Programme (12 étapes)', '🧰 Boîte à outils', '💶 Tarifs'] },
+      { key: 'section_order_2', label: 'Ordre — Section 2', type: 'select',
+        options: ['pourqui', 'program', 'tools', 'pricing'],
+        optionLabels: ['👥 Pour qui', '🔢 Programme (12 étapes)', '🧰 Boîte à outils', '💶 Tarifs'] },
+      { key: 'section_order_3', label: 'Ordre — Section 3', type: 'select',
+        options: ['pourqui', 'program', 'tools', 'pricing'],
+        optionLabels: ['👥 Pour qui', '🔢 Programme (12 étapes)', '🧰 Boîte à outils', '💶 Tarifs'] },
+      { key: 'section_order_4', label: 'Ordre — Section 4', type: 'select',
+        options: ['pourqui', 'program', 'tools', 'pricing'],
+        optionLabels: ['👥 Pour qui', '🔢 Programme (12 étapes)', '🧰 Boîte à outils', '💶 Tarifs'] },
       // Programme — badge + titre
       { key: 'program_badge', label: 'Programme — Badge',           type: 'text' },
       { key: 'program_title', label: 'Programme — Titre',           type: 'text' },
+      { key: 'program_followups_note', label: 'Programme — Note sous les étapes (ex: + bonus…)', type: 'text' },
       // 12 étapes
       { key: 'step_01_title', label: 'Étape 01 — Titre', type: 'text' },
       { key: 'step_01_desc',  label: 'Étape 01 — Description', type: 'textarea' },
@@ -750,6 +764,83 @@ function MaintenanceModeToggle() {
   );
 }
 
+// ─── Historique des modifications d'une page ──────────────────
+function PageHistoryPanel({ page, onRestored }: { page: string; onRestored?: () => void }) {
+  const [rows, setRows] = useState<{ id: number; block_key: string; old_value: string | null; new_value: string | null; changed_at: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [notice, setNotice] = useState('');
+  const [restoringId, setRestoringId] = useState<number | null>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/cms/history?page=${encodeURIComponent(page)}`);
+      const d = await res.json().catch(() => ({}));
+      if (res.status === 501) { setNotice(d.message || 'Historique non activé.'); setRows([]); }
+      else if (!res.ok) { setNotice(d.error || 'Erreur de chargement.'); setRows([]); }
+      else { setRows(d.history || []); setNotice(''); }
+    } catch { setNotice("Impossible de charger l'historique."); }
+    finally { setLoading(false); }
+  }, [page]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const restore = async (id: number) => {
+    if (!confirm('Restaurer cette ancienne valeur ? La valeur actuelle sera remplacée (et journalisée).')) return;
+    setRestoringId(id);
+    try {
+      const res = await fetch('/api/cms/history', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      if (res.ok) { await load(); onRestored?.(); }
+    } finally { setRestoringId(null); }
+  };
+
+  const trunc = (v: string | null, n = 70) => {
+    if (!v) return '∅ (vide)';
+    return v.length > n ? v.slice(0, n) + '…' : v;
+  };
+
+  return (
+    <div style={{ marginBottom: '1.5rem', border: '1.5px solid #ece8e2', borderRadius: '.75rem', background: '#fdfcfa', padding: '1rem 1.25rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '.75rem' }}>
+        <p style={{ margin: 0, fontSize: '.85rem', fontWeight: 700, color: '#2d5f54' }}>🕘 Historique des modifications</p>
+        <button onClick={load} disabled={loading}
+          style={{ background: 'none', border: 'none', color: '#01696f', cursor: 'pointer', fontSize: '.78rem', fontWeight: 600 }}>
+          {loading ? '⏳' : '🔄 Actualiser'}
+        </button>
+      </div>
+      {notice && <p style={{ fontSize: '.82rem', color: '#b45309', margin: 0, padding: '.75rem', background: '#fffbeb', borderRadius: '.5rem' }}>{notice}</p>}
+      {!notice && !loading && rows.length === 0 && (
+        <p style={{ fontSize: '.82rem', color: '#aaa', margin: 0 }}>Aucune modification enregistrée pour cette page.</p>
+      )}
+      {rows.length > 0 && (
+        <div style={{ maxHeight: 320, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '.4rem' }}>
+          {rows.map(r => (
+            <div key={r.id} style={{ display: 'flex', gap: '.75rem', alignItems: 'center', padding: '.55rem .75rem', background: 'white', borderRadius: '.5rem', border: '1px solid #f0ece7', fontSize: '.8rem' }}>
+              <span style={{ color: '#bbb', flexShrink: 0, fontSize: '.72rem', width: 105 }}>
+                {new Date(r.changed_at).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+              </span>
+              <code style={{ color: '#2d5f54', fontWeight: 600, flexShrink: 0, fontSize: '.75rem' }}>{r.block_key}</code>
+              <span style={{ color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+                <span style={{ textDecoration: 'line-through', opacity: .7 }}>{trunc(r.old_value, 40)}</span>
+                {' → '}
+                <span style={{ color: '#333' }}>{trunc(r.new_value, 40)}</span>
+              </span>
+              <button onClick={() => restore(r.id)} disabled={restoringId === r.id}
+                style={{ flexShrink: 0, padding: '.25rem .7rem', background: '#fff7ed', color: '#c2410c', border: '1px solid #fed7aa', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.72rem', fontWeight: 600 }}>
+                {restoringId === r.id ? '⏳' : '↩ Restaurer'}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Navigation Editor ────────────────────────────────────────
 function NavigationEditor({ onSaved }: { onSaved?: () => void }) {
   const [nav, setNav] = useState<NavItem[]>([]);
@@ -1069,6 +1160,10 @@ export default function CMSAdmin() {
   const [dbStatus, setDbStatus] = useState<'ok' | 'down' | 'checking'>('checking');
   // Recherche de champ dans l'onglet Pages
   const [fieldSearch, setFieldSearch] = useState('');
+  // Historique + aperçu dans l'onglet Pages
+  const [showHistory, setShowHistory] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewKey, setPreviewKey] = useState(0);
 
   // Articles
   const [articles, setArticles] = useState<Article[]>([]);
@@ -1480,6 +1575,11 @@ export default function CMSAdmin() {
   useEffect(() => { if (authed && tab === 'booking') { loadBookingSlots(); loadBookingRequests(); } }, [authed, tab, loadBookingSlots, loadBookingRequests]);
   useEffect(() => { if (authed && (tab === 'settings' || tab === 'pages')) loadSettings(); }, [authed, tab, loadSettings]);
   useEffect(() => { if (authed && (tab === 'messages' || tab === 'dashboard')) loadMessages(); }, [authed, tab, loadMessages]);
+
+  // ── Rafraîchir l'aperçu après une sauvegarde réussie ──────
+  useEffect(() => {
+    if (savedOk) setPreviewKey(k => k + 1);
+  }, [savedOk]);
 
   // ── Surveillance de la base Supabase (pause free tier) ────
   useEffect(() => {
@@ -2317,27 +2417,64 @@ export default function CMSAdmin() {
                     (() => {
                       const config = PAGES_CONFIG[activePage];
                       if (!config) return null;
+                      const pagePath = activePage === 'home' ? '/' : `/${activePage}`;
                       return (
                         <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                            <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#2d5f54' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', gap: '.75rem', flexWrap: 'wrap' }}>
+                            <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#2d5f54', margin: 0 }}>
                               {config.emoji} {config.label}
                             </h2>
-                            <a
-                              href={activePage === 'home' ? '/' : `/${activePage}`}
-                              target="_blank" rel="noopener noreferrer"
-                              style={{ fontSize: '.82rem', color: '#01696f', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '.3rem' }}
-                            >
-                              🔗 Voir la page
-                            </a>
-                            <button
-                              onClick={() => savePageContent(activePage)}
-                              disabled={savingSettings}
-                              style={{ padding: '.45rem 1.25rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.85rem', opacity: savingSettings ? .7 : 1 }}
-                            >
-                              {savingSettings ? '⏳ Sauvegarde…' : '💾 Sauvegarder'}
-                            </button>
+                            <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                              <button onClick={() => setShowPreview(p => !p)}
+                                style={{ padding: '.45rem .9rem', background: showPreview ? '#e8f5f2' : 'white', color: '#01696f', border: '1.5px solid #b8ddd6', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.8rem', fontWeight: 600 }}>
+                                👁 Aperçu
+                              </button>
+                              <button onClick={() => setShowHistory(h => !h)}
+                                style={{ padding: '.45rem .9rem', background: showHistory ? '#fff7ed' : 'white', color: '#c2410c', border: '1.5px solid #fed7aa', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.8rem', fontWeight: 600 }}>
+                                🕘 Historique
+                              </button>
+                              <a
+                                href={pagePath}
+                                target="_blank" rel="noopener noreferrer"
+                                style={{ fontSize: '.82rem', color: '#01696f', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '.3rem' }}
+                              >
+                                🔗 Voir la page
+                              </a>
+                              <button
+                                onClick={() => savePageContent(activePage)}
+                                disabled={savingSettings}
+                                style={{ padding: '.45rem 1.25rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.85rem', opacity: savingSettings ? .7 : 1 }}
+                              >
+                                {savingSettings ? '⏳ Sauvegarde…' : '💾 Sauvegarder'}
+                              </button>
+                            </div>
                           </div>
+
+                          {showHistory && (
+                            <PageHistoryPanel
+                              page={activePage}
+                              onRestored={() => {
+                                bustCmsCache(activePage);
+                                loadSettings();
+                                setPreviewKey(k => k + 1);
+                                showToast('✅ Valeur restaurée !');
+                              }}
+                            />
+                          )}
+
+                          {showPreview && (
+                            <div style={{ marginBottom: '1.5rem', border: '1.5px solid #ece8e2', borderRadius: '.75rem', overflow: 'hidden' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '.5rem .9rem', background: '#faf8f5', borderBottom: '1px solid #ece8e2' }}>
+                                <span style={{ fontSize: '.78rem', fontWeight: 700, color: '#888' }}>👁 Aperçu — {pagePath}</span>
+                                <button onClick={() => setPreviewKey(k => k + 1)}
+                                  style={{ background: 'none', border: 'none', color: '#01696f', cursor: 'pointer', fontSize: '.78rem', fontWeight: 600 }}>
+                                  🔄 Rafraîchir
+                                </button>
+                              </div>
+                              <iframe key={previewKey} src={pagePath} title={`Aperçu ${config.label}`}
+                                style={{ width: '100%', height: 560, border: 'none', display: 'block', background: 'white' }} />
+                            </div>
+                          )}
 
                           {/* Recherche de champ */}
                           <input
