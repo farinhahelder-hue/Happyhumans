@@ -16,12 +16,26 @@ export async function GET(req: NextRequest) {
   if (!page) return NextResponse.json({ content: [] });
 
   const supabase = getSupabase();
-  if (!supabase) return NextResponse.json({ content: [] });
+  if (!supabase) return NextResponse.json({ error: 'Supabase non configuré' }, { status: 503 });
 
-  const { data } = await supabase
-    .from('site_content')
-    .select('block_key, value')
-    .eq('page', page);
+  let data, error;
+  try {
+    ({ data, error } = await supabase
+      .from('site_content')
+      .select('block_key, value')
+      .eq('page', page));
+  } catch (e) {
+    error = e;
+  }
+
+  // Base en erreur (ex: projet Supabase en pause) → 503 pour que le client
+  // conserve son cache local au lieu de l'écraser avec du vide
+  if (error) {
+    return NextResponse.json(
+      { error: 'Base de données indisponible' },
+      { status: 503, headers: { 'Cache-Control': 'no-store' } }
+    );
+  }
 
   // Sanitisation : corriger les typos introduites par des push automatiques
   const sanitized = (data || []).map((row: { block_key: string; value: string }) => ({
