@@ -1095,9 +1095,13 @@ export default function CMSAdmin() {
   const [pwd, setPwd] = useState('');
   const [apiPwd, setApiPwd] = useState(''); // Kept for API calls
   const [authErr, setAuthErr] = useState('');
-  const [tab, setTab] = useState('articles');
+  const [tab, setTab] = useState('dashboard');
   const [toast, setToast] = useState('');
   const [showMediaLibrary, setShowMediaLibrary] = useState(false);
+  // Santé de la base (Supabase peut être en pause sur le free tier)
+  const [dbStatus, setDbStatus] = useState<'ok' | 'down' | 'checking'>('checking');
+  // Recherche de champ dans l'onglet Pages
+  const [fieldSearch, setFieldSearch] = useState('');
 
   // Articles
   const [articles, setArticles] = useState<Article[]>([]);
@@ -1508,7 +1512,24 @@ export default function CMSAdmin() {
   useEffect(() => { if (authed && tab === 'demandes') loadDemandes(); }, [authed, tab, loadDemandes]);
   useEffect(() => { if (authed && tab === 'booking') { loadBookingSlots(); loadBookingRequests(); } }, [authed, tab, loadBookingSlots, loadBookingRequests]);
   useEffect(() => { if (authed && (tab === 'settings' || tab === 'pages')) loadSettings(); }, [authed, tab, loadSettings]);
-  useEffect(() => { if (authed && tab === 'messages') loadMessages(); }, [authed, tab, loadMessages]);
+  useEffect(() => { if (authed && (tab === 'messages' || tab === 'dashboard')) loadMessages(); }, [authed, tab, loadMessages]);
+
+  // ── Surveillance de la base Supabase (pause free tier) ────
+  useEffect(() => {
+    if (!authed) return;
+    let alive = true;
+    const check = async () => {
+      try {
+        const r = await fetch('/api/keep-alive');
+        if (alive) setDbStatus(r.ok ? 'ok' : 'down');
+      } catch {
+        if (alive) setDbStatus('down');
+      }
+    };
+    check();
+    const id = setInterval(check, 60_000);
+    return () => { alive = false; clearInterval(id); };
+  }, [authed]);
 
   // Save settings
   const saveSettings = async () => {
@@ -1747,6 +1768,7 @@ export default function CMSAdmin() {
 
   // ─── CMS ──────────────────────────────────────────────────
   const TABS = [
+    { id: 'dashboard', label: '🏠 Tableau de bord', count: null },
     { id: 'articles', label: '📝 Articles', count: articles.length },
     { id: 'new',      label: '✏️ Nouvel article', count: null },
     { id: 'pages',    label: '🗂️ Pages', count: null },
@@ -1783,6 +1805,21 @@ export default function CMSAdmin() {
           <button onClick={logout} style={{ background: 'rgba(255,255,255,.15)', border: 'none', color: 'white', padding: '.4rem .9rem', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>Déconnexion</button>
         </div>
       </div>
+
+      {/* Alerte base de données indisponible (Supabase en pause) */}
+      {dbStatus === 'down' && (
+        <div style={{ background: '#7f1d1d', color: 'white', padding: '.85rem 2rem', display: 'flex', alignItems: 'center', gap: '.75rem', fontSize: '.9rem', fontWeight: 600 }}>
+          <span style={{ fontSize: '1.2rem' }}>🚨</span>
+          <div>
+            Base de données indisponible — vos modifications <u>ne seront pas enregistrées</u>.
+            <span style={{ fontWeight: 400, opacity: .85 }}> Le projet Supabase est probablement en pause : ouvrez le dashboard Supabase et cliquez « Restore project », puis attendez quelques minutes.</span>
+          </div>
+          <a href="https://supabase.com/dashboard" target="_blank" rel="noopener noreferrer"
+            style={{ marginLeft: 'auto', flexShrink: 0, background: 'white', color: '#7f1d1d', padding: '.4rem .9rem', borderRadius: '.4rem', textDecoration: 'none', fontSize: '.82rem', fontWeight: 700 }}>
+            Ouvrir Supabase →
+          </a>
+        </div>
+      )}
 
       {/* Bannière modifications non sauvegardées */}
       {isDirty && (
@@ -1879,6 +1916,109 @@ export default function CMSAdmin() {
       </div>
 
       <div style={{ maxWidth: 1100, margin: '2rem auto', padding: '0 1.5rem' }}>
+
+        {/* ── TABLEAU DE BORD ── */}
+        {tab === 'dashboard' && (
+          <div>
+            {/* Salutation */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1e3a34', margin: 0, fontFamily: 'Georgia, serif' }}>
+                Bonjour Monica 👋
+              </h1>
+              <p style={{ color: '#888', fontSize: '.9rem', margin: '.3rem 0 0' }}>
+                {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              </p>
+            </div>
+
+            {/* Cartes stats */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+              <div style={{ background: 'white', borderRadius: '1rem', padding: '1.25rem 1.5rem', boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
+                <p style={{ fontSize: '.75rem', fontWeight: 700, color: '#aaa', textTransform: 'uppercase', letterSpacing: '.06em', margin: '0 0 .4rem' }}>Articles publiés</p>
+                <p style={{ fontSize: '2rem', fontWeight: 700, color: '#2d5f54', margin: 0 }}>{articles.filter(a => a.published).length}</p>
+              </div>
+              <div style={{ background: 'white', borderRadius: '1rem', padding: '1.25rem 1.5rem', boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
+                <p style={{ fontSize: '.75rem', fontWeight: 700, color: '#aaa', textTransform: 'uppercase', letterSpacing: '.06em', margin: '0 0 .4rem' }}>Brouillons</p>
+                <p style={{ fontSize: '2rem', fontWeight: 700, color: '#c9a96e', margin: 0 }}>{articles.filter(a => !a.published).length}</p>
+              </div>
+              <div style={{ background: 'white', borderRadius: '1rem', padding: '1.25rem 1.5rem', boxShadow: '0 1px 4px rgba(0,0,0,.06)', cursor: 'pointer' }} onClick={() => handleTabChange('messages')}>
+                <p style={{ fontSize: '.75rem', fontWeight: 700, color: '#aaa', textTransform: 'uppercase', letterSpacing: '.06em', margin: '0 0 .4rem' }}>Messages non lus</p>
+                <p style={{ fontSize: '2rem', fontWeight: 700, color: messages.filter(m => m.status === 'unread').length > 0 ? '#dc2626' : '#2d5f54', margin: 0 }}>{messages.filter(m => m.status === 'unread').length}</p>
+              </div>
+              <div style={{ background: 'white', borderRadius: '1rem', padding: '1.25rem 1.5rem', boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
+                <p style={{ fontSize: '.75rem', fontWeight: 700, color: '#aaa', textTransform: 'uppercase', letterSpacing: '.06em', margin: '0 0 .4rem' }}>Base de données</p>
+                <p style={{ fontSize: '1.05rem', fontWeight: 700, margin: '.4rem 0 0', color: dbStatus === 'ok' ? '#16a34a' : dbStatus === 'down' ? '#dc2626' : '#888', display: 'flex', alignItems: 'center', gap: '.45rem' }}>
+                  <span style={{ width: 10, height: 10, borderRadius: '50%', background: dbStatus === 'ok' ? '#16a34a' : dbStatus === 'down' ? '#dc2626' : '#d1d5db', display: 'inline-block' }} />
+                  {dbStatus === 'ok' ? 'En ligne' : dbStatus === 'down' ? 'Hors ligne !' : 'Vérification…'}
+                </p>
+              </div>
+            </div>
+
+            {/* Actions rapides */}
+            <div style={{ background: 'white', borderRadius: '1rem', padding: '1.5rem 2rem', boxShadow: '0 1px 4px rgba(0,0,0,.06)', marginBottom: '1.5rem' }}>
+              <p style={{ fontSize: '.75rem', fontWeight: 700, color: '#aaa', textTransform: 'uppercase', letterSpacing: '.06em', margin: '0 0 1rem' }}>Actions rapides</p>
+              <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap' }}>
+                <button
+                  onClick={async () => {
+                    const res = await fetch('/api/cms/generate-edit-token');
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    if (data.token) window.open(`/?cms_edit_token=${encodeURIComponent(data.token)}`, '_blank');
+                  }}
+                  style={{ padding: '.7rem 1.4rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.6rem', cursor: 'pointer', fontSize: '.9rem', fontWeight: 600 }}>
+                  ✏️ Éditer le site en direct
+                </button>
+                <button onClick={() => openArticleEditor({})}
+                  style={{ padding: '.7rem 1.4rem', background: '#01696f', color: 'white', border: 'none', borderRadius: '.6rem', cursor: 'pointer', fontSize: '.9rem', fontWeight: 600 }}>
+                  📝 Écrire un article
+                </button>
+                <button onClick={() => handleTabChange('pages')}
+                  style={{ padding: '.7rem 1.4rem', background: 'white', color: '#2d5f54', border: '1.5px solid #2d5f54', borderRadius: '.6rem', cursor: 'pointer', fontSize: '.9rem', fontWeight: 600 }}>
+                  🗂️ Modifier une page
+                </button>
+                <a href="/" target="_blank" rel="noopener noreferrer"
+                  style={{ padding: '.7rem 1.4rem', background: 'white', color: '#555', border: '1.5px solid #ddd', borderRadius: '.6rem', textDecoration: 'none', fontSize: '.9rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center' }}>
+                  🔗 Voir le site
+                </a>
+              </div>
+            </div>
+
+            {/* Deux colonnes : derniers articles + derniers messages */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
+              <div style={{ background: 'white', borderRadius: '1rem', padding: '1.5rem 2rem', boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <p style={{ fontSize: '.75rem', fontWeight: 700, color: '#aaa', textTransform: 'uppercase', letterSpacing: '.06em', margin: 0 }}>Derniers articles</p>
+                  <button onClick={() => handleTabChange('articles')} style={{ background: 'none', border: 'none', color: '#01696f', cursor: 'pointer', fontSize: '.8rem', fontWeight: 600 }}>Tout voir →</button>
+                </div>
+                {articles.slice(0, 4).map(a => (
+                  <div key={a.id} onClick={() => openArticleEditor(a)}
+                    style={{ display: 'flex', alignItems: 'center', gap: '.75rem', padding: '.6rem 0', borderBottom: '1px solid #f3f0eb', cursor: 'pointer' }}>
+                    <span style={{ fontSize: '.75rem' }}>{a.published ? '✅' : '📦'}</span>
+                    <span style={{ fontSize: '.88rem', color: '#333', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.title}</span>
+                    <span style={{ fontSize: '.75rem', color: '#bbb', flexShrink: 0 }}>{fmt(a.created_at)}</span>
+                  </div>
+                ))}
+                {articles.length === 0 && <p style={{ color: '#bbb', fontSize: '.85rem' }}>Aucun article pour le moment.</p>}
+              </div>
+              <div style={{ background: 'white', borderRadius: '1rem', padding: '1.5rem 2rem', boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <p style={{ fontSize: '.75rem', fontWeight: 700, color: '#aaa', textTransform: 'uppercase', letterSpacing: '.06em', margin: 0 }}>Derniers messages</p>
+                  <button onClick={() => handleTabChange('messages')} style={{ background: 'none', border: 'none', color: '#01696f', cursor: 'pointer', fontSize: '.8rem', fontWeight: 600 }}>Tout voir →</button>
+                </div>
+                {messages.slice(0, 4).map(m => (
+                  <div key={m.id} style={{ padding: '.6rem 0', borderBottom: '1px solid #f3f0eb' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
+                      {m.status === 'unread' && <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#dc2626', flexShrink: 0 }} />}
+                      <span style={{ fontSize: '.85rem', fontWeight: 600, color: '#333' }}>{m.name}</span>
+                      <span style={{ fontSize: '.72rem', color: '#bbb', marginLeft: 'auto' }}>{fmt(m.created_at)}</span>
+                    </div>
+                    <p style={{ fontSize: '.8rem', color: '#888', margin: '.25rem 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{m.message}</p>
+                  </div>
+                ))}
+                {messages.length === 0 && <p style={{ color: '#bbb', fontSize: '.85rem' }}>Aucun message.</p>}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ── ARTICLES ── */}
         {tab === 'articles' && (
@@ -2187,7 +2327,7 @@ export default function CMSAdmin() {
                 <div style={{ background: 'white', borderRadius: '1rem', padding: '1rem', boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
                   <p style={{ fontSize: '.75rem', fontWeight: 700, color: '#aaa', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.75rem', padding: '0 .5rem' }}>Pages du site</p>
                   {Object.entries(PAGES_CONFIG).map(([key, cfg]) => (
-                    <button key={key} onClick={() => setActivePage(key)}
+                    <button key={key} onClick={() => { setActivePage(key); setFieldSearch(''); }}
                       style={{ display: 'flex', alignItems: 'center', gap: '.5rem', width: '100%', textAlign: 'left', padding: '.6rem .75rem', borderRadius: '.5rem', border: 'none', cursor: 'pointer', fontSize: '.88rem', fontWeight: activePage === key ? 700 : 400, background: activePage === key ? '#f0e8e4' : 'transparent', color: activePage === key ? '#2d5f54' : '#555', marginBottom: '.2rem' }}
                     >
                       <span>{cfg.emoji}</span> {cfg.label}
@@ -2232,63 +2372,103 @@ export default function CMSAdmin() {
                             </button>
                           </div>
 
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                            {config.sections.map(section => {
-                              const key = `${activePage}__${section.key}`;
-                              return (
-                                <div key={key}>
-                                  <label style={lbl}>{section.label}</label>
-                                  {section.type === 'image' ? (
-                                    <div>
-                                      {editedContent[key] && (
-                                        <div style={{ position: 'relative', marginBottom: '.5rem', display: 'inline-block' }}>
-                                          <img src={editedContent[key]} alt={section.label} style={{ maxWidth: '100%', maxHeight: 200, borderRadius: '.5rem', border: '1px solid #ddd' }} />
-                                          <button onClick={() => setEditedContent(prev => ({ ...prev, [key]: '' }))} style={{ position: 'absolute', top: -8, right: -8, background: '#c0392b', color: 'white', border: 'none', borderRadius: '50%', width: 22, height: 22, cursor: 'pointer', fontSize: '.8rem' }}>✕</button>
-                                        </div>
-                                      )}
-                                      <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
-                                        <button onClick={() => { setMediaPickerTarget(key); setTab('media'); }} style={{ padding: '.5rem 1rem', background: '#01696f', color: 'white', border: 'none', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>🖼️ Choisir dans la médiathèque</button>
-                                        <label style={{ padding: '.5rem 1rem', background: '#2d5f54', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>
-                                          ⬆️ Upload
-                                          <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
-                                            const file = e.target.files?.[0];
-                                            if (!file) return;
-                                            const fd = new FormData();
-                                            fd.append('file', file);
-                                            const res = await fetch('/api/cms/upload', { method: 'POST', body: fd });
-                                            const data = await res.json();
-                                            if (data.url) setEditedContent(prev => ({ ...prev, [key]: data.url }));
-                                          }} />
-                                        </label>
-                                        <input value={editedContent[key] ?? ''} onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))} style={{ ...inp, flex: 1, minWidth: 200 }} placeholder="Ou coller une URL d'image..." />
+                          {/* Recherche de champ */}
+                          <input
+                            value={fieldSearch}
+                            onChange={e => setFieldSearch(e.target.value)}
+                            placeholder="🔍 Rechercher un champ (ex : tarif, titre, étape 3…)"
+                            style={{ ...inp, marginBottom: '1.25rem' }}
+                          />
+
+                          {(() => {
+                            const q = fieldSearch.trim().toLowerCase();
+                            const visibleSections = config.sections.filter(s =>
+                              !q ||
+                              s.label.toLowerCase().includes(q) ||
+                              s.key.toLowerCase().includes(q) ||
+                              (editedContent[`${activePage}__${s.key}`] ?? '').toLowerCase().includes(q)
+                            );
+                            if (visibleSections.length === 0) {
+                              return <p style={{ color: '#aaa', textAlign: 'center', padding: '2rem' }}>Aucun champ ne correspond à « {fieldSearch} »</p>;
+                            }
+                            // Regrouper par préfixe de label (avant le « — »)
+                            const groups: { name: string; sections: typeof visibleSections }[] = [];
+                            for (const s of visibleSections) {
+                              const name = s.label.includes('—') ? s.label.split('—')[0].trim() : 'Général';
+                              const existing = groups.find(g => g.name === name);
+                              if (existing) existing.sections.push(s);
+                              else groups.push({ name, sections: [s] });
+                            }
+                            const searching = q.length > 0;
+                            return groups.map(group => (
+                              <details key={group.name} open={searching || groups.length <= 3 || undefined}
+                                style={{ marginBottom: '.85rem', border: '1.5px solid #ece8e2', borderRadius: '.75rem', background: '#fdfcfa' }}>
+                                <summary style={{ padding: '.8rem 1.1rem', cursor: 'pointer', fontWeight: 700, fontSize: '.92rem', color: '#2d5f54', userSelect: 'none' }}>
+                                  {group.name} <span style={{ fontWeight: 400, color: '#aaa', fontSize: '.8rem' }}>· {group.sections.length} champ{group.sections.length > 1 ? 's' : ''}</span>
+                                </summary>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', padding: '.25rem 1.1rem 1.25rem' }}>
+                                  {group.sections.map(section => {
+                                    const key = `${activePage}__${section.key}`;
+                                    const shortLabel = section.label.includes('—')
+                                      ? section.label.split('—').slice(1).join('—').trim()
+                                      : section.label;
+                                    return (
+                                      <div key={key}>
+                                        <label style={lbl}>{shortLabel}</label>
+                                        {section.type === 'image' ? (
+                                          <div>
+                                            {editedContent[key] && (
+                                              <div style={{ position: 'relative', marginBottom: '.5rem', display: 'inline-block' }}>
+                                                <img src={editedContent[key]} alt={section.label} style={{ maxWidth: '100%', maxHeight: 200, borderRadius: '.5rem', border: '1px solid #ddd' }} />
+                                                <button onClick={() => setEditedContent(prev => ({ ...prev, [key]: '' }))} style={{ position: 'absolute', top: -8, right: -8, background: '#c0392b', color: 'white', border: 'none', borderRadius: '50%', width: 22, height: 22, cursor: 'pointer', fontSize: '.8rem' }}>✕</button>
+                                              </div>
+                                            )}
+                                            <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
+                                              <button onClick={() => { setMediaPickerTarget(key); setTab('media'); }} style={{ padding: '.5rem 1rem', background: '#01696f', color: 'white', border: 'none', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>🖼️ Choisir dans la médiathèque</button>
+                                              <label style={{ padding: '.5rem 1rem', background: '#2d5f54', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>
+                                                ⬆️ Upload
+                                                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
+                                                  const file = e.target.files?.[0];
+                                                  if (!file) return;
+                                                  const fd = new FormData();
+                                                  fd.append('file', file);
+                                                  const res = await fetch('/api/cms/upload', { method: 'POST', body: fd });
+                                                  const data = await res.json();
+                                                  if (data.url) setEditedContent(prev => ({ ...prev, [key]: data.url }));
+                                                }} />
+                                              </label>
+                                              <input value={editedContent[key] ?? ''} onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))} style={{ ...inp, flex: 1, minWidth: 200 }} placeholder="Ou coller une URL d'image..." />
+                                            </div>
+                                          </div>
+                                        ) : section.type === 'richtext' ? (
+                                          <textarea
+                                            value={editedContent[key] ?? ''}
+                                            onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))}
+                                            style={{ ...inp, height: 180, resize: 'vertical', fontFamily: 'monospace', fontSize: '.85rem' }}
+                                            placeholder={section.label}
+                                          />
+                                        ) : section.type === 'textarea' ? (
+                                          <textarea
+                                            value={editedContent[key] ?? ''}
+                                            onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))}
+                                            style={{ ...inp, height: 110, resize: 'vertical' }}
+                                            placeholder={section.label}
+                                          />
+                                        ) : (
+                                          <input
+                                            value={editedContent[key] ?? ''}
+                                            onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))}
+                                            style={inp}
+                                            placeholder={section.label}
+                                          />
+                                        )}
                                       </div>
-                                    </div>
-                                  ) : section.type === 'richtext' ? (
-                                    <textarea
-                                      value={editedContent[key] ?? ''}
-                                      onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))}
-                                      style={{ ...inp, height: 180, resize: 'vertical', fontFamily: 'monospace', fontSize: '.85rem' }}
-                                      placeholder={section.label}
-                                    />
-                                  ) : section.type === 'textarea' ? (
-                                    <textarea
-                                      value={editedContent[key] ?? ''}
-                                      onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))}
-                                      style={{ ...inp, height: 110, resize: 'vertical' }}
-                                      placeholder={section.label}
-                                    />
-                                  ) : (
-                                    <input
-                                      value={editedContent[key] ?? ''}
-                                      onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))}
-                                      style={inp}
-                                      placeholder={section.label}
-                                    />
-                                  )}
+                                    );
+                                  })}
                                 </div>
-                              );
-                            })}
-                          </div>
+                              </details>
+                            ));
+                          })()}
 
                           <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
                             <button
