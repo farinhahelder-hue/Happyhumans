@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
 
   const { data, error } = await query;
   if (error) {
-    if (error.message?.includes('does not exist')) {
+    if (error.message?.includes('does not exist') || error.message?.includes('Could not find the table')) {
       return NextResponse.json({
         error: 'migration_missing',
         message: "L'historique n'est pas encore activé — exécutez la migration SQL 20260711000000_content_history.sql dans Supabase.",
