@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import ImageUploadField from "@/components/admin/ImageUploadField";
+import RichTextEditor from "@/components/admin/RichTextEditor";
 import type { BlogPost } from "@/lib/types";
 
 const supabase = createClient();
@@ -30,20 +31,9 @@ function slugify(input: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-const TOOLBAR_ACTIONS: { label: string; before: string; after: string }[] = [
-  { label: "H2", before: "<h2>", after: "</h2>" },
-  { label: "H3", before: "<h3>", after: "</h3>" },
-  { label: "Gras", before: "<strong>", after: "</strong>" },
-  { label: "Italique", before: "<em>", after: "</em>" },
-  { label: "Paragraphe", before: "<p>", after: "</p>" },
-  { label: "Liste", before: "<ul>\n  <li>", after: "</li>\n</ul>" },
-  { label: "Lien", before: '<a href="https://">', after: "</a>" },
-];
-
 export default function BlogEditor({ initialPost }: BlogEditorProps) {
   const router = useRouter();
   const isEditing = !!initialPost;
-  const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const [title, setTitle] = useState(initialPost?.title || "");
   const [slug, setSlug] = useState(initialPost?.slug || "");
@@ -86,25 +76,6 @@ export default function BlogEditor({ initialPost }: BlogEditorProps) {
   const handleTitleChange = (value: string) => {
     setTitle(value);
     if (!slugTouched) setSlug(slugify(value));
-  };
-
-  const insertTag = (before: string, after: string) => {
-    const textarea = contentRef.current;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selected = content.slice(start, end);
-    const newContent =
-      content.slice(0, start) + before + selected + after + content.slice(end);
-
-    setContent(newContent);
-
-    requestAnimationFrame(() => {
-      textarea.focus();
-      const cursor = start + before.length + selected.length + after.length;
-      textarea.setSelectionRange(cursor, cursor);
-    });
   };
 
   const handleSave = async () => {
@@ -322,34 +293,23 @@ export default function BlogEditor({ initialPost }: BlogEditorProps) {
 
             {activeTab === "edit" ? (
               <>
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {TOOLBAR_ACTIONS.map((action) => (
-                    <button
-                      key={action.label}
-                      type="button"
-                      onClick={() => insertTag(action.before, action.after)}
-                      className="px-3 py-1 text-xs border rounded hover:bg-gray-50 transition"
-                    >
-                      {action.label}
-                    </button>
-                  ))}
-                </div>
-                <textarea
-                  ref={contentRef}
+                <RichTextEditor
                   value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  rows={20}
-                  className="w-full px-4 py-3 border rounded-lg font-mono text-sm"
-                  placeholder="<p>Le contenu de l'article en HTML...</p>"
+                  onChange={setContent}
+                  placeholder="Écrivez votre article ici…"
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Sélectionnez du texte puis cliquez un bouton pour le formater.
+                  Sélectionnez du texte puis cliquez un bouton pour le mettre en
+                  forme, comme dans un traitement de texte.
                 </p>
               </>
             ) : (
-              <div className="border rounded-lg p-6 min-h-[400px] prose max-w-none">
+              <div className="border rounded-lg p-6 min-h-[400px]">
                 {content ? (
-                  <div dangerouslySetInnerHTML={{ __html: content }} />
+                  <div
+                    className="article-content text-gray-800"
+                    dangerouslySetInnerHTML={{ __html: content }}
+                  />
                 ) : (
                   <p className="text-gray-400">Rien à prévisualiser pour le moment.</p>
                 )}

@@ -89,12 +89,10 @@ export default async function BlogPostPage({ params }: { params: Params }) {
         </header>
 
         {/* Content */}
-        <div className="prose prose-lg max-w-none mb-12">
-          <div
-            className="text-gray-800 leading-relaxed space-y-6"
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
-        </div>
+        <div
+          className="article-content text-gray-800 text-lg mb-12"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
 
         {/* Metadata */}
         {post.note_angle && (
