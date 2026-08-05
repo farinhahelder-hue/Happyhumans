@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Default theme values. The admin "Apparence" page overrides these via an
+   injected <style> in the layout <head>; defaults keep the site styled even
+   before/without any saved customisation. Values are space-separated RGB
+   channels so Tailwind's `<alpha-value>` opacity utilities work. */
+:root {
+  --brand: 37 99 235; /* #2563eb */
+  --brand-dark: 29 78 216; /* #1d4ed8 */
+  --accent: 79 70 229; /* #4f46e5 */
+  --accent-dark: 49 46 129; /* #312e81 */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #ffffff;
+  color: #1f2937;
+}
+
+/* Smooth transitions */
+a,
+button {
+  transition: all 0.3s ease;
+}
+
+/* Link styles */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+/* Button styles */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Section spacing */
+section {
+  width: 100%;
+}
