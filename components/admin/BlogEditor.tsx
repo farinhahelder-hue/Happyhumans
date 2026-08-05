@@ -176,7 +176,7 @@ export default function BlogEditor({ initialPost }: BlogEditorProps) {
 
   return (
     <div className="max-w-5xl mx-auto p-8">
-      <div className="flex justify-between items-start mb-8">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold">
             {isEditing ? "Modifier l'article" : "Nouvel article"}
@@ -227,8 +227,8 @@ export default function BlogEditor({ initialPost }: BlogEditorProps) {
         </div>
       )}
 
-      <div className="grid grid-cols-3 gap-8">
-        <div className="col-span-2 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-6">
           <div>
             <label className="block text-sm font-medium mb-2">Titre *</label>
             <input
