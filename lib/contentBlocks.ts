@@ -500,6 +500,14 @@ export const CONTENT_BLOCKS: ContentBlock[] = [
   },
 ];
 
-export function storageKey(block: Pick<ContentBlock, "page" | "key">): string {
-  return `content-${block.page}-${block.key}`;
+import type { Locale } from "@/lib/i18n";
+
+// Storage key in cms_settings_kv. French (default) is unsuffixed for backward
+// compatibility; other locales get a `-<locale>` suffix, e.g. `...-en`.
+export function storageKey(
+  block: Pick<ContentBlock, "page" | "key">,
+  locale: Locale = "fr"
+): string {
+  const base = `content-${block.page}-${block.key}`;
+  return locale === "fr" ? base : `${base}-${locale}`;
 }

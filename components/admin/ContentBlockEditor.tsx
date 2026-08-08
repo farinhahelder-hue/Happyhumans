@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { storageKey, type ContentBlock, type ContentField } from "@/lib/contentBlocks";
 import { useUnsavedChanges } from "@/lib/useUnsavedChanges";
+import type { Locale } from "@/lib/i18n";
 import ImageUploadField from "@/components/admin/ImageUploadField";
 
 const supabase = createClient();
@@ -61,9 +62,11 @@ function FieldInput({
 export default function ContentBlockEditor({
   block,
   initialValue,
+  locale = "fr",
 }: {
   block: ContentBlock;
   initialValue: Record<string, string> | Record<string, string>[];
+  locale?: Locale;
 }) {
   const [draft, setDraft] = useState(initialValue);
   const [saving, setSaving] = useState(false);
@@ -91,7 +94,7 @@ export default function ContentBlockEditor({
       const { error: dbError } = await supabase
         .from("cms_settings_kv")
         .upsert(
-          { key: storageKey(block), value: JSON.stringify(draft) },
+          { key: storageKey(block, locale), value: JSON.stringify(draft) },
           { onConflict: "key" }
         );
       if (dbError) throw dbError;
