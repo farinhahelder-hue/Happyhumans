@@ -9,16 +9,18 @@ const CoachingHero = ({
   title,
   subtitle,
   image,
+  imageAlt,
 }: {
   title: string;
   subtitle: string;
   image: string;
+  imageAlt: string;
 }) => (
   <section className="relative py-16 md:py-20 text-white overflow-hidden">
     {image && (
       <img
         src={image}
-        alt=""
+        alt={imageAlt}
         className="absolute inset-0 w-full h-full object-cover"
       />
     )}
@@ -161,7 +163,12 @@ export default async function CoachingPage() {
       id: "hero",
       title: "Hero",
       component: (
-        <CoachingHero title={hero.title} subtitle={hero.subtitle} image={hero.image} />
+        <CoachingHero
+          title={hero.title}
+          subtitle={hero.subtitle}
+          image={hero.image}
+          imageAlt={hero.imageAlt || ""}
+        />
       ),
     },
     {

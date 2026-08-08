@@ -61,7 +61,7 @@ export default async function Home() {
             {hero.image && (
               <img
                 src={hero.image}
-                alt=""
+                alt={hero.imageAlt || ""}
                 className="w-full h-72 md:h-96 object-cover rounded-2xl shadow-xl"
               />
             )}
@@ -86,7 +86,7 @@ export default async function Home() {
               {bio.photo ? (
                 <img
                   src={bio.photo}
-                  alt={bio.name}
+                  alt={bio.photoAlt || bio.name}
                   className="w-full h-72 object-cover rounded-lg shadow-lg"
                 />
               ) : (

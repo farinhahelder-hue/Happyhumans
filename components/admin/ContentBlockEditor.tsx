@@ -12,10 +12,14 @@ function FieldInput({
   field,
   value,
   onChange,
+  altValue,
+  onAltChange,
 }: {
   field: ContentField;
   value: string;
   onChange: (value: string) => void;
+  altValue?: string;
+  onAltChange?: (value: string) => void;
 }) {
   if (field.type === "image") {
     return (
@@ -23,6 +27,8 @@ function FieldInput({
         label={field.label}
         value={value}
         onChange={onChange}
+        altValue={altValue}
+        onAltChange={onAltChange}
         placeholder="https://... ou envoyez un fichier"
       />
     );
@@ -156,6 +162,13 @@ export default function ContentBlockEditor({
               onChange={(value) =>
                 setDraft((d) => ({ ...(d as Record<string, string>), [field.key]: value }))
               }
+              altValue={(draft as Record<string, string>)[`${field.key}Alt`] || ""}
+              onAltChange={(value) =>
+                setDraft((d) => ({
+                  ...(d as Record<string, string>),
+                  [`${field.key}Alt`]: value,
+                }))
+              }
             />
           ))}
         </div>
@@ -220,6 +233,14 @@ export default function ContentBlockEditor({
                     setDraft((d) => {
                       const items = [...(d as Record<string, string>[])];
                       items[index] = { ...items[index], [field.key]: value };
+                      return items;
+                    })
+                  }
+                  altValue={item[`${field.key}Alt`] || ""}
+                  onAltChange={(value) =>
+                    setDraft((d) => {
+                      const items = [...(d as Record<string, string>[])];
+                      items[index] = { ...items[index], [`${field.key}Alt`]: value };
                       return items;
                     })
                   }

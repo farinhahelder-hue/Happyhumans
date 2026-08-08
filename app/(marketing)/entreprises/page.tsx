@@ -8,16 +8,18 @@ const EnterprisesHero = ({
   title,
   subtitle,
   image,
+  imageAlt,
 }: {
   title: string;
   subtitle: string;
   image: string;
+  imageAlt: string;
 }) => (
   <section className="relative py-16 md:py-20 text-white overflow-hidden">
     {image && (
       <img
         src={image}
-        alt=""
+        alt={imageAlt}
         className="absolute inset-0 w-full h-full object-cover"
       />
     )}
@@ -175,7 +177,12 @@ export default async function EnterprisesPage() {
       id: "hero",
       title: "Hero",
       component: (
-        <EnterprisesHero title={hero.title} subtitle={hero.subtitle} image={hero.image} />
+        <EnterprisesHero
+          title={hero.title}
+          subtitle={hero.subtitle}
+          image={hero.image}
+          imageAlt={hero.imageAlt || ""}
+        />
       ),
     },
     {

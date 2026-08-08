@@ -7,6 +7,9 @@ interface ImageUploadFieldProps {
   value: string;
   onChange: (url: string) => void;
   placeholder?: string;
+  // When provided, shows an "alt text" input for accessibility & image SEO.
+  altValue?: string;
+  onAltChange?: (alt: string) => void;
 }
 
 export default function ImageUploadField({
@@ -14,6 +17,8 @@ export default function ImageUploadField({
   value,
   onChange,
   placeholder,
+  altValue,
+  onAltChange,
 }: ImageUploadFieldProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -90,6 +95,20 @@ export default function ImageUploadField({
           >
             Retirer
           </button>
+        </div>
+      )}
+      {onAltChange && value && (
+        <div className="mt-2">
+          <label className="block text-xs font-medium text-gray-600 mb-1">
+            Texte alternatif
+          </label>
+          <input
+            type="text"
+            value={altValue || ""}
+            onChange={(e) => onAltChange(e.target.value)}
+            className="w-full px-3 py-2 border rounded-lg text-sm"
+            placeholder="Décris l'image (pour Google et les personnes malvoyantes)"
+          />
         </div>
       )}
     </div>
