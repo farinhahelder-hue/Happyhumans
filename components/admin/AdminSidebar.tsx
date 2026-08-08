@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { href: "/admin/appearance", label: "Apparence", icon: "🎨" },
   { href: "/admin/blog", label: "Articles", icon: "📝" },
   { href: "/admin/testimonials", label: "Témoignages", icon: "💬" },
+  { href: "/admin/subscribers", label: "Abonnés", icon: "📣" },
   { href: "/admin/settings", label: "Paramètres", icon: "⚙️" },
   { href: "/admin/history", label: "Historique", icon: "🕘" },
   { href: "/admin/contacts", label: "Messages", icon: "✉️" },

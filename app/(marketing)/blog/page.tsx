@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import NewsletterSignup from "@/components/NewsletterSignup";
 
 export default async function BlogPage() {
   const supabase = await createClient();
@@ -109,6 +110,10 @@ export default async function BlogPage() {
           </div>
         </section>
       )}
+
+      <div className="mt-16">
+        <NewsletterSignup source="blog" />
+      </div>
     </main>
   );
 }
