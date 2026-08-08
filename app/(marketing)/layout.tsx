@@ -83,15 +83,27 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [businessSchema, publicConfig, globalContent, theme] = await Promise.all([
-    getBusinessSchema(),
-    getPublicConfig(),
-    getContentBlocks("global"),
-    getTheme(),
-  ]);
+  const [businessSchema, publicConfig, globalFr, globalEn, theme] =
+    await Promise.all([
+      getBusinessSchema(),
+      getPublicConfig(),
+      getContentBlocks("global", "fr"),
+      getContentBlocks("global", "en"),
+      getTheme(),
+    ]);
 
-  const headerContent = globalContent.header as Record<string, string>;
-  const footerContent = globalContent.footer as Record<string, string>;
+  const headerContent = {
+    fr: globalFr.header as Record<string, string>,
+    en: globalEn.header as Record<string, string>,
+  };
+  const footerContent = {
+    fr: globalFr.footer as Record<string, string>,
+    en: globalEn.footer as Record<string, string>,
+  };
+  const brand = {
+    fr: (globalFr.header as Record<string, string>).brand,
+    en: (globalEn.header as Record<string, string>).brand,
+  };
   const fontStylesheet = fontHref(theme);
 
   return (
@@ -135,7 +147,7 @@ export default async function RootLayout({
           initialConfig={publicConfig.visibilityToggles}
           initialContactEmail={publicConfig.contactEmail}
           content={footerContent}
-          brand={headerContent.brand}
+          brand={brand}
         />
       </body>
     </html>

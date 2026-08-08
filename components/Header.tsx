@@ -26,12 +26,13 @@ export default function Header({
   logo,
 }: {
   initialConfig: VisibilityToggles;
-  content: Record<string, string>;
+  content: Record<Locale, Record<string, string>>;
   logo?: string;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const locale = localeFromPath(pathname);
+  const c = content[locale];
   const config = initialConfig;
 
   // Blog is not localised yet, so its link always stays on the French route.
@@ -39,7 +40,7 @@ export default function Header({
     href === "/blog" ? "/blog" : localizedHref(href, locale);
 
   const visibleLinks = NAV_LINKS.filter((link) => config[link.key] !== false).map(
-    (link) => ({ href: navHref(link.href), label: content[link.labelKey] })
+    (link) => ({ href: navHref(link.href), label: c[link.labelKey] })
   );
   const showNav = config["show-in-menu"] && visibleLinks.length > 0;
   const showCta = config["contact-published"] !== false;
@@ -87,9 +88,9 @@ export default function Header({
         >
           {logo ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={logo} alt={content.brand} className="h-9 w-auto" />
+            <img src={logo} alt={c.brand} className="h-9 w-auto" />
           ) : (
-            content.brand
+            c.brand
           )}
         </Link>
 
@@ -114,7 +115,7 @@ export default function Header({
               onClick={handleDiscoveryClick}
               className="hidden md:inline-block px-6 py-2 bg-brand text-white rounded-lg hover:bg-brand-dark transition"
             >
-              {content.ctaLabel}
+              {c.ctaLabel}
             </Link>
           )}
 
@@ -153,7 +154,7 @@ export default function Header({
               onClick={handleDiscoveryClick}
               className="block text-center px-6 py-3 bg-brand text-white rounded-lg hover:bg-brand-dark transition"
             >
-              {content.ctaLabel}
+              {c.ctaLabel}
             </Link>
           )}
           <LangSwitch className="justify-center border-t pt-4" />

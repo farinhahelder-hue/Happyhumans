@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
-import { siteConfig } from "@/lib/integrations";
+import { usePathname } from "next/navigation";
 import type { VisibilityToggles } from "@/lib/publicConfig";
+import { localeFromPath, localizedHref, type Locale } from "@/lib/i18n";
+
+const FALLBACK_EMAIL = "contact@happyhumans.fr";
 
 export default function Footer({
   initialConfig,
@@ -10,11 +15,15 @@ export default function Footer({
 }: {
   initialConfig: VisibilityToggles;
   initialContactEmail: string | null;
-  content: Record<string, string>;
-  brand: string;
+  content: Record<Locale, Record<string, string>>;
+  brand: Record<Locale, string>;
 }) {
+  const pathname = usePathname();
+  const locale = localeFromPath(pathname);
+  const c = content[locale];
+
   const isVisible = initialConfig["show-in-footer"] ?? false;
-  const contactEmail = initialContactEmail || siteConfig.email;
+  const contactEmail = initialContactEmail || FALLBACK_EMAIL;
 
   if (!isVisible) return null;
 
@@ -24,16 +33,22 @@ export default function Footer({
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-8">
           {/* Services */}
           <div>
-            <h3 className="font-bold text-lg mb-4">{content.servicesHeading}</h3>
+            <h3 className="font-bold text-lg mb-4">{c.servicesHeading}</h3>
             <ul className="space-y-2 text-gray-300">
               <li>
-                <Link href="/coaching" className="hover:text-white">
-                  {content.linkCoaching}
+                <Link
+                  href={localizedHref("/coaching", locale)}
+                  className="hover:text-white"
+                >
+                  {c.linkCoaching}
                 </Link>
               </li>
               <li>
-                <Link href="/entreprises" className="hover:text-white">
-                  {content.linkEntreprises}
+                <Link
+                  href={localizedHref("/entreprises", locale)}
+                  className="hover:text-white"
+                >
+                  {c.linkEntreprises}
                 </Link>
               </li>
             </ul>
@@ -41,11 +56,12 @@ export default function Footer({
 
           {/* Resources */}
           <div>
-            <h3 className="font-bold text-lg mb-4">{content.resourcesHeading}</h3>
+            <h3 className="font-bold text-lg mb-4">{c.resourcesHeading}</h3>
             <ul className="space-y-2 text-gray-300">
               <li>
+                {/* Blog is not localised yet — always the French route. */}
                 <Link href="/blog" className="hover:text-white">
-                  {content.linkBlog}
+                  {c.linkBlog}
                 </Link>
               </li>
             </ul>
@@ -53,11 +69,14 @@ export default function Footer({
 
           {/* Contact */}
           <div>
-            <h3 className="font-bold text-lg mb-4">{content.contactHeading}</h3>
+            <h3 className="font-bold text-lg mb-4">{c.contactHeading}</h3>
             <ul className="space-y-2 text-gray-300">
               <li>
-                <Link href="/contact" className="hover:text-white">
-                  {content.linkContact}
+                <Link
+                  href={localizedHref("/contact", locale)}
+                  className="hover:text-white"
+                >
+                  {c.linkContact}
                 </Link>
               </li>
               <li>
@@ -70,7 +89,10 @@ export default function Footer({
         </div>
 
         <div className="border-t border-gray-700 pt-8 text-center text-gray-400">
-          <p>&copy; {new Date().getFullYear()} {brand}. Tous droits réservés.</p>
+          <p>
+            &copy; {new Date().getFullYear()} {brand[locale]}.{" "}
+            {locale === "en" ? "All rights reserved." : "Tous droits réservés."}
+          </p>
         </div>
       </div>
     </footer>
