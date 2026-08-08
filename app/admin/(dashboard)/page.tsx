@@ -1,5 +1,12 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { getSiteStats, plausibleDashboardUrl } from "@/lib/plausible-stats";
+
+function formatDuration(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = Math.round(seconds % 60);
+  return m > 0 ? `${m} min ${s}s` : `${s}s`;
+}
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
@@ -9,6 +16,7 @@ export default async function AdminDashboardPage() {
     { count: draftCount },
     { count: newContactsCount },
     { data: recentHistory },
+    siteStats,
   ] = await Promise.all([
     supabase
       .from("cms_blog_posts")
@@ -27,7 +35,17 @@ export default async function AdminDashboardPage() {
       .select("*")
       .order("created_at", { ascending: false })
       .limit(5),
+    getSiteStats(),
   ]);
+
+  const traffic = siteStats
+    ? [
+        { label: "Visiteurs", value: siteStats.visitors.toLocaleString("fr-FR") },
+        { label: "Pages vues", value: siteStats.pageviews.toLocaleString("fr-FR") },
+        { label: "Taux de rebond", value: `${siteStats.bounceRate}%` },
+        { label: "Durée moyenne", value: formatDuration(siteStats.visitDuration) },
+      ]
+    : [];
 
   const stats = [
     {
@@ -67,6 +85,70 @@ export default async function AdminDashboardPage() {
           </Link>
         ))}
       </div>
+
+      {/* Traffic (Plausible) */}
+      <section className="mb-12">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold">Fréquentation (30 derniers jours)</h2>
+          {siteStats && (
+            <a
+              href={plausibleDashboardUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-blue-600 hover:underline"
+            >
+              Statistiques détaillées ↗
+            </a>
+          )}
+        </div>
+
+        {siteStats ? (
+          <>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+              {traffic.map((t) => (
+                <div key={t.label} className="p-6 bg-white border rounded-lg">
+                  <p className="text-3xl font-bold mb-1">{t.value}</p>
+                  <p className="text-sm text-gray-600">{t.label}</p>
+                </div>
+              ))}
+            </div>
+
+            {siteStats.topPages.length > 0 && (
+              <div className="bg-white border rounded-lg p-6">
+                <h3 className="font-semibold mb-4">Pages les plus vues</h3>
+                <ul className="space-y-2">
+                  {siteStats.topPages.map((p) => (
+                    <li
+                      key={p.page}
+                      className="flex justify-between text-sm border-b last:border-0 pb-2 last:pb-0"
+                    >
+                      <span className="font-mono text-gray-700 truncate">{p.page}</span>
+                      <span className="text-gray-500 shrink-0 ml-4">
+                        {p.visitors.toLocaleString("fr-FR")} visiteurs
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="p-6 bg-white border rounded-lg text-sm text-gray-600">
+            Les statistiques de fréquentation s&apos;afficheront ici une fois
+            Plausible connecté (variable <code>PLAUSIBLE_API_KEY</code>). En
+            attendant, elles restent consultables sur{" "}
+            <a
+              href={plausibleDashboardUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline"
+            >
+              le tableau de bord Plausible ↗
+            </a>
+            .
+          </div>
+        )}
+      </section>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
