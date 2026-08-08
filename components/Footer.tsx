@@ -21,7 +21,7 @@ export default function Footer({
   return (
     <footer className="bg-gray-900 text-white py-12">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="grid grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-8">
           {/* Services */}
           <div>
             <h3 className="font-bold text-lg mb-4">{content.servicesHeading}</h3>
