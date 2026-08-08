@@ -3,9 +3,9 @@ import ContactContent from "@/components/marketing/ContactContent";
 import { hreflangAlternates } from "@/lib/i18n";
 
 export function generateMetadata(): Metadata {
-  return { alternates: hreflangAlternates("/contact", "fr") };
+  return { alternates: hreflangAlternates("/contact", "en") };
 }
 
-export default function ContactPage() {
-  return <ContactContent locale="fr" />;
+export default function Page() {
+  return <ContactContent locale="en" />;
 }

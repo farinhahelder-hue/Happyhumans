@@ -3,9 +3,9 @@ import CoachingContent from "@/components/marketing/CoachingContent";
 import { hreflangAlternates } from "@/lib/i18n";
 
 export function generateMetadata(): Metadata {
-  return { alternates: hreflangAlternates("/coaching", "fr") };
+  return { alternates: hreflangAlternates("/coaching", "en") };
 }
 
-export default function CoachingPage() {
-  return <CoachingContent locale="fr" />;
+export default function Page() {
+  return <CoachingContent locale="en" />;
 }

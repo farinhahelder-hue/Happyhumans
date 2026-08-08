@@ -3,9 +3,9 @@ import EntreprisesContent from "@/components/marketing/EntreprisesContent";
 import { hreflangAlternates } from "@/lib/i18n";
 
 export function generateMetadata(): Metadata {
-  return { alternates: hreflangAlternates("/entreprises", "fr") };
+  return { alternates: hreflangAlternates("/entreprises", "en") };
 }
 
-export default function EnterprisesPage() {
-  return <EntreprisesContent locale="fr" />;
+export default function Page() {
+  return <EntreprisesContent locale="en" />;
 }
