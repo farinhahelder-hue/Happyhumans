@@ -72,6 +72,7 @@ cp .env.example .env.local
    - `005_blog_images_storage.sql` — stockage pour l'envoi d'images d'articles
    - `006_cms_testimonials.sql` — témoignages clients
    - `007_newsletter_subscribers.sql` — abonnés à la newsletter (**nouveau**)
+   - `008_blog_i18n.sql` — colonnes anglaises pour les articles de blog (**nouveau**)
 
 Si tu as déjà exécuté certaines migrations précédemment, il suffit d'exécuter les nouvelles (les autres sont déjà en place — ce sont des scripts "idempotents", sans risque de les rejouer).
 

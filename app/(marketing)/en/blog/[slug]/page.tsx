@@ -27,14 +27,20 @@ export async function generateMetadata({
   const post = await getPost(params.slug);
   if (!post) return {};
 
-  const title = post.seo_title || post.title;
-  const description = post.seo_description || post.excerpt || undefined;
+  const title =
+    post.seo_title_en || post.title_en || post.seo_title || post.title;
+  const description =
+    post.seo_description_en ||
+    post.excerpt_en ||
+    post.seo_description ||
+    post.excerpt ||
+    undefined;
   const ogImage = post.og_image || post.featured_image;
 
   return {
     title,
     description,
-    alternates: hreflangAlternates(`/blog/${post.slug}`, "fr"),
+    alternates: hreflangAlternates(`/blog/${post.slug}`, "en"),
     openGraph: {
       title,
       description,
@@ -46,5 +52,5 @@ export async function generateMetadata({
 export default async function BlogPostPage({ params }: { params: Params }) {
   const post = await getPost(params.slug);
   if (!post) notFound();
-  return <BlogArticleContent post={post} locale="fr" />;
+  return <BlogArticleContent post={post} locale="en" />;
 }

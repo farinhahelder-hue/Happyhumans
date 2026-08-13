@@ -19,12 +19,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .eq("published", true);
 
   const blogPosts =
-    posts?.map((post) => ({
-      url: `${baseUrl}/blog/${post.slug}`,
-      lastModified: new Date(post.updated_at),
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    })) || [];
+    posts?.flatMap((post) => [
+      {
+        url: `${baseUrl}/blog/${post.slug}`,
+        lastModified: new Date(post.updated_at),
+        changeFrequency: "weekly" as const,
+        priority: 0.7,
+      },
+      {
+        url: `${baseUrl}/en/blog/${post.slug}`,
+        lastModified: new Date(post.updated_at),
+        changeFrequency: "weekly" as const,
+        priority: 0.6,
+      },
+    ]) || [];
 
   return [
     {
@@ -81,6 +89,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: "yearly" as const,
       priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/en/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
     },
     ...blogPosts,
   ];

@@ -59,8 +59,10 @@ export default function Footer({
             <h3 className="font-bold text-lg mb-4">{c.resourcesHeading}</h3>
             <ul className="space-y-2 text-gray-300">
               <li>
-                {/* Blog is not localised yet — always the French route. */}
-                <Link href="/blog" className="hover:text-white">
+                <Link
+                  href={localizedHref("/blog", locale)}
+                  className="hover:text-white"
+                >
                   {c.linkBlog}
                 </Link>
               </li>

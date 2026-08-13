@@ -40,7 +40,11 @@ texte français comme point de départ ; remplace-les par l'anglais et sauvegard
 > Tant qu'un bloc n'est pas traduit, la page anglaise affiche le texte français —
 > jamais de page vide ou cassée. Tu peux donc traduire petit à petit.
 
-**Le blog reste en français** pour l'instant (les articles ne sont pas traduits).
+**Le blog est aussi bilingue.** Dans l'éditeur d'article, un bouton **Français /
+English** en haut permet de saisir la version anglaise (titre, extrait, contenu,
+SEO). L'adresse (slug), l'image et les tags sont communs aux deux langues. Un
+article non traduit s'affiche en français sur `/en/blog`. ⚠️ Nécessite la migration
+`008_blog_i18n.sql`.
 
 ---
 

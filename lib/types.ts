@@ -14,6 +14,12 @@ export interface BlogPost {
   published: boolean;
   created_at: string;
   updated_at: string;
+  // English translations (nullable; fall back to the French fields).
+  title_en: string | null;
+  excerpt_en: string | null;
+  content_en: string | null;
+  seo_title_en: string | null;
+  seo_description_en: string | null;
 }
 
 export interface Testimonial {

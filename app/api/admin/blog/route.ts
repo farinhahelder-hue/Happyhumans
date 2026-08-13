@@ -49,6 +49,11 @@ export async function POST(request: NextRequest) {
         seo_description: body.seo_description || null,
         og_image: body.og_image || null,
         published: !!body.published,
+        title_en: body.title_en || null,
+        excerpt_en: body.excerpt_en || null,
+        content_en: body.content_en || null,
+        seo_title_en: body.seo_title_en || null,
+        seo_description_en: body.seo_description_en || null,
       })
       .select()
       .single();

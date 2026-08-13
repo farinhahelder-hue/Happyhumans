@@ -35,23 +35,17 @@ export default function Header({
   const c = content[locale];
   const config = initialConfig;
 
-  // Blog is not localised yet, so its link always stays on the French route.
-  const navHref = (href: string) =>
-    href === "/blog" ? "/blog" : localizedHref(href, locale);
-
   const visibleLinks = NAV_LINKS.filter((link) => config[link.key] !== false).map(
-    (link) => ({ href: navHref(link.href), label: c[link.labelKey] })
+    (link) => ({ href: localizedHref(link.href, locale), label: c[link.labelKey] })
   );
   const showNav = config["show-in-menu"] && visibleLinks.length > 0;
   const showCta = config["contact-published"] !== false;
   const ctaHref = `${localizedHref("/contact", locale)}#discovery`;
 
-  // Language switch: same page in the other locale. Blog has no EN route, so
-  // switching to English from a blog page lands on the EN home instead.
+  // Language switch: same page in the other locale.
   const stripped = stripLocale(pathname);
-  const isBlog = stripped === "/blog" || stripped.startsWith("/blog/");
   const switchHref = (loc: Locale) =>
-    loc === "fr" ? stripped : isBlog ? "/en" : localizedHref(stripped, loc);
+    loc === "fr" ? stripped : localizedHref(stripped, loc);
 
   const handleDiscoveryClick = () => {
     events.clickDiscoveryCTA();

@@ -55,6 +55,17 @@ export default function BlogEditor({ initialPost }: BlogEditorProps) {
   const [ogImage, setOgImage] = useState(initialPost?.og_image || "");
   const [published, setPublished] = useState(initialPost?.published || false);
 
+  // English translations (title/excerpt/content/SEO). Slug, image, tags,
+  // reading time and note are shared across languages.
+  const [titleEn, setTitleEn] = useState(initialPost?.title_en || "");
+  const [excerptEn, setExcerptEn] = useState(initialPost?.excerpt_en || "");
+  const [contentEn, setContentEn] = useState(initialPost?.content_en || "");
+  const [seoTitleEn, setSeoTitleEn] = useState(initialPost?.seo_title_en || "");
+  const [seoDescriptionEn, setSeoDescriptionEn] = useState(
+    initialPost?.seo_description_en || ""
+  );
+  const [lang, setLang] = useState<"fr" | "en">("fr");
+
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -103,6 +114,11 @@ export default function BlogEditor({ initialPost }: BlogEditorProps) {
       seo_description: seoDescription || null,
       og_image: ogImage || null,
       published,
+      title_en: titleEn || null,
+      excerpt_en: excerptEn || null,
+      content_en: contentEn || null,
+      seo_title_en: seoTitleEn || null,
+      seo_description_en: seoDescriptionEn || null,
     };
 
     try {
@@ -174,6 +190,15 @@ export default function BlogEditor({ initialPost }: BlogEditorProps) {
     }
   };
 
+  const isFr = lang === "fr";
+  const curTitle = isFr ? title : titleEn;
+  const curExcerpt = isFr ? excerpt : excerptEn;
+  const curContent = isFr ? content : contentEn;
+  const curSeoTitle = isFr ? seoTitle : seoTitleEn;
+  const curSeoDescription = isFr ? seoDescription : seoDescriptionEn;
+  const onTitle = (v: string) => (isFr ? handleTitleChange(v) : setTitleEn(v));
+  const onContent = (v: string) => (isFr ? setContent(v) : setContentEn(v));
+
   return (
     <div className="max-w-5xl mx-auto p-8">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-8">
@@ -229,37 +254,65 @@ export default function BlogEditor({ initialPost }: BlogEditorProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <div>
-            <label className="block text-sm font-medium mb-2">Titre *</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => handleTitleChange(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg text-lg font-semibold"
-              placeholder="Titre de l'article"
-            />
+          <div className="flex items-center gap-3">
+            <div className="flex gap-1 border rounded-lg overflow-hidden">
+              {(["fr", "en"] as const).map((l) => (
+                <button
+                  key={l}
+                  type="button"
+                  onClick={() => setLang(l)}
+                  className={`px-4 py-1.5 text-sm font-medium transition ${
+                    lang === l ? "bg-blue-600 text-white" : "bg-white text-gray-600"
+                  }`}
+                >
+                  {l === "fr" ? "Français" : "English"}
+                </button>
+              ))}
+            </div>
+            {!isFr && (
+              <span className="text-xs text-gray-500">
+                Version anglaise — laisse vide pour afficher le français sur /en/blog.
+              </span>
+            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Slug (URL)</label>
+            <label className="block text-sm font-medium mb-2">
+              Titre {isFr ? "*" : "(EN)"}
+            </label>
             <input
               type="text"
-              value={slug}
-              onChange={(e) => {
-                setSlugTouched(true);
-                setSlug(slugify(e.target.value));
-              }}
-              className="w-full px-4 py-2 border rounded-lg font-mono text-sm"
-              placeholder="titre-de-larticle"
+              value={curTitle}
+              onChange={(e) => onTitle(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg text-lg font-semibold"
+              placeholder={isFr ? "Titre de l'article" : "Article title"}
             />
-            <p className="text-xs text-gray-500 mt-1">/blog/{slug || "..."}</p>
           </div>
+
+          {isFr && (
+            <div>
+              <label className="block text-sm font-medium mb-2">Slug (URL)</label>
+              <input
+                type="text"
+                value={slug}
+                onChange={(e) => {
+                  setSlugTouched(true);
+                  setSlug(slugify(e.target.value));
+                }}
+                className="w-full px-4 py-2 border rounded-lg font-mono text-sm"
+                placeholder="titre-de-larticle"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                /blog/{slug || "..."} — adresse commune aux deux langues.
+              </p>
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium mb-2">Extrait</label>
             <textarea
-              value={excerpt}
-              onChange={(e) => setExcerpt(e.target.value)}
+              value={curExcerpt}
+              onChange={(e) => (isFr ? setExcerpt : setExcerptEn)(e.target.value)}
               rows={2}
               className="w-full px-4 py-2 border rounded-lg"
               placeholder="Résumé accrocheur affiché dans la liste des articles"
@@ -294,8 +347,9 @@ export default function BlogEditor({ initialPost }: BlogEditorProps) {
             {activeTab === "edit" ? (
               <>
                 <RichTextEditor
-                  value={content}
-                  onChange={setContent}
+                  key={lang}
+                  value={curContent}
+                  onChange={onContent}
                   placeholder="Écrivez votre article ici…"
                 />
                 <p className="text-xs text-gray-500 mt-1">
@@ -305,10 +359,10 @@ export default function BlogEditor({ initialPost }: BlogEditorProps) {
               </>
             ) : (
               <div className="border rounded-lg p-6 min-h-[400px]">
-                {content ? (
+                {curContent ? (
                   <div
                     className="article-content text-gray-800"
-                    dangerouslySetInnerHTML={{ __html: content }}
+                    dangerouslySetInnerHTML={{ __html: curContent }}
                   />
                 ) : (
                   <p className="text-gray-400">Rien à prévisualiser pour le moment.</p>
@@ -410,8 +464,10 @@ export default function BlogEditor({ initialPost }: BlogEditorProps) {
                 </label>
                 <input
                   type="text"
-                  value={seoTitle}
-                  onChange={(e) => setSeoTitle(e.target.value)}
+                  value={curSeoTitle}
+                  onChange={(e) =>
+                    (isFr ? setSeoTitle : setSeoTitleEn)(e.target.value)
+                  }
                   className="w-full px-4 py-2 border rounded-lg text-sm"
                   placeholder="Par défaut : le titre de l'article"
                 />
@@ -422,8 +478,10 @@ export default function BlogEditor({ initialPost }: BlogEditorProps) {
                   Description SEO
                 </label>
                 <textarea
-                  value={seoDescription}
-                  onChange={(e) => setSeoDescription(e.target.value)}
+                  value={curSeoDescription}
+                  onChange={(e) =>
+                    (isFr ? setSeoDescription : setSeoDescriptionEn)(e.target.value)
+                  }
                   rows={3}
                   className="w-full px-4 py-2 border rounded-lg text-sm"
                   placeholder="Par défaut : l'extrait"
