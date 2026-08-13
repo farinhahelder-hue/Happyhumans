@@ -11,6 +11,7 @@ import { LOCALES, localeFromPath, localizedHref, stripLocale } from '@/lib/i18n'
 // Pages that currently have an English (/en) route. Extend as pages are
 // localised so the FR/EN switch only appears where the target exists.
 const LOCALIZED_PATHS = [
+  '/',
   '/coaching',
   '/entreprises',
   '/a-propos',
