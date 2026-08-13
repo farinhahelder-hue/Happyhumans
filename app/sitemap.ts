@@ -25,17 +25,53 @@ const PAGES: { path: string; page: string; priority: number; freq: Freq }[] = [
   { path: '/politique-confidentialite',  page: 'politique-confidentialite', priority: 0.2, freq: 'yearly' },
 ];
 
+// Pages qui ont une version anglaise (/en/...) — voir docs/PLAN_FR_EN.md
+const LOCALIZED = new Set([
+  'home',
+  'a-propos',
+  'coaching',
+  'entreprises',
+  'happiness-design',
+  'sparring-partner',
+  'relations',
+  'contact',
+  'faq',
+]);
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const kv = await getKvSettings();
 
-  const entries: MetadataRoute.Sitemap = PAGES
-    .filter(p => isPageIndexable(kv, p.page))
-    .map(p => ({
-      url: `${BASE_URL}${p.path}`,
-      lastModified: new Date(),
-      changeFrequency: p.freq,
-      priority: p.priority,
-    }));
+  const entries: MetadataRoute.Sitemap = [];
+  for (const p of PAGES) {
+    if (!isPageIndexable(kv, p.page)) continue;
+    const frUrl = `${BASE_URL}${p.path}`;
+
+    if (LOCALIZED.has(p.page)) {
+      const enUrl = `${BASE_URL}/en${p.path}`;
+      const languages = { fr: frUrl, en: enUrl };
+      entries.push({
+        url: frUrl,
+        lastModified: new Date(),
+        changeFrequency: p.freq,
+        priority: p.priority,
+        alternates: { languages },
+      });
+      entries.push({
+        url: enUrl,
+        lastModified: new Date(),
+        changeFrequency: p.freq,
+        priority: Math.max(0.1, p.priority - 0.1),
+        alternates: { languages },
+      });
+    } else {
+      entries.push({
+        url: frUrl,
+        lastModified: new Date(),
+        changeFrequency: p.freq,
+        priority: p.priority,
+      });
+    }
+  }
 
   // Articles de blog publiés
   if (isPageIndexable(kv, 'blog')) {
