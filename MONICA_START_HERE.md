@@ -64,13 +64,14 @@ cp .env.example .env.local
 **Ouvrir Supabase Console** :
 1. Va dans SQL Editor
 2. Clique "New Query"
-3. Exécute chaque fichier du dossier `migrations/` **dans l'ordre** (001 à 006) :
+3. Exécute chaque fichier du dossier `migrations/` **dans l'ordre** (001 à 007) :
    - `001_cms_blog_posts.sql` — table des articles
    - `002_cms_settings_and_history.sql` — paramètres + historique
    - `003_contact_submissions.sql` — formulaires de contact
    - `004_contact_admin_notes.sql` — notes internes sur les messages
    - `005_blog_images_storage.sql` — stockage pour l'envoi d'images d'articles
    - `006_cms_testimonials.sql` — témoignages clients
+   - `007_newsletter_subscribers.sql` — abonnés à la newsletter (**nouveau**)
 
 Si tu as déjà exécuté certaines migrations précédemment, il suffit d'exécuter les nouvelles (les autres sont déjà en place — ce sont des scripts "idempotents", sans risque de les rejouer).
 
@@ -79,8 +80,9 @@ Si tu as déjà exécuté certaines migrations précédemment, il suffit d'exéc
 1. Ouvre ton compte Calendly : https://calendly.com
 2. Crée un événement "Séance Découverte 30min"
 3. Copie l'URL : ex `https://calendly.com/monica-schneider/30min`
-4. Ouvre `app/contact/page.tsx`
-5. Cherche ligne 142 et remplace l'URL
+4. Ajoute-la dans `.env.local` (et dans Vercel au déploiement) :
+   `NEXT_PUBLIC_CALENDLY_URL=https://calendly.com/monica-schneider/30min`
+   — plus besoin de modifier le code.
 
 ### Step 5: Tester en local
 
@@ -133,11 +135,20 @@ git push -u origin main
 
 Pendant le déploiement (ou après dans Settings → Environment Variables) :
 ```
+# Obligatoires
 NEXT_PUBLIC_SUPABASE_URL=...
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 SUPABASE_SERVICE_KEY=...
+
+# Optionnelles
 NEXT_PUBLIC_PLAUSIBLE_DOMAIN=happyhumans.fr
+NEXT_PUBLIC_CALENDLY_URL=https://calendly.com/ton-compte/30min
+PLAUSIBLE_API_KEY=            # stats dans le tableau de bord admin
+RESEND_API_KEY=              # notification email des nouveaux messages
+CONTACT_NOTIFICATION_TO=monica.schneider@hotmail.fr
+CONTACT_NOTIFICATION_FROM=contact@happyhumans.fr
 ```
+Voir `GUIDE_NOUVEAUTES.md` pour ce que chaque option active.
 
 #### 7d. Configurer le domaine
 
@@ -173,7 +184,7 @@ Après 24h, tu verras les stats sur plausible.io.
 
 ### Tes sections réordonnables
 
-Les pages `/coaching` et `/entreprises` ont des sections que tu peux **réordonner** (drag-drop). C'est automatique : dès que tu es connectée à `/admin`, ouvre simplement `/coaching` ou `/entreprises` dans le même navigateur et tu verras "☰ Drag to reorder" apparaître sur chaque section. Glisse-les dans l'ordre voulu, puis clique "Sauvegarder l'ordre".
+Les pages `/coaching` et `/entreprises` ont des sections que tu peux **réordonner**. C'est automatique : dès que tu es connectée à `/admin`, ouvre simplement `/coaching` ou `/entreprises` dans le même navigateur et tu verras "☰ Glissez pour réorganiser" apparaître sur chaque section. Glisse-les dans l'ordre voulu (ou utilise les boutons ↑↓, pratique sur téléphone), puis clique "Sauvegarder l'ordre".
 
 ### Envoyer des images pour tes articles
 
@@ -232,12 +243,9 @@ Sur `/admin/settings`, la section "Coordonnées" te permet de changer l'email et
 
 ### Configurer les toggles footer
 
-Pour afficher/masquer le footer :
-1. Va dans Supabase
-2. Table `cms_settings_kv`
-3. Cherche la clé `show-in-footer`
-4. Change `value` de `false` à `true`
-5. Redéploie ou l'app recharge
+Pour afficher/masquer le footer (et le menu, ou publier/masquer chaque page) :
+va sur `/admin/settings`, section **Visibilité**, et coche/décoche
+"Afficher le pied de page". Plus besoin de toucher à Supabase.
 
 ---
 
