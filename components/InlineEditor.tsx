@@ -1,6 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { useInlineEdit } from '@/contexts/InlineEditContext';
+import { localeFromPath } from '@/lib/i18n';
 
 function getCmsEditCookie(): boolean {
   if (typeof document === 'undefined') return false;
@@ -10,6 +12,8 @@ function getCmsEditCookie(): boolean {
 
 export default function InlineEditor() {
   const { isEditing, toggleEditing, discardChanges, saveAll, changeCount, isSaving } = useInlineEdit();
+  const pathname = usePathname() || '/';
+  const editLocale = localeFromPath(pathname);
   const [isCmsUser, setIsCmsUser] = useState(false);
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'partial'; message: string } | null>(null);
 
@@ -99,6 +103,17 @@ export default function InlineEditor() {
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <span style={{ fontSize: '1rem' }}>✏️</span>
             Mode édition actif
+            <span style={{
+              background: editLocale === 'en' ? '#1d4ed8' : 'rgba(255,255,255,.18)',
+              color: 'white',
+              borderRadius: '999px',
+              padding: '0.1rem 0.6rem',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              border: '1px solid rgba(255,255,255,.3)',
+            }}>
+              {editLocale === 'en' ? '🇬🇧 ANGLAIS' : '🇫🇷 Français'}
+            </span>
             {changeCount > 0 && (
               <span style={{
                 background: '#f59e0b',

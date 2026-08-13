@@ -1,6 +1,7 @@
 'use client';
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useInlineEdit } from '@/contexts/InlineEditContext';
+import { useLocale } from '@/contexts/LocaleContext';
 
 type EditableFieldProps = {
   page: string;
@@ -20,13 +21,19 @@ export default function EditableField({
   as: Tag = 'span', style, className,
 }: EditableFieldProps) {
   const { isEditing, updateField, pendingChanges } = useInlineEdit();
+  const locale = useLocale();
   const [focused, setFocused] = useState(false);
   const [hovered, setHovered] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // On an English (/en) page, edits are saved under a `<key>::en` block key so
+  // they don't overwrite the French text. `value` is already locale-resolved
+  // (EN with FR fallback) by useCmsContent.
+  const storeKey = locale === 'en' ? `${fieldKey}::en` : fieldKey;
+
   // Pending value overrides server value
-  const pending = pendingChanges[page]?.[fieldKey];
+  const pending = pendingChanges[page]?.[storeKey];
   const displayValue = pending !== undefined ? pending : value;
 
   // Auto-resize textarea to fit content
@@ -55,8 +62,8 @@ export default function EditableField({
   }, [isEditing]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    updateField(page, fieldKey, e.target.value);
-  }, [page, fieldKey, updateField]);
+    updateField(page, storeKey, e.target.value);
+  }, [page, storeKey, updateField]);
 
   const handleBlur = useCallback(() => {
     setFocused(false);
