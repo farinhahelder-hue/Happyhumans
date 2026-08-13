@@ -2,9 +2,15 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useAuth } from '@/components/AuthProvider'
 import { useCmsNavigation, type NavItem } from '@/hooks/useCmsNavigation'
 import LogoSVG from '@/components/LogoSVG'
+import { LOCALES, localeFromPath, localizedHref, stripLocale } from '@/lib/i18n'
+
+// Pages that currently have an English (/en) route. Extend as pages are
+// localised so the FR/EN switch only appears where the target exists.
+const LOCALIZED_PATHS = ['/coaching']
 
 const ICONS: Record<string, string> = {
   star: '<path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>',
@@ -45,6 +51,26 @@ export default function Header() {
 
   const { nav } = useCmsNavigation()
   const isCmsUser = !loading && !!user
+
+  const pathname = usePathname() || '/'
+  const locale = localeFromPath(pathname)
+  const stripped = stripLocale(pathname)
+  const canSwitchLang = LOCALIZED_PATHS.includes(stripped)
+
+  const LangSwitch = ({ className = '' }: { className?: string }) => (
+    <div className={`flex items-center gap-1 text-xs ${className}`}>
+      {LOCALES.map(l => (
+        <Link
+          key={l}
+          href={l === 'fr' ? stripped : localizedHref(stripped, l)}
+          aria-current={locale === l ? 'true' : undefined}
+          className={`px-1.5 py-0.5 rounded transition ${locale === l ? 'font-bold text-[#2d5f54]' : 'text-stone-400 hover:text-stone-700'}`}
+        >
+          {l.toUpperCase()}
+        </Link>
+      ))}
+    </div>
+  )
 
   useEffect(() => {
     fetch('/api/cms/public-settings')
@@ -160,6 +186,8 @@ export default function Header() {
             {isCmsUser && (
               <Link href="/cms-admin" className="text-xs text-stone-400 hover:text-stone-600 transition-colors duration-200">CMS</Link>
             )}
+
+            {canSwitchLang && <LangSwitch />}
           </div>
 
           <button onClick={() => { setOpen(!open); setDropOpen(false) }}
@@ -194,6 +222,9 @@ export default function Header() {
               {isCmsUser && (
                 <Link href="/cms-admin" onClick={() => setOpen(false)}
                   className="text-xs text-center text-stone-400 hover:text-stone-600 mt-2">CMS</Link>
+              )}
+              {canSwitchLang && (
+                <LangSwitch className="justify-center mt-3 pt-3 border-t border-stone-100" />
               )}
             </div>
           </div>
