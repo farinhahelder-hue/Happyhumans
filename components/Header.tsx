@@ -10,7 +10,16 @@ import { LOCALES, localeFromPath, localizedHref, stripLocale } from '@/lib/i18n'
 
 // Pages that currently have an English (/en) route. Extend as pages are
 // localised so the FR/EN switch only appears where the target exists.
-const LOCALIZED_PATHS = ['/coaching']
+const LOCALIZED_PATHS = [
+  '/coaching',
+  '/entreprises',
+  '/a-propos',
+  '/happiness-design',
+  '/relations',
+  '/sparring-partner',
+  '/contact',
+  '/faq',
+]
 
 const ICONS: Record<string, string> = {
   star: '<path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>',
