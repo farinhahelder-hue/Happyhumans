@@ -4,6 +4,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import BlogClientPage from '@/components/BlogClientPage'
 import Breadcrumb from '@/components/Breadcrumb'
+import { hreflangAlternates } from '@/lib/i18n'
 
 export const revalidate = 60
 
@@ -11,9 +12,7 @@ export const metadata: Metadata = {
   title: 'Ressources & Réflexions',
   description: 'Articles, réflexions et ressources sur le coaching, les relations et le leadership — par Monica Schneider, Happy Humans.',
   keywords: ['coaching', 'executive coaching', 'leadership', 'relations', 'happyhumans', 'Monica Schneider'],
-  alternates: {
-    canonical: 'https://happyhumans.vercel.app/blog',
-  },
+  alternates: hreflangAlternates('/blog', 'fr'),
   openGraph: {
     title: 'Ressources & Réflexions | Happy Humans',
     description: 'Articles, réflexions et ressources sur le coaching, les relations et le leadership par Monica Schneider.',

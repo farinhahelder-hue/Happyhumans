@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import type { Locale } from '@/lib/i18n';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -27,6 +28,25 @@ export interface BlogPost {
   created_at: string | null;
   read_time?: number | null;
   updated_at: string | null;
+  // English translations (nullable; fall back to the French fields).
+  title_en?: string | null;
+  excerpt_en?: string | null;
+  content_en?: string | null;
+  seo_title_en?: string | null;
+  seo_description_en?: string | null;
+}
+
+/** Applies the English fields (with French fallback) for a given locale. */
+export function localizePost(post: BlogPost, locale: Locale): BlogPost {
+  if (locale === 'fr') return post;
+  return {
+    ...post,
+    title: post.title_en || post.title,
+    excerpt: post.excerpt_en ?? post.excerpt,
+    content: post.content_en ?? post.content,
+    seo_title: post.seo_title_en ?? post.seo_title,
+    seo_description: post.seo_description_en ?? post.seo_description,
+  };
 }
 
 /** Tous les articles publiés, du plus récent au plus ancien */
@@ -98,10 +118,13 @@ export async function getAllSlugs(): Promise<{ slug: string }[]> {
   return (data as { slug: string }[]) ?? [];
 }
 
-/** Formate une date ISO en français */
-export function formatDate(iso: string | null | undefined): string {
+/** Formate une date ISO (français par défaut, anglais si locale = 'en'). */
+export function formatDate(
+  iso: string | null | undefined,
+  locale: Locale = 'fr'
+): string {
   if (!iso) return '';
-  return new Date(iso).toLocaleDateString('fr-FR', {
+  return new Date(iso).toLocaleDateString(locale === 'en' ? 'en-US' : 'fr-FR', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',

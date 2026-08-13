@@ -36,6 +36,7 @@ const LOCALIZED = new Set([
   'relations',
   'contact',
   'faq',
+  'blog',
 ]);
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -78,11 +79,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     try {
       const posts = await getAllPosts();
       for (const post of posts) {
+        const frUrl = `${BASE_URL}/blog/${post.slug}`;
+        const enUrl = `${BASE_URL}/en/blog/${post.slug}`;
+        const languages = { fr: frUrl, en: enUrl };
+        const lastModified = new Date(post.updated_at ?? post.published_at ?? Date.now());
         entries.push({
-          url: `${BASE_URL}/blog/${post.slug}`,
-          lastModified: new Date(post.updated_at ?? post.published_at ?? Date.now()),
+          url: frUrl,
+          lastModified,
           changeFrequency: 'monthly',
           priority: 0.6,
+          alternates: { languages },
+        });
+        entries.push({
+          url: enUrl,
+          lastModified,
+          changeFrequency: 'monthly',
+          priority: 0.5,
+          alternates: { languages },
         });
       }
     } catch {

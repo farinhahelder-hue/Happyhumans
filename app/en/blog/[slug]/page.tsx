@@ -1,4 +1,4 @@
-import { getPostBySlug, getAllSlugs, getRelatedPosts } from '@/lib/blog-supabase'
+import { getPostBySlug, getAllSlugs, getRelatedPosts, localizePost } from '@/lib/blog-supabase'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import BlogArticleView from '@/components/BlogArticleView'
@@ -19,22 +19,23 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post = await getPostBySlug(params.slug)
-  if (!post) return { title: 'Article introuvable | Happy Humans' }
+  const raw = await getPostBySlug(params.slug)
+  if (!raw) return { title: 'Article not found | Happy Humans' }
+  const post = localizePost(raw, 'en')
 
   const ogImage = post.og_image ?? post.featured_image ?? DEFAULT_OG
-  const description = post.seo_description ?? post.excerpt ?? 'Un article Happy Humans — coaching, bonheur et leadership.'
+  const description = post.seo_description ?? post.excerpt ?? 'A Happy Humans article — coaching, leadership and wellbeing.'
   const seoTitle = post.seo_title ?? `${post.title} | Happy Humans`
 
   return {
     title: seoTitle,
     description,
-    alternates: hreflangAlternates(`/blog/${post.slug}`, 'fr'),
+    alternates: hreflangAlternates(`/blog/${post.slug}`, 'en'),
     authors: post.author ? [{ name: post.author }] : [{ name: 'Happy Humans' }],
     openGraph: {
       title: post.title,
       description,
-      url: `${SITE_URL}/blog/${post.slug}`,
+      url: `${SITE_URL}/en/blog/${post.slug}`,
       siteName: 'Happy Humans',
       type: 'article',
       publishedTime: post.published_at ?? undefined,
@@ -52,9 +53,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function BlogPostPage({ params }: Props) {
-  const post = await getPostBySlug(params.slug)
-  if (!post) notFound()
-  const related = await getRelatedPosts(post.slug, post.category, 3)
-  return <BlogArticleView post={post} related={related} locale="fr" />
+export default async function EnBlogPostPage({ params }: Props) {
+  const raw = await getPostBySlug(params.slug)
+  if (!raw) notFound()
+  const rawRelated = await getRelatedPosts(raw.slug, raw.category, 3)
+  const post = localizePost(raw, 'en')
+  const related = rawRelated.map((p) => localizePost(p, 'en'))
+  return <BlogArticleView post={post} related={related} locale="en" />
 }

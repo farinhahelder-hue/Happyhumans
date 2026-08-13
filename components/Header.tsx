@@ -20,6 +20,7 @@ const LOCALIZED_PATHS = [
   '/sparring-partner',
   '/contact',
   '/faq',
+  '/blog',
 ]
 
 const ICONS: Record<string, string> = {
@@ -65,7 +66,8 @@ export default function Header() {
   const pathname = usePathname() || '/'
   const locale = localeFromPath(pathname)
   const stripped = stripLocale(pathname)
-  const canSwitchLang = LOCALIZED_PATHS.includes(stripped)
+  const canSwitchLang =
+    LOCALIZED_PATHS.includes(stripped) || stripped.startsWith('/blog/')
 
   const LangSwitch = ({ className = '' }: { className?: string }) => (
     <div className={`flex items-center gap-1 text-xs ${className}`}>
