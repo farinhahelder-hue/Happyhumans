@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useRef, useCallback, type ReactNode } from 'react';
 import dynamic from 'next/dynamic';
+import { useOptionalInlineEdit } from '@/contexts/InlineEditContext';
 
 const EditableField = dynamic(() => import('@/components/EditableField'), { ssr: false });
 
@@ -46,18 +47,22 @@ function getInitial(page: string, defaults: CmsContent): CmsContent {
 
 // Retourne null si le contenu est indisponible (erreur réseau / base en pause)
 // pour que l'appelant conserve son cache au lieu de l'écraser avec du vide.
-async function fetchPageContent(page: string): Promise<CmsContent | null> {
+//
+// preview = true : demande aussi les BROUILLONS (le serveur ne les renvoie qu'aux sessions CMS authentifiées ;
+// pour un visiteur ordinaire le paramètre est ignoré). Aperçu = jamais mis en cache.
+async function fetchPageContent(page: string, preview = false): Promise<{ map: CmsContent; drafts: number } | null> {
   try {
-    const res = await fetch(`/api/cms/public-content?page=${encodeURIComponent(page)}`, {
+    const res = await fetch(`/api/cms/public-content?page=${encodeURIComponent(page)}${preview ? '&preview=1' : ''}`, {
       headers: { 'Cache-Control': 'no-cache' },
+      cache: preview ? 'no-store' : 'default',
     });
     if (!res.ok) return null;
-    const { content: rows } = await res.json();
+    const { content: rows, drafts } = await res.json();
     const map: CmsContent = {};
     (rows || []).forEach((r: { block_key: string; value: string }) => {
       if (r.value) map[r.block_key] = r.value;
     });
-    return map;
+    return { map, drafts: typeof drafts === 'number' ? drafts : 0 };
   } catch { return null; }
 }
 
@@ -78,19 +83,36 @@ export function useCmsContent(page: string, defaults: CmsContent = {}): CmsResul
   const [content, setContent] = useState<CmsContent>(() => getInitial(page, defaults));
   const fetchedRef = useRef(false);
 
+  // Aperçu des brouillons : par ?cms_preview=1 (aperçu de l'admin) ou pendant l'édition en ligne.
+  // Calculé APRÈS le premier rendu (useEffect) pour ne jamais créer de différence serveur/client à l'hydratation.
+  const edit = useOptionalInlineEdit();
+  const reportDrafts = edit?.reportDrafts;
+  const [urlPreview, setUrlPreview] = useState(false);
+  useEffect(() => {
+    try { setUrlPreview(new URLSearchParams(window.location.search).get('cms_preview') === '1'); } catch { /* ignore */ }
+  }, []);
+  const preview = urlPreview || !!edit?.isEditing;
+  const previewRef = useRef(false);
+
   const loadContent = useCallback(async () => {
-    const map = await fetchPageContent(page);
-    if (map === null) {
+    const res = await fetchPageContent(page, preview);
+    if (res === null) {
       // Contenu indisponible (Supabase en pause, réseau…) : servir la copie
       // de secours locale plutôt que de retomber sur les défauts
-      const stale = lsGet(page, LS_STALE_TTL);
-      if (stale) setContent({ ...defaultsRef.current, ...stale });
+      if (!preview) {
+        const stale = lsGet(page, LS_STALE_TTL);
+        if (stale) setContent({ ...defaultsRef.current, ...stale });
+      }
       return;
     }
-    memCache[page] = { data: map, ts: Date.now() };
-    lsSet(page, map);
-    setContent({ ...defaultsRef.current, ...map });
-  }, [page]);
+    // Un aperçu ne touche JAMAIS aux caches : il contient des brouillons, pas du contenu public
+    if (!preview) {
+      memCache[page] = { data: res.map, ts: Date.now() };
+      lsSet(page, res.map);
+    }
+    setContent({ ...defaultsRef.current, ...res.map });
+    if (preview && reportDrafts) reportDrafts(page, res.drafts);
+  }, [page, preview, reportDrafts]);
 
   // Initial fetch
   useEffect(() => {
@@ -100,6 +122,15 @@ export function useCmsContent(page: string, defaults: CmsContent = {}): CmsResul
     fetchedRef.current = true;
     loadContent().catch(() => {});
   }, [page, loadContent]);
+
+  // Entrée / sortie du mode aperçu : on recharge (brouillons <-> contenu publié)
+  useEffect(() => {
+    if (previewRef.current === preview) return;
+    previewRef.current = preview;
+    if (!preview) bustCmsCache(page);
+    fetchedRef.current = true;
+    loadContent().catch(() => {});
+  }, [preview, page, loadContent]);
 
   // Re-fetch after a successful inline save (for the pages concerned)
   useEffect(() => {
@@ -113,7 +144,11 @@ export function useCmsContent(page: string, defaults: CmsContent = {}): CmsResul
       }
     };
     window.addEventListener('inline-edit-saved', onSaved);
-    return () => window.removeEventListener('inline-edit-saved', onSaved);
+    window.addEventListener('inline-edit-published', onSaved);
+    return () => {
+      window.removeEventListener('inline-edit-saved', onSaved);
+      window.removeEventListener('inline-edit-published', onSaved);
+    };
   }, [page, loadContent]);
 
   const get = useCallback((key: string, defaultValue?: string, opts?: { multiline?: boolean }): ReactNode => {

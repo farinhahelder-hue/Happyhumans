@@ -9,7 +9,7 @@ function getCmsEditCookie(): boolean {
 }
 
 export default function InlineEditor() {
-  const { isEditing, toggleEditing, discardChanges, saveAll, changeCount, isSaving } = useInlineEdit();
+  const { isEditing, toggleEditing, discardChanges, saveAll, changeCount, isSaving, totalDrafts, publishDrafts, isPublishing } = useInlineEdit();
   const [isCmsUser, setIsCmsUser] = useState(false);
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'partial'; message: string } | null>(null);
 
@@ -20,9 +20,15 @@ export default function InlineEditor() {
   // Listen for save events
   useEffect(() => {
     const onSaved = (e: Event) => {
+      const detail = (e as CustomEvent<{ count: number; silent?: boolean }>).detail;
+      if (detail.silent) return;
+      setToast({ type: 'success', message: `📝 ${detail.count} champ${detail.count > 1 ? 's' : ''} enregistré${detail.count > 1 ? 's' : ''} en brouillon — pas encore en ligne` });
+      setTimeout(() => setToast(null), 4500);
+    };
+    const onPublished = (e: Event) => {
       const detail = (e as CustomEvent<{ count: number }>).detail;
-      setToast({ type: 'success', message: `✅ ${detail.count} champ${detail.count > 1 ? 's' : ''} sauvegardé${detail.count > 1 ? 's' : ''} !` });
-      setTimeout(() => setToast(null), 3500);
+      setToast({ type: 'success', message: `🚀 ${detail.count} modification${detail.count > 1 ? 's' : ''} publiée${detail.count > 1 ? 's' : ''} — en ligne !` });
+      setTimeout(() => setToast(null), 4500);
     };
     const onPartial = (e: Event) => {
       const detail = (e as CustomEvent<{ saved: number; errors: string[] }>).detail;
@@ -35,10 +41,12 @@ export default function InlineEditor() {
       setTimeout(() => setToast(null), 6000);
     };
     window.addEventListener('inline-edit-saved', onSaved);
+    window.addEventListener('inline-edit-published', onPublished);
     window.addEventListener('inline-edit-partial', onPartial);
     window.addEventListener('inline-edit-error', onError);
     return () => {
       window.removeEventListener('inline-edit-saved', onSaved);
+      window.removeEventListener('inline-edit-published', onPublished);
       window.removeEventListener('inline-edit-partial', onPartial);
       window.removeEventListener('inline-edit-error', onError);
     };
@@ -56,6 +64,12 @@ export default function InlineEditor() {
       }
     }
     toggleEditing();
+  };
+
+  const handlePublish = async () => {
+    if (isPublishing || changeCount > 0) return;
+    if (!window.confirm(`Publier ${totalDrafts} modification${totalDrafts > 1 ? 's' : ''} ? Elles seront visibles par tout le monde.`)) return;
+    await publishDrafts();
   };
 
   const handleDiscard = () => {
@@ -98,7 +112,12 @@ export default function InlineEditor() {
         }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <span style={{ fontSize: '1rem' }}>✏️</span>
-            Mode édition actif
+            Mode édition actif — vous modifiez le brouillon
+            {totalDrafts > 0 && changeCount === 0 && (
+              <span style={{ background: '#fb923c', color: '#1a1a1a', borderRadius: '999px', padding: '0.1rem 0.55rem', fontSize: '0.72rem', fontWeight: 700, marginLeft: '0.25rem' }}>
+                {totalDrafts} en attente de publication
+              </span>
+            )}
             {changeCount > 0 && (
               <span style={{
                 background: '#f59e0b',
@@ -149,6 +168,30 @@ export default function InlineEditor() {
         <span style={{ fontSize: '1rem' }}>{isEditing ? '✕' : '✏️'}</span>
         {isEditing ? 'Quitter' : 'Éditer'}
       </button>
+
+      {/* ── Bouton Publier — bas droit (dès qu'il existe des brouillons) ── */}
+      {isEditing && totalDrafts > 0 && (
+        <div style={{ position: 'fixed', bottom: changeCount > 0 ? '4.6rem' : '1.5rem', right: '1.5rem', zIndex: 99999, fontFamily: 'system-ui, sans-serif' }}>
+          <button
+            onClick={handlePublish}
+            disabled={isPublishing || changeCount > 0}
+            title={changeCount > 0 ? "Enregistrez d'abord vos modifications en brouillon" : 'Mettre les brouillons en ligne'}
+            style={{
+              padding: '0.65rem 1.35rem',
+              background: changeCount > 0 ? '#9ca3af' : '#c2410c',
+              color: 'white',
+              border: 'none',
+              borderRadius: '999px',
+              boxShadow: '0 4px 16px rgba(194,65,12,.35)',
+              fontSize: '0.85rem',
+              fontWeight: 700,
+              cursor: isPublishing ? 'wait' : changeCount > 0 ? 'not-allowed' : 'pointer',
+            }}
+          >
+            {isPublishing ? 'Publication…' : `🚀 Publier (${totalDrafts})`}
+          </button>
+        </div>
+      )}
 
       {/* ── Boutons Annuler + Sauvegarder — bas droit (si changements) ── */}
       {isEditing && changeCount > 0 && (
@@ -204,7 +247,7 @@ export default function InlineEditor() {
             }}
             onMouseEnter={e => { if (!isSaving) e.currentTarget.style.transform = 'scale(1.04)'; }}
             onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
-            title="Sauvegarder (Ctrl+S)"
+            title="Enregistrer le brouillon (Ctrl+S) — rien n'est mis en ligne tant que vous ne publiez pas"
           >
             {isSaving ? (
               <>
@@ -213,7 +256,7 @@ export default function InlineEditor() {
               </>
             ) : (
               <>
-                💾 Sauvegarder ({changeCount})
+                💾 Enregistrer le brouillon ({changeCount})
                 <span style={{ opacity: 0.65, fontSize: '0.72rem', marginLeft: '0.2rem' }}>Ctrl+S</span>
               </>
             )}

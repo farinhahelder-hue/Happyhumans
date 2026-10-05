@@ -11,6 +11,7 @@ import CarouselEditor from '@/components/admin/CarouselEditor';
 import CarouselGenerator from '@/components/admin/CarouselGenerator';
 import BlogGenerator from '@/components/admin/BlogGenerator';
 import { PAGE_DEFAULTS } from '@/lib/cms-page-defaults';
+import { basePage, isDraftPage, planDraftSave } from '@/lib/cms-drafts';
 import { THEMES } from '@/components/DynamicTheme';
 import { NavItem } from '@/hooks/useCmsNavigation';
 
@@ -1437,6 +1438,14 @@ export default function CMSAdmin() {
   const [isDirty, setIsDirty] = useState(false);
   const [savedOk, setSavedOk] = useState(false);
   const cleanHash = React.useRef('');
+  // Brouillon / publication (voir lib/cms-drafts.ts)
+  const [baseline, setBaseline] = useState<Record<string, string>>({}); // publié (ou défaut) : `${page}__${key}`
+  const [drafts, setDrafts] = useState<Record<string, string>>({});     // brouillons enregistrés : `${page}__${key}`
+  const [draftSupported, setDraftSupported] = useState(true);            // false si la base refuse les brouillons
+  const [publishing, setPublishing] = useState(false);
+  const cleanContent = React.useRef<Record<string, string>>({});          // contenu tel qu'enregistré (pour détecter les modifs non enregistrées)
+  // Empreinte indépendante de l'ordre des clés
+  const contentHash = (o: Record<string, string>) => JSON.stringify(Object.keys(o).sort().map(k => [k, o[k]]));
 
   const isArticleDirty = getArticleDraftSignature(editingArticle) !== articleBaseline;
   const articleWordCount = getWordCount(editingArticle?.content);
@@ -1471,7 +1480,7 @@ export default function CMSAdmin() {
   // ── Suivi dirty content/settings ────────────────────────
   useEffect(() => {
     if (!cleanHash.current) return; // pas encore chargé
-    const cur = JSON.stringify(editedContent) + '|' + JSON.stringify(editedSettings);
+    const cur = contentHash(editedContent) + '|' + JSON.stringify(editedSettings);
     setIsDirty(cur !== cleanHash.current);
   }, [editedContent, editedSettings]);
 
@@ -1481,7 +1490,7 @@ export default function CMSAdmin() {
       if ((e.metaKey || e.ctrlKey) && e.key === 's') {
         e.preventDefault();
         if (!isDirty || savingSettings) return;
-        if (tab === 'pages') savePageContent(activePage);
+        if (tab === 'pages') saveDraft(activePage);
         else if (tab === 'settings') saveSettings();
       }
     };
@@ -1611,36 +1620,6 @@ export default function CMSAdmin() {
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [isArticleDirty]);
-  // ── Suivi dirty content/settings ────────────────────────
-  useEffect(() => {
-    if (!cleanHash.current) return; // pas encore chargé
-    const cur = JSON.stringify(editedContent) + '|' + JSON.stringify(editedSettings);
-    setIsDirty(cur !== cleanHash.current);
-  }, [editedContent, editedSettings]);
-
-  // ── Raccourci Cmd+S / Ctrl+S ─────────────────────────────
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-        e.preventDefault();
-        if (!isDirty || savingSettings) return;
-        if (tab === 'pages') savePageContent(activePage);
-        else if (tab === 'settings') saveSettings();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isDirty, savingSettings, tab, activePage]);
-
-  // ── Confirmation avant de quitter ────────────────────────
-  useEffect(() => {
-    if (isDirty) {
-      window.onbeforeunload = () => true;
-    } else {
-      window.onbeforeunload = null;
-    }
-    return () => { window.onbeforeunload = null; };
-  }, [isDirty]);
 
 
   // Load articles
@@ -1768,7 +1747,7 @@ export default function CMSAdmin() {
       const sData = await sRes.json();
       const cData = await cRes.json();
       setSettings(sData.settings || []);
-      setSiteContent(cData.content || []);
+      setSiteContent((cData.content || []).filter((c: SiteContent) => !isDraftPage(c.page)));
       const initS: Record<string, string> = {};
       (sData.settings || []).forEach((s: Setting) => { initS[s.key] = s.value || ''; });
       // Pré-remplir avec les defaults de chaque page
@@ -1778,13 +1757,20 @@ export default function CMSAdmin() {
           initC[`${page}__${key}`] = val;
         });
       });
-      // Les valeurs DB écrasent les defaults
+      // Les valeurs DB (publiées) écrasent les defaults ; les brouillons (page « draft:<page> ») viennent par-dessus
+      const loadedDrafts: Record<string, string> = {};
       (cData.content || []).forEach((c: SiteContent) => {
-        if (c.value) initC[`${c.page}__${c.block_key}`] = c.value;
+        if (isDraftPage(c.page)) loadedDrafts[`${basePage(c.page)}__${c.block_key}`] = c.value ?? '';
+        else if (c.value) initC[`${c.page}__${c.block_key}`] = c.value;
       });
+      const published = { ...initC };
+      const withDrafts = { ...initC, ...loadedDrafts };
+      setBaseline(published);
+      setDrafts(loadedDrafts);
       setEditedSettings(initS);
-      setEditedContent(initC);
-      setTimeout(() => { cleanHash.current = JSON.stringify(initC) + '|' + JSON.stringify(initS); setIsDirty(false); }, 50);
+      setEditedContent(withDrafts);
+      cleanContent.current = withDrafts;
+      setTimeout(() => { cleanHash.current = contentHash(withDrafts) + '|' + JSON.stringify(initS); setIsDirty(false); }, 50);
     } catch {
       showToast('Impossible de charger les contenus du CMS.');
     } finally {
@@ -1855,7 +1841,7 @@ export default function CMSAdmin() {
       const responses = await Promise.all(promises);
       if (responses.some(res => handleUnauthorized(res))) return;
       showToast('✅ Paramètres sauvegardés !');
-      cleanHash.current = JSON.stringify(editedContent) + '|' + JSON.stringify(editedSettings); setIsDirty(false); setSavedOk(true); setTimeout(() => setSavedOk(false), 2000);
+      cleanHash.current = contentHash(editedContent) + '|' + JSON.stringify(editedSettings); setIsDirty(false); setSavedOk(true); setTimeout(() => setSavedOk(false), 2000);
       loadSettings();
     } catch {
       showToast('Impossible de sauvegarder les paramètres.');
@@ -1864,45 +1850,152 @@ export default function CMSAdmin() {
     }
   };
 
-  // Save content pour une page donnée
-  const savePageContent = async (pageKey: string) => {
-    setSavingSettings(true);
+  // ── Brouillon / publication ─────────────────────────────────
+  // Principe : « Enregistrer » écrit un BROUILLON (invisible du site public) ; « Publier » le met en ligne.
+  // Seuls les champs réellement modifiés sont écrits : on n'enregistre plus jamais les textes par défaut en base.
+  const jsonHeaders = { 'Content-Type': 'application/json' };
+  const sliceOf = (pageKey: string) => {
     const config = PAGES_CONFIG[pageKey];
-    if (!config) { setSavingSettings(false); return; }
+    const keys = config ? config.sections.map(sec => sec.key) : [];
+    const pick = (src: Record<string, string>) => Object.fromEntries(keys.map(k => [k, src[`${pageKey}__${k}`]]));
+    const saved: Record<string, string> = {};
+    for (const k of keys) { const dk = `${pageKey}__${k}`; if (dk in drafts) saved[k] = drafts[dk]; }
+    return { config, keys, edited: pick(editedContent), base: pick(baseline), saved };
+  };
+  const pageStatus = (pageKey: string) => {
+    const { keys, edited, base, saved } = sliceOf(pageKey);
+    const plan = planDraftSave(keys, edited, base, saved);
+    return { unsaved: plan.save.length + plan.reset.length, draftN: Object.keys(saved).length };
+  };
+  const draftCountOf = (pageKey: string) => Object.keys(drafts).filter(k => k.startsWith(`${pageKey}__`)).length;
+  const markClean = (changes: Record<string, string>) => {
+    cleanContent.current = { ...cleanContent.current, ...changes };
+    cleanHash.current = contentHash(cleanContent.current) + '|' + JSON.stringify(editedSettings);
+    setIsDirty(contentHash(editedContent) + '|' + JSON.stringify(editedSettings) !== cleanHash.current);
+  };
+  const plural = (n: number, one: string, many: string) => (n > 1 ? many : one);
 
+  const saveDraft = async (pageKey: string, opts: { quiet?: boolean } = {}): Promise<{ ok: boolean; draftKeys: string[] }> => {
+    const { config, keys, edited, base, saved } = sliceOf(pageKey);
+    const currentDraftKeys = Object.keys(saved);
+    if (!config) return { ok: false, draftKeys: currentDraftKeys };
+    const plan = planDraftSave(keys, edited, base, saved);
+    if (!plan.save.length && !plan.reset.length) {
+      if (!opts.quiet) showToast('Aucune modification à enregistrer.');
+      return { ok: true, draftKeys: currentDraftKeys };
+    }
+    // Repli : la base de données refuse les brouillons -> écriture directe, après confirmation explicite
+    if (!draftSupported && !confirm(`Les brouillons ne sont pas disponibles sur cette base de données.\n\nCette sauvegarde va mettre ${plan.save.length} modification${plural(plan.save.length, '', 's')} EN LIGNE immédiatement. Continuer ?`)) {
+      return { ok: false, draftKeys: currentDraftKeys };
+    }
+    setSavingSettings(true);
     try {
-      // Sauvegarder TOUS les champs (upsert — pas de diff pour éviter les faux négatifs)
-      const promises = config.sections.map(section => {
-        const key = `${pageKey}__${section.key}`;
-        const value = editedContent[key] ?? '';
-        return fetch('/api/cms/content', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ page: pageKey, block_key: section.key, value }),
-        });
-      });
-
-      const responses = await Promise.all(promises);
-
-      // Vérifier auth
-      if (responses.some(res => handleUnauthorized(res))) return;
-
-      // Vérifier erreurs API (500, 503, etc.)
+      const calls = [
+        ...plan.save.map(fld => fetch('/api/cms/content', { method: 'PUT', headers: jsonHeaders, body: JSON.stringify({ page: pageKey, block_key: fld.key, value: fld.value, draft: draftSupported }) })),
+        ...(draftSupported ? plan.reset.map(k => fetch('/api/cms/content', { method: 'PUT', headers: jsonHeaders, body: JSON.stringify({ page: pageKey, block_key: k, draft: true, reset: true }) })) : []),
+      ];
+      const responses = await Promise.all(calls);
+      if (responses.some(res => handleUnauthorized(res))) return { ok: false, draftKeys: currentDraftKeys };
       const failed = responses.filter(r => !r.ok);
       if (failed.length > 0) {
         const errBody = await failed[0].json().catch(() => ({}));
-        showToast(`❌ Erreur ${failed[0].status}: ${errBody.error || 'Impossible de sauvegarder'}`);
-        return;
+        if (errBody.draftUnsupported) {
+          setDraftSupported(false);
+          showToast('⚠️ Les brouillons ne sont pas disponibles sur cette base : cliquez de nouveau pour mettre en ligne directement.');
+        } else {
+          showToast(`❌ Erreur ${failed[0].status}: ${errBody.error || 'Impossible de sauvegarder'}`);
+        }
+        return { ok: false, draftKeys: currentDraftKeys };
       }
-
-      showToast(`✅ Page "${config.label}" sauvegardée !`);
-      bustCmsCache(pageKey);
-      cleanHash.current = JSON.stringify(editedContent) + '|' + JSON.stringify(editedSettings); setIsDirty(false); setSavedOk(true); setTimeout(() => setSavedOk(false), 2000);
-      loadSettings();
+      const persisted: Record<string, string> = {};
+      for (const fld of plan.save) persisted[`${pageKey}__${fld.key}`] = fld.value;
+      for (const k of plan.reset) persisted[`${pageKey}__${k}`] = base[k] ?? '';
+      if (draftSupported) {
+        setDrafts(prev => {
+          const next = { ...prev };
+          for (const fld of plan.save) next[`${pageKey}__${fld.key}`] = fld.value;
+          for (const k of plan.reset) delete next[`${pageKey}__${k}`];
+          return next;
+        });
+      } else {
+        setBaseline(prev => ({ ...prev, ...persisted }));
+        bustCmsCache(pageKey);
+      }
+      markClean(persisted);
+      setSavedOk(true); setTimeout(() => setSavedOk(false), 2000);
+      if (!opts.quiet) {
+        const n = plan.save.length + plan.reset.length;
+        showToast(draftSupported
+          ? `📝 ${n} modification${plural(n, '', 's')} enregistrée${plural(n, '', 's')} en brouillon — pas encore en ligne`
+          : `✅ ${n} modification${plural(n, '', 's')} mise${plural(n, '', 's')} en ligne`);
+      }
+      const after = [...currentDraftKeys.filter(k => !plan.reset.includes(k)), ...plan.save.map(fld => fld.key).filter(k => !currentDraftKeys.includes(k))];
+      return { ok: true, draftKeys: draftSupported ? after : [] };
     } catch {
       showToast('Impossible de sauvegarder cette page.');
+      return { ok: false, draftKeys: currentDraftKeys };
     } finally {
       setSavingSettings(false);
+    }
+  };
+
+  const publishPage = async (pageKey: string) => {
+    const config = PAGES_CONFIG[pageKey];
+    if (!config || publishing || savingSettings) return;
+    const { ok, draftKeys } = await saveDraft(pageKey, { quiet: true });
+    if (!ok) return;
+    if (!draftSupported) { showToast('✅ Modifications mises en ligne (publication directe).'); return; }
+    if (draftKeys.length === 0) { showToast('Rien à publier : tout est déjà en ligne.'); return; }
+    const n = draftKeys.length;
+    if (!confirm(`Publier ${n} modification${plural(n, '', 's')} sur « ${config.label} » ?\n\nElles seront visibles par tous les visiteurs.`)) {
+      showToast('📝 Enregistré en brouillon, pas encore publié.');
+      return;
+    }
+    setPublishing(true);
+    try {
+      const res = await fetch('/api/cms/publish', { method: 'POST', headers: jsonHeaders, body: JSON.stringify({ page: pageKey }) });
+      if (handleUnauthorized(res)) return;
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) { showToast(`❌ Publication impossible : ${data.error || res.status}`); return; }
+      const nowLive: Record<string, string> = {};
+      for (const k of draftKeys) nowLive[`${pageKey}__${k}`] = editedContent[`${pageKey}__${k}`] ?? '';
+      setBaseline(prev => ({ ...prev, ...nowLive }));
+      setDrafts(prev => { const next = { ...prev }; for (const k of draftKeys) delete next[`${pageKey}__${k}`]; return next; });
+      bustCmsCache(pageKey);
+      setSavedOk(true); setTimeout(() => setSavedOk(false), 2000);
+      showToast(`🚀 ${data.published ?? n} modification${plural(n, '', 's')} publiée${plural(n, '', 's')} — en ligne !`);
+    } catch {
+      showToast('Impossible de publier : erreur réseau.');
+    } finally {
+      setPublishing(false);
+    }
+  };
+
+  const discardDraft = async (pageKey: string) => {
+    const { config, saved, base } = sliceOf(pageKey);
+    const draftKeys = Object.keys(saved);
+    if (!config || draftKeys.length === 0 || publishing) return;
+    const n = draftKeys.length;
+    if (!confirm(`Abandonner ${n} modification${plural(n, '', 's')} en brouillon sur « ${config.label} » ?\n\nLe site en ligne n'est pas modifié. Ces brouillons seront supprimés.`)) return;
+    setPublishing(true);
+    try {
+      const res = await fetch('/api/cms/publish', { method: 'POST', headers: jsonHeaders, body: JSON.stringify({ page: pageKey, action: 'discard' }) });
+      if (handleUnauthorized(res)) return;
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) { showToast(`❌ Impossible d'abandonner : ${data.error || res.status}`); return; }
+      const reverted: Record<string, string> = {};
+      for (const k of draftKeys) reverted[`${pageKey}__${k}`] = base[k] ?? '';
+      setDrafts(prev => { const next = { ...prev }; for (const k of draftKeys) delete next[`${pageKey}__${k}`]; return next; });
+      setEditedContent(prev => ({ ...prev, ...reverted }));
+      cleanContent.current = { ...cleanContent.current, ...reverted };
+      cleanHash.current = contentHash({ ...editedContent, ...reverted }) + '|' + JSON.stringify(editedSettings);
+      setIsDirty(false);
+      setPreviewKey(k => k + 1);
+      showToast(`↩ ${n} brouillon${plural(n, '', 's')} abandonné${plural(n, '', 's')} — le site en ligne n'a pas changé`);
+    } catch {
+      showToast("Impossible d'abandonner le brouillon : erreur réseau.");
+    } finally {
+      setPublishing(false);
     }
   };
 
@@ -2146,7 +2239,9 @@ export default function CMSAdmin() {
       {isDirty && (
         <div style={{ background: '#fff8e1', borderBottom: '1px solid #f0c040', padding: '.6rem 2rem', display: 'flex', alignItems: 'center', gap: '.5rem', fontSize: '.85rem', color: '#7a5c00', fontWeight: 600 }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          Modifications non sauvegardées — utilisez le bouton flottant ou Ctrl+S pour sauvegarder
+          {tab === 'pages'
+            ? 'Modifications non enregistrées — « Enregistrer le brouillon » (bouton flottant ou Ctrl+S). Rien n’est en ligne tant que vous ne publiez pas.'
+            : 'Modifications non sauvegardées — utilisez le bouton flottant ou Ctrl+S pour sauvegarder'}
         </div>
       )}
 
@@ -2158,7 +2253,7 @@ export default function CMSAdmin() {
           transition: 'opacity .2s',
         }}>
           <button
-            onClick={() => { if (tab === 'pages') savePageContent(activePage); else saveSettings(); }}
+            onClick={() => { if (tab === 'pages') saveDraft(activePage); else saveSettings(); }}
             disabled={savingSettings || !isDirty}
             style={{
               display: 'flex', alignItems: 'center', gap: '.5rem',
@@ -2176,17 +2271,17 @@ export default function CMSAdmin() {
             {savingSettings ? (
               <>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 1s linear infinite' }}><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
-                Sauvegarde…
+                Enregistrement…
               </>
             ) : savedOk ? (
               <>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                Sauvegardé !
+                {tab === 'pages' ? 'Enregistré !' : 'Sauvegardé !'}
               </>
             ) : (
               <>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                Sauvegarder
+                {tab === 'pages' ? (draftSupported ? 'Enregistrer le brouillon' : 'Enregistrer') : 'Sauvegarder'}
               </>
             )}
           </button>
@@ -2657,6 +2752,12 @@ export default function CMSAdmin() {
                       style={{ display: 'flex', alignItems: 'center', gap: '.5rem', width: '100%', textAlign: 'left', padding: '.6rem .75rem', borderRadius: '.5rem', border: 'none', cursor: 'pointer', fontSize: '.88rem', fontWeight: activePage === key ? 700 : 400, background: activePage === key ? '#f0e8e4' : 'transparent', color: activePage === key ? '#2d5f54' : '#555', marginBottom: '.2rem' }}
                     >
                       <span>{cfg.emoji}</span> {cfg.label}
+                      {draftCountOf(key) > 0 && (
+                        <span title={`${draftCountOf(key)} modification(s) en brouillon, pas encore en ligne`}
+                          style={{ marginLeft: 'auto', background: '#fb923c', color: '#431407', borderRadius: '999px', fontSize: '.68rem', fontWeight: 700, padding: '.05rem .45rem' }}>
+                          {draftCountOf(key)}
+                        </span>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -2677,6 +2778,8 @@ export default function CMSAdmin() {
                       const config = PAGES_CONFIG[activePage];
                       if (!config) return null;
                       const pagePath = activePage === 'home' ? '/' : `/${activePage}`;
+                      const st = pageStatus(activePage);
+                      const busy = savingSettings || publishing;
                       return (
                         <div>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', gap: '.75rem', flexWrap: 'wrap' }}>
@@ -2696,18 +2799,68 @@ export default function CMSAdmin() {
                                 href={pagePath}
                                 target="_blank" rel="noopener noreferrer"
                                 style={{ fontSize: '.82rem', color: '#01696f', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '.3rem' }}
+                                title="La page telle que la voient les visiteurs"
                               >
-                                🔗 Voir la page
+                                🔗 Voir en ligne
                               </a>
-                              <button
-                                onClick={() => savePageContent(activePage)}
-                                disabled={savingSettings}
-                                style={{ padding: '.45rem 1.25rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.85rem', opacity: savingSettings ? .7 : 1 }}
+                              <a
+                                href={`${pagePath}${pagePath.includes('?') ? '&' : '?'}cms_preview=1`}
+                                target="_blank" rel="noopener noreferrer"
+                                style={{ fontSize: '.82rem', color: '#c2410c', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '.3rem' }}
+                                title="La page avec vos brouillons (visible seulement quand vous êtes connecté)"
                               >
-                                {savingSettings ? '⏳ Sauvegarde…' : '💾 Sauvegarder'}
+                                👁 Voir le brouillon
+                              </a>
+                              {draftSupported && st.draftN > 0 && (
+                                <button
+                                  onClick={() => discardDraft(activePage)}
+                                  disabled={busy}
+                                  style={{ padding: '.45rem .9rem', background: 'white', color: '#b91c1c', border: '1.5px solid #fecaca', borderRadius: '.5rem', fontWeight: 600, cursor: 'pointer', fontSize: '.8rem', opacity: busy ? .6 : 1 }}
+                                  title="Supprimer les brouillons de cette page (le site en ligne n'est pas modifié)"
+                                >
+                                  ↩ Abandonner
+                                </button>
+                              )}
+                              <button
+                                onClick={() => saveDraft(activePage)}
+                                disabled={busy || st.unsaved === 0}
+                                style={{ padding: '.45rem 1.1rem', background: 'white', color: '#2d5f54', border: '1.5px solid #2d5f54', borderRadius: '.5rem', fontWeight: 700, cursor: busy || st.unsaved === 0 ? 'default' : 'pointer', fontSize: '.85rem', opacity: busy || st.unsaved === 0 ? .5 : 1 }}
+                                title={draftSupported ? "Enregistrer en brouillon (rien n'est mis en ligne)" : 'Enregistrer (mise en ligne directe)'}
+                              >
+                                {savingSettings ? '⏳ Enregistrement…' : draftSupported ? '💾 Enregistrer le brouillon' : '💾 Enregistrer'}
                               </button>
+                              {draftSupported && (
+                                <button
+                                  onClick={() => publishPage(activePage)}
+                                  disabled={busy || (st.unsaved === 0 && st.draftN === 0)}
+                                  style={{ padding: '.45rem 1.25rem', background: '#c2410c', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: busy || (st.unsaved === 0 && st.draftN === 0) ? 'default' : 'pointer', fontSize: '.85rem', opacity: busy || (st.unsaved === 0 && st.draftN === 0) ? .45 : 1 }}
+                                  title="Mettre les modifications en ligne"
+                                >
+                                  {publishing ? '⏳ Publication…' : '🚀 Publier'}
+                                </button>
+                              )}
                             </div>
                           </div>
+
+                          {/* État : brouillon / en ligne */}
+                          {!draftSupported ? (
+                            <p style={{ margin: '0 0 1rem', padding: '.55rem .8rem', borderRadius: '.5rem', background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', fontSize: '.82rem', fontWeight: 600 }}>
+                              ⚠️ Les brouillons ne sont pas disponibles sur cette base de données : « Enregistrer » met directement en ligne.
+                            </p>
+                          ) : st.unsaved > 0 ? (
+                            <p style={{ margin: '0 0 1rem', padding: '.55rem .8rem', borderRadius: '.5rem', background: '#fff8e1', border: '1px solid #f0c040', color: '#7a5c00', fontSize: '.82rem', fontWeight: 600 }}>
+                              ✏️ {st.unsaved} modification{st.unsaved > 1 ? 's' : ''} non enregistrée{st.unsaved > 1 ? 's' : ''}
+                              {st.draftN > 0 ? ` · ${st.draftN} déjà en brouillon` : ''} — le site en ligne n’est pas modifié.
+                            </p>
+                          ) : st.draftN > 0 ? (
+                            <p style={{ margin: '0 0 1rem', padding: '.55rem .8rem', borderRadius: '.5rem', background: '#fff7ed', border: '1px solid #fed7aa', color: '#9a3412', fontSize: '.82rem', fontWeight: 600 }}>
+                              📝 Brouillon : {st.draftN} modification{st.draftN > 1 ? 's' : ''} pas encore en ligne. Cliquez sur « Publier » pour les mettre en ligne.
+                            </p>
+                          ) : (
+                            <p style={{ margin: '0 0 1rem', padding: '.55rem .8rem', borderRadius: '.5rem', background: '#f0fdf4', border: '1px solid #bbf7d0', color: '#166534', fontSize: '.82rem', fontWeight: 600 }}>
+                              ✓ Tout est en ligne — aucune modification en attente.
+                            </p>
+                          )}
 
                           {showHistory && (
                             <PageHistoryPanel
@@ -2724,13 +2877,13 @@ export default function CMSAdmin() {
                           {showPreview && (
                             <div style={{ marginBottom: '1.5rem', border: '1.5px solid #ece8e2', borderRadius: '.75rem', overflow: 'hidden' }}>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '.5rem .9rem', background: '#faf8f5', borderBottom: '1px solid #ece8e2' }}>
-                                <span style={{ fontSize: '.78rem', fontWeight: 700, color: '#888' }}>👁 Aperçu — {pagePath}</span>
+                                <span style={{ fontSize: '.78rem', fontWeight: 700, color: '#888' }}>👁 Aperçu du brouillon — {pagePath}</span>
                                 <button onClick={() => setPreviewKey(k => k + 1)}
                                   style={{ background: 'none', border: 'none', color: '#01696f', cursor: 'pointer', fontSize: '.78rem', fontWeight: 600 }}>
                                   🔄 Rafraîchir
                                 </button>
                               </div>
-                              <iframe key={previewKey} src={pagePath} title={`Aperçu ${config.label}`}
+                              <iframe key={previewKey} src={`${pagePath}${pagePath.includes('?') ? '&' : '?'}cms_preview=1`} title={`Aperçu ${config.label}`}
                                 style={{ width: '100%', height: 560, border: 'none', display: 'block', background: 'white' }} />
                             </div>
                           )}
@@ -2738,7 +2891,7 @@ export default function CMSAdmin() {
                           {/* Aide à la saisie */}
                           <p style={{ fontSize: '.8rem', color: '#7a7a7a', background: '#faf8f5', border: '1px solid #ece8e2', borderRadius: '.5rem', padding: '.55rem .8rem', marginBottom: '1rem', lineHeight: 1.5 }}>
                             💡 Dans les textes longs : <code>**gras**</code>, <code>*italique*</code> et <code>[texte du lien](https://…)</code> sont reconnus.
-                            Pour masquer un texte, saisissez un simple espace. Les modifications ne sont visibles qu’après « Sauvegarder ».
+                            Pour masquer un texte, saisissez un simple espace. Vos modifications restent en brouillon tant que vous ne cliquez pas sur « Publier ».
                           </p>
 
                           {/* Recherche de champ */}
@@ -2783,7 +2936,14 @@ export default function CMSAdmin() {
                                       : section.label;
                                     return (
                                       <div key={key}>
-                                        <label style={lbl}>{shortLabel}</label>
+                                        <label style={lbl}>
+                                          {shortLabel}
+                                          {(editedContent[key] ?? '') !== (baseline[key] ?? '') && (
+                                            <span style={{ marginLeft: '.5rem', fontSize: '.68rem', fontWeight: 700, color: '#c2410c', background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: '999px', padding: '.02rem .45rem', textTransform: 'none', letterSpacing: 0 }}>
+                                              ● modifié
+                                            </span>
+                                          )}
+                                        </label>
                                         {section.type === 'image' ? (
                                           <div>
                                             {editedContent[key] && (
@@ -2839,14 +2999,23 @@ export default function CMSAdmin() {
                             ));
                           })()}
 
-                          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+                          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end', gap: '.6rem', flexWrap: 'wrap' }}>
                             <button
-                              onClick={() => savePageContent(activePage)}
-                              disabled={savingSettings}
-                              style={{ padding: '.75rem 2.25rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.95rem', opacity: savingSettings ? .7 : 1 }}
+                              onClick={() => saveDraft(activePage)}
+                              disabled={busy || st.unsaved === 0}
+                              style={{ padding: '.75rem 1.6rem', background: 'white', color: '#2d5f54', border: '1.5px solid #2d5f54', borderRadius: '.5rem', fontWeight: 700, cursor: busy || st.unsaved === 0 ? 'default' : 'pointer', fontSize: '.95rem', opacity: busy || st.unsaved === 0 ? .5 : 1 }}
                             >
-                              {savingSettings ? '⏳ Sauvegarde…' : '💾 Sauvegarder la page'}
+                              {savingSettings ? '⏳ Enregistrement…' : draftSupported ? '💾 Enregistrer le brouillon' : '💾 Enregistrer'}
                             </button>
+                            {draftSupported && (
+                              <button
+                                onClick={() => publishPage(activePage)}
+                                disabled={busy || (st.unsaved === 0 && st.draftN === 0)}
+                                style={{ padding: '.75rem 2rem', background: '#c2410c', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: busy || (st.unsaved === 0 && st.draftN === 0) ? 'default' : 'pointer', fontSize: '.95rem', opacity: busy || (st.unsaved === 0 && st.draftN === 0) ? .45 : 1 }}
+                              >
+                                {publishing ? '⏳ Publication…' : '🚀 Publier'}
+                              </button>
+                            )}
                           </div>
                         </div>
                       );

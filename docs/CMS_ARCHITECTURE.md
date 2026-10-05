@@ -58,6 +58,36 @@ Dans l'admin, la valeur s'écrit `**gras**`, `*italique*`, `[texte](https://…)
 3. Si la page a un `export const metadata` (composant serveur), garder `page.tsx` serveur et mettre le contenu dans un composant client à côté (voir `app/mentions-legales/`).
 4. Ajouter la page dans `PAGES` du test `consistency.test.ts` et dans `app/sitemap.ts`.
 
+## Brouillon / publication
+
+« Enregistrer » dans l'admin écrit un **brouillon** ; rien n'est en ligne tant qu'on ne clique pas sur **Publier**.
+
+| Action | Effet |
+|---|---|
+| Enregistrer le brouillon | n'écrit que les champs **réellement modifiés** (jamais les textes par défaut) |
+| Voir le brouillon / aperçu de l'admin | la page avec `?cms_preview=1` : brouillons par-dessus le publié, réservé aux sessions CMS connectées |
+| Publier | recopie les brouillons de la page vers le site public, puis les supprime ; régénère le SEO |
+| Abandonner | supprime les brouillons ; le site en ligne n'est pas modifié |
+
+**Stockage, sans migration SQL** : un brouillon est une ligne de `site_content` dont `page` vaut `draft:<page>`. Le site public interroge `page = '<page>'` et ne le voit donc jamais.
+Logique pure et testée seule : `lib/cms-drafts.ts`. Routes : `PUT /api/cms/content` (`draft: true`), `POST /api/cms/publish` (`publish` | `discard`), `GET /api/cms/public-content?preview=1`.
+
+**Édition en ligne** (bouton « Éditer » sur le site) : même principe. Elle enregistre en brouillon, affiche les brouillons pendant l'édition et propose « Publier ».
+Une écriture directe en ligne (sans `draft`) remplace le brouillon du même champ, pour qu'un « Publier » ultérieur n'écrase pas une modification plus récente.
+
+**Repli** : si la base refuse les brouillons (une contrainte CHECK sur `page`, code 23514), l'admin l'affiche et revient à la publication directe, après confirmation.
+
+**Historique** : le déclencheur SQL journalise aussi les lignes `draft:…` ; le panneau d'historique d'une page ne montre que les vraies mises en ligne.
+
+## Développer sans Supabase
+
+```bash
+npm run dev:mock      # faux Supabase en mémoire + site en dev ; admin : /cms-admin, mot de passe « dev-local »
+npm test              # tests unitaires et d'intégration (routes API contre le faux Supabase)
+```
+
+`scripts/mock-supabase.cjs` imite l'API REST de Supabase (select, upsert, delete, filtres) et le déclencheur d'historique. `/__state` affiche son contenu ; `/__config?rejectDrafts=1` simule une base qui refuse les brouillons.
+
 ## SEO par page
 
 Chaque page a trois champs, groupe « Référencement Google » : `seo_title`, `seo_description`, `seo_image`.

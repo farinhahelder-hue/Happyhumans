@@ -6,6 +6,8 @@ import nextVitals from 'eslint-config-next/core-web-vitals'
 export default defineConfig([
   ...nextVitals,
   {
+    // même périmètre que le plugin react-hooks de eslint-config-next (sinon les scripts .cjs plantent le lint)
+    files: ['**/*.{js,jsx,mjs,ts,tsx,mts,cts}'],
     rules: {
       '@next/next/no-img-element': 'off',
       'react/no-unescaped-entities': 'off',
