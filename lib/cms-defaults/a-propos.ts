@@ -48,4 +48,6 @@ export const A_PROPOS_DEFAULTS: Record<string, string> = {
   seo_title: "Monica Schneider — Executive Coach & Philosophical Counselling",
   seo_description: "Ex-L'Oréal, ex-LVMH. Executive Coach certifiée AoEC · EMCC Practitioner · Philosophical Counselling. Créatrice de la méthode Happiness Design. 5 langues, 12 villes.",
   seo_image: '',
+  // ── Disposition des sections (admin → Structure) : JSON {"order":[…],"hidden":[…]} ; vide = ordre d'origine ──
+  sections_layout: '',
 }

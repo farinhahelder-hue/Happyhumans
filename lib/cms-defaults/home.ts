@@ -58,4 +58,6 @@ export const HOME_DEFAULTS: Record<string, string> = {
   t_message: "Message *",
   t_votre_question_ou_demande: "Votre question ou demande…",
   t_reserver_via_calendly: "Réserver via Calendly →",
+  // ── Disposition des sections (admin → Structure) : JSON {"order":[…],"hidden":[…]} ; vide = ordre d'origine ──
+  sections_layout: '',
 }

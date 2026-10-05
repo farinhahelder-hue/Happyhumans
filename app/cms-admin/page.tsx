@@ -12,6 +12,7 @@ import CarouselGenerator from '@/components/admin/CarouselGenerator';
 import BlogGenerator from '@/components/admin/BlogGenerator';
 import { PAGE_DEFAULTS } from '@/lib/cms-page-defaults';
 import { basePage, isDraftPage, planDraftSave } from '@/lib/cms-drafts';
+import { PAGE_SECTIONS, parseLayout, fullOrder, serializeLayout, moveSection, toggleSection, type SectionDef, type SectionsLayout } from '@/lib/cms-sections';
 import { THEMES } from '@/components/DynamicTheme';
 import { NavItem } from '@/hooks/useCmsNavigation';
 
@@ -92,13 +93,62 @@ function getReadTimeMinutes(content?: string) {
 }
 
 // ─── Config pages CMS ─────────────────────────────────────────
-const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'richtext' | 'select'; options?: string[]; optionLabels?: string[] }[] }> = {
+// ── Éditeur de structure : ordre et affichage des sections d'une page ─────────────
+// (logique pure et testée : lib/cms-sections.ts). Les sections verrouillées (🔒) restent en place.
+function SectionsEditor({ defs, value, onChange }: { defs: SectionDef[]; value: string; onChange: (v: string) => void }) {
+  const layout = parseLayout(value);
+  const order = fullOrder(defs, layout);
+  const hidden = new Set(layout.hidden);
+  const byId = new Map(defs.map(d => [d.id, d]));
+  const apply = (l: SectionsLayout) => onChange(serializeLayout(defs, l));
+  const isPinned = (id: string) => !!byId.get(id)?.pin;
+  const arrow: React.CSSProperties = { width: 30, height: 30, borderRadius: '.4rem', border: '1px solid #d6d3d1', background: 'white', color: '#44403c', fontSize: '.85rem', cursor: 'pointer' };
+  if (defs.length === 0) return <p style={{ color: '#888', fontSize: '.85rem' }}>Aucune section réordonnable sur cette page.</p>;
+  return (
+    <div>
+      <p style={{ fontSize: '.8rem', color: '#7a7a7a', margin: '0 0 .75rem', lineHeight: 1.5 }}>
+        ▲ ▼ pour changer l’ordre, 👁 pour masquer ou afficher une section. Les sections 🔒 restent à leur place.
+        Cliquez ensuite sur « Enregistrer le brouillon », vérifiez l’aperçu, puis « Publier ».
+      </p>
+      <ol style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '.4rem' }}>
+        {order.map((id, i) => {
+          const def = byId.get(id)!;
+          const pinned = isPinned(id);
+          const off = hidden.has(id);
+          const canUp = !pinned && i > 0 && !isPinned(order[i - 1]);
+          const canDown = !pinned && i < order.length - 1 && !isPinned(order[i + 1]);
+          return (
+            <li key={id} style={{ display: 'flex', alignItems: 'center', gap: '.6rem', padding: '.5rem .75rem', border: '1.5px solid #ece8e2', borderRadius: '.6rem', background: off ? '#f5f5f4' : 'white', opacity: off ? .65 : 1 }}>
+              <span style={{ width: 22, color: '#a8a29e', fontSize: '.8rem', fontWeight: 700 }}>{i + 1}</span>
+              <span style={{ flex: 1, fontSize: '.9rem', fontWeight: 600, color: '#292524', textDecoration: off ? 'line-through' : 'none' }}>
+                {def.label}
+                {pinned && <span title="Section fixe : elle ne peut être ni déplacée ni masquée" style={{ marginLeft: '.5rem', fontWeight: 400, fontSize: '.75rem', color: '#78716c' }}>🔒 {def.pin === 'start' ? 'toujours en haut' : 'toujours en bas'}</span>}
+                {off && <span style={{ marginLeft: '.5rem', fontWeight: 600, fontSize: '.72rem', color: '#a16207' }}>masquée</span>}
+              </span>
+              <button type="button" aria-label={`Monter « ${def.label} »`} disabled={!canUp} onClick={() => apply(moveSection(defs, layout, id, -1))} style={{ ...arrow, opacity: canUp ? 1 : .3, cursor: canUp ? 'pointer' : 'default' }}>▲</button>
+              <button type="button" aria-label={`Descendre « ${def.label} »`} disabled={!canDown} onClick={() => apply(moveSection(defs, layout, id, 1))} style={{ ...arrow, opacity: canDown ? 1 : .3, cursor: canDown ? 'pointer' : 'default' }}>▼</button>
+              <button type="button" aria-label={off ? `Afficher « ${def.label} »` : `Masquer « ${def.label} »`} disabled={pinned} onClick={() => apply(toggleSection(defs, layout, id))} style={{ ...arrow, opacity: pinned ? .3 : 1, cursor: pinned ? 'default' : 'pointer' }}>{off ? '🚫' : '👁'}</button>
+            </li>
+          );
+        })}
+      </ol>
+      {value.trim() !== '' && (
+        <button type="button" onClick={() => onChange('')} style={{ marginTop: '.75rem', background: 'none', border: 'none', color: '#01696f', cursor: 'pointer', fontSize: '.82rem', fontWeight: 600 }}>
+          ↺ Rétablir l’ordre d’origine
+        </button>
+      )}
+    </div>
+  );
+}
+
+const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'richtext' | 'select' | 'sections'; options?: string[]; optionLabels?: string[] }[] }> = {
   // ── Ordre du panneau gauche ──────────────────────────────────
   // 1. Accueil
   'home': {
     label: 'Accueil',
     emoji: '🏠',
     sections: [
+      { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
       { key: 'hero_badge',            label: 'Hero — Badge (ex: Monica Schneider · Executive Coach)',  type: 'text' },
       { key: 'hero_title',            label: 'Hero — Titre principal',                                type: 'text' },
       { key: 'hero_subtitle',         label: 'Hero — Sous-titre / certifications',                   type: 'textarea' },
@@ -161,6 +211,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'À propos',
     emoji: '👋',
     sections: [
+      { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
       { key: 'hero_image',        label: 'Photo principale (hero)',         type: 'image' },
       { key: 'hero_badge',        label: 'Badge hero',                     type: 'text' },
       { key: 'page_title',        label: 'Titre de la page',               type: 'text' },
@@ -206,6 +257,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Coaching',
     emoji: '⭐',
     sections: [
+      { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
       { key: 'hero_image',          label: 'Image hero',                    type: 'image' },
       { key: 'hero_badge',          label: 'Hero — Badge',                  type: 'text' },
       { key: 'hero_title',          label: 'Hero — Titre',                  type: 'text' },
@@ -281,6 +333,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Organisations',
     emoji: '🏢',
     sections: [
+      { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
       { key: 'hero_image',   label: 'Hero — Image',                  type: 'image' },
       { key: 'hero_badge',   label: 'Hero — Badge',                  type: 'text' },
       { key: 'page_title',   label: 'Hero — Titre',                  type: 'text' },
@@ -364,6 +417,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Happiness Design',
     emoji: '☀️',
     sections: [
+      { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
       { key: 'hero_badge',    label: 'Hero — Badge',               type: 'text' },
       { key: 'page_title',    label: 'Hero — Titre principal (H1)', type: 'text' },
       { key: 'page_subtitle', label: 'Hero — Sous-titre',          type: 'textarea' },
@@ -377,18 +431,6 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'pourqui_2_desc',  label: 'Pour qui 2 — Description',  type: 'textarea' },
       { key: 'pourqui_3_title', label: 'Pour qui 3 — Titre',        type: 'text' },
       { key: 'pourqui_3_desc',  label: 'Pour qui 3 — Description',  type: 'textarea' },
-      { key: 'section_order_1', label: 'Ordre — Section 1', type: 'select',
-        options: ['pourqui', 'program', 'tools', 'pricing'],
-        optionLabels: ['👥 Pour qui', '🔢 Programme (12 étapes)', '🧰 Boîte à outils', '💶 Tarifs'] },
-      { key: 'section_order_2', label: 'Ordre — Section 2', type: 'select',
-        options: ['pourqui', 'program', 'tools', 'pricing'],
-        optionLabels: ['👥 Pour qui', '🔢 Programme (12 étapes)', '🧰 Boîte à outils', '💶 Tarifs'] },
-      { key: 'section_order_3', label: 'Ordre — Section 3', type: 'select',
-        options: ['pourqui', 'program', 'tools', 'pricing'],
-        optionLabels: ['👥 Pour qui', '🔢 Programme (12 étapes)', '🧰 Boîte à outils', '💶 Tarifs'] },
-      { key: 'section_order_4', label: 'Ordre — Section 4', type: 'select',
-        options: ['pourqui', 'program', 'tools', 'pricing'],
-        optionLabels: ['👥 Pour qui', '🔢 Programme (12 étapes)', '🧰 Boîte à outils', '💶 Tarifs'] },
       { key: 'program_badge', label: 'Programme — Badge',           type: 'text' },
       { key: 'program_title', label: 'Programme — Titre',           type: 'text' },
       { key: 'program_followups_note', label: 'Programme — Note sous les étapes (ex: + bonus…)', type: 'text' },
@@ -458,6 +500,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Relations & Attachement',
     emoji: '💚',
     sections: [
+      { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
       { key: 'hero_badge',          label: 'Badge intro',                         type: 'text' },
       { key: 'hero_title',          label: 'Titre principal',                     type: 'text' },
       { key: 'hero_description',    label: 'Description intro',                   type: 'textarea' },
@@ -700,6 +743,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Sparring Partner',
     emoji: '🥊',
     sections: [
+      { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
       { key: 'hero_badge',          label: 'Hero — Badge',                                  type: 'text' },
       { key: 'hero_title',          label: 'Hero — Titre principal',                        type: 'text' },
       { key: 'hero_desc',           label: 'Hero — Sous-titre / description',               type: 'textarea' },
@@ -2923,7 +2967,7 @@ export default function CMSAdmin() {
                             }
                             const searching = q.length > 0;
                             return groups.map(group => (
-                              <details key={group.name} open={searching || groups.length <= 3 || undefined}
+                              <details key={group.name} open={searching || groups.length <= 3 || group.name === 'Structure' || undefined}
                                 style={{ marginBottom: '.85rem', border: '1.5px solid #ece8e2', borderRadius: '.75rem', background: '#fdfcfa' }}>
                                 <summary style={{ padding: '.8rem 1.1rem', cursor: 'pointer', fontWeight: 700, fontSize: '.92rem', color: '#2d5f54', userSelect: 'none' }}>
                                   {group.name} <span style={{ fontWeight: 400, color: '#aaa', fontSize: '.8rem' }}>· {group.sections.length} champ{group.sections.length > 1 ? 's' : ''}</span>
@@ -2944,7 +2988,13 @@ export default function CMSAdmin() {
                                             </span>
                                           )}
                                         </label>
-                                        {section.type === 'image' ? (
+                                        {section.type === 'sections' ? (
+                                          <SectionsEditor
+                                            defs={PAGE_SECTIONS[activePage] || []}
+                                            value={editedContent[key] ?? ''}
+                                            onChange={v => setEditedContent(prev => ({ ...prev, [key]: v }))}
+                                          />
+                                        ) : section.type === 'image' ? (
                                           <div>
                                             {editedContent[key] && (
                                               <div style={{ position: 'relative', marginBottom: '.5rem', display: 'inline-block' }}>

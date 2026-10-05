@@ -149,4 +149,6 @@ export const RELATIONS_DEFAULTS: Record<string, string> = {
   seo_title: "Relations & Attachement — Comprendre vos liens",
   seo_description: "Découvrez votre style d'attachement (sécure, anxieux, évitant) et transformez durablement vos relations. Quiz gratuit · Ressources · Séance offerte avec Monica Schneider.",
   seo_image: '',
+  // ── Disposition des sections (admin → Structure) : JSON {"order":[…],"hidden":[…]} ; vide = ordre d'origine ──
+  sections_layout: '',
 }

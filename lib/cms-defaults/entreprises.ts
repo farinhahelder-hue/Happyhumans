@@ -91,4 +91,6 @@ export const ENTREPRISES_DEFAULTS: Record<string, string> = {
   seo_title: "Coaching entreprises & leadership — Happy Humans",
   seo_description: "Coaching de dirigeants, prise de poste, ateliers de cohésion et séminaires sur mesure. Monica Schneider accompagne les équipes et organisations pour remettre de l'alignement.",
   seo_image: '',
+  // ── Disposition des sections (admin → Structure) : JSON {"order":[…],"hidden":[…]} ; vide = ordre d'origine ──
+  sections_layout: '',
 };

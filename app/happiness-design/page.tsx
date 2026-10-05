@@ -5,6 +5,7 @@ import Footer from '@/components/Footer'
 import Link from 'next/link'
 import { useCmsContent } from '@/hooks/useCmsContent'
 import { HAPPINESS_DESIGN_DEFAULTS } from '@/lib/cms-defaults/happiness-design'
+import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
 
 const STEP_DESCS = [
   'Neurosciences + gratitude',
@@ -57,6 +58,26 @@ export default function HappinessDesignPage() {
 
   // ── Sections centrales réordonnables via le CMS ──────────────
   const sectionsJsx: Record<string, ReactNode> = {
+    hero: (
+      <section className="bg-stone-900 px-6 py-24 md:py-32 md:px-10 text-center relative overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=1600&q=80&auto=format&fit=crop"
+          alt={c.t_lumiere_doree_symbolisant_la}
+          className="absolute inset-0 h-full w-full object-cover opacity-20"
+        />
+        <div className="relative mx-auto max-w-3xl">
+          <p className="mb-5 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">{c.get('hero_badge')}</p>
+          <h1 className="text-4xl font-serif font-light leading-tight text-white md:text-6xl">{c.get('page_title')}</h1>
+          <p className="mt-5 text-xl font-serif font-light text-amber-300 md:text-2xl">{c.get('page_subtitle', undefined, { multiline: true })} <em className="text-stone-400 text-base">{c.t_par_happy_humans}</em></p>
+          <p className="mt-7 text-base leading-relaxed text-stone-300 max-w-2xl mx-auto">{c.get('intro_text', undefined, { multiline: true })}</p>
+          <div className="mt-10">
+            <Link href="/booking?from=happiness-design" className="rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition">
+              {c.get('hero_cta')}
+            </Link>
+          </div>
+        </div>
+      </section>
+    ),
     pourqui: (
       <section className="bg-white px-6 py-16 md:py-20 md:px-10">
         <div className="mx-auto max-w-4xl">
@@ -201,56 +222,29 @@ export default function HappinessDesignPage() {
         </div>
       </section>
     ),
+    cta: (
+      <section className="bg-[#2d5f54] py-16 text-center">
+        <div className="mx-auto max-w-xl px-6">
+          <h2 className="mb-4 text-2xl font-serif font-light text-white">{c.get('cta_title')}</h2>
+          <p className="text-sm text-emerald-100 mb-7">{c.get('cta_subtitle', undefined, { multiline: true })}</p>
+          <Link href="/booking?from=happiness-design" className="rounded-full bg-white px-8 py-3 text-sm font-semibold text-[#2d5f54] hover:bg-amber-50 transition">
+            {c.get('cta_button')}
+          </Link>
+        </div>
+      </section>
+    ),
   }
 
-  // Ordre configuré dans le CMS, avec doublons ignorés et sections manquantes ajoutées à la fin
-  const DEFAULT_ORDER = ['pourqui', 'program', 'tools', 'pricing']
-  const configured = [c.section_order_1, c.section_order_2, c.section_order_3, c.section_order_4]
-    .filter(s => DEFAULT_ORDER.includes(s))
-  const sectionOrder = Array.from(new Set(configured))
-  for (const s of DEFAULT_ORDER) if (!sectionOrder.includes(s)) sectionOrder.push(s)
+  // Ordre et affichage des sections : modifiables dans le CMS (admin → page → Structure)
+  const sectionIds = resolveSections(PAGE_SECTIONS['happiness-design'], c.sections_layout)
 
   return (
     <>
       <Header />
       <main className="pt-[72px]">
-
-        {/* HERO */}
-        <section className="bg-stone-900 px-6 py-24 md:py-32 md:px-10 text-center relative overflow-hidden">
-          <img
-            src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=1600&q=80&auto=format&fit=crop"
-            alt={c.t_lumiere_doree_symbolisant_la}
-            className="absolute inset-0 h-full w-full object-cover opacity-20"
-          />
-          <div className="relative mx-auto max-w-3xl">
-            <p className="mb-5 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">{c.get('hero_badge')}</p>
-            <h1 className="text-4xl font-serif font-light leading-tight text-white md:text-6xl">{c.get('page_title')}</h1>
-            <p className="mt-5 text-xl font-serif font-light text-amber-300 md:text-2xl">{c.get('page_subtitle', undefined, { multiline: true })} <em className="text-stone-400 text-base">{c.t_par_happy_humans}</em></p>
-            <p className="mt-7 text-base leading-relaxed text-stone-300 max-w-2xl mx-auto">{c.get('intro_text', undefined, { multiline: true })}</p>
-            <div className="mt-10">
-              <Link href="/booking?from=happiness-design" className="rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition">
-                {c.get('hero_cta')}
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* SECTIONS CENTRALES — ordre configurable dans le CMS */}
-        {sectionOrder.map(id => (
+        {sectionIds.map(id => (
           <Fragment key={id}>{sectionsJsx[id]}</Fragment>
         ))}
-
-        {/* CTA FINAL */}
-        <section className="bg-[#2d5f54] py-16 text-center">
-          <div className="mx-auto max-w-xl px-6">
-            <h2 className="mb-4 text-2xl font-serif font-light text-white">{c.get('cta_title')}</h2>
-            <p className="text-sm text-emerald-100 mb-7">{c.get('cta_subtitle', undefined, { multiline: true })}</p>
-            <Link href="/booking?from=happiness-design" className="rounded-full bg-white px-8 py-3 text-sm font-semibold text-[#2d5f54] hover:bg-amber-50 transition">
-              {c.get('cta_button')}
-            </Link>
-          </div>
-        </section>
-
       </main>
       <Footer />
     </>

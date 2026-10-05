@@ -88,6 +88,20 @@ npm test              # tests unitaires et d'intégration (routes API contre le 
 
 `scripts/mock-supabase.cjs` imite l'API REST de Supabase (select, upsert, delete, filtres) et le déclencheur d'historique. `/__state` affiche son contenu ; `/__config?rejectDrafts=1` simule une base qui refuse les brouillons.
 
+## Sections réordonnables
+
+Sur 7 pages (Accueil, À propos, Coaching, Organisations, Sparring Partner, Relations, Happiness Design), le groupe **Structure** de l'admin permet de **réordonner et masquer** les sections.
+Le bandeau d'ouverture (en haut) et l'appel à l'action final (en bas) sont verrouillés : la page garde toujours un début et une fin cohérents.
+
+- Registre : `PAGE_SECTIONS` dans `lib/cms-sections.ts` (id stable + libellé par section). Logique pure et testée.
+- Stockage : un seul champ `sections_layout` (JSON `{"order":[…],"hidden":[…]}`). Vide = ordre d'origine, donc une page jamais modifiée s'affiche à l'identique.
+- Il suit le circuit brouillon / publication comme tout autre champ. Un JSON invalide retombe sur l'ordre d'origine.
+- Dans la page : les `<section>` de `<main>` sont dans un objet `sections`, et `resolveSections(PAGE_SECTIONS.x, c.sections_layout)` donne l'ordre à rendre.
+
+Pour ajouter une section : l'ajouter à l'objet `sections` de la page ET à `PAGE_SECTIONS`. Pour rendre une nouvelle page réordonnable : l'ajouter à `PAGE_SECTIONS`, un champ `sections_layout` (type `sections`) dans `PAGES_CONFIG`, et la valeur `sections_layout: ''` dans ses défauts.
+
+Limites : on ne peut pas dupliquer une section (chacune lit ses propres champs), et la disposition s'applique après le chargement du contenu, comme tous les textes du CMS (le HTML serveur est dans l'ordre d'origine).
+
 ## SEO par page
 
 Chaque page a trois champs, groupe « Référencement Google » : `seo_title`, `seo_description`, `seo_image`.

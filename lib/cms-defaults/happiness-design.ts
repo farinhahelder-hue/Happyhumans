@@ -19,10 +19,6 @@ export const HAPPINESS_DESIGN_DEFAULTS: Record<string, string> = {
   pourqui_3_title: 'Vous voulez reprendre les rênes',
   pourqui_3_desc:  "Pas juste 'aller mieux' — reprendre activement en main votre bonheur, vos relations, votre impact. Avec des outils concrets, pas du développement personnel vague.",
   // Ordre des sections centrales (modifiable dans le CMS)
-  section_order_1: 'pourqui',
-  section_order_2: 'program',
-  section_order_3: 'tools',
-  section_order_4: 'pricing',
   // Program section
   program_badge:       'Le programme',
   program_title:       '12 séances + 4 follow-ups',
@@ -67,4 +63,6 @@ export const HAPPINESS_DESIGN_DEFAULTS: Record<string, string> = {
   seo_title: "Happiness Design — Programme 12 séances",
   seo_description: "Programme Happiness Design créé par Monica Schneider : 12 séances combinant neurosciences, philosophie pratique, psychologie positive et design thinking pour reprendre les rênes de votre vie.",
   seo_image: '',
+  // ── Disposition des sections (admin → Structure) : JSON {"order":[…],"hidden":[…]} ; vide = ordre d'origine ──
+  sections_layout: '',
 }
