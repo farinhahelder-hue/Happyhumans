@@ -7,8 +7,8 @@ import MaintenanceGate from '@/components/MaintenanceGate';
 import { InlineEditProvider } from '@/contexts/InlineEditContext';
 import InlineEditor from '@/components/InlineEditor';
 import { getKvSettings } from '@/lib/cms-settings-server';
+import { SITE_URL } from '@/lib/site-url';
 
-const SITE_URL = 'https://happyhumans.vercel.app';
 
 export const viewport: Viewport = {
   themeColor: '#2d5f54',

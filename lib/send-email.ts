@@ -1,3 +1,5 @@
+import { SITE_URL } from './site-url';
+
 // Envoi d'email via Brevo — utilisé directement côté serveur (pas d'appel HTTP à soi-même)
 export async function sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
   const apiKey = process.env.BREVO_API_KEY;
@@ -63,7 +65,7 @@ export function contactConfirmationHtml(name: string) {
       <h1 style="font-size:26px;font-weight:400;margin:0 0 24px">Votre message est bien arrivé.</h1>
       <p style="font-size:15px;line-height:1.7;color:#444">Merci ${esc(name)} — je réponds personnellement sous 48h.</p>
       <div style="margin:32px 0;text-align:center">
-        <a href="https://happyhumans.vercel.app/booking" style="display:inline-block;background:#2d5f54;color:white;text-decoration:none;padding:12px 28px;border-radius:24px;font-size:13px;font-weight:600">Réserver une séance →</a>
+        <a href="${SITE_URL}/booking" style="display:inline-block;background:#2d5f54;color:white;text-decoration:none;padding:12px 28px;border-radius:24px;font-size:13px;font-weight:600">Réserver une séance →</a>
       </div>
       <p style="font-size:13px;color:#c9a96e;margin-top:32px;font-style:italic">— Monica Schneider, Happy Humans</p>
     </div>`;

@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { getKvSettings } from '@/lib/cms-settings-server';
+import { SITE_URL as BASE_URL } from '@/lib/site-url';
 
-const BASE_URL = 'https://happyhumans.vercel.app';
 
 // Pages pilotables depuis le CMS (Paramètres → Visibilité pages)
 const TOGGLABLE_PAGES = [

@@ -10,10 +10,13 @@ import NewsletterForm from '@/components/NewsletterForm'
 import ShareButtons from '@/components/ShareButtons'
 import EnhancedRichContent from '@/components/EnhancedRichContent'
 import { sanitizeHtml } from '@/lib/sanitize-html'
+import { SITE_URL as CONFIGURED_SITE_URL, SITE_URL_IS_CONFIGURED } from '@/lib/site-url'
 
 export const revalidate = 60
 
-const SITE_URL = 'https://happyhumans.fr'
+// Les articles gardent leur domaine actuel (happyhumans.fr) tant que NEXT_PUBLIC_SITE_URL n'est pas renseignée ;
+// dès qu'elle l'est, tout le site (accueil, sitemap, robots, articles, e-mails) suit la même adresse.
+const SITE_URL = SITE_URL_IS_CONFIGURED ? CONFIGURED_SITE_URL : 'https://happyhumans.fr'
 const DEFAULT_OG = `${SITE_URL}/og-default.jpg`
 
 interface Props {

@@ -111,6 +111,15 @@ Chaque sauvegarde d'un champ `seo_*` régénère la page (`revalidatePath` dans 
 `pageMetadata` définit aussi l'URL canonique et `og:url` **propres à chaque page** (avant, toutes pointaient vers l'accueil).
 La page d'accueil utilise les réglages globaux (Paramètres → SEO).
 
+## Sécurité — règles à garder
+
+- **Authentification des routes** : toute route de `app/api/` doit appeler `requireCmsAuth(req)`, OU figurer dans `PUBLIC_ROUTES` de `__tests__/api/cms-protected-routes.test.ts` avec sa raison. Ce test échoue sinon.
+- **Session d'édition en ligne** : le cookie `hh_cms_edit` est un jeton **signé** (HMAC, 2 h, httpOnly) émis par `proxy.ts` et vérifié par `verifyEditSession` (`lib/cms-auth.ts`). Ne jamais faire confiance à la simple présence d'un cookie. `hh_cms_ui` n'est qu'un indicateur d'affichage, sans aucun accès.
+- **E-mails** : toute valeur saisie par un visiteur passe par `esc()` (`lib/send-email.ts`) avant d'entrer dans un gabarit HTML.
+- **Aperçu des brouillons** : `?preview=1` n'est honoré que pour une session CMS authentifiée.
+- **Secrets** : jamais dans le code ni dans le dépôt (public). Variables d'environnement uniquement : voir `.env.example`.
+- **URL du site** : `lib/site-url.ts` (variable `NEXT_PUBLIC_SITE_URL`) ; ne pas écrire de nom de domaine en dur.
+
 ## Ce qui n'est PAS dans le CMS
 
 - Le quiz d'attachement (`components/attachment-test/`) : questions, scores et résultats sont dans le code.

@@ -1,8 +1,8 @@
 import { MetadataRoute } from 'next';
 import { getKvSettings, isPageIndexable } from '@/lib/cms-settings-server';
 import { getAllPosts } from '@/lib/blog-supabase';
+import { SITE_URL as BASE_URL } from '@/lib/site-url';
 
-const BASE_URL = 'https://happyhumans.vercel.app';
 
 type Freq = 'weekly' | 'monthly' | 'yearly';
 
