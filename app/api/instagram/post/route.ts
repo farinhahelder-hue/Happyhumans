@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { postToInstagram, isInstagramConfigured } from '@/lib/instagram';
+import { requireCmsAuth } from '@/lib/cms-auth';
 
 /**
  * API route to publish content to Instagram
@@ -13,6 +14,10 @@ import { postToInstagram, isInstagramConfigured } from '@/lib/instagram';
  * Requires INSTAGRAM_ACCESS_TOKEN and INSTAGRAM_BUSINESS_ACCOUNT_ID env vars
  */
 export async function POST(request: NextRequest) {
+  // Route d'administration : réservée aux sessions CMS authentifiées (avant : ouverte à tout le monde)
+  const authError = requireCmsAuth(request);
+  if (authError) return authError;
+
   // Check if Instagram is configured
   if (!isInstagramConfigured()) {
     return NextResponse.json(
@@ -66,7 +71,11 @@ export async function POST(request: NextRequest) {
 /**
  * GET - Check Instagram configuration status
  */
-export async function GET() {
+export async function GET(req: Request) {
+  // Route d'administration : réservée aux sessions CMS authentifiées (avant : ouverte à tout le monde)
+  const authError = requireCmsAuth(req);
+  if (authError) return authError;
+
   const configured = isInstagramConfigured();
   
   return NextResponse.json({

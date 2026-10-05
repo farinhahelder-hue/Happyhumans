@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server';
+import { requireCmsAuth } from '@/lib/cms-auth';
 
-export async function GET() {
+export async function GET(req: Request) {
+  // Route d'administration : réservée aux sessions CMS authentifiées (avant : ouverte à tout le monde)
+  const authError = requireCmsAuth(req);
+  if (authError) return authError;
+
   return NextResponse.json({ 
     ok: true, 
     message: 'Test endpoint working',

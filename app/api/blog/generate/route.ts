@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireCmsAuth } from '@/lib/cms-auth';
 
 export const maxDuration = 60
 
@@ -46,6 +47,10 @@ function getVerifiedInfo(topic: string): string {
  * Generate blog content using Groq API (same as carousel)
  */
 export async function POST(req: NextRequest) {
+  // Route d'administration : réservée aux sessions CMS authentifiées (avant : ouverte à tout le monde)
+  const authError = requireCmsAuth(req);
+  if (authError) return authError;
+
   const GROQ_API_KEY = process.env.GROQ_API_KEY || ''
   
   if (!GROQ_API_KEY) {

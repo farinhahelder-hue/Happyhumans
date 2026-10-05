@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireCmsAuth } from '@/lib/cms-auth';
 
 // Verified local attractions to prevent AI hallucinations
 const VERIFIED_GUIDE: Record<string, any> = {
@@ -36,6 +37,10 @@ function getGuideForTopic(topic: string): string {
 }
 
 export async function POST(request: NextRequest) {
+  // Route d'administration : réservée aux sessions CMS authentifiées (avant : ouverte à tout le monde)
+  const authError = requireCmsAuth(request);
+  if (authError) return authError;
+
   const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
   const UNSPLASH_ACCESS_KEY = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY || '';
   

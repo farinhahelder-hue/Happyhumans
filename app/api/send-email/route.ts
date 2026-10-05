@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendEmail, bookingConfirmationHtml, contactConfirmationHtml, adminNotifHtml } from '@/lib/send-email';
+import { requireCmsAuth } from '@/lib/cms-auth';
 
 // Endpoint HTTP pour tests manuels ou intégrations tierces
 // Les routes internes (booking, contact) utilisent lib/send-email directement
 export async function POST(req: NextRequest) {
+  // Route d'administration : réservée aux sessions CMS authentifiées (avant : ouverte à tout le monde)
+  const authError = requireCmsAuth(req);
+  if (authError) return authError;
+
   const { type, to, data } = await req.json();
 
   if (!to || !type) {
