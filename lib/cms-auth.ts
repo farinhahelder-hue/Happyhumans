@@ -132,6 +132,38 @@ function parseCookies(cookieHeader: string | null) {
   return cookies;
 }
 
+// ── Session d'édition en ligne (cookie « hh_cms_edit ») ──────────────────────────────────────────
+// Le proxy émet ce cookie après validation du lien d'édition (jeton de 5 min généré par l'admin) : c'est un jeton
+// SIGNÉ (HMAC-SHA256) valable 2 h, httpOnly. Avant, le cookie valait simplement « 1 » et n'importe quel visiteur
+// pouvait le fabriquer pour écrire en ligne et lire toutes les données du CMS : il est désormais vérifié ici.
+export const CMS_EDIT_COOKIE = 'hh_cms_edit';
+export const CMS_EDIT_UI_COOKIE = 'hh_cms_ui'; // simple indicateur d'affichage (bouton « Éditer »), ne donne AUCUN accès
+
+// Même ordre de repli que app/api/cms/generate-edit-token et proxy.ts
+function getEditSecret() {
+  return (
+    process.env.CMS_HMAC_SECRET?.trim() ||
+    process.env.CMS_SESSION_SECRET?.trim() ||
+    process.env.CMS_PASSWORD?.trim() ||
+    null
+  );
+}
+
+export function verifyEditSession(token: string | null | undefined): boolean {
+  const secret = getEditSecret();
+  if (!secret || !token) return false;
+  const [encoded, signature] = token.split('.');
+  if (!encoded || !signature) return false;
+  if (!safeEqual(signature, signSessionPayload(encoded, secret))) return false;
+  try {
+    const payload = JSON.parse(base64UrlDecode(encoded)) as { kind?: unknown; exp?: unknown };
+    // kind : un lien d'édition de 5 min (sans kind) ne peut pas servir de session
+    return payload.kind === 'edit-session' && typeof payload.exp === 'number' && Math.floor(Date.now() / 1000) < payload.exp;
+  } catch {
+    return false;
+  }
+}
+
 export function getCmsSessionToken() {
   const secret = getSessionSecret();
   return secret ? createSessionToken(secret) : null;
@@ -177,8 +209,8 @@ export function getCmsAuthStatus(req: Request): CmsAuthStatus {
     return 'ok';
   }
 
-  // Cookie posé par le middleware après validation du token d’édition inline (hh_cms_edit=1)
-  if (cookies['hh_cms_edit'] === '1') {
+  // Session d'édition en ligne : jeton signé posé par le proxy après validation du lien d'édition
+  if (verifyEditSession(cookies[CMS_EDIT_COOKIE])) {
     return 'ok';
   }
 

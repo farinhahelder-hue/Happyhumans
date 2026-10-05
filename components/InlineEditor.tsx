@@ -4,7 +4,8 @@ import { useInlineEdit } from '@/contexts/InlineEditContext';
 
 function getCmsEditCookie(): boolean {
   if (typeof document === 'undefined') return false;
-  const match = document.cookie.match(/(?:^|;\s*)hh_cms_edit=([^;]*)/);
+  // Indicateur d'affichage posé par le proxy en même temps que la session signée (httpOnly) : il ne donne aucun accès
+  const match = document.cookie.match(/(?:^|;\s*)hh_cms_ui=([^;]*)/);
   return match !== null && match[1] === '1';
 }
 

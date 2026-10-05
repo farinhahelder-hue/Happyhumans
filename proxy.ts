@@ -22,6 +22,32 @@ async function verifySignature(data: string, signature: string, secret: string):
   } catch { return false }
 }
 
+const b64url = (str: string) => btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '')
+const EDIT_SESSION_SECONDS = 2 * 60 * 60
+
+async function hmacHex(data: string, secret: string): Promise<string> {
+  const encoder = new TextEncoder()
+  const key = await crypto.subtle.importKey('raw', encoder.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
+  return hex(new Uint8Array(await crypto.subtle.sign('HMAC', key, encoder.encode(data))))
+}
+
+// Session d'édition : jeton signé { kind, iat, exp } — vérifié côté serveur par lib/cms-auth.ts (verifyEditSession)
+async function createEditSession(secret: string): Promise<string> {
+  const now = Math.floor(Date.now() / 1000)
+  const payload = b64url(JSON.stringify({ kind: 'edit-session', iat: now, exp: now + EDIT_SESSION_SECONDS }))
+  return `${payload}.${await hmacHex(payload, secret)}`
+}
+
+async function isValidEditSession(token: string | undefined, secret: string): Promise<boolean> {
+  if (!token || !secret) return false
+  const [payload, signature] = token.split('.')
+  if (!payload || !signature || !(await verifySignature(payload, signature, secret))) return false
+  try {
+    const data = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')))
+    return data?.kind === 'edit-session' && typeof data.exp === 'number' && Math.floor(Date.now() / 1000) < data.exp
+  } catch { return false }
+}
+
 export async function proxy(req: NextRequest) {
   const res = NextResponse.next()
 
@@ -39,12 +65,17 @@ export async function proxy(req: NextRequest) {
           const url = req.nextUrl.clone()
           url.searchParams.delete('cms_edit_token')
           const redirectRes = NextResponse.redirect(url)
-          redirectRes.cookies.set('hh_cms_edit', '1', {
-            httpOnly: false,
+          const secure = process.env.NODE_ENV === 'production'
+          // Session d'édition SIGNÉE, illisible par JavaScript : c'est elle qui donne l'accès côté serveur
+          redirectRes.cookies.set('hh_cms_edit', await createEditSession(secret), {
+            httpOnly: true,
             sameSite: 'lax',
-            maxAge: 60 * 60 * 2,
+            secure,
+            maxAge: EDIT_SESSION_SECONDS,
             path: '/',
           })
+          // Indicateur d'affichage seulement (bouton « Éditer ») : fabriquable par n'importe qui, ne donne aucun accès
+          redirectRes.cookies.set('hh_cms_ui', '1', { httpOnly: false, sameSite: 'lax', secure, maxAge: EDIT_SESSION_SECONDS, path: '/' })
           return redirectRes
         }
       } catch { /* invalid payload */ }
@@ -55,11 +86,8 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Check for CMS edit flag or active session
-  const editCookie = req.cookies.get('hh_cms_edit')
-  
-  // If we already have the edit cookie, pass through
-  if (editCookie?.value === '1') {
+  // Session d'édition valide (signature + expiration vérifiées) : on le signale, sans jamais se fier à la seule présence du cookie
+  if (await isValidEditSession(req.cookies.get('hh_cms_edit')?.value, getSecret())) {
     res.headers.set('x-cms-edit', '1')
   }
 

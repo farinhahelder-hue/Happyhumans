@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { createClient } from '@supabase/supabase-js';
 import { createHmac } from 'node:crypto';
+import { verifyEditSession } from '@/lib/cms-auth';
 
 const CMS_SESSION_COOKIE = 'happyhumans_cms_session';
 
@@ -32,8 +33,8 @@ function parseSessionPayload(token: string, secret: string): { exp: number; iat:
 async function isCmsUser(): Promise<boolean> {
   try {
     const cookieStore = await cookies();
-    const editCookie = cookieStore.get('hh_cms_edit');
-    if (editCookie?.value === '1') return true;
+    // Session d'édition en ligne : jeton signé (avant : le cookie « 1 », que n'importe qui pouvait fabriquer)
+    if (verifyEditSession(cookieStore.get('hh_cms_edit')?.value)) return true;
 
     const sessionCookie = cookieStore.get(CMS_SESSION_COOKIE);
     if (!sessionCookie?.value) return false;

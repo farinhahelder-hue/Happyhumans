@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireCmsAuth } from '@/lib/cms-auth';
 
 /**
  * API route to generate AI content using local Ollama
@@ -13,6 +14,10 @@ import { NextRequest, NextResponse } from 'next/server';
  * Requires OLLAMA_MODEL environment variable (default: llama3)
  */
 export async function POST(request: NextRequest) {
+  // Route d'administration : réservée aux sessions CMS authentifiées (avant : ouverte à tout le monde)
+  const authError = requireCmsAuth(request);
+  if (authError) return authError;
+
   try {
     const body = await request.json();
     const { topic = 'voyages', platform = 'instagram' } = body;
@@ -79,7 +84,11 @@ export async function POST(request: NextRequest) {
 /**
  * GET - Check Ollama configuration status
  */
-export async function GET() {
+export async function GET(req: Request) {
+  // Route d'administration : réservée aux sessions CMS authentifiées (avant : ouverte à tout le monde)
+  const authError = requireCmsAuth(req);
+  if (authError) return authError;
+
   const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
   const ollamaModel = process.env.OLLAMA_MODEL || 'llama3';
 
