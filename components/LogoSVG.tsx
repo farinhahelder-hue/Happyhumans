@@ -1,4 +1,5 @@
 'use client'
+import { useId } from 'react'
 
 interface LogoSVGProps {
   size?: number
@@ -8,7 +9,8 @@ interface LogoSVGProps {
 
 export default function LogoSVG({ size = 44, className = '', showGradient = true }: LogoSVGProps) {
   const viewBox = 44
-  const gradientId = `logoGradient-${Math.random().toString(36).substr(2, 9)}`
+  // useId : identique côté serveur et client (Math.random() provoquait une erreur d'hydratation)
+  const gradientId = `logoGradient-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`
   
   return (
     <svg 

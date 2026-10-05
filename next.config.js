@@ -43,9 +43,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   images: {
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 2678400,
@@ -89,11 +86,6 @@ const nextConfig = {
     ],
   },
   compress: true,
-  eslint: { ignoreDuringBuilds: true },
-  typescript: { ignoreBuildErrors: true },
-  experimental: {
-    optimizePackageImports: ['lodash'],
-  },
   staticPageGenerationTimeout: 300,
 
   async headers() {

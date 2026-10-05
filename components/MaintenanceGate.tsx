@@ -29,9 +29,9 @@ function parseSessionPayload(token: string, secret: string): { exp: number; iat:
   return null;
 }
 
-function isCmsUser(): boolean {
+async function isCmsUser(): Promise<boolean> {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const editCookie = cookieStore.get('hh_cms_edit');
     if (editCookie?.value === '1') return true;
 
@@ -68,7 +68,7 @@ async function isMaintenanceMode(): Promise<boolean> {
 export default async function MaintenanceGate({ children }: { children: React.ReactNode }) {
   const maintenance = await isMaintenanceMode();
   // Allow CMS users to bypass maintenance mode
-  if (maintenance && !isCmsUser()) {
+  if (maintenance && !(await isCmsUser())) {
     return (
       <div style={{ minHeight: '100vh', background: '#f5f0e8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui, sans-serif' }}>
         <div style={{ textAlign: 'center', maxWidth: 480, padding: '2rem' }}>

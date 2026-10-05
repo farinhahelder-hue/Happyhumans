@@ -22,7 +22,7 @@ async function verifySignature(data: string, signature: string, secret: string):
   } catch { return false }
 }
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const res = NextResponse.next()
 
   // Check ?cms_edit_token=... param (passed from CMS admin via generate-edit-token)
@@ -30,7 +30,7 @@ export async function middleware(req: NextRequest) {
   if (tokenFromParam) {
     const secret = getSecret()
     const parts = tokenFromParam.split('.')
-    const valid = parts.length === 2 && !!secret && await verifySignature(parts[0], parts[1], secret)
+    const valid = parts.length === 2 && !!secret && (await verifySignature(parts[0], parts[1], secret))
 
     if (valid) {
       try {

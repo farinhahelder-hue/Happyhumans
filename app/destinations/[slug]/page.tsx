@@ -7,7 +7,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
 interface Props {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 type DestinationMeta = {
@@ -130,7 +130,8 @@ export async function generateStaticParams() {
   return getAllDestinationSlugs()
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata(props: Props) {
+  const params = await props.params;
   const page = getDestinationBySlug(params.slug)
   const meta = DEST_META[params.slug]
   const title = page?.title || params.slug
@@ -147,7 +148,8 @@ export async function generateMetadata({ params }: Props) {
   }
 }
 
-export default function DestinationPage({ params }: Props) {
+export default async function DestinationPage(props: Props) {
+  const params = await props.params;
   const page = getDestinationBySlug(params.slug)
   if (!page) notFound()
 

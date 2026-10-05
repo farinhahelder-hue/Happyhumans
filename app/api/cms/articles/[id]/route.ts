@@ -16,7 +16,8 @@ function withoutVoiceNotes(payload: Record<string, unknown>) {
 
 export const dynamic = 'force-dynamic'
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const authError = requireCmsAuth(req)
   if (authError) return authError
 
@@ -30,7 +31,8 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   return NextResponse.json({ article: data })
 }
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const authError = requireCmsAuth(req)
   if (authError) return authError
 
@@ -58,7 +60,8 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   return NextResponse.json({ article: data })
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const authError = requireCmsAuth(req)
   if (authError) return authError
 

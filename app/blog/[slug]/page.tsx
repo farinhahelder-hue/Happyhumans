@@ -17,7 +17,7 @@ const SITE_URL = 'https://happyhumans.fr'
 const DEFAULT_OG = `${SITE_URL}/og-default.jpg`
 
 interface Props {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 export async function generateStaticParams() {
@@ -25,7 +25,8 @@ export async function generateStaticParams() {
   return slugs.map(({ slug }) => ({ slug }))
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const post = await getPostBySlug(params.slug)
   if (!post) return { title: 'Article introuvable | Happy Humans' }
 
@@ -155,7 +156,8 @@ const HERO_FALLBACK: Record<string, string> = {
   'Guides Pratiques': 'bg-gradient-to-br from-slate-900 via-stone-800 to-zinc-900',
 }
 
-export default async function BlogPostPage({ params }: Props) {
+export default async function BlogPostPage(props: Props) {
+  const params = await props.params;
   const post = await getPostBySlug(params.slug)
   if (!post) notFound()
 
