@@ -14,7 +14,9 @@ export default function InlineEditor() {
   const [isCmsUser, setIsCmsUser] = useState(false);
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'partial'; message: string } | null>(null);
 
+  // Lecture du cookie reportée après hydratation pour éviter tout mismatch serveur/client.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydratation : document.cookie côté client uniquement
     setIsCmsUser(getCmsEditCookie());
   }, []);
 

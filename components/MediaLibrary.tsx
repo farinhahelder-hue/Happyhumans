@@ -51,6 +51,7 @@ export default function MediaLibrary({ onSelect, onClose }: Props) {
     }
   }, [folder]);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- chargement des médias depuis l'API
   useEffect(() => { if (tab === 'library') loadFiles(); }, [tab, loadFiles]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

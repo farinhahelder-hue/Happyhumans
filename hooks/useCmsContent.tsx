@@ -78,7 +78,9 @@ export type CmsResult = {
 
 export function useCmsContent(page: string, defaults: CmsContent = {}): CmsResult {
   const defaultsRef = useRef(defaults);
-  defaultsRef.current = defaults;
+  useEffect(() => {
+    defaultsRef.current = defaults;
+  });
 
   const [content, setContent] = useState<CmsContent>(() => getInitial(page, defaults));
   const fetchedRef = useRef(false);
@@ -89,6 +91,7 @@ export function useCmsContent(page: string, defaults: CmsContent = {}): CmsResul
   const reportDrafts = edit?.reportDrafts;
   const [urlPreview, setUrlPreview] = useState(false);
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydratation : window.location côté client uniquement
     try { setUrlPreview(new URLSearchParams(window.location.search).get('cms_preview') === '1'); } catch { /* ignore */ }
   }, []);
   const preview = urlPreview || !!edit?.isEditing;
@@ -163,6 +166,8 @@ export function useCmsContent(page: string, defaults: CmsContent = {}): CmsResul
     );
   }, [content, page]);
 
-  // Build the result object without mutating a potentially-frozen object
+  // Build the result object without mutating a potentially-frozen object.
+  // Objet à prototype null : les clés CMS arbitraires (ex. "__proto__") ne doivent pas toucher Object.prototype.
+  // eslint-disable-next-line react-hooks/refs -- faux positif : `content` est un state, pas une ref
   return Object.assign(Object.create(null), content, { get, content }) as CmsResult;
 }

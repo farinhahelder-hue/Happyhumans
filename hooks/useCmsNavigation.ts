@@ -33,6 +33,7 @@ export function useCmsNavigation(): { nav: NavItem[]; loading: boolean } {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- chargement initial depuis l'API
     setLoading(true);
     fetch('/api/cms/navigation')
       .then(r => r.ok ? r.json() : { nav: null })

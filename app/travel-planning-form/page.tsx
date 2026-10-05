@@ -84,6 +84,7 @@ export default function TravelPlanningForm() {
   const set = (field: keyof FormData, value: string) =>
     setForm((f) => ({ ...f, [field]: value }))
 
+  // Pré-remplissage depuis l'URL après hydratation (window indisponible côté serveur).
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search)
     const destinationFromQuery = searchParams.get('destination')
@@ -92,6 +93,7 @@ export default function TravelPlanningForm() {
     const normalized = destinationFromQuery.trim()
     if (!normalized) return
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- initialisation depuis l'URL côté client uniquement
     setForm((prev) => {
       if (prev.destinationDetail) {
         return prev

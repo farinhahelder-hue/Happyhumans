@@ -304,7 +304,9 @@ function ArticleCard({ post }: { post: BlogPost & { formattedDate: string } }) {
   const fallbackBg = CATEGORY_FALLBACK_BG[post.category ?? ''] ?? 'bg-stone-200'
   const [imageSrc, setImageSrc] = useState(post.featured_image ?? BADGE_FALLBACK_SRC)
 
+  // Resynchronise l'image si l'article change (ex. après un fallback onError).
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset sur changement de prop
     setImageSrc(post.featured_image ?? BADGE_FALLBACK_SRC)
   }, [post.featured_image])
 

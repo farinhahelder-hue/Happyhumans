@@ -40,6 +40,7 @@ export default function ArticleForm({ articleId, onSave, onCancel }: ArticleForm
 
   useEffect(() => {
     if (articleId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- chargement de l'article depuis l'API
       fetchArticle();
     }
   }, [articleId, fetchArticle]);

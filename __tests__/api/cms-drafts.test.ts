@@ -2,7 +2,7 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
 import type { AddressInfo } from 'node:net'
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+// scripts/mock-supabase.cjs est du CJS sans types : require volontaire.
 const { createMockSupabase } = require('../../scripts/mock-supabase.cjs')
 
 /**

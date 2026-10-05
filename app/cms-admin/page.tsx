@@ -1061,6 +1061,7 @@ function PageHistoryPanel({ page, onRestored }: { page: string; onRestored?: () 
     finally { setLoading(false); }
   }, [page]);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- chargement de l'historique depuis l'API
   useEffect(() => { load(); }, [load]);
 
   const restore = async (id: number) => {
@@ -1528,20 +1529,6 @@ export default function CMSAdmin() {
     setIsDirty(cur !== cleanHash.current);
   }, [editedContent, editedSettings]);
 
-  // ── Raccourci Cmd+S / Ctrl+S ─────────────────────────────
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-        e.preventDefault();
-        if (!isDirty || savingSettings) return;
-        if (tab === 'pages') saveDraft(activePage);
-        else if (tab === 'settings') saveSettings();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isDirty, savingSettings, tab, activePage]);
-
   // ── Confirmation avant de quitter ────────────────────────
   useEffect(() => {
     if (isDirty) {
@@ -1831,16 +1818,23 @@ export default function CMSAdmin() {
       setMessages(d.messages || []);
     } catch { showToast('Impossible de charger les messages.'); }
     finally { setLoadingMessages(false); }
-  }, [handleUnauthorized, showToast]);
+  }, [showToast]);
 
+  // Chargements par onglet : patterns de fetch standards (setState via callbacks async).
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
   useEffect(() => { if (authed) loadArticles(); }, [authed, loadArticles]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
   useEffect(() => { if (authed && tab === 'demandes') loadDemandes(); }, [authed, tab, loadDemandes]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
   useEffect(() => { if (authed && tab === 'booking') { loadBookingSlots(); loadBookingRequests(); } }, [authed, tab, loadBookingSlots, loadBookingRequests]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
   useEffect(() => { if (authed && (tab === 'settings' || tab === 'pages')) loadSettings(); }, [authed, tab, loadSettings]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
   useEffect(() => { if (authed && (tab === 'messages' || tab === 'dashboard')) loadMessages(); }, [authed, tab, loadMessages]);
 
   // ── Rafraîchir l'aperçu après une sauvegarde réussie ──────
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- bump de clé d'aperçu après sauvegarde
     if (savedOk) setPreviewKey(k => k + 1);
   }, [savedOk]);
 
@@ -2042,6 +2036,21 @@ export default function CMSAdmin() {
       setPublishing(false);
     }
   };
+
+  // ── Raccourci Cmd+S / Ctrl+S (après saveDraft/saveSettings pour respecter l'ordre de déclaration) ──
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        if (!isDirty || savingSettings) return;
+        if (tab === 'pages') void saveDraft(activePage);
+        else if (tab === 'settings') void saveSettings();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- saveDraft/saveSettings recréées à chaque rendu, le listener doit rester frais
+  }, [isDirty, savingSettings, tab, activePage]);
 
   // Save article
   const saveArticle = useCallback(async () => {
@@ -2911,6 +2920,7 @@ export default function CMSAdmin() {
                               page={activePage}
                               onRestored={() => {
                                 bustCmsCache(activePage);
+                                // eslint-disable-next-line react-hooks/refs -- faux positif : callback de restauration, pas de lecture pendant le rendu
                                 loadSettings();
                                 setPreviewKey(k => k + 1);
                                 showToast('✅ Valeur restaurée !');

@@ -1,4 +1,4 @@
-export default {
+const destinationSchema = {
   name: 'destination',
   title: 'Destination',
   type: 'document',
@@ -88,3 +88,5 @@ export default {
     },
   ],
 }
+
+export default destinationSchema;

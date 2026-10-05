@@ -22,8 +22,10 @@ export default function CarouselBuilderModal({
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
 
+  // Réinitialise le formulaire à la fermeture (reset sur changement de prop).
   useEffect(() => {
     if (!isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset du formulaire à la fermeture
       setImages([]);
       setManualUrls('');
       setUploading(false);

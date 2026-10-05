@@ -7,7 +7,9 @@ import { readCookieConsent, writeCookieConsent } from '@/lib/consent';
 export default function CookieConsentBanner() {
   const [visible, setVisible] = useState(false);
 
+  // Lecture du cookie reportée après hydratation pour éviter tout mismatch serveur/client.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydratation : lecture cookie côté client uniquement
     setVisible(readCookieConsent() === null);
   }, []);
 
