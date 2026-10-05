@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { requireCmsAuth } from '@/lib/cms-auth';
+import { revalidatePath } from 'next/cache';
+import { pagePath } from '@/lib/page-seo';
 
 function getSupabaseClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -57,6 +59,11 @@ export async function PUT(req: NextRequest) {
     else if (error.code === '42501') detail = 'Droits insuffisants — vérifiez la clé service_role Supabase';
     else if (error.message?.includes('does not exist')) detail = `Table 'site_content' introuvable — exécutez la migration SQL`;
     return NextResponse.json({ error: detail, code: error.code }, { status: 500 });
+  }
+  // Le SEO (titre, description, image) est calculé côté serveur dans generateMetadata : on régénère la page tout de
+  // suite pour que la modification soit visible sans attendre la revalidation automatique.
+  if (typeof block_key === 'string' && block_key.startsWith('seo_')) {
+    try { revalidatePath(pagePath(page)); } catch { /* sans incidence : la page se régénère au plus tard dans 5 min */ }
   }
   return NextResponse.json({ success: true, data });
 }

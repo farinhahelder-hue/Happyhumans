@@ -1,6 +1,8 @@
 ﻿import type { Metadata } from 'next'
-export const metadata: Metadata = {
-  title: 'Monica Schneider — Executive Coach & Philosophical Counselling',
-  description: "Ex-L'Oréal, ex-LVMH. Executive Coach certifiée AoEC · EMCC Practitioner · Philosophical Counselling. Créatrice de la méthode Happiness Design. 5 langues, 12 villes.",
+import { pageMetadata } from '@/lib/page-seo'
+import { A_PROPOS_DEFAULTS } from '@/lib/cms-defaults/a-propos'
+export const revalidate = 300 // la page est régénérée au plus toutes les 5 min (+ immédiatement à chaque sauvegarde du CMS)
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata('a-propos', A_PROPOS_DEFAULTS)
 }
 export default function Layout({ children }: { children: React.ReactNode }) { return <>{children}</> }

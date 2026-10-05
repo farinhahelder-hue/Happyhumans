@@ -1,6 +1,8 @@
 ﻿import type { Metadata } from 'next'
-export const metadata: Metadata = {
-  title: 'Questions fréquentes — Happy Humans',
-  description: "Tout ce que vous vous demandez sur le coaching, le philo-coaching et la méthode Happiness Design de Monica Schneider. Séance découverte, tarifs, déroulé.",
+import { pageMetadata } from '@/lib/page-seo'
+import { FAQ_DEFAULTS } from '@/lib/cms-defaults/faq'
+export const revalidate = 300 // la page est régénérée au plus toutes les 5 min (+ immédiatement à chaque sauvegarde du CMS)
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata('faq', FAQ_DEFAULTS)
 }
 export default function Layout({ children }: { children: React.ReactNode }) { return <>{children}</> }

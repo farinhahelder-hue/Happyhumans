@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: "Réserver une séance — Monica Schneider",
-  description: "Réservez une séance découverte gratuite (1h) avec Monica Schneider. Executive coaching, philosophical counselling et Happiness Design.",
+import { pageMetadata } from '@/lib/page-seo'
+import { BOOKING_DEFAULTS } from '@/lib/cms-defaults/booking'
+export const revalidate = 300 // la page est régénérée au plus toutes les 5 min (+ immédiatement à chaque sauvegarde du CMS)
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata('booking', BOOKING_DEFAULTS)
 }
 
 export default function BookingLayout({ children }: { children: React.ReactNode }) {
