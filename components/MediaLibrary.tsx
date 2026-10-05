@@ -61,7 +61,10 @@ export default function MediaLibrary({ onSelect, onClose }: Props) {
     fd.append('file', file);
     fd.append('folder', folder);
     
-    const headers: HeadersInit = {};
+    // Même fallback que components/cms/MediaManager.tsx : le cookie de session suffit,
+    // l'en-tête x-cms-auth n'est ajouté que si le mot de passe est en localStorage.
+    const cmsPassword = typeof window !== 'undefined' ? localStorage.getItem('cms_password') : null;
+    const headers: Record<string, string> = {};
     if (cmsPassword) {
       headers['x-cms-auth'] = cmsPassword;
     }

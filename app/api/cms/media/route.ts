@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
   const files = (data || [])
     .filter(f => f.id && f.name)
     .map(f => {
-      const { publicData } = sb.storage.from('cms-assets').getPublicUrl(
+      const { data: publicData } = sb.storage.from('cms-assets').getPublicUrl(
         prefix ? `${prefix}/${f.name}` : f.name
       );
       return {

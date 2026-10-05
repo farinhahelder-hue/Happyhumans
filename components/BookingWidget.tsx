@@ -1,8 +1,8 @@
-// TODO: Réactiver le système inhouse de réservation si besoin
-// Ce composant a été temporairement désactivé — utiliser Calendly uniquement
-// Réactiver : décommenter ce fichier et vérifier les imports dans les pages
+// Système de réservation inhouse — actuellement NON utilisé (Calendly uniquement).
+// Ce composant n'est importé nulle part. Pour le réactiver : l'importer dans les pages.
+// (Ne pas l'envelopper dans un commentaire /* */ : il contient des {/* ... */} JSX
+//  qui fermeraient le commentaire trop tôt et casseraient typecheck/build.)
 
-/*
 'use client'
 import { useState, useEffect, useMemo } from 'react'
 
@@ -324,4 +324,3 @@ export default function BookingWidget({ defaultType }: { defaultType?: string })
     </div>
   )
 }
-*/
