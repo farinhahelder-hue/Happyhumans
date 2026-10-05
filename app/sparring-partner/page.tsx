@@ -3,37 +3,10 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 import { useCmsContent } from '@/hooks/useCmsContent'
-
-const DEFAULTS = {
-  hero_badge:         'Sparring Partner',
-  hero_title:         "Un regard extérieur stratégique par une pair qui comprend vos enjeux",
-  hero_desc:          "Ex-L'Oreal, ex-LVMH, 5 langues, philo-coaching. Monica vous offre le recul qu'un manager ne peut pas toujours trouver en interne.",
-  hero_cta_primary:   'Réserver une session',
-  hero_cta_secondary: 'Poser une question',
-  section_badge:      "Pour quoi faire ?",
-  section_title:      'Les situations qui appellent un sparring partner',
-  use_case_1_title:  'Préparer un pitch',
-  use_case_1_desc:   'Monica joue le contre-argument, affûte vos arguments et renforce votre posture.',
-  use_case_2_title:  'Challenger une stratégie',
-  use_case_2_desc:   "Un regard extérieur de quelqu'un qui connaît vos enjeux métier.",
-  use_case_3_title:  'Prise de poste',
-  use_case_3_desc:   'Nouvelle équipe, nouvelles attentes. Prendre de la hauteur rapidement.',
-  use_case_4_title:  'Communication multiculturelle',
-  use_case_4_desc:   '5 pays, 5 langues. Les codes implicites qui font ou défont une relation.',
-  use_case_5_title:  'Décision difficile',
-  use_case_5_desc:   'Partir ? Rester ? Négocier ? Un interlocuteur de confiance pour y voir clair.',
-  why_section_badge: 'Pourquoi Monica ?',
-  why_section_title: "Ex-L'Oreal, ex-LVMH, philo-coach et Happiness Design",
-  experience_items:   "10 ans marketing — Henkel, LVMH, L'Oréal\nExecutive Coach certifiée AoEC & EMCC\nMaster en Philosophical Counselling\n5 langues : FR, EN, RO, DE, ES\nMéthode Happiness Design\n5 pays, 12 villes",
-  cta_title:          'Prêt à challenger vos idées ?',
-  cta_desc:           'Session 60 à 90 min. Conversation découverte de 30 min offerte.',
-  cta_primary:       'Réserver une session',
-  cta_secondary:     'Poser une question',
-  sparring_price:    'Sur devis',
-}
+import { SPARRING_PARTNER_DEFAULTS } from '@/lib/cms-defaults/sparring-partner'
 
 export default function SparringPartnerPage() {
-  const c = useCmsContent('sparring-partner', DEFAULTS)
+  const c = useCmsContent('sparring-partner', SPARRING_PARTNER_DEFAULTS)
 
   const useCases = [
     { title: c.use_case_1_title, desc: c.use_case_1_desc },
@@ -50,7 +23,7 @@ export default function SparringPartnerPage() {
       <Header />
       <main className="pt-[72px]">
         <section className="relative overflow-hidden bg-stone-900 px-6 py-24 text-center md:py-32 md:px-10">
-          <img src="https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=1600&q=80&auto=format&fit=crop" alt="Discussion stratégique" className="absolute inset-0 h-full w-full object-cover opacity-20" />
+          <img src="https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=1600&q=80&auto=format&fit=crop" alt={c.t_discussion_strategique} className="absolute inset-0 h-full w-full object-cover opacity-20" />
           <div className="absolute inset-0 bg-gradient-to-b from-stone-900/60 via-stone-900/40 to-stone-900/70" />
           <div className="relative mx-auto max-w-3xl">
             <p className="mb-4 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">{c.get('hero_badge')}</p>

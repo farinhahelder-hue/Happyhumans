@@ -2,8 +2,12 @@
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { useCmsContent } from '@/hooks/useCmsContent'
+import { MERCI_DEFAULTS } from '@/lib/cms-defaults/merci'
+import Rich from '@/components/Rich'
 
 export default function MerciPage() {
+  const c = useCmsContent('merci', MERCI_DEFAULTS)
   return (
     <>
       <Header />
@@ -17,15 +21,13 @@ export default function MerciPage() {
             </svg>
           </div>
 
-          <p className="text-amber-800 text-xs font-bold tracking-[0.22em] uppercase mb-4">Message reçu</p>
+          <p className="text-amber-800 text-xs font-bold tracking-[0.22em] uppercase mb-4">{c.t_message_recu}</p>
           <h1 className="text-3xl md:text-4xl font-serif font-light text-stone-900 mb-5 leading-tight">
-            Merci pour votre message.
+            {c.t_merci_pour_votre_message}
           </h1>
-          <p className="text-stone-600 leading-relaxed mb-4">
-            Monica vous répondra personnellement <strong>sous 48h</strong> à l&apos;adresse que vous avez indiquée.
-          </p>
+          <p className="text-stone-600 leading-relaxed mb-4"><Rich text={c.t_monica_vous_repondra_personnelleme} /></p>
           <p className="text-stone-500 text-sm mb-10">
-            En attendant, vous pouvez explorer les ressources sur les relations et le coaching.
+            {c.t_en_attendant_vous_pouvez}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -33,23 +35,19 @@ export default function MerciPage() {
               href="/relations"
               className="px-6 py-3 bg-[#2d5f54] hover:bg-[#1e3a34] text-white rounded-full font-semibold text-sm transition"
             >
-              Explorer les relations
+              {c.t_explorer_les_relations}
             </Link>
             <Link
               href="/booking"
               className="px-6 py-3 border border-[#2d5f54] text-[#2d5f54] hover:bg-[#2d5f54] hover:text-white rounded-full font-semibold text-sm transition"
             >
-              Réserver une séance
+              {c.t_reserver_une_seance}
             </Link>
           </div>
 
           <div className="mt-12 p-5 bg-white border border-stone-200 rounded-2xl text-sm text-stone-600">
-            <p className="font-semibold text-stone-800 mb-1">Pas de réponse reçue ?</p>
-            <p>Vérifiez votre dossier spam ou écrivez directement à{' '}
-              <a href="mailto:happyhumans.coaching@gmail.com" className="text-[#2d5f54] underline">
-                happyhumans.coaching@gmail.com
-              </a>
-            </p>
+            <p className="font-semibold text-stone-800 mb-1">{c.t_pas_de_reponse_recue}</p>
+            <p><Rich text={c.t_verifiez_votre_dossier_spam} linkClassName="text-[#2d5f54] underline" /></p>
           </div>
 
         </div>

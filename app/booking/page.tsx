@@ -6,26 +6,10 @@ import Footer from '@/components/Footer'
 import Link from 'next/link'
 import CalendlyWidget from '@/components/CalendlyWidget'
 import { useCmsContent } from '@/hooks/useCmsContent'
-
-const DEFAULTS = {
-  hero_badge:         'Réservation',
-  hero_title:         'Réserver une séance',
-  hero_subtitle:      'Séance découverte offerte · 1h · Sans engagement',
-  reassurance_1_icon: '',
-  reassurance_1_title: 'Séance découverte gratuite',
-  reassurance_1_desc:  '1h sans engagement pour vous présenter et voir si le coaching vous correspond.',
-  reassurance_2_icon: '',
-  reassurance_2_title: 'Confirmation immédiate',
-  reassurance_2_desc:  'La réservation est confirmée instantanément dans votre agenda Google ou Outlook.',
-  reassurance_3_icon: '',
-  reassurance_3_title: 'Annulation libre',
-  reassurance_3_desc:  "Vous pouvez reporter ou annuler jusqu'à 24h avant la séance, sans frais.",
-  footer_note:         'Toutes les séances se déroulent en ligne (Google Meet) ou en présentiel à Paris, selon votre préférence.',
-  email_booking_text:  'Écrire à Monica →',
-}
+import { BOOKING_DEFAULTS } from '@/lib/cms-defaults/booking'
 
 export default function BookingPage() {
-  const c = useCmsContent('booking', DEFAULTS)
+  const c = useCmsContent('booking', BOOKING_DEFAULTS)
 
   return (
     <>
@@ -48,7 +32,7 @@ export default function BookingPage() {
           <div className="mx-auto max-w-4xl px-4">
             <Suspense fallback={
               <div className="h-[700px] flex items-center justify-center text-stone-400 text-sm">
-                Chargement du calendrier…
+                {c.t_chargement_du_calendrier}
               </div>
             }>
               <CalendlyWidget />
@@ -61,7 +45,7 @@ export default function BookingPage() {
                 rel="noopener noreferrer"
                 className="text-[#2d5f54] hover:underline"
               >
-                Ouvrir Calendly directement →
+                {c.t_ouvrir_calendly_directement}
               </a>
             </p>
           </div>
@@ -103,7 +87,7 @@ export default function BookingPage() {
 
         {/* LIEN DE SECOURS */}
         <section className="bg-white py-8 text-center">
-          <p className="text-sm text-stone-500 mb-3">Vous préférez réserver par email ?</p>
+          <p className="text-sm text-stone-500 mb-3">{c.t_vous_preferez_reserver_par}</p>
           <Link href="/contact" className="inline-flex items-center gap-2 text-sm font-semibold text-[#2d5f54] hover:underline">
             {c.get('email_booking_text')}
           </Link>

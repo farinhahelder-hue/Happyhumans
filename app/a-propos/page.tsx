@@ -4,48 +4,10 @@ import Footer from '@/components/Footer'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useCmsContent } from '@/hooks/useCmsContent'
-
-const DEFAULTS = {
-  hero_image:       '',
-  hero_badge:       'À propos',
-  page_title:       'Leadership coaching en profondeur',
-  intro_text:       "Une pratique née au croisement de l'entreprise, du branding, de la transformation humaine et de la pratique philosophique.",
-  // Parcours section
-  parcours_badge:   'Parcours',
-  parcours_title:   'Le parcours',
-  parcours_subtitle: 'Deviens qui tu es',
-  // Bio paragraphs
-  bio_p1: "Les 10 premières années de ma carrière ont été dédiées au marketing international : développement de produits, de marques, d'histoires et d'expériences inoubliables, en Allemagne, en France, au Royaume-Uni et en Europe de l'Est pour Henkel, LVMH et L'Oréal.",
-  bio_p2: "En 2020, j'ai mis fin à l'aventure L'Oréal et j'ai exploré de nouvelles vies. Je me suis formée à l'Executive Coaching. Une des choses qui m'avait le plus animée a été le développement des individus et des équipes. À travers cette formation et le début de ma pratique, j'ai découvert que ce métier était fait pour moi.",
-  bio_p3: "Dans le coaching, j'arrivais à créer un espace où mes clients trouvent le courage de se confronter à leurs limites, à leurs doutes et à leurs vulnérabilités pour réaliser une transformation libératrice qui les rapproche de qui ils sont, de leur puissance et de leur sourire le plus confiant. Être témoin et guide dans cette démarche est un honneur qui m'anime plus que tout.",
-  bio_p4: "Pour enrichir mon approche et retrouver un de mes amours de jeunesse, j'ai également entrepris un Master de Pratique Philosophique. J'ai fait mon mémoire sur le bonheur. Deux grandes conclusions : 1. Ce n'est pas le bonheur qui fait la différence mais comment on réagit dans l'adversité / quand la vie ne va pas comme on veut. 2. Une discipline ne suffit pas. Il faut comprendre son cerveau (neurosciences), savoir créer son bonheur (psychologie positive), repérer quand son inconscient reprend le dessus (psychologie classique), entraîner le cerveau à réduire le cortisol (méditation) et à challenger ses pensées (pratique philosophique).",
-  bio_p5: "Je me suis construit une boîte à outils que j'ai appliquée à ma propre vie au cours des 6 dernières années — Happiness Design. Je l'ai aussi intégrée dans mes coachings et cela a fait la différence pour mes clients.",
-  bio_p6: "Aujourd'hui je continue à accompagner des individus ou des entreprises aux moments clés des carrières (promotion et prise de poste, transitions, reconversion), pour booster le sens et l'engagement (conseil en communication interne, team coaching) et même pendant les moments clés du reste de la vie (mariage, séparation, parentalité, deuil, retraite, fin de vie).",
-  bio_p7: "Ma conviction, ligne directrice dans toutes mes interventions, est simple. Pour chaque nouvelle étape, nous devons entreprendre une transformation en tant qu'individu ou en tant qu'équipe. Je suis à vos côtés avec ma boîte à outils multidisciplinaire pour coller au mieux à votre chemin unique.",
-  bio_p8: "Je souhaite aussi rendre cette boîte à outils du bonheur — même dans une vie chaotique — accessible au plus grand nombre. Ce projet s'appelle Happiness Design.",
-  photo:            '',
-  // Accompagnement section
-  acc_badge:       'Accompagnement',
-  acc_title:       'Mes coachings et mentorings',
-  acc_subtitle:    '2 approches complémentaires',
-  coaching_label:   'Coaching',
-  coaching_text:    "Le coaching est une danse entre le coach et le coaché. À travers les questions du coach, le coaché réfléchit, change de perspective, fait l'expérience de révélations, de aha moments et d'eurekas ! Il ou elle trouve en soi les meilleures solutions pour avancer sereinement vers son objectif. Le coaché design un plan d'action clair et daté. Il ressort de la séance avec un sentiment de clarté, une énergie renouvelée et souvent un sourire confiant. À noter que ma pratique de coaching est enrichie, quand la situation s'y prête, par de la philosophie pratique.",
-  coaching_cta:    'Voir le coaching →',
-  mentoring_label: 'Mentoring',
-  mentoring_text:  "Je vous offre mes conseils sur une problématique alignée avec mon expertise. — Comment être visible tout en restant authentique ? — Comment démontrer du leadership et signaler que nous sommes prêts pour la next step ? — Quel plan de communication interne mettre en place pour rebooster l'engagement ? — Comment naviguer les différences de communication au sein d'environnements multiculturels ?",
-  mentoring_cta:   'Me contacter →',
-  // Happiness Design CTA
-  hd_badge:        'Happiness Design',
-  hd_text:         'Je souhaite rendre cette boîte à outils du bonheur, même dans une vie chaotique, accessible au plus grand nombre. Ce projet s\'appelle Happiness Design.',
-  hd_cta:          "Pour en savoir plus, c'est par ici →",
-  // Final CTA
-  footer_cta_title: "Envie d'en savoir plus ?",
-  footer_cta_coaching: 'Voir le coaching',
-  footer_cta_booking:  'Réserver une séance (1h)',
-}
+import { A_PROPOS_DEFAULTS } from '@/lib/cms-defaults/a-propos'
 
 export default function AProposPage() {
-  const c = useCmsContent('a-propos', DEFAULTS)
+  const c = useCmsContent('a-propos', A_PROPOS_DEFAULTS)
 
   return (
     <>
@@ -56,7 +18,7 @@ export default function AProposPage() {
         <section className="relative flex h-[55vh] items-end overflow-hidden bg-stone-900 md:h-[65vh]">
           <img
             src={c.hero_image || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1400&q=80&auto=format&fit=crop'}
-            alt="Monica Schneider — Executive Coach"
+            alt={c.t_monica_schneider_executive_coach}
             className="absolute inset-0 h-full w-full object-cover opacity-40"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
@@ -88,12 +50,12 @@ export default function AProposPage() {
               </div>
               <div className="md:col-span-2 space-y-4">
                 {c.photo ? (
-                  <img src={c.photo} alt="Monica Schneider" className="rounded-2xl object-cover shadow-lg w-full h-80" />
+                  <img src={c.photo} alt={c.t_monica_schneider} className="rounded-2xl object-cover shadow-lg w-full h-80" />
                 ) : (
                   <div className="rounded-2xl bg-gradient-to-br from-[#f5f0e8] to-[#eef5f3] h-80 flex items-center justify-center">
                     <div className="text-center">
-                      <div className="w-20 h-20 rounded-full bg-[#2d5f54] flex items-center justify-center text-white text-2xl font-serif font-bold mx-auto mb-3">MS</div>
-                      <p className="text-sm text-stone-500">Monica Schneider</p>
+                      <div className="w-20 h-20 rounded-full bg-[#2d5f54] flex items-center justify-center text-white text-2xl font-serif font-bold mx-auto mb-3">{c.t_ms}</div>
+                      <p className="text-sm text-stone-500">{c.t_monica_schneider_2}</p>
                     </div>
                   </div>
                 )}

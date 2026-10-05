@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { useCmsContent } from '@/hooks/useCmsContent'
+import { HOME_DEFAULTS } from '@/lib/cms-defaults/home'
 
 const CARD_DEFS = {
   coaching: {
@@ -32,52 +33,8 @@ const CARD_DEFS = {
   },
 }
 
-const DEFAULTS = {
-  // Hero
-  hero_badge:           'Monica Schneider · Executive Coach · Happy Humans',
-  hero_title:           'Clarté, confiance et relations qui vous ressemblent',
-  hero_subtitle:        'Executive Coach certifiée AoEC · EMCC Practitioner · Philosophical Counselling',
-  hero_cta_primary:     'Séance découverte gratuite',
-  hero_cta_contact:     'Me contacter',
-  // Services
-  services_badge:       'Accompagnement',
-  services_title:       'Comment puis-je vous aider ?',
-  services_b2c_title:  'Pour les particuliers',
-  services_b2c_text:    'Managers, dirigeants, entrepreneurs ou personnes en transition qui veulent retrouver de la clarté, de la confiance et une direction qui leur ressemble vraiment.',
-  services_b2c_cta:    'Réserver une séance découverte →',
-  services_b2b_title:  'Pour les organisations',
-  services_b2b_text:    "Coaching de leadership, ateliers, séminaires et accompagnement du changement pour remettre de l'alignement et de l'élan dans les équipes.",
-  services_b2b_cta:     "Discuter d'un projet →",
-  // Cards section
-  cards_section_badge:  'Aller plus loin',
-  cards_section_title: 'Explorez les thématiques',
-  cards_link_label:    'Découvrir →',
-  // Booking
-  booking_badge:        'Agenda',
-  booking_widget_title: 'Choisissez votre créneau',
-  booking_widget_subtitle: 'Séance découverte offerte (1h) ou programme de coaching.',
-  // Contact
-  contact_section_badge: 'Contact',
-  contact_section_title: 'Une question ? Écrivez-moi',
-  contact_section_subtitle: 'Réponse sous 48h.',
-  form_success_title:  'Message envoyé !',
-  form_success_body:   'Monica vous répondra sous 48h à {email}.',
-  form_sending:        'Envoi en cours…',
-  form_submit:         'Envoyer le message',
-  // Card order (Explorez les thématiques)
-  home_card_order_1:   'coaching',
-  home_card_order_2:   'organisations',
-  home_card_order_3:   'happiness-design',
-  home_card_order_4:   'relations',
-  // Misc
-  logo_url:            '',
-  contact_email:       'happyhumans.coaching@gmail.com',
-  booking_modal_title: 'Choisissez votre créneau',
-  booking_modal_subtitle: 'Séance découverte offerte · 1h · Sans engagement',
-}
-
 export default function LandingPage() {
-  const c = useCmsContent('home', DEFAULTS)
+  const c = useCmsContent('home', HOME_DEFAULTS)
   const s = useCmsContent('settings', { contact_email: 'happyhumans.coaching@gmail.com', site_name: 'Happy Humans' })
   const [bookingOpen, setBookingOpen] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', message: '' })
@@ -117,7 +74,7 @@ export default function LandingPage() {
         <section className="relative overflow-hidden bg-stone-900 px-6 py-24 text-center md:py-36 md:px-10">
           <img
             src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=85&auto=format&fit=crop"
-            alt="Bureau élégant avec lumière naturelle, ambiance coaching professionnel"
+            alt={c.t_bureau_elegant_avec_lumiere}
             className="absolute inset-0 h-full w-full object-cover opacity-20"
           />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(43,111,98,0.35),transparent_50%),radial-gradient(circle_at_bottom_left,rgba(182,140,94,0.2),transparent_40%)]" />
@@ -233,15 +190,15 @@ export default function LandingPage() {
               
               {/* Title */}
               <p className="mb-2 font-serif text-xl font-semibold tracking-wide text-white">
-                Séance découverte
+                {c.t_seance_decouverte}
               </p>
               <p className="mb-6 text-sm text-emerald-100">
-                gratuite · 1h · sans engagement
+                {c.t_gratuite_1h_sans_engagement}
               </p>
               
               {/* Button */}
               <span className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#2d5f54] shadow-lg transition-all duration-200 group-hover:gap-3">
-                Réserver maintenant
+                {c.t_reserver_maintenant}
                 <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
@@ -253,19 +210,19 @@ export default function LandingPage() {
                   <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M20 6L9 17l-5-5"/>
                   </svg>
-                  Confidentiel
+                  {c.t_confidentiel}
                 </span>
                 <span className="flex items-center gap-1">
                   <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M20 6L9 17l-5-5"/>
                   </svg>
-                  Sans engagement
+                  {c.t_sans_engagement}
                 </span>
                 <span className="flex items-center gap-1">
                   <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M20 6L9 17l-5-5"/>
                   </svg>
-                  Réponse 48h
+                  {c.t_reponse_48h}
                 </span>
               </div>
             </a>
@@ -290,17 +247,17 @@ export default function LandingPage() {
               <form onSubmit={handleContact} className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-stone-400">Nom *</label>
-                    <input required value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder="Votre nom" />
+                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-stone-400">{c.t_nom}</label>
+                    <input required value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder={c.t_votre_nom} />
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-stone-400">Email *</label>
-                    <input required type="email" value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder="votre@email.com" />
+                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-stone-400">{c.t_email}</label>
+                    <input required type="email" value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder={c.t_votre_email_com} />
                   </div>
                 </div>
                 <div>
-                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-stone-400">Message *</label>
-                  <textarea required value={form.message} onChange={e => setForm(f => ({...f, message: e.target.value}))} rows={4} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54] resize-none" placeholder="Votre question ou demande…" />
+                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-stone-400">{c.t_message}</label>
+                  <textarea required value={form.message} onChange={e => setForm(f => ({...f, message: e.target.value}))} rows={4} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54] resize-none" placeholder={c.t_votre_question_ou_demande} />
                 </div>
                 <button type="submit" disabled={sending} className="w-full rounded-full bg-[#2d5f54] py-3.5 text-sm font-semibold text-white hover:bg-[#1e3a34] disabled:opacity-60 transition">
                   {sending ? c.form_sending : c.form_submit}
@@ -346,7 +303,7 @@ export default function LandingPage() {
                 className="inline-flex items-center gap-2 rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
                 onClick={() => setBookingOpen(false)}
               >
-                Réserver via Calendly →
+                {c.t_reserver_via_calendly}
               </a>
             </div>
           </div>

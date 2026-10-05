@@ -3,26 +3,10 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { useCmsContent } from '@/hooks/useCmsContent'
 import { useState } from 'react'
-
-const DEFAULTS = {
-  hero_badge:           'Contact',
-  hero_image:           '',
-  page_title:           'Parlons de ce qui vous amène.',
-  intro_text:           "Que vous soyez en plein questionnement, en transition ou simplement curieux·se de voir si le dialogue peut aider — je vous invite à me contacter. Je réponds personnellement à chaque message.",
-  photo:                '',
-  form_name_label:      'Votre nom',
-  form_email_label:     'Votre email',
-  form_subject_label:   'Sujet (optionnel)',
-  form_message_label:   'Votre message',
-  form_submit_label:    'Envoyer →',
-  success_title:        'Message envoyé !',
-  success_text:         'Monica vous répondra sous 48h.',
-  sidebar_name:         'Monica Schneider',
-  sidebar_title:        'Executive Coach · Philo-coaching',
-}
+import { CONTACT_DEFAULTS } from '@/lib/cms-defaults/contact'
 
 export default function ContactPage() {
-  const c = useCmsContent('contact', DEFAULTS)
+  const c = useCmsContent('contact', CONTACT_DEFAULTS)
   const [form, setForm] = useState({ name: '', email: '', type: '', subject: '', message: '' })
   const [sent, setSent] = useState(false)
   const [sending, setSending] = useState(false)
@@ -50,7 +34,7 @@ export default function ContactPage() {
         <section className="relative flex h-[40vh] items-end overflow-hidden bg-stone-900">
           <img
             src={c.hero_image || 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=80&auto=format&fit=crop'}
-            alt="Espace d'échange calme et chaleureux"
+            alt={c.t_espace_d_echange_calme}
             className="absolute inset-0 h-full w-full object-cover opacity-20"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
@@ -81,32 +65,32 @@ export default function ContactPage() {
                     <div className="grid gap-5 sm:grid-cols-2">
                       <div>
                         <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">{c.get('form_name_label')}</label>
-                        <input required value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder="Votre nom" />
+                        <input required value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder={c.t_votre_nom} />
                       </div>
                       <div>
                         <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">{c.get('form_email_label')}</label>
-                        <input required type="email" value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder="votre@email.com" />
+                        <input required type="email" value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder={c.t_votre_email_com} />
                       </div>
                     </div>
                     <div>
                       
                       <div>
-                        <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">Type de demande</label>
+                        <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">{c.t_type_de_demande}</label>
                         <select required value={form.type} onChange={e => setForm(f => ({...f, type: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54] bg-white">
-                          <option value="">Sélectionnez...</option>
-                          <option value="coaching-individuel">Coaching individuel</option>
-                          <option value="coaching-entreprises">Coaching & accompagnement entreprises</option>
-                          <option value="relations">Accompagnement Relations</option>
-                          <option value="conference">Conférence / Formation</option>
-                          <option value="autre">Autre question</option>
+                          <option value="">{c.t_selectionnez}</option>
+                          <option value="coaching-individuel">{c.t_coaching_individuel}</option>
+                          <option value="coaching-entreprises">{c.t_coaching_accompagnement_entreprise}</option>
+                          <option value="relations">{c.t_accompagnement_relations}</option>
+                          <option value="conference">{c.t_conference_formation}</option>
+                          <option value="autre">{c.t_autre_question}</option>
                         </select>
                       </div>
                       <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">{c.get('form_subject_label')}</label>
-                      <input value={form.subject} onChange={e => setForm(f => ({...f, subject: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder="Objet de votre message" />
+                      <input value={form.subject} onChange={e => setForm(f => ({...f, subject: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder={c.t_objet_de_votre_message} />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-stone-500 uppercase tracking-wider mb-1.5">{c.get('form_message_label')}</label>
-                      <textarea required value={form.message} onChange={e => setForm(f => ({...f, message: e.target.value}))} rows={6} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54] resize-none" placeholder="Décrivez votre situation ou votre question…" />
+                      <textarea required value={form.message} onChange={e => setForm(f => ({...f, message: e.target.value}))} rows={6} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54] resize-none" placeholder={c.t_decrivez_votre_situation_ou} />
                     </div>
                     <button type="submit" disabled={sending} className="rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white hover:bg-[#1e3a34] transition disabled:opacity-60">
                       {sending ? 'Envoi…' : c.get('form_submit_label')}
@@ -116,22 +100,22 @@ export default function ContactPage() {
               </div>
               <div className="space-y-6">
                 {c.photo ? (
-                  <img src={c.photo} alt="Monica Schneider" className="rounded-2xl object-cover w-full h-64 shadow-lg" />
+                  <img src={c.photo} alt={c.t_monica_schneider} className="rounded-2xl object-cover w-full h-64 shadow-lg" />
                 ) : (
                   <div className="rounded-2xl bg-gradient-to-br from-[#eef5f3] to-[#f5f0e8] h-64 flex items-center justify-center">
-                    <div className="w-20 h-20 rounded-full bg-[#2d5f54] flex items-center justify-center text-white text-2xl font-serif font-bold">MS</div>
+                    <div className="w-20 h-20 rounded-full bg-[#2d5f54] flex items-center justify-center text-white text-2xl font-serif font-bold">{c.t_ms}</div>
                   </div>
                 )}
                 <div className="space-y-3 text-sm text-stone-600">
-                  <p className="font-semibold text-stone-900">Monica Schneider</p>
-                  <p>Executive Coach · Philosophical Counselling</p>
+                  <p className="font-semibold text-stone-900">{c.t_monica_schneider_2}</p>
+                  <p>{c.t_executive_coach_philosophical_coun}</p>
                   <div className="flex items-center gap-2">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                    <span>Français, anglais et roumain</span>
+                    <span>{c.t_francais_anglais_et_roumain}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    <span>Réponse sous 48h</span>
+                    <span>{c.t_reponse_sous_48h}</span>
                   </div>
                 </div>
               </div>

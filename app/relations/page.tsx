@@ -5,27 +5,27 @@ import { AttachmentTest } from '@/components/attachment-test/AttachmentTest';
 import Header from '@/components/Header';
 import LogoSVG from '@/components/LogoSVG';
 
-const SOURCES = [
+const buildSources = (c: CmsResult) => [
   {
     id: 'attached',
     emoji: '📖',
-    title: 'ATTACHED',
-    subtitle: "Comprendre son style d'attachement",
+    title: c.t_attached,
+    subtitle: c.t_comprendre_son_style_d,
     content: (
       <div className="space-y-6" style={{ color: '#444', lineHeight: 1.8 }}>
-        <p>Le livre ATTACHED applique la théorie de l'attachement, développée à l'origine par John Bowlby et Mary Ainsworth, aux relations amoureuses adultes. Les auteurs montrent que la façon dont nous nous lions à un partenaire suit des schémas précis, déterminés par notre histoire émotionnelle précoce. Ils identifient <strong>trois styles principaux</strong> : sécure, anxieux et évitant.</p>
-        <p>Le style sécure permet une intimité confiante et stable.</p>
-        <p>Le style anxieux génère une peur constante de l'abandon, un besoin de réassurance et une hypervigilance aux signaux de l'autre.</p>
-        <p>Le style évitant pousse à fuir la proximité, à valoriser l'indépendance à l'excès et à se sentir « étouffé » dès que la relation devient sérieuse.</p>
-        <p>Le livre propose des tests pour identifier son propre style, ainsi que celui de son partenaire, et des stratégies concrètes pour mieux communiquer ses besoins.</p>
+        <p><Rich text={c.t_le_livre_attached_applique} /></p>
+        <p>{c.t_le_style_secure_permet}</p>
+        <p>{c.t_le_style_anxieux_genere}</p>
+        <p>{c.t_le_style_evitant_pousse}</p>
+        <p>{c.t_le_livre_propose_des}</p>
         <div className="mt-8 p-6 rounded-xl" style={{ background: 'rgba(168,100,160,0.08)' }}>
-          <h4 className="text-lg font-semibold mb-4" style={{ color: '#2d5f54' }}>Comment ces styles se forment dans l'enfance</h4>
+          <h4 className="text-lg font-semibold mb-4" style={{ color: '#2d5f54' }}>{c.t_comment_ces_styles_se}</h4>
           <div className="space-y-4" style={{ color: '#555' }}>
-            <p>Selon Bowlby, le nourrisson a un besoin biologique de proximité avec une figure d'attachement (généralement un parent) pour assurer sa survie. La façon dont ce parent répond — de manière cohérente et sensible, ou au contraire imprévisible, distante, voire intrusive — façonne un modèle inconscient de ce à quoi s'attendre des relations.</p>
-            <p>Si le parent est globalement disponible et réconfortant, l'enfant développe un <strong>attachement sécure</strong> : il apprend que ses besoins seront entendus.</p>
-            <p>Si les réponses du parent sont incohérentes — parfois chaleureuses, parfois absentes — l'enfant développe un <strong>attachement anxieux</strong> : il apprend à surveiller constamment la disponibilité de l'autre, sans jamais se sentir pleinement rassuré.</p>
-            <p>Si le parent est régulièrement distant, peu expressif émotionnellement, ou rejette les demandes de proximité, l'enfant développe un <strong>attachement évitant</strong> : il apprend à minimiser ses propres besoins pour éviter la déception, et à compter avant tout sur lui-même.</p>
-            <p className="mt-4" style={{ fontStyle: 'italic' }}>Ces modèles, formés avant l'âge de deux ans, continuent ensuite à orienter inconsciemment nos relations adultes.</p>
+            <p>{c.t_selon_bowlby_le_nourrisson}</p>
+            <p><Rich text={c.t_si_le_parent_est} /></p>
+            <p><Rich text={c.t_si_les_reponses_du} /></p>
+            <p><Rich text={c.t_si_le_parent_est_2} /></p>
+            <p className="mt-4" style={{ fontStyle: 'italic' }}>{c.t_ces_modeles_formes_avant}</p>
           </div>
         </div>
       </div>
@@ -34,28 +34,28 @@ const SOURCES = [
   {
     id: 'rogers',
     emoji: '🪞',
-    title: 'Carl Rogers',
-    subtitle: "Déconstruire l\'amour conditionnel pour enfin s'aimer",
+    title: c.t_carl_rogers,
+    subtitle: c.t_deconstruire_l_amour_conditionnel,
     content: (
       <div className="space-y-6" style={{ color: '#444', lineHeight: 1.8 }}>
         <div>
-          <h4 className="text-lg font-semibold mb-3" style={{ color: '#2d5f54' }}>Le concept de Carl Rogers sur l'amour inconditionnel</h4>
+          <h4 className="text-lg font-semibold mb-3" style={{ color: '#2d5f54' }}>{c.t_le_concept_de_carl}</h4>
           <div className="space-y-4">
-            <p>L'idée de Carl Rogers repose sur son concept de « regard positif inconditionnel » — accepter une autre personne pleinement, sans jugement ni condition, telle qu'elle est. Son intuition était que nous ne pouvons offrir ce type de regard à quelqu'un d'autre que dans la mesure où nous avons appris à nous l'offrir à nous-mêmes.</p>
-            <p>Rogers pensait que la plupart d'entre nous grandissons en intériorisant une acceptation conditionnelle : un amour qui dépendait du fait d'être gentil, performant, séduisant ou conciliant. Avec le temps, nous construisons un « concept de soi » façonné par ce que nous pensons avoir le droit d'être, et nous cachons ou rejetons les parts de nous-mêmes qui n'ont pas obtenu l'approbation — la colère, le besoin affectif, la peur, l'ambition, la sexualité.</p>
-            <p>Le problème, c'est que lorsque nous n'avons pas accepté ces parts en nous-mêmes, nous ne pouvons inconsciemment pas les tolérer chez un partenaire non plus. Nous devenons anxieux, contrôlants ou critiques quand notre partenaire montre les qualités mêmes que nous avons réprimées en nous. Nous avons aussi du mal à croire que nous sommes véritablement aimés, car nous ne croyons pas être acceptables tels que nous sommes — alors nous jouons un rôle, nous cherchons à plaire, ou nous restons sur nos gardes.</p>
-            <p>Pour Rogers, une vraie intimité exige la <strong>congruence</strong> : être authentique plutôt que de jouer un rôle. Et la congruence n'est possible qu'une fois que l'on a fait la paix avec l'étendue entière de qui l'on est — pas la version épurée et « acceptable ».</p>
+            <p>{c.t_l_idee_de_carl}</p>
+            <p>{c.t_rogers_pensait_que_la}</p>
+            <p>{c.t_le_probleme_c_est}</p>
+            <p><Rich text={c.t_pour_rogers_une_vraie} /></p>
           </div>
         </div>
         <div className="p-6 rounded-xl" style={{ background: 'rgba(168,100,160,0.06)' }}>
-          <h4 className="text-lg font-semibold mb-4" style={{ color: '#2d5f54' }}>Comment faire la paix avec soi-même selon Rogers</h4>
+          <h4 className="text-lg font-semibold mb-4" style={{ color: '#2d5f54' }}>{c.t_comment_faire_la_paix}</h4>
           <div className="space-y-4" style={{ color: '#555' }}>
-            <p>Rogers ne voyait pas cela comme une technique unique, mais comme un processus continu qu'il appelait devenir une « personne pleinement fonctionnelle ». Quelques éléments centraux :</p>
-            <p><strong>Abandonner les « conditions de valeur »</strong>. Remarquez les règles intérieures que vous avez intériorisées — « je ne suis acceptable que si je suis calme, généreuse, performante, facile à vivre ». Rogers voulait que les personnes distinguent qui elles sont réellement de qui elles ont appris qu'elles avaient le droit d'être. Cela commence simplement par remarquer quand on joue un rôle plutôt que de ressentir.</p>
-            <p><strong>Faire confiance à sa propre expérience</strong> plus qu'au jugement extérieur. Rogers appelait cela le « processus d'évaluation organismique » — ce sens intérieur de ce qui est vrai ou nécessaire pour soi, avant de le filtrer à travers ce que les autres attendent. La plupart des gens ignorent constamment ce sens. Le retrouver, c'est se demander « que ressens-je ou que veux-je vraiment ici ? » plutôt que « que devrais-je ressentir ? ».</p>
-            <p><strong>Pratiquer le regard positif inconditionnel envers soi-même</strong>. La même chaleur et la même absence de jugement que Rogers demandait aux thérapeutes d'offrir à leurs patients, il pensait que chacun devait apprendre à se les offrir — en particulier envers les parts que l'on juge honteuses : la colère, l'envie, le besoin affectif, le désir.</p>
-            <p><strong>Chercher des environnements où l'on peut être congruent</strong>. Rogers pensait que cette acceptation de soi se développe souvent par la relation — être pleinement vu par une autre personne accueillante (thérapeute, ami proche) nous apprend, par l'expérience, que les parts jugées inacceptables sont supportables, et même aimables.</p>
-            <p className="mt-4" style={{ fontStyle: 'italic' }}>C'est moins une liste de tâches qu'une pratique d'honnêteté envers soi-même, répétée dans le temps.</p>
+            <p>{c.t_rogers_ne_voyait_pas}</p>
+            <p><Rich text={c.t_abandonner_les_conditions_de} /></p>
+            <p><Rich text={c.t_faire_confiance_a_sa} /></p>
+            <p><Rich text={c.t_pratiquer_le_regard_positif} /></p>
+            <p><Rich text={c.t_chercher_des_environnements_ou} /></p>
+            <p className="mt-4" style={{ fontStyle: 'italic' }}>{c.t_c_est_moins_une}</p>
           </div>
         </div>
       </div>
@@ -64,174 +64,74 @@ const SOURCES = [
   {
     id: 'fromm',
     emoji: '💝',
-    title: 'Erich Fromm',
-    subtitle: "Se préparer à l\'amour mature",
+    title: c.t_erich_fromm,
+    subtitle: c.t_se_preparer_a_l,
     content: (
       <div className="space-y-6" style={{ color: '#444', lineHeight: 1.8 }}>
-        <p>Erich Fromm, dans <em>L'art d'aimer</em>, soutenait que la plupart des gens comprennent mal l'amour, le percevant comme quelque chose dans lequel on « tombe » plutôt que comme quelque chose que l'on pratique. Il distinguait l'amour immature de l'amour mature.</p>
+        <p><Rich text={c.t_erich_fromm_dans_l} /></p>
         <div className="p-5 rounded-xl border-l-4" style={{ background: '#fff', borderColor: '#dc2626' }}>
-          <h4 className="font-semibold mb-2" style={{ color: '#dc2626' }}>Amour immature</h4>
-          <p className="italic mb-2">« Je t'aime parce que j'ai besoin de toi. »</p>
-          <p className="text-sm">Il est enraciné dans la dépendance — vous aimez quelqu'un parce qu'il comble un vide, apaise votre solitude, ou renforce votre estime de vous-même. Fromm y voyait une forme de fusion, où deux personnes se mêlent pour échapper à l'angoisse d'être des individus séparés. Cela ressemble souvent à quelque chose d'intense et de passionné, mais c'est fragile, possessif, et peut rapidement se transformer en ressentiment dès que l'autre cesse de répondre à vos besoins.</p>
+          <h4 className="font-semibold mb-2" style={{ color: '#dc2626' }}>{c.t_amour_immature}</h4>
+          <p className="italic mb-2">{c.t_je_t_aime_parce}</p>
+          <p className="text-sm">{c.t_il_est_enracine_dans}</p>
         </div>
         <div className="p-5 rounded-xl border-l-4" style={{ background: '#fff', borderColor: '#166534' }}>
-          <h4 className="font-semibold mb-2" style={{ color: '#166534' }}>Amour mature</h4>
-          <p className="italic mb-2">« J'ai besoin de toi parce que je t'aime. »</p>
-          <p className="text-sm">Ici, l'amour est une capacité active — fondée sur le soin, la responsabilité, le respect et une connaissance véritable de l'autre. Fromm pensait, et c'est essentiel, que l'amour mature exige d'avoir déjà un sens de soi solide et sécure. Deux individus entiers se choisissent l'un l'autre, plutôt que deux personnes incomplètes essayant de devenir complètes par la fusion.</p>
+          <h4 className="font-semibold mb-2" style={{ color: '#166534' }}>{c.t_amour_mature}</h4>
+          <p className="italic mb-2">{c.t_j_ai_besoin_de}</p>
+          <p className="text-sm">{c.t_ici_l_amour_est}</p>
         </div>
         <div className="p-5 rounded-xl" style={{ background: 'rgba(168,100,160,0.08)' }}>
-          <p><strong>Pour Fromm,</strong> c'est pourquoi « trouver la bonne personne » importe moins que devenir une personne capable d'un amour mature — car l'amour immature reproduit les mêmes schémas, quel que soit le partenaire.</p>
+          <p><Rich text={c.t_pour_fromm_c_est} /></p>
         </div>
       </div>
     ),
   },
 ];
 
-const ATTACHMENT_STYLES = [
+const buildAttachmentStyles = (c: CmsResult) => [
   {
     id: 'secure',
     emoji: '🌿',
-    label: 'Sécure',
+    label: c.t_secure_2,
     percent: '55–60 %',
     color: '#2d5f54',
     bg: 'rgba(45,95,84,0.07)',
-    desc: 'À l\'aise avec l\'intimité et l\'indépendance. Communique ses besoins clairement et gère les conflits de façon constructive. Représente la base sécure vers laquelle tendre.',
+    desc: c.t_a_l_aise_avec,
   },
   {
     id: 'anxious',
     emoji: '🌊',
-    label: 'Anxieux',
+    label: c.t_anxieux_2,
     percent: '~20 %',
     color: '#b45309',
     bg: 'rgba(180,83,9,0.07)',
-    desc: 'Peur du rejet et de l\'abandon. Grand besoin de validation et de proximité. Tend à suranalyser les silences et les distances de l\'autre.',
+    desc: c.t_peur_du_rejet_et,
   },
   {
     id: 'avoidant',
     emoji: '🌬️',
-    label: 'Évitant',
+    label: c.t_evitant_2,
     percent: '~25 %',
     color: '#64748b',
     bg: 'rgba(100,116,139,0.07)',
-    desc: 'A appris à minimiser ses besoins émotionnels pour se protéger. Valorise l\'indépendance et peut se sentir étouffé·e quand l\'intimité s\'intensifie.',
+    desc: c.t_a_appris_a_minimiser,
   },
   {
     id: 'disorganized',
     emoji: '⚡',
-    label: 'Désorganisé',
+    label: c.t_desorganise,
     percent: '~5 %',
     color: '#78716c',
     bg: 'rgba(120,113,108,0.07)',
-    desc: 'Conflit interne entre le besoin désespéré de proximité et la peur panique de l\'autre. Souvent lié à des expériences d\'enfance complexes ou traumatiques.',
+    desc: c.t_conflit_interne_entre_le,
   },
 ];
 
-import { useCmsContent } from '@/hooks/useCmsContent';
-
-const DEFAULTS_RELATIONS = {
-  // Hero
-  hero_badge:          'Relations & Attachement',
-  hero_title:          'Quel est votre style d\'attachement ?',
-  hero_description:    'Un outil de découverte douce pour mieux comprendre comment vous vous connectez aux autres.',
-  hero_cta_primary:    'Séance découverte gratuite',
-  hero_cta_secondary:  'Faire le test d\'attachement',
-  // Quiz section
-  quiz_badge:          'Quiz · Découvrez votre profil',
-  // Attachment styles section
-  styles_badge:        'Théorie de l\'attachement',
-  styles_title:        'Les 4 styles d\'attachement',
-  styles_subtitle:     'Notre façon d\'entrer en relation à l\'âge adulte reflète des modèles construits dès la petite enfance. Quel est le vôtre ?',
-  // Anxious-Avoidant dance
-  manifestations_badge:   'Dynamique relationnelle',
-  manifestations_title:    'La danse Anxieux–Évitant',
-  manifestations_subtitle: 'Le couple le plus fréquent… et le plus volatile. Comprendre ce mécanisme change tout.',
-  manifestations_anxious_avoidant_text: 'Le couple le plus fréquent… et le plus volatile. Comprendre ce mécanisme change tout.',
-  manifestations_anxious_title:   'Le profil Anxieux',
-  manifestations_anxious_desc:     'Par peur de perdre le lien, il poursuit et demande plus d\'attention (hyperactivation). Plus il ressent de distance, plus il accélère.',
-  manifestations_avoidant_title:  'Le profil Évitant',
-  manifestations_avoidant_desc:   'Craint la dépendance, alors il fuit et se distance (désactivation). Plus l\'anxieux s\'approche, plus il s\'éloigne.',
-  manifestations_goodnews_text:    'Bonne nouvelle : ces réactions ne relèvent pas d\'un manque d\'amour, mais d\'un système biologique d\'attachement activé. Les comprendre permet de sortir du piège et de retrouver la connexion.',
-  // Healing section
-  healing_badge:       'Neuroplasticité & guérison',
-  healing_title:        'L\'attachement sécurisé acquis',
-  healing_subtitle:     'Votre style d\'attachement n\'est pas une fatalité. Grâce à la neuroplasticité du cerveau, il est possible de le transformer.',
-  healing_step1_title:  'La conscience de soi',
-  healing_step1_desc:   'Observer ses réactions sans se juger. Identifier ses déclencheurs émotionnels. Créer un espace entre le stimulus et la réponse.',
-  healing_step2_title: 'Les relations correctrices',
-  healing_step2_desc:   'S\'entourer de personnes sécures et fiables. Leur présence apaisante va progressivement « recâbler » le système nerveux vers plus de sécurité.',
-  healing_step3_title: 'La thérapie (EFT)',
-  healing_step3_desc:   'La Thérapie Centrée sur les Émotions (Sue Johnson) utilise la relation thérapeutique comme base de sécurité pour transformer les modèles internes.',
-  // Communication section
-  comm_badge:     'Outils pratiques',
-  comm_title:     'Communiquer efficacement',
-  comm_subtitle:  'Formuler ses besoins selon son style d\'attachement : 3 règles pour apaiser les tensions relationnelles.',
-  comm_rule1_title: 'Spécifique',
-  comm_rule1_desc: 'Nommez un comportement précis plutôt qu\'une généralité blessante.',
-  comm_rule1_example: '« Quand tu ne m\'envoies pas de message après une soirée… » au lieu de « Tu te fiches de moi ».',
-  comm_rule2_title: 'Non culpabilisant',
-  comm_rule2_desc: 'Exprimez votre ressenti sans attaquer, juger ou blâmer l\'autre.',
-  comm_rule2_example: '« Je me sens seul·e » plutôt que « Tu me rends seul·e ».',
-  comm_rule3_title: 'Assertif',
-  comm_rule3_desc: 'Assumez la légitimité de vos besoins — surtout si vous avez un profil anxieux qui craint d\'être « trop ».',
-  comm_rule3_example: '« J\'ai besoin de réassurance, c\'est un besoin valide » non pas une faiblesse.',
-  // Work section
-  work_section_badge:  'Coaching professionnel',
-  work_section_title:  'L\'attachement au travail aussi',
-  work_section_desc:   'Les styles d\'attachement influencent notre rapport au travail, notre leadership et la sécurité psychologique en équipe.',
-  work_section_cta:    'Explorer le coaching en entreprise',
-  work_secure_label:   'Leader sécure :',
-  work_secure_desc:    'inspire confiance, sait déléguer, crée un environnement de sécurité psychologique.',
-  work_anxious_label:  'Collaborateur anxieux :',
-  work_anxious_desc:   'cherche la validation de sa hiérarchie, risque le burn-out par épuisement.',
-  work_avoidant_label: 'Collaborateur évitant :',
-  work_avoidant_desc:  'privilégie l\'autonomie au détriment du travail d\'équipe et de la collaboration.',
-  // Steps section
-  steps_badge:         'La méthode',
-  steps_title:         'Vos 3 actions',
-  step1_title:         'Faites le test',
-  step1_desc:          '16 questions · 3 à 5 minutes · Résultat immédiat',
-  step2_title:         'Session découverte',
-  step2_desc:          "Séance offerte d'1h pour découvrir vos 3 actions",
-  step3_title:         'Passez à l\'action',
-  step3_desc:          'Un plan clair et des outils pour des relations épanouissantes',
-  // Multiculture section
-  multiculture_badge:   'Application professionnelle',
-  multiculture_title:   'L\'attachement au travail — et dans les équipes multiculturelles',
-  multiculture_subtitle: 'Les styles d\'attachement ne s\'arrêtent pas à la porte du bureau. Ils façonnent votre rapport au management, à l\'autorité, au feedback, et à la collaboration.',
-  multiculture_entreprise_title: 'En entreprise : leadership et style d\'attachement',
-  multiculture_entreprise_desc:  'Les styles d\'attachement influencent notre rapport au travail, notre leadership et la sécurité psychologique en équipe.',
-  multiculture_mc_title: 'En équipe multiculturelle : l\'attachement amplifié',
-  multiculture_mc_desc:  'Dans un environnement international, les styles d\'attachement se heurtent aux cultures de communication — directe vs indirecte, individuelle vs collective, explicite vs implicite. Monica, forte de 10 ans d\'expérience dans des équipes européennes et internationales, accompagne ces frictions avec une approche qui combine théorie de l\'attachement et intelligence interculturelle.',
-  multiculture_note:      'Monica accompagne les marketers et professionnels internationaux qui jonglent entre cultures, organisations matricielles et transitions de poste — là où les styles d\'attachement sont les plus visibles.',
-  multiculture_cta:       'Prendre rendez-vous →',
-  // Booking
-  booking_badge:       'Agenda',
-  booking_title:       'Choisissez votre créneau',
-  booking_subtitle:    'Séance découverte offerte · 1h · Sans engagement',
-  booking_cta_button:  'Voir les créneaux disponibles →',
-  // Theory
-  theory_badge:        'Références',
-  theory_title:        'Les fondements théoriques',
-  theory_subtitle:     'Cliquez sur une carte pour explorer les théories qui guident l\'approche de Monica.',
-  theory_card_1_title: '📖 ATTACHED',
-  theory_card_1_text:  'Comprendre son style d\'attachement',
-  theory_card_2_title: '🌿 Carl Rogers',
-  theory_card_2_text:  'L\'écoute inconditionnelle',
-  theory_card_3_title: '❤️ Erich Fromm',
-  theory_card_3_text:  'L\'art d\'aimer',
-  theory_modal_cta:    "Réserver une séance découverte d'1h →",
-  // Footer
-  footer_site_name:    'Happy Humans',
-  footer_copyright:    '© Happy Humans — Monica Schneider',
-  // Result CTA (for quiz)
-  result_cta_title:    'Passez à l\'étape suivante',
-  result_cta_subtitle: "Séance découverte offerte d'1h avec Monica",
-  result_cta_button:   'Réserver ma séance découverte gratuite →',
-  relations_price:     'Sur devis',
-};
+import { useCmsContent, type CmsResult } from '@/hooks/useCmsContent';
+import { RELATIONS_DEFAULTS } from '@/lib/cms-defaults/relations'
+import Rich from '@/components/Rich'
 
 export default function RelationsPage() {
-  const c = useCmsContent('relations', DEFAULTS_RELATIONS);
+  const c = useCmsContent('relations', RELATIONS_DEFAULTS);
 
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const bookingRef = useRef<HTMLDivElement>(null);
@@ -243,7 +143,7 @@ export default function RelationsPage() {
     }, 100);
   };
 
-  const activeSource = SOURCES.find(s => s.id === activeModal);
+  const activeSource = buildSources(c).find(s => s.id === activeModal);
 
   return (
     <div className="min-h-screen bg-[#f5f0e8]">
@@ -257,7 +157,7 @@ export default function RelationsPage() {
         <section className="relative overflow-hidden bg-stone-900 px-6 py-24 md:py-36 md:px-10 text-center">
           <img
             src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&q=85&auto=format&fit=crop"
-            alt="Connexion humaine, mains tendues symbolisant le lien entre personnes"
+            alt={c.t_connexion_humaine_mains_tendues}
             className="absolute inset-0 h-full w-full object-cover opacity-20"
           />
           <div className="relative mx-auto max-w-2xl">
@@ -299,7 +199,7 @@ export default function RelationsPage() {
               </p>
             </div>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {ATTACHMENT_STYLES.map(s => (
+              {buildAttachmentStyles(c).map(s => (
                 <div key={s.id} className="rounded-2xl bg-white p-6 shadow-sm border-t-4" style={{ borderColor: s.color }}>
                   <div className="text-3xl mb-3">{s.emoji}</div>
                   <div className="flex items-center justify-between mb-2">
@@ -352,7 +252,7 @@ export default function RelationsPage() {
             </div>
             <div className="mt-8 rounded-2xl p-6 text-center" style={{ background: 'rgba(45,95,84,0.07)' }}>
               <p className="text-sm text-stone-700 leading-relaxed">
-                <strong style={{ color: '#2d5f54' }}>Bonne nouvelle :</strong> {c.get('manifestations_goodnews_text')}
+                <strong style={{ color: '#2d5f54' }}>{c.t_bonne_nouvelle}</strong> {c.get('manifestations_goodnews_text')}
               </p>
             </div>
           </div>
@@ -494,9 +394,9 @@ export default function RelationsPage() {
                 </div>
                 <h3 className="text-base font-semibold text-stone-900 mb-3">{c.get('multiculture_entreprise_title')}</h3>
                 <div className="text-sm text-stone-600 space-y-2">
-                  <p><strong>Sécure :</strong> {c.get('work_secure_desc')}</p>
-                  <p><strong>Anxieux :</strong> {c.get('work_anxious_desc')}</p>
-                  <p><strong>Évitant :</strong> {c.get('work_avoidant_desc')}</p>
+                  <p><strong>{c.t_secure}</strong> {c.get('work_secure_desc')}</p>
+                  <p><strong>{c.t_anxieux}</strong> {c.get('work_anxious_desc')}</p>
+                  <p><strong>{c.t_evitant}</strong> {c.get('work_avoidant_desc')}</p>
                 </div>
               </div>
               <div className="rounded-2xl bg-[#f5f0e8] p-7">
@@ -564,7 +464,7 @@ export default function RelationsPage() {
               </p>
             </div>
             <div className="grid gap-5 sm:grid-cols-3">
-              {SOURCES.map(source => (
+              {buildSources(c).map(source => (
                 <button
                   key={source.id}
                   onClick={() => setActiveModal(source.id)}
@@ -573,7 +473,7 @@ export default function RelationsPage() {
                   <div className="mb-3 text-3xl">{source.emoji}</div>
                   <h3 className="mb-1 text-base font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">{source.title}</h3>
                   <p className="text-xs text-stone-500">{source.subtitle}</p>
-                  <p className="mt-3 text-xs font-semibold text-[#2d5f54]">Découvrir →</p>
+                  <p className="mt-3 text-xs font-semibold text-[#2d5f54]">{c.t_decouvrir}</p>
                 </button>
               ))}
             </div>
@@ -591,8 +491,8 @@ export default function RelationsPage() {
           </Link>
           <p>{c.get('footer_copyright')}</p>
           <div className="flex gap-6">
-            <a href="/mentions-legales" className="hover:text-stone-200 transition">Mentions légales</a>
-            <a href="/politique-confidentialite" className="hover:text-stone-200 transition">Confidentialité</a>
+            <a href="/mentions-legales" className="hover:text-stone-200 transition">{c.t_mentions_legales}</a>
+            <a href="/politique-confidentialite" className="hover:text-stone-200 transition">{c.t_confidentialite}</a>
           </div>
         </div>
       </footer>

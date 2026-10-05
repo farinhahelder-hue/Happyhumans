@@ -3,7 +3,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 import { useCmsContent } from '@/hooks/useCmsContent'
-import { ENTREPRISES_DEFAULTS } from '@/lib/cms-page-defaults'
+import { ENTREPRISES_DEFAULTS } from '@/lib/cms-defaults/entreprises'
 
 // Champ « liste » du CMS : un élément par ligne
 const lines = (s: string) => s.split('\n').map(l => l.trim()).filter(Boolean)
@@ -52,7 +52,7 @@ export default function EntreprisesPage() {
         <section className="relative flex h-[55vh] items-end overflow-hidden bg-stone-900 md:h-[65vh]">
           <img
             src={c.hero_image || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1400&q=80'}
-            alt="Entreprises"
+            alt={c.t_entreprises}
             className="absolute inset-0 h-full w-full object-cover opacity-40"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
@@ -82,7 +82,7 @@ export default function EntreprisesPage() {
               ) : (
                 <img
                   src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80&auto=format&fit=crop"
-                  alt="Réunion d'équipe et leadership en entreprise"
+                  alt={c.t_reunion_d_equipe_et}
                   className="rounded-2xl object-cover shadow-lg h-72 w-full"
                 />
               )}
@@ -132,15 +132,15 @@ export default function EntreprisesPage() {
                 </ul>
                 <div className="flex flex-wrap gap-3 pt-2">
                   <div className="rounded-xl bg-[#f5f0e8] border border-stone-200 px-4 py-2.5 text-center">
-                    <p className="text-xs text-stone-400 uppercase tracking-wider">Format</p>
+                    <p className="text-xs text-stone-400 uppercase tracking-wider">{c.t_format}</p>
                     <p className="text-sm font-semibold text-stone-900 mt-0.5">{c.flash_format}</p>
                   </div>
                   <div className="rounded-xl bg-[#f5f0e8] border border-stone-200 px-4 py-2.5 text-center">
-                    <p className="text-xs text-stone-400 uppercase tracking-wider">Rythme</p>
+                    <p className="text-xs text-stone-400 uppercase tracking-wider">{c.t_rythme}</p>
                     <p className="text-sm font-semibold text-stone-900 mt-0.5">{c.flash_rythme}</p>
                   </div>
                   <div className="rounded-xl bg-[#2f6b61] border border-[#2f6b61] px-4 py-2.5 text-center">
-                    <p className="text-xs text-emerald-200 uppercase tracking-wider">Tarif</p>
+                    <p className="text-xs text-emerald-200 uppercase tracking-wider">{c.t_tarif}</p>
                     <p className="text-sm font-semibold text-white mt-0.5">{c.flash_tarif}</p>
                   </div>
                 </div>
@@ -250,7 +250,7 @@ export default function EntreprisesPage() {
               <footer className="mt-6">
                 <p className="text-sm font-semibold text-stone-900">{c.get('temoignage_dorothee_author')}</p>
                 <p className="text-xs text-stone-500 italic mt-0.5">{c.get('temoignage_dorothee_role')}</p>
-                <p className="text-xs text-stone-400 mt-1">* Prénom modifié</p>
+                <p className="text-xs text-stone-400 mt-1">{c.t_prenom_modifie}</p>
               </footer>
             </div>
           </div>

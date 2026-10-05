@@ -1,37 +1,10 @@
 'use client'
 import Link from 'next/link'
 import { useCmsContent } from '@/hooks/useCmsContent'
-
-const DEFAULTS: Record<string, string> = {
-  site_name:              'Happy Humans',
-  tagline:                'philo-coaching',
-  description:            'Coaching & transformation avec Monica Schneider.',
-  description_2:          'Une pratique qui relie leadership, authenticite, philosophie et transformation humaine.',
-  linkedin_url:           'https://fr.linkedin.com/in/monica-schneider-philo-coaching',
-  photos_label:           'Photos : ',
-  footer_nav_title:       'Navigation',
-  footer_nav_home:        'Accueil',
-  footer_nav_coaching:    'Coaching individuel',
-  footer_nav_hd:          "Happiness Design",
-  footer_nav_sparring:    'Sparring Partner',
-  footer_nav_entreprises: 'Entreprises',
-  footer_nav_relations:   'Relations',
-  footer_nav_temoignages: 'Temoignages',
-  footer_nav_show_temoignages: 'false',
-  footer_nav_contact:     'Contact',
-  footer_nav_blog:        'Ressources',
-  footer_nav_faq:         'FAQ',
-  footer_services_title:  'Services',
-  service_1:              'Executive coaching individuel',
-  service_2:              'Coaching de dirigeants',
-  service_3:              'Philosophical counselling',
-  service_4:              'Sparring partner',
-  service_5:              'Ateliers et seminaires',
-  copyright:              'Happy Humans \u2014 Monica Schneider. Tous droits reserves.',
-}
+import { FOOTER_DEFAULTS } from '@/lib/cms-defaults/footer'
 
 export default function Footer() {
-  const c = useCmsContent('footer', DEFAULTS)
+  const c = useCmsContent('footer', FOOTER_DEFAULTS)
   const year = new Date().getFullYear()
   return (
     <footer className="border-t px-6 py-10 md:px-10"
@@ -53,7 +26,7 @@ export default function Footer() {
             {c.linkedin_url && (
               <a href={c.linkedin_url} target="_blank" rel="noopener noreferrer"
                 className="inline-block mt-3 text-xs hover:text-white transition" style={{ color: '#5a7a74' }}>
-                LinkedIn &rarr;
+                {c.t_linkedin}
               </a>
             )}
           </div>
@@ -68,9 +41,6 @@ export default function Footer() {
               <Link href="/sparring-partner" className="hover:text-white transition">{c.get('footer_nav_sparring')}</Link>
               <Link href="/entreprises" className="hover:text-white transition">{c.get('footer_nav_entreprises')}</Link>
               <Link href="/relations" className="hover:text-white transition">{c.get('footer_nav_relations')}</Link>
-              {c.get('footer_nav_show_temoignages') === 'true' && (
-                <Link href="/temoignages" className="hover:text-white transition">{c.get('footer_nav_temoignages')}</Link>
-              )}
               <Link href="/contact" className="hover:text-white transition">{c.get('footer_nav_contact')}</Link>
               <Link href="/blog" className="hover:text-white transition">{c.get('footer_nav_blog')}</Link>
               <Link href="/faq" className="hover:text-white transition">{c.get('footer_nav_faq')}</Link>
@@ -97,12 +67,12 @@ export default function Footer() {
           <div>
             <p>&copy; {year} {c.get('copyright')}</p>
             <p className="opacity-40 mt-1">
-              {c.get('photos_label')}<a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition">Unsplash</a>
+              {c.get('photos_label')}<a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition">{c.t_unsplash}</a>
             </p>
           </div>
           <div className="flex gap-6">
-            <Link href="/mentions-legales" className="hover:text-white transition">Mentions legales</Link>
-            <Link href="/politique-confidentialite" className="hover:text-white transition">Confidentialite</Link>
+            <Link href="/mentions-legales" className="hover:text-white transition">{c.t_mentions_legales}</Link>
+            <Link href="/politique-confidentialite" className="hover:text-white transition">{c.t_confidentialite}</Link>
           </div>
         </div>
       </div>

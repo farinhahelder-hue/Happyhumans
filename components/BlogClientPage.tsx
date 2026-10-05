@@ -5,6 +5,7 @@ import Link from 'next/link'
 import NewsletterForm from '@/components/NewsletterForm'
 import type { BlogPost } from '@/lib/blog-supabase'
 import { useCmsContent } from '@/hooks/useCmsContent'
+import { BLOG_DEFAULTS } from '@/lib/cms-defaults/blog'
 
 const CATEGORY_LABELS: Record<string, string> = {
   Tous: 'Tout lire',
@@ -20,23 +21,6 @@ const CATEGORY_FALLBACK_BG: Record<string, string> = {
 }
 
 const BADGE_FALLBACK_SRC = '/images/badges-happyhumans.svg'
-
-const BLOG_DEFAULTS = {
-  hero_badge:       'Blog Happy Humans',
-  hero_title:       'Des moments, des détours,\ndes repères qu\'on aurait aimé avoir avant.',
-  hero_subtitle:    "On écrit depuis le terrain : une arrivée trop tardive, une adresse trouvée au bon moment, une erreur qu'on ne refera pas. Le reste, on le laisse aux brochures.",
-  featured_label:   'À lire d\'abord',
-  featured_title:   'Un carnet qui donne le ton.',
-  empty_title:      "Rien de juste pour cette recherche, pour l'instant.",
-  empty_text:       "Essaie un lieu, un mot plus simple, ou repars de tout le blog pour reprendre le fil.",
-  empty_action:     'Voir tous les articles →',
-  carnets_title:    'Carnets de voyage',
-  carnets_desc:     "Les récits qui gardent l'heure, le rythme et ce qu'on a retenu sur place.",
-  pepites_title:    'Découvertes locales',
-  pepites_desc:     "Des lieux qu'on n'était pas venus chercher, et qu'on aurait regretté de rater.",
-  guides_title:     'Guides pratiques',
-  guides_desc:      "Des repères concrets quand le terrain devient plus utile que la théorie.",
-}
 
 interface Props {
   posts: (BlogPost & { formattedDate: string })[]
@@ -77,7 +61,7 @@ export default function BlogClientPage({ posts }: Props) {
       <section className="relative overflow-hidden bg-stone-950 px-4 py-24 text-white md:py-28">
         <img
           src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1600&q=80&auto=format&fit=crop"
-          alt="Écriture et réflexion"
+          alt={c.t_ecriture_et_reflexion}
           className="absolute inset-0 h-full w-full object-cover opacity-25"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-stone-950/80 via-stone-900/75 to-amber-950/65" />
@@ -139,7 +123,7 @@ export default function BlogClientPage({ posts }: Props) {
                 <div className="flex flex-wrap items-center gap-4 text-xs text-white/55">
                   <span>{featuredPost.formattedDate}</span>
                   <span className="font-semibold text-amber-300 transition-transform duration-200 group-hover:translate-x-1">
-                    Lire le carnet →
+                    {c.t_lire_le_carnet}
                   </span>
                 </div>
               </div>
@@ -169,7 +153,7 @@ export default function BlogClientPage({ posts }: Props) {
           <div className="relative w-full md:w-80">
             <input
               type="text"
-              placeholder="Rechercher un carnet, un lieu, un détail"
+              placeholder={c.t_rechercher_un_carnet_un}
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
               className="w-full rounded-full border border-stone-200 bg-white py-3 pl-11 pr-4 text-sm text-stone-700 shadow-sm outline-none transition-all duration-200 placeholder:text-stone-400 focus:border-amber-300 focus:ring-2 focus:ring-amber-100"
@@ -192,7 +176,7 @@ export default function BlogClientPage({ posts }: Props) {
                 onClick={() => setSearchQuery('')}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-stone-400 transition-colors duration-200 hover:text-stone-600"
               >
-                Effacer
+                {c.t_effacer}
               </button>
             )}
           </div>
