@@ -1,0 +1,76 @@
+# CMS — architecture et règles
+
+Ce document explique comment le contenu du site est branché sur le CMS, et **comment ajouter un texte ou une page sans casser l'édition**.
+
+## Le principe : une seule source de vérité
+
+Chaque page pilotée par le CMS a un module de textes par défaut :
+
+```
+lib/cms-defaults/<page>.ts      →  export const <PAGE>_DEFAULTS = { cle: 'texte par défaut', … }
+```
+
+Ce module est lu **à la fois** par :
+
+| Qui | Comment |
+|---|---|
+| la page publique | `const c = useCmsContent('<page>', <PAGE>_DEFAULTS)` puis `{c.cle}` |
+| l'admin | `lib/cms-page-defaults.ts` (`PAGE_DEFAULTS`) pré-remplit le formulaire |
+
+Avant, ces textes existaient en **deux copies** qui divergeaient (l'admin disait « 45 min », le site « 1h »), et un clic sur « Sauvegarder » écrivait en base le mauvais texte. Ne dupliquez jamais un texte par défaut : modifiez uniquement le module de la page.
+
+Les valeurs saisies dans l'admin sont stockées dans la table Supabase `site_content` (`page`, `block_key`, `value`) et **remplacent** le défaut. Une valeur vide retombe sur le défaut ; pour masquer un texte, saisir un espace.
+
+## Ajouter un texte modifiable
+
+1. Ajouter la clé et son texte dans `lib/cms-defaults/<page>.ts`.
+2. Dans la page : `{c.ma_cle}` (lecture simple, rendue côté serveur → indexable par Google).
+3. Ajouter un champ dans `PAGES_CONFIG.<page>` (`app/cms-admin/page.tsx`) :
+   `{ key: 'ma_cle', label: 'Groupe — Libellé', type: 'text' | 'textarea' | 'image' }`.
+   La partie avant « — » dans le libellé sert de titre de groupe dans l'admin.
+
+`npm test` vérifie ces trois points (`__tests__/cms/consistency.test.ts`) : si vous oubliez une étape, le test dit exactement quelle clé manque.
+
+### `c.ma_cle` ou `c.get('ma_cle')` ?
+
+`c.get()` rend un champ cliquable pour l'édition en ligne, mais il est chargé en `ssr: false` : son texte **n'est pas dans le HTML envoyé par le serveur** (donc invisible pour Google au premier chargement). Les nouveaux champs utilisent la lecture simple `c.ma_cle`. Les anciens `c.get()` sont conservés tels quels.
+
+## Textes avec gras, italique, liens
+
+Utiliser le composant `components/Rich.tsx` :
+
+```tsx
+<p><Rich text={c.ma_cle} linkClassName="underline" /></p>
+```
+
+Dans l'admin, la valeur s'écrit `**gras**`, `*italique*`, `[texte](https://…)`, et un retour à la ligne devient un saut de ligne. Pas de HTML : le contenu de la base n'est jamais interprété comme du code.
+
+## Listes
+
+- **Éléments fixes** (cartes, formules) : une clé par élément (`domain_1_title`, `domain_2_title`…).
+- **Liste libre** (FAQ) : emplacements numérotés (`faq_1_q`, `faq_1_a` … `faq_15_*`). Un emplacement vide est masqué, donc on peut supprimer et ajouter des éléments. Les questions d'origine sont dans `FAQ_ITEMS` et ne servent que tant que le CMS n'a rien enregistré.
+- Listes à puces d'un seul champ : un élément par ligne (`flash_features`, `pricing_card_1_items`…).
+
+## Ajouter une page
+
+1. Créer `lib/cms-defaults/<page>.ts` et l'ajouter à `PAGE_DEFAULTS` (`lib/cms-page-defaults.ts`).
+2. Créer le bloc `'<page>': { label, emoji, sections: [...] }` dans `PAGES_CONFIG`.
+3. Si la page a un `export const metadata` (composant serveur), garder `page.tsx` serveur et mettre le contenu dans un composant client à côté (voir `app/mentions-legales/`).
+4. Ajouter la page dans `PAGES` du test `consistency.test.ts` et dans `app/sitemap.ts`.
+
+## SEO par page
+
+Chaque page a trois champs, groupe « Référencement Google » : `seo_title`, `seo_description`, `seo_image`.
+Ils sont lus côté serveur par `lib/page-seo.ts` (`pageMetadata(page, DEFAULTS)`) dans le `layout.tsx` de la route.
+Les valeurs par défaut sont celles de `lib/cms-defaults/<page>.ts` ; si Supabase est indisponible, on les utilise : le SEO ne casse jamais.
+Chaque sauvegarde d'un champ `seo_*` régénère la page (`revalidatePath` dans `app/api/cms/content/route.ts`) ; sinon elle se régénère au plus toutes les 5 minutes.
+`pageMetadata` définit aussi l'URL canonique et `og:url` **propres à chaque page** (avant, toutes pointaient vers l'accueil).
+La page d'accueil utilise les réglages globaux (Paramètres → SEO).
+
+## Ce qui n'est PAS dans le CMS
+
+- Le quiz d'attachement (`components/attachment-test/`) : questions, scores et résultats sont dans le code.
+- Les libellés des `<option>` du formulaire de contact : le texte est la valeur envoyée, il ne faut pas le changer sans adapter le traitement.
+- Les articles de blog et destinations : ils ont leur propre éditeur (onglet Articles).
+- La navigation : éditeur dédié (page « Navigation »).
+- Les pages redirigées par `next.config.js` (`/travel-planning`, `/hotel-consulting`, `/destinations/*`…) : elles ne sont pas servies.

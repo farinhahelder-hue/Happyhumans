@@ -1,3 +1,5 @@
+> ⚠️ **Document obsolète** — il décrit une ancienne version (`/cms-new`, qui n'existe plus). Voir [docs/CMS_ARCHITECTURE.md](docs/CMS_ARCHITECTURE.md) pour le fonctionnement actuel.
+
 # CMS Improvements Summary
 
 ## What Was Done
