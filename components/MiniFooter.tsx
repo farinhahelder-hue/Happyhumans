@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { useCmsContent } from '@/hooks/useCmsContent'
-import SiteLogo, { logoPx, logoShape } from '@/components/SiteLogo'
+import SiteLogo, { resolveLogo } from '@/components/SiteLogo'
 import { useSiteSettings } from '@/hooks/useSiteSettings'
 
 const DEFAULTS: Record<string, string> = {
@@ -14,8 +14,7 @@ const DEFAULTS: Record<string, string> = {
 
 export default function MiniFooter() {
   const settings = useSiteSettings()
-  const logoFooterSize = logoPx(settings.logo_footer_size, 36, 72)
-  const showName = settings.logo_show_name !== 'false'
+  const logo = resolveLogo(settings, { sizeKey: 'logo_footer_size', fallbackSize: 40, maxSize: 72, onDark: true })
   const c = useCmsContent('footer', DEFAULTS)
 
   const year = new Date().getFullYear()
@@ -27,7 +26,7 @@ export default function MiniFooter() {
 
         <div className="flex items-center gap-3">
           <Link href="/" className="transition">
-            <SiteLogo url={settings.logo_url} size={logoFooterSize} shape={logoShape(settings.logo_shape)} alt={showName ? '' : c.site_name} />
+            <SiteLogo url={logo.url} size={logo.size} shape={logo.shape} alt={logo.showName ? '' : c.site_name} />
           </Link>
           <div className="flex flex-col">
             <Link href="/" className="transition"

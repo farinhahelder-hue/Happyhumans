@@ -8,7 +8,7 @@ import { bustCmsCache } from '@/hooks/useCmsContent';
 import MediaLibrary from '@/components/MediaLibrary';
 import { sanitizeHtml } from '@/lib/sanitize-html';
 import { uploadImage } from '@/lib/upload-client';
-import SiteLogo, { logoPx, logoShape } from '@/components/SiteLogo';
+import SiteLogo, { logoPx, resolveLogo } from '@/components/SiteLogo';
 import CarouselEditor from '@/components/admin/CarouselEditor';
 import CarouselGenerator from '@/components/admin/CarouselGenerator';
 import BlogGenerator from '@/components/admin/BlogGenerator';
@@ -3390,9 +3390,9 @@ export default function CMSAdmin() {
                             {/* Prévisualisation live */}
                             <div style={{ marginBottom: '1.5rem', padding: '1rem 1.5rem', background: 'white', borderRadius: '.75rem', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                               <div style={{ width: 260, background: '#fff', borderBottom: '1px solid #f0ece8', borderRadius: '.5rem .5rem 0 0', padding: '.6rem 1rem', display: 'flex', alignItems: 'center', gap: '.75rem', justifyContent: (editedSettings['logo_position'] || 'left') === 'center' ? 'center' : 'flex-start' }}>
-                                <SiteLogo url={editedSettings['logo_url']} size={logoPx(editedSettings['logo_size'], 44)} shape={logoShape(editedSettings['logo_shape'])} />
+                                <SiteLogo url={resolveLogo(editedSettings).url} size={resolveLogo(editedSettings).size} shape={resolveLogo(editedSettings).shape} />
                                 <div>
-                                  {editedSettings['logo_show_name'] !== 'false' && <p style={{ fontWeight: 700, fontSize: '.9rem', color: '#1a1a1a', margin: 0, fontFamily: 'Georgia, serif' }}>{editedSettings['site_name'] || 'Happy Humans'}</p>}
+                                  {resolveLogo(editedSettings).showName && <p style={{ fontWeight: 700, fontSize: '.9rem', color: '#1a1a1a', margin: 0, fontFamily: 'Georgia, serif' }}>{editedSettings['site_name'] || 'Happy Humans'}</p>}
                                   {editedSettings['tagline'] && <p style={{ fontSize: '.7rem', color: '#c9a96e', margin: 0, fontStyle: 'italic' }}>{editedSettings['tagline']}</p>}
                                 </div>
                               </div>
@@ -3420,11 +3420,11 @@ export default function CMSAdmin() {
 
                             {/* Taille du logo */}
                             <div style={{ marginBottom: '1.25rem' }}>
-                              <label style={lbl}>Taille du logo — {logoPx(editedSettings['logo_size'], 44)}px</label>
+                              <label style={lbl}>Taille du logo — {logoPx(editedSettings['logo_size'], 52)}px</label>
                               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                                 <span style={{ fontSize: '.75rem', color: '#aaa' }}>24px</span>
                                 <input type="range" min="24" max="64" step="4"
-                                  value={Number(editedSettings['logo_size'] || 44)}
+                                  value={logoPx(editedSettings['logo_size'], 52)}
                                   onChange={e => setEditedSettings(p => ({ ...p, logo_size: e.target.value }))}
                                   style={{ flex: 1, accentColor: '#2d5f54' }} />
                                 <span style={{ fontSize: '.75rem', color: '#aaa' }}>64px</span>

@@ -20,7 +20,7 @@ export const A_PROPOS_DEFAULTS: Record<string, string> = {
   bio_p6: "Aujourd'hui je continue à accompagner des individus ou des entreprises aux moments clés des carrières (promotion et prise de poste, transitions, reconversion), pour booster le sens et l'engagement (conseil en communication interne, team coaching) et même pendant les moments clés du reste de la vie (mariage, séparation, parentalité, deuil, retraite, fin de vie).",
   bio_p7: "Ma conviction, ligne directrice dans toutes mes interventions, est simple. Pour chaque nouvelle étape, nous devons entreprendre une transformation en tant qu'individu ou en tant qu'équipe. Je suis à vos côtés avec ma boîte à outils multidisciplinaire pour coller au mieux à votre chemin unique.",
   bio_p8: "Je souhaite aussi rendre cette boîte à outils du bonheur — même dans une vie chaotique — accessible au plus grand nombre. Ce projet s'appelle Happiness Design.",
-  photo:            '',
+  photo:            '/monica-schneider.jpg',
   // Accompagnement section
   acc_badge:       'Accompagnement',
   acc_title:       'Mes coachings et mentorings',

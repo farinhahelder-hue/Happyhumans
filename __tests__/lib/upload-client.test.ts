@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { fitWithin, uploadErrorMessage, prepareImage, uploadImage, MAX_UPLOAD_BYTES } from '@/lib/upload-client'
-import { logoPx, logoShape, HEADER_LOGO_MAX } from '@/components/SiteLogo'
+import { logoPx, logoShape, resolveLogo, DEFAULT_LOGO, DEFAULT_LOGO_LIGHT, HEADER_LOGO_MAX } from '@/components/SiteLogo'
 
 describe('fitWithin — réduction des photos', () => {
   it('ne touche pas une image déjà assez petite', () => {
@@ -84,5 +84,23 @@ describe('réglages du logo', () => {
     expect(logoShape('rounded')).toBe('rounded')
     expect(logoShape('square')).toBe('square')
     expect(logoShape('triangle')).toBe('circle')
+  })
+})
+
+describe('resolveLogo — logo de la charte par défaut', () => {
+  it('sans logo envoyé : logo de la charte, sans découpe, sans le nom (il le contient déjà)', () => {
+    expect(resolveLogo({})).toEqual({ url: DEFAULT_LOGO, shape: 'square', size: 52, showName: false, isDefault: true })
+    // les réglages de forme / de nom ne s'appliquent pas au logo de la charte
+    expect(resolveLogo({ logo_shape: 'circle', logo_show_name: 'true' })).toMatchObject({ shape: 'square', showName: false })
+  })
+  it('logo envoyé dans le CMS : ses réglages sont respectés', () => {
+    const r = resolveLogo({ logo_url: 'https://x/logo.png', logo_shape: 'rounded', logo_size: '40', logo_show_name: 'false' })
+    expect(r).toEqual({ url: 'https://x/logo.png', shape: 'rounded', size: 40, showName: false, isDefault: false })
+    expect(resolveLogo({ logo_url: 'https://x/logo.png' }).showName).toBe(true)
+  })
+  it('pied de page : version claire et taille propre au pied de page', () => {
+    const r = resolveLogo({ logo_footer_size: '48' }, { sizeKey: 'logo_footer_size', fallbackSize: 40, maxSize: 72, onDark: true })
+    expect(r).toMatchObject({ url: DEFAULT_LOGO_LIGHT, size: 48 })
+    expect(resolveLogo({}, { sizeKey: 'logo_footer_size', fallbackSize: 40, maxSize: 72, onDark: true }).size).toBe(40)
   })
 })

@@ -100,7 +100,7 @@ export default function ContactPage() {
               </div>
               <div className="space-y-6">
                 {c.photo ? (
-                  <img src={c.photo} alt={c.t_monica_schneider} className="rounded-2xl object-cover w-full h-64 shadow-lg" />
+                  <img src={c.photo} alt={c.t_monica_schneider} className="rounded-2xl object-cover object-top w-full h-64 shadow-lg" />
                 ) : (
                   <div className="rounded-2xl bg-gradient-to-br from-[#eef5f3] to-[#f5f0e8] h-64 flex items-center justify-center">
                     <div className="w-20 h-20 rounded-full bg-[#2d5f54] flex items-center justify-center text-white text-2xl font-serif font-bold">{c.t_ms}</div>

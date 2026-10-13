@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/components/AuthProvider'
 import { useCmsNavigation, type NavItem } from '@/hooks/useCmsNavigation'
-import SiteLogo, { logoPx, logoShape } from '@/components/SiteLogo'
+import SiteLogo, { resolveLogo } from '@/components/SiteLogo'
 import { useSiteSettings } from '@/hooks/useSiteSettings'
 
 const ICONS: Record<string, string> = {
@@ -33,12 +33,10 @@ export default function Header() {
   const { user, loading } = useAuth()
   // Logo et nom : réglés dans le CMS (Paramètres → Logo & Identité) ; sans réglage, logo d'origine
   const settings = useSiteSettings()
-  const logoUrl = settings.logo_url || ''
+  const logo = resolveLogo(settings)
   const siteName = settings.site_name || 'Happy Humans'
-  const logoSize = logoPx(settings.logo_size, 44)
-  const shape = logoShape(settings.logo_shape)
   const logoPosition: 'left' | 'center' = settings.logo_position === 'center' ? 'center' : 'left'
-  const showName = settings.logo_show_name !== 'false'
+  const showName = logo.showName
   const logoTextSize = settings.logo_text_size || '2xl'
   const logoTextWeight = settings.logo_text_weight || 'semibold'
   const logoTextColor = settings.logo_text_color || '#1c1917'
@@ -73,11 +71,11 @@ export default function Header() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
 
           <Link href="/" className={`flex items-center gap-3 transition-colors duration-200 ${logoPosition === 'center' ? 'mx-auto' : ''}`} aria-label={`${siteName} accueil`}>
-            <SiteLogo url={logoUrl} size={logoSize} shape={shape} alt={showName ? '' : siteName} className="flex-shrink-0" />
+            <SiteLogo url={logo.url} size={logo.size} shape={logo.shape} alt={showName ? '' : siteName} className="flex-shrink-0" />
             {showName && (
               <span
                 className={`text-${logoTextSize} font-${logoTextWeight} ${logoTextFont === 'serif' ? 'font-serif' : 'font-sans'} tracking-${logoTextTracking} ${logoTextLineHeight !== 'none' ? `leading-${logoTextLineHeight}` : ''}`}
-                style={{ color: logoTextColor, letterSpacing: logoTextSpacing !== '0' ? `${logoTextSpacing}em` : undefined }}
+                style={{ color: logoTextColor, letterSpacing: logoTextSpacing !== '0' ? `${logoTextSpacing}em` : undefined, fontFamily: logoTextFont === 'serif' ? 'var(--hh-font, "Playfair Display", Georgia, serif)' : undefined }}
               >
                 {siteName}
               </span>

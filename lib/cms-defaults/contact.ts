@@ -7,7 +7,7 @@ export const CONTACT_DEFAULTS: Record<string, string> = {
   hero_image:           'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=80&auto=format&fit=crop',
   page_title:           'Parlons de ce qui vous amène.',
   intro_text:           "Que vous soyez en plein questionnement, en transition ou simplement curieux·se de voir si le dialogue peut aider — je vous invite à me contacter. Je réponds personnellement à chaque message.",
-  photo:                '',
+  photo:                '/monica-schneider.jpg',
   form_name_label:      'Votre nom',
   form_email_label:     'Votre email',
   form_subject_label:   'Sujet (optionnel)',

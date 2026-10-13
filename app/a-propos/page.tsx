@@ -49,7 +49,7 @@ export default function AProposPage() {
             </div>
             <div className="md:col-span-2 space-y-4">
               {c.photo ? (
-                <img src={c.photo} alt={c.t_monica_schneider} className="rounded-2xl object-cover shadow-lg w-full h-80" />
+                <img src={c.photo} alt={c.t_monica_schneider} className="rounded-2xl object-cover object-top shadow-lg w-full h-80" />
               ) : (
                 <div className="rounded-2xl bg-gradient-to-br from-[#f5f0e8] to-[#eef5f3] h-80 flex items-center justify-center">
                   <div className="text-center">
