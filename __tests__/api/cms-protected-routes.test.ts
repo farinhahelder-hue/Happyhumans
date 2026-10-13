@@ -54,7 +54,6 @@ const PUBLIC_ROUTES: Record<string, string> = {
   '/api/contact': 'formulaire de contact public',
   '/api/newsletter': 'inscription publique à la newsletter',
   '/api/brevo/subscribe': 'inscription publique à la newsletter (Brevo)',
-  '/api/travel-planning': 'formulaire public historique',
   '/api/cms/auth': 'connexion à l’admin (c’est elle qui authentifie)',
   '/api/cms/public-articles': 'lecture publique des articles publiés',
   '/api/cms/public-settings': 'lecture publique des réglages d’affichage',

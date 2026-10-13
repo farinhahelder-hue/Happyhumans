@@ -14,6 +14,13 @@ import { PAGE_DEFAULTS } from '@/lib/cms-page-defaults';
 import { basePage, isDraftPage, planDraftSave } from '@/lib/cms-drafts';
 import { PAGE_SECTIONS, parseLayout, fullOrder, serializeLayout, moveSection, toggleSection, type SectionDef, type SectionsLayout } from '@/lib/cms-sections';
 import { THEMES } from '@/components/DynamicTheme';
+import { FONT_CHOICES } from '@/lib/themes';
+import {
+  BLOCK_TEMPLATES, blankBlock, customSectionDefs, moveBlock, parseBlocks, removeBlock,
+  serializeBlocks, updateBlock,
+  type CustomBlock, type CustomBlockType,
+} from '@/lib/custom-sections';
+import { THEME_PACKS, DEFAULT_PACK_ID } from '@/lib/theme-packs';
 import { NavItem } from '@/hooks/useCmsNavigation';
 
 const RichEditor = dynamic(() => import('@/components/RichEditor'), { ssr: false });
@@ -24,13 +31,6 @@ type Article = {
   published: boolean; published_at: string; created_at: string;
   excerpt: string; featured_image: string; content?: string; voice_notes?: string;
   seo_title?: string; seo_description?: string; og_image?: string;
-};
-
-type Demande = {
-  id: string; prenom: string; nom: string; email: string;
-  telephone: string; destination: string; style_voyage: string;
-  duree_jours: number; budget_fourchette: string; nb_voyageurs: number;
-  mois_depart: string; notes: string; statut: string; created_at: string;
 };
 
 type Setting = { id: number; key: string; value: string; label: string; group_name: string; type?: string; };
@@ -141,7 +141,120 @@ function SectionsEditor({ defs, value, onChange }: { defs: SectionDef[]; value: 
   );
 }
 
-const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'richtext' | 'select' | 'sections'; options?: string[]; optionLabels?: string[] }[] }> = {
+// ─── Éditeur de blocs personnalisés (« ajouter des sections ») ───
+// Stockés en JSON dans la clé `custom_sections` de la page : brouillon,
+// aperçu et publication passent par le circuit contenu habituel.
+function CustomSectionsEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const blocks = parseBlocks(value);
+  const apply = (next: CustomBlock[]) => onChange(serializeBlocks(next));
+  const set = (id: string, patch: Partial<CustomBlock>) => apply(updateBlock(blocks, id, patch));
+  const smallBtn: React.CSSProperties = { width: 28, height: 28, borderRadius: '.4rem', border: '1px solid #d6d3d1', background: 'white', color: '#44403c', fontSize: '.8rem', cursor: 'pointer' };
+  const T = (label: string, val: string | undefined, onV: (v: string) => void, placeholder = '') => (
+    <div style={{ marginBottom: '.5rem' }}>
+      <label style={{ ...lbl, fontSize: '.78rem' }}>{label}</label>
+      <input value={val ?? ''} onChange={e => onV(e.target.value)} placeholder={placeholder} style={{ ...inp, padding: '.5rem .7rem', fontSize: '.85rem' }} />
+    </div>
+  );
+  const TA = (label: string, val: string | undefined, onV: (v: string) => void) => (
+    <div style={{ marginBottom: '.5rem' }}>
+      <label style={{ ...lbl, fontSize: '.78rem' }}>{label}</label>
+      <textarea value={val ?? ''} onChange={e => onV(e.target.value)} style={{ ...inp, padding: '.5rem .7rem', fontSize: '.85rem', height: 80, resize: 'vertical' }} />
+    </div>
+  );
+  return (
+    <div>
+      <p style={{ fontSize: '.8rem', color: '#7a7a7a', margin: '0 0 .75rem', lineHeight: 1.5 }}>
+        Ajoutez des sections (titre+texte+image, texte, image, appel à l'action, citation), déplacez-les avec ▲ ▼.
+        Elles s'affichent juste avant l'appel à l'action final. Enregistrez le brouillon puis publiez.
+      </p>
+      {blocks.length === 0 && <p style={{ fontSize: '.82rem', color: '#a8a29e', margin: '0 0 .75rem' }}>Aucun bloc pour le moment.</p>}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '.6rem', marginBottom: '.9rem' }}>
+        {blocks.map((b, i) => {
+          const tpl = BLOCK_TEMPLATES.find(t => t.type === b.type);
+          return (
+            <div key={b.id} style={{ border: '1.5px solid #ece8e2', borderRadius: '.6rem', padding: '.7rem .8rem', background: 'white' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', marginBottom: '.6rem' }}>
+                <span style={{ fontSize: '.75rem', fontWeight: 700, color: '#a8a29e' }}>{i + 1}</span>
+                <span style={{ flex: 1, fontSize: '.85rem', fontWeight: 600 }}>
+                  {tpl ? `${tpl.emoji} ${tpl.label}` : b.type}
+                  {'badge' in b && b.badge ? ` — ${b.badge}` : ''}
+                  {'title' in b && b.title ? ` — ${(b.title as string).slice(0, 40)}` : ''}
+                </span>
+                <button type="button" aria-label="Monter" onClick={() => apply(moveBlock(blocks, b.id, -1))} style={smallBtn}>▲</button>
+                <button type="button" aria-label="Descendre" onClick={() => apply(moveBlock(blocks, b.id, 1))} style={smallBtn}>▼</button>
+                <button type="button" aria-label="Supprimer" onClick={() => { if (confirm('Supprimer ce bloc ?')) apply(removeBlock(blocks, b.id)); }} style={{ ...smallBtn, color: '#dc2626' }}>✕</button>
+              </div>
+              {b.type === 'split' && (
+                <>
+                  {T('Badge (petit sur-titre)', b.badge, v => set(b.id, { badge: v }))}
+                  {T('Titre', b.title, v => set(b.id, { title: v }))}
+                  {TA('Texte', b.text, v => set(b.id, { text: v }))}
+                  {T("Image (URL — via la médiathèque ou collée)", b.image, v => set(b.id, { image: v }), 'https://…')}
+                  {T("Texte alternatif de l'image", b.imageAlt, v => set(b.id, { imageAlt: v }))}
+                  {T('Bouton (libellé, vide = sans bouton)', b.ctaLabel, v => set(b.id, { ctaLabel: v }))}
+                  {T('Bouton (lien)', b.ctaHref, v => set(b.id, { ctaHref: v }), '/contact')}
+                  <div style={{ marginBottom: '.5rem' }}>
+                    <label style={{ ...lbl, fontSize: '.78rem' }}>Disposition texte / image</label>
+                    <select value={b.layout} onChange={e => set(b.id, { layout: e.target.value as 'image-right' | 'image-left' })} style={{ ...inp, padding: '.5rem .7rem', fontSize: '.85rem' }}>
+                      <option value="image-right">Texte à gauche, image à droite</option>
+                      <option value="image-left">Image à gauche, texte à droite</option>
+                    </select>
+                  </div>
+                </>
+              )}
+              {b.type === 'texte' && (
+                <>
+                  {T('Badge (petit sur-titre)', b.badge, v => set(b.id, { badge: v }))}
+                  {T('Titre (vide = sans titre)', b.title, v => set(b.id, { title: v }))}
+                  {TA('Texte', b.text, v => set(b.id, { text: v }))}
+                  <div style={{ marginBottom: '.5rem' }}>
+                    <label style={{ ...lbl, fontSize: '.78rem' }}>Alignement</label>
+                    <select value={b.align} onChange={e => set(b.id, { align: e.target.value as 'left' | 'center' })} style={{ ...inp, padding: '.5rem .7rem', fontSize: '.85rem' }}>
+                      <option value="left">À gauche</option>
+                      <option value="center">Centré</option>
+                    </select>
+                  </div>
+                </>
+              )}
+              {b.type === 'image' && (
+                <>
+                  {T("Image (URL — via la médiathèque ou collée)", b.image, v => set(b.id, { image: v }), 'https://…')}
+                  {T("Texte alternatif", b.alt, v => set(b.id, { alt: v }))}
+                  {T('Légende (vide = sans légende)', b.caption, v => set(b.id, { caption: v }))}
+                </>
+              )}
+              {b.type === 'cta' && (
+                <>
+                  {T('Titre', b.title, v => set(b.id, { title: v }))}
+                  {TA('Texte (vide = sans texte)', b.text, v => set(b.id, { text: v }))}
+                  {T('Bouton', b.button, v => set(b.id, { button: v }))}
+                  {T('Lien du bouton', b.href, v => set(b.id, { href: v }), '/contact')}
+                </>
+              )}
+              {b.type === 'citation' && (
+                <>
+                  {TA('Citation', b.quote, v => set(b.id, { quote: v }))}
+                  {T('Auteur (vide = anonyme)', b.author, v => set(b.id, { author: v }))}
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
+        {BLOCK_TEMPLATES.map(t => (
+          <button key={t.type} type="button"
+            onClick={() => apply([...blocks, blankBlock(t.type as CustomBlockType)])}
+            style={{ padding: '.45rem .9rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.82rem', fontWeight: 600 }}>
+            + {t.emoji} {t.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'richtext' | 'select' | 'sections' | 'custom-sections'; options?: string[]; optionLabels?: string[] }[] }> = {
   // ── Ordre du panneau gauche ──────────────────────────────────
   // 1. Accueil
   'home': {
@@ -149,6 +262,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     emoji: '🏠',
     sections: [
       { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
+      { key: 'custom_sections', label: 'Blocs personnalisés — ajouter des sections', type: 'custom-sections' },
       { key: 'hero_badge',            label: 'Hero — Badge (ex: Monica Schneider · Executive Coach)',  type: 'text' },
       { key: 'hero_title',            label: 'Hero — Titre principal',                                type: 'text' },
       { key: 'hero_subtitle',         label: 'Hero — Sous-titre / certifications',                   type: 'textarea' },
@@ -212,6 +326,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     emoji: '👋',
     sections: [
       { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
+      { key: 'custom_sections', label: 'Blocs personnalisés — ajouter des sections', type: 'custom-sections' },
       { key: 'hero_image',        label: 'Photo principale (hero)',         type: 'image' },
       { key: 'hero_badge',        label: 'Badge hero',                     type: 'text' },
       { key: 'page_title',        label: 'Titre de la page',               type: 'text' },
@@ -258,6 +373,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     emoji: '⭐',
     sections: [
       { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
+      { key: 'custom_sections', label: 'Blocs personnalisés — ajouter des sections', type: 'custom-sections' },
       { key: 'hero_image',          label: 'Image hero',                    type: 'image' },
       { key: 'hero_badge',          label: 'Hero — Badge',                  type: 'text' },
       { key: 'hero_title',          label: 'Hero — Titre',                  type: 'text' },
@@ -334,6 +450,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     emoji: '🏢',
     sections: [
       { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
+      { key: 'custom_sections', label: 'Blocs personnalisés — ajouter des sections', type: 'custom-sections' },
       { key: 'hero_image',   label: 'Hero — Image',                  type: 'image' },
       { key: 'hero_badge',   label: 'Hero — Badge',                  type: 'text' },
       { key: 'page_title',   label: 'Hero — Titre',                  type: 'text' },
@@ -418,6 +535,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     emoji: '☀️',
     sections: [
       { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
+      { key: 'custom_sections', label: 'Blocs personnalisés — ajouter des sections', type: 'custom-sections' },
       { key: 'hero_badge',    label: 'Hero — Badge',               type: 'text' },
       { key: 'page_title',    label: 'Hero — Titre principal (H1)', type: 'text' },
       { key: 'page_subtitle', label: 'Hero — Sous-titre',          type: 'textarea' },
@@ -501,6 +619,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     emoji: '💚',
     sections: [
       { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
+      { key: 'custom_sections', label: 'Blocs personnalisés — ajouter des sections', type: 'custom-sections' },
       { key: 'hero_badge',          label: 'Badge intro',                         type: 'text' },
       { key: 'hero_title',          label: 'Titre principal',                     type: 'text' },
       { key: 'hero_description',    label: 'Description intro',                   type: 'textarea' },
@@ -744,6 +863,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     emoji: '🥊',
     sections: [
       { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
+      { key: 'custom_sections', label: 'Blocs personnalisés — ajouter des sections', type: 'custom-sections' },
       { key: 'hero_badge',          label: 'Hero — Badge',                                  type: 'text' },
       { key: 'hero_title',          label: 'Hero — Titre principal',                        type: 'text' },
       { key: 'hero_desc',           label: 'Hero — Sous-titre / description',               type: 'textarea' },
@@ -1460,15 +1580,12 @@ export default function CMSAdmin() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loadingMessages, setLoadingMessages] = useState(false);
 
-  // Demandes travel
-  const [demandes, setDemandes] = useState<Demande[]>([]);
+  // Booking (créneaux + demandes de réservation)
   const [bookingSlots, setBookingSlots] = useState<BookingSlot[]>([]);
   const [bookingRequests, setBookingRequests] = useState<BookingRequest[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [savingSlot, setSavingSlot] = useState(false);
   const [newSlot, setNewSlot] = useState({ date: '', time: '10:00', type: 'coaching', notes: '' });
-  const [loadingDemandes, setLoadingDemandes] = useState(false);
-  const [updatingDemandeId, setUpdatingDemandeId] = useState<string | null>(null);
 
   // Paramètres + Contenu pages
   const [settings, setSettings] = useState<Setting[]>([]);
@@ -1671,21 +1788,6 @@ export default function CMSAdmin() {
     }
   }, [handleUnauthorized, search, showToast, statusFilter]);
 
-  // Load demandes
-  const loadDemandes = useCallback(async () => {
-    setLoadingDemandes(true);
-    try {
-      const res = await fetch('/api/cms/demandes-travel');
-      if (handleUnauthorized(res)) return;
-      const data = await res.json();
-      setDemandes(data.demandes || []);
-    } catch {
-      showToast('Impossible de charger les demandes travel.');
-    } finally {
-      setLoadingDemandes(false);
-    }
-  }, [handleUnauthorized, showToast]);
-
   // Load booking slots
   const loadBookingSlots = useCallback(async () => {
     setLoadingSlots(true);
@@ -1823,8 +1925,6 @@ export default function CMSAdmin() {
   // Chargements par onglet : patterns de fetch standards (setState via callbacks async).
   // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
   useEffect(() => { if (authed) loadArticles(); }, [authed, loadArticles]);
-  // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
-  useEffect(() => { if (authed && tab === 'demandes') loadDemandes(); }, [authed, tab, loadDemandes]);
   // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
   useEffect(() => { if (authed && tab === 'booking') { loadBookingSlots(); loadBookingRequests(); } }, [authed, tab, loadBookingSlots, loadBookingRequests]);
   // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
@@ -2181,23 +2281,6 @@ export default function CMSAdmin() {
     } finally {
       setUploadingFeaturedImage(false);
       e.target.value = '';
-    }
-  };
-
-  const updateStatut = async (id: string, statut: string) => {
-    setUpdatingDemandeId(id);
-    try {
-      const res = await fetch('/api/cms/demandes-travel', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, statut }),
-      });
-      if (handleUnauthorized(res)) return;
-      if (res.ok) { showToast('✅ Statut mis à jour'); loadDemandes(); }
-    } catch {
-      showToast('Impossible de mettre à jour cette demande.');
-    } finally {
-      setUpdatingDemandeId(null);
     }
   };
 
@@ -3000,7 +3083,12 @@ export default function CMSAdmin() {
                                         </label>
                                         {section.type === 'sections' ? (
                                           <SectionsEditor
-                                            defs={PAGE_SECTIONS[activePage] || []}
+                                            defs={[...(PAGE_SECTIONS[activePage] || []), ...customSectionDefs(parseBlocks(editedContent['custom_sections'] ?? ''))]}
+                                            value={editedContent[key] ?? ''}
+                                            onChange={v => setEditedContent(prev => ({ ...prev, [key]: v }))}
+                                          />
+                                        ) : section.type === 'custom-sections' ? (
+                                          <CustomSectionsEditor
                                             value={editedContent[key] ?? ''}
                                             onChange={v => setEditedContent(prev => ({ ...prev, [key]: v }))}
                                           />
@@ -3105,59 +3193,6 @@ export default function CMSAdmin() {
         )}
 
         {/* ── TRAVEL PLANNING ── */}
-        {tab === 'demandes' && (
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#2d5f54' }}>✈️ Demandes Travel Planning</h2>
-              <button onClick={loadDemandes} disabled={loadingDemandes} style={{ padding: '.5rem 1rem', background: 'white', border: '1.5px solid #ddd', borderRadius: '.5rem', cursor: loadingDemandes ? 'wait' : 'pointer', fontSize: '.85rem', opacity: loadingDemandes ? .7 : 1 }}>{loadingDemandes ? '⏳ Actualisation…' : '🔄 Actualiser'}</button>
-            </div>
-            {loadingDemandes ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement…</p>
-              : demandes.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '4rem', color: '#aaa' }}>
-                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✉️</div>
-                  <p>Aucune demande pour le moment</p>
-                </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  {demandes.map(d => (
-                    <div key={d.id} style={{ background: 'white', borderRadius: '.75rem', padding: '1.25rem 1.5rem', boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '.75rem', flexWrap: 'wrap', gap: '.5rem' }}>
-                        <div>
-                          <div style={{ fontWeight: 700, fontSize: '1rem', color: '#1a1a1a' }}>{d.prenom} {d.nom}</div>
-                          <div style={{ fontSize: '.85rem', color: '#888' }}>{d.email} {d.telephone && `· ${d.telephone}`}</div>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
-                          <span style={{ fontSize: '.75rem', color: '#aaa' }}>{fmt(d.created_at)}</span>
-                          <select value={d.statut || 'nouvelle'} onChange={e => updateStatut(d.id, e.target.value)} disabled={updatingDemandeId === d.id}
-                            style={{ padding: '.3rem .7rem', border: '1.5px solid #ddd', borderRadius: '.4rem', fontSize: '.82rem', cursor: updatingDemandeId === d.id ? 'wait' : 'pointer', opacity: updatingDemandeId === d.id ? .7 : 1 }}
-                          >
-                            <option value="nouvelle">🆕 Nouvelle</option>
-                            <option value="en_cours">🔄 En cours</option>
-                            <option value="devis_envoye">📨 Devis envoyé</option>
-                            <option value="accepte">✅ Acceptée</option>
-                            <option value="terminee">🏁 Terminée</option>
-                            <option value="annulee">âŒ Annulée</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '.5rem .75rem', fontSize: '.85rem', color: '#555' }}>
-                        {d.destination && <span>📍 <strong>Destination :</strong> {d.destination}</span>}
-                        {d.style_voyage && <span>🌿 <strong>Style :</strong> {d.style_voyage}</span>}
-                        {d.duree_jours && <span>📅 <strong>Durée :</strong> {d.duree_jours} jours</span>}
-                        {d.mois_depart && <span>🗓 <strong>Départ :</strong> {d.mois_depart}</span>}
-                        {d.budget_fourchette && <span>💶 <strong>Budget :</strong> {d.budget_fourchette}</span>}
-                        {d.nb_voyageurs && <span>👫 <strong>Voyageurs :</strong> {d.nb_voyageurs}</span>}
-                      </div>
-                      {d.notes && (
-                        <div style={{ marginTop: '.75rem', padding: '.75rem', background: '#faf8f5', borderRadius: '.5rem', fontSize: '.85rem', color: '#666', borderLeft: '3px solid #d4a88a' }}>💬 {d.notes}</div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-          </div>
-        )}
-
         {/* ── BOOKING ── */}
         {tab === 'booking' && (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
@@ -3530,6 +3565,17 @@ export default function CMSAdmin() {
                                 );
                               })}
                             </div>
+                            {/* ── PACK D'ILLUSTRATIONS ── */}
+                            <div style={{ marginBottom: '1.5rem' }}>
+                              <label style={lbl}>Pack d'illustrations (galerie des 7 outils, lead magnet…)</label>
+                              <select value={editedSettings['illustration_pack'] || DEFAULT_PACK_ID}
+                                onChange={e => setEditedSettings(p => ({ ...p, illustration_pack: e.target.value }))}
+                                style={{ ...inp, maxWidth: 360 }}>
+                                {Object.values(THEME_PACKS).map(pack => (
+                                  <option key={pack.id} value={pack.id}>{pack.label} — {pack.description}</option>
+                                ))}
+                              </select>
+                            </div>
                             <div style={{ borderTop: '1px solid #f0ece8', paddingTop: '1.5rem' }}>
                               <p style={{ fontSize: '.82rem', fontWeight: 600, color: '#555', marginBottom: '1rem' }}>Couleurs personnalisées (optionnel — surcharge le thème)</p>
                               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -3537,7 +3583,9 @@ export default function CMSAdmin() {
                                   { key: 'theme_primary', label: 'Couleur principale' },
                                   { key: 'theme_accent',  label: 'Couleur accent' },
                                   { key: 'theme_dark',    label: 'Couleur sombre (nav/footer)' },
+                                  { key: 'theme_light',   label: 'Couleur claire (variante)' },
                                   { key: 'theme_bg',      label: 'Couleur fond' },
+                                  { key: 'theme_text',    label: 'Couleur texte' },
                                 ].map(({ key, label }) => (
                                   <div key={key}>
                                     <label style={lbl}>{label}</label>
@@ -3562,11 +3610,30 @@ export default function CMSAdmin() {
                               <button onClick={() => setEditedSettings(p => {
                                 const n = {...p};
                                 delete n['theme_primary']; delete n['theme_accent'];
-                                delete n['theme_dark']; delete n['theme_bg'];
+                                delete n['theme_dark']; delete n['theme_light'];
+                                delete n['theme_bg']; delete n['theme_text'];
                                 return n;
                               })} style={{ marginTop: '1rem', padding: '.4rem .9rem', background: '#f5f0eb', border: 'none', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.8rem', color: '#666' }}>
                                 Réinitialiser les couleurs personnalisées
                               </button>
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1.25rem' }}>
+                                {[
+                                  { key: 'theme_font_heading', label: 'Police des titres' },
+                                  { key: 'theme_font_body', label: 'Police du texte courant' },
+                                ].map(({ key, label }) => (
+                                  <div key={key}>
+                                    <label style={lbl}>{label}</label>
+                                    <select value={editedSettings[key] || ''}
+                                      onChange={e => setEditedSettings(p => ({ ...p, [key]: e.target.value }))}
+                                      style={inp}>
+                                      <option value="">— Police du preset —</option>
+                                      {FONT_CHOICES.map(f => (
+                                        <option key={f.id} value={f.id}>{f.label}</option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                ))}
+                              </div>
 
                             {/* Position du logo */}
                             <div style={{ marginBottom: '1.25rem' }}>

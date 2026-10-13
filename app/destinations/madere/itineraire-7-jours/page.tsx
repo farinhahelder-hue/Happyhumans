@@ -119,7 +119,7 @@ export default function MadereItineraryPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
-                href="/travel-planning-form?destination=madere"
+                href="/contact"
                 className="px-7 py-3 rounded-lg bg-teal text-charcoal font-semibold hover:bg-teal/90 transition-colors"
               >
                 Construire mon itinerary

@@ -130,6 +130,8 @@ import { useCmsContent, type CmsResult } from '@/hooks/useCmsContent';
 import { RELATIONS_DEFAULTS } from '@/lib/cms-defaults/relations'
 import Rich from '@/components/Rich'
 import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
+import { customSectionDefs, customSectionId, isCustomSectionId, parseBlocks } from '@/lib/custom-sections'
+import { CustomBlockView } from '@/components/CustomSections'
 
 export default function RelationsPage() {
   const c = useCmsContent('relations', RELATIONS_DEFAULTS);
@@ -475,7 +477,11 @@ export default function RelationsPage() {
       </section>
     ),
   }
-  const sectionIds = resolveSections(PAGE_SECTIONS.relations, c.sections_layout)
+  const customBlocks = parseBlocks(c.content?.['custom_sections'] ?? '')
+  const sectionIds = resolveSections(
+    [...PAGE_SECTIONS.relations, ...customSectionDefs(customBlocks)],
+    c.sections_layout,
+  )
 
   return (
     <div className="min-h-screen bg-[#f5f0e8]">
@@ -484,9 +490,13 @@ export default function RelationsPage() {
       <Header />
 
       <main className="pt-[72px]">
-        {sectionIds.map(id => (
-          <Fragment key={id}>{sections[id]}</Fragment>
-        ))}
+        {sectionIds.map(id => {
+          if (isCustomSectionId(id)) {
+            const b = customBlocks.find(x => customSectionId(x.id) === id);
+            return b ? <CustomBlockView key={id} b={b} /> : null;
+          }
+          return <Fragment key={id}>{sections[id]}</Fragment>;
+        })}
       </main>
 
       {/* ══ FOOTER MINIMAL ════════════════════════════════════════════════ */}

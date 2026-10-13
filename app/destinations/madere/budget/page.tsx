@@ -168,7 +168,7 @@ export default function MadereBudgetPage() {
                 <p>- Voiture integree si activee</p>
               </div>
               <Link
-                href="/travel-planning-form?destination=madere"
+                href="/contact"
                 className="inline-flex w-full justify-center rounded-lg bg-mahogany px-5 py-2.5 text-white font-semibold hover:bg-mahogany/90 transition-colors"
               >
                 Construire mon carnet Madere

@@ -313,7 +313,7 @@ export default function MaderePage() {
               concret, avec adresses testees et sequence logique.
             </p>
             <Link
-              href="/travel-planning-form?destination=madere"
+              href="/contact"
               className="inline-flex px-7 py-3 rounded-lg bg-teal text-charcoal font-semibold hover:bg-teal/90 transition-colors"
               >
                 Demarrer ma demande Madere

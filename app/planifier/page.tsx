@@ -52,13 +52,13 @@ export default function PlanifierPage() {
             </p>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
-                href="/travel-planning-form"
+                href="/contact"
                 className="rounded-full bg-amber-500 px-8 py-4 text-sm font-semibold text-white transition-all duration-200 hover:bg-amber-400"
               >
                 Nous écrire →
               </Link>
               <Link
-                href="/travel-planning"
+                href="/coaching"
                 className="text-sm font-semibold text-amber-200 transition-colors duration-200 hover:text-white"
               >
                 Voir notre approche →

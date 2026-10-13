@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { useCmsContent } from '@/hooks/useCmsContent'
 import { ENTREPRISES_DEFAULTS } from '@/lib/cms-defaults/entreprises'
 import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
+import { customSectionDefs, customSectionId, isCustomSectionId, parseBlocks } from '@/lib/custom-sections'
+import { CustomBlockView } from '@/components/CustomSections'
 import { Fragment, type ReactNode } from 'react'
 
 // Champ « liste » du CMS : un élément par ligne
@@ -257,15 +259,23 @@ export default function EntreprisesPage() {
       </section>
     ),
   }
-  const sectionIds = resolveSections(PAGE_SECTIONS.entreprises, c.sections_layout)
+  const customBlocks = parseBlocks(c.content?.['custom_sections'] ?? '')
+  const sectionIds = resolveSections(
+    [...PAGE_SECTIONS.entreprises, ...customSectionDefs(customBlocks)],
+    c.sections_layout,
+  )
 
   return (
     <>
       <Header />
       <main>
-        {sectionIds.map(id => (
-          <Fragment key={id}>{sections[id]}</Fragment>
-        ))}
+        {sectionIds.map(id => {
+          if (isCustomSectionId(id)) {
+            const b = customBlocks.find(x => customSectionId(x.id) === id);
+            return b ? <CustomBlockView key={id} b={b} /> : null;
+          }
+          return <Fragment key={id}>{sections[id]}</Fragment>;
+        })}
       </main>
       <Footer />
     </>

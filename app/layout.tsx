@@ -8,6 +8,7 @@ import { InlineEditProvider } from '@/contexts/InlineEditContext';
 import InlineEditor from '@/components/InlineEditor';
 import { getKvSettings } from '@/lib/cms-settings-server';
 import { SITE_URL } from '@/lib/site-url';
+import { buildThemeCSS, resolveTheme, GOOGLE_FONTS_HREF } from '@/lib/themes';
 
 
 export const viewport: Viewport = {
@@ -204,16 +205,23 @@ export default async function RootLayout({
 }) {
   const kv = await getKvSettings();
   const { schemaWebSite, schemaOrganization, schemaPerson } = buildSchemas(kv);
+  // Thème SSR : preset + surcharges publiés, injectés dans <head> (zéro flash).
+  // Sans Supabase : repli sur le preset par défaut (forest).
+  const { id: themeId, tokens: themeTokens } = resolveTheme(kv.theme_preset, {
+    primary: kv.theme_primary, dark: kv.theme_dark, light: kv.theme_light,
+    accent: kv.theme_accent, bg: kv.theme_bg, bgCard: kv.theme_bg_card, text: kv.theme_text,
+    fontHeading: kv.theme_font_heading, fontBody: kv.theme_font_body,
+  });
   return (
-    <html lang="fr">
+    <html lang="fr" data-theme={themeId}>
       <head>
+        <style id="hh-theme-ssr" dangerouslySetInnerHTML={{ __html: buildThemeCSS(themeTokens) }} />
         <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%232d5f54'/%3E%3Cstop offset='100%25' stop-color='%233d7a72'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='22' cy='22' r='20' fill='url(%23g)'/%3E%3Cg stroke='white' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='11' y='13' width='22' height='20' rx='3'/%3E%3Cline x1='11' y1='19' x2='33' y2='19'/%3E%3Cline x1='16' y1='9' x2='16' y2='15'/%3E%3Cline x1='28' y1='9' x2='28' y2='15'/%3E%3Cpath d='M17 26L20 29L27 22' stroke-width='2'/%3E%3C/g%3E%3C/svg%3E" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="preconnect" href="https://images.unsplash.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font -- fonts globales du site, next/font : migration ultérieure */}
-        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        <link href={GOOGLE_FONTS_HREF} rel="stylesheet" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaWebSite) }}

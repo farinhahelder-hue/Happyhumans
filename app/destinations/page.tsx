@@ -43,7 +43,7 @@ const destinations: DestinationCard[] = [
   },
   {
     name: 'Sicile',
-    slug: '/travel-planning-form?destination=sicile',
+    slug: '/contact',
     country: 'Italie',
     style: 'food',
     duration: '5-7',
@@ -224,7 +224,7 @@ export default function DestinationsPage() {
                   {c.get('no_results_text')}
                 </p>
                 <Link
-                  href="/travel-planning-form"
+                  href="/contact"
                   className="inline-flex px-6 py-3 rounded-lg bg-eucalyptus text-white font-semibold hover:bg-eucalyptus/90 transition-colors"
                 >
                   Nous écrire →
@@ -233,7 +233,7 @@ export default function DestinationsPage() {
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredDestinations.map((item) => {
-                  const cta = item.slug.startsWith('/travel-planning-form')
+                  const cta = item.slug === '/contact'
                     ? 'Nous écrire →'
                     : 'Voir la destination →';
 

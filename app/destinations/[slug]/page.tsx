@@ -318,7 +318,7 @@ export default async function DestinationPage(props: Props) {
                 Nous écrire →
               </Link>
               <Link
-                href="/travel-planning"
+                href="/contact"
                 className="text-sm font-semibold text-amber-200 transition-colors duration-200 hover:text-white"
               >
                 Voir notre approche →

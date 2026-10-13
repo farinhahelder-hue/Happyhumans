@@ -34,28 +34,28 @@ const profileMeta: Record<
     subtitle: 'Tu voyages pour ressentir le lieu avant de le consommer.',
     recommendation: 'Destination recommandee: Madere',
     primaryHref: '/destinations/madere',
-    planningHref: '/travel-planning-form?destination=madere',
+    planningHref: '/contact',
   },
   contemplatif_alpin: {
     title: 'Profil: Contemplatif Alpin',
     subtitle: 'Tu privilegies les paysages ouverts, le silence et le rythme lent.',
     recommendation: 'Destination recommandee: Suisse',
     primaryHref: '/destinations/suisse',
-    planningHref: '/travel-planning-form?destination=suisse',
+    planningHref: '/contact',
   },
   mediterraneen_gourmand: {
     title: 'Profil: Mediterraneen Gourmand',
     subtitle: 'Ton voyage ideal melange soleil, table locale et belles matieres.',
     recommendation: 'Destination recommandee: Sicile (sur mesure)',
-    primaryHref: '/travel-planning-form?destination=sicile',
-    planningHref: '/travel-planning-form?destination=sicile',
+    primaryHref: '/contact',
+    planningHref: '/contact',
   },
   curieux_patrimoine: {
     title: 'Profil: Curieux Patrimoine',
     subtitle: 'Tu aimes les lieux avec une epaisseur historique et culturelle forte.',
     recommendation: 'Destination recommandee: Roumanie',
     primaryHref: '/destinations/roumanie',
-    planningHref: '/travel-planning-form?destination=roumanie',
+    planningHref: '/contact',
   },
 };
 
