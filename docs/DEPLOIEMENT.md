@@ -33,12 +33,12 @@ Voir `.env.example` (à jour, avec obligatoire / recommandé / optionnel). À v�
 - [ ] `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
 - [ ] `CMS_PASSWORD`, `CMS_SESSION_SECRET`, `CMS_HMAC_SECRET` (valeurs longues, aléatoires, distinctes)
 - [ ] `BREVO_API_KEY`, `SENDER_EMAIL`, `ADMIN_EMAIL` : sans eux les e-mails de confirmation ne partent pas (silencieusement)
-- [ ] **`NEXT_PUBLIC_SITE_URL`** : voir « Nom de domaine » ci-dessous
+- [ ] `NEXT_PUBLIC_SITE_URL` : facultative (voir « Nom de domaine » ci-dessous)
 
-### Nom de domaine — à décider
-Le code mélange deux adresses : l'accueil, `robots.txt` et le sitemap utilisent `https://happyhumans.vercel.app`, les articles de blog `https://happyhumans.fr`. Les **URL canoniques** (ce que Google considère comme l'adresse officielle de chaque page) en dépendent.
-Renseigner `NEXT_PUBLIC_SITE_URL` (ex. `https://happyhumans.fr`) aligne tout le site d'un coup. Tant qu'elle est absente, le comportement actuel est conservé.
-⚠️ Plusieurs images sont servies depuis l'ancien site WordPress (`https://happyhumans.fr/wp-content/uploads/…`, dans `lib/wordpress-data.ts`, `lib/instagram-static.ts`) : elles disparaîtront si ce domaine cesse de pointer vers WordPress.
+### Nom de domaine — décidé : `https://happyhumans.vercel.app`
+C'est l'adresse par défaut de tout le site : accueil, `robots.txt`, sitemap, **articles de blog** (qui déclaraient avant `happyhumans.fr`) et liens des e-mails. Aucune variable n'est nécessaire.
+Si un nom de domaine personnalisé est branché un jour, renseigner `NEXT_PUBLIC_SITE_URL` aligne tout le site d'un coup (`lib/site-url.ts`).
+⚠️ Plusieurs images sont encore servies depuis l'ancien site WordPress (`https://happyhumans.fr/wp-content/uploads/…`, dans `lib/wordpress-data.ts` et `lib/instagram-static.ts`) : elles disparaîtront si ce domaine cesse de les héberger.
 
 ### Supabase
 - [ ] La table `site_content` existe (elle n'est **pas** dans `supabase/migrations`, elle a été créée à la main) avec la contrainte unique `(page, block_key)`.

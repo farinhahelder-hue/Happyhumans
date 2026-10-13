@@ -78,7 +78,7 @@ export default async function MaintenanceGate({ children }: { children: React.Re
             Site en maintenance
           </h1>
           <p style={{ color: '#78716c', fontSize: '1rem', lineHeight: 1.6 }}>
-            Happyhumans.fr est actuellement en cours de mise à jour.<br />
+            Happy Humans est actuellement en cours de mise à jour.<br />
             Nous revenons très vite !
           </p>
           <p style={{ color: '#a8a29e', fontSize: '0.85rem', marginTop: '2rem' }}>
