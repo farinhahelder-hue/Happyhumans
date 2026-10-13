@@ -10,9 +10,9 @@ const listeners = new Set<() => void>()
 let cache: { at: number; value: SiteSettings } | null = null
 let inflight: Promise<void> | null = null
 
-function refresh(): void {
-  if (inflight || (cache && Date.now() - cache.at < FRESH_MS)) return
-  inflight = fetch('/api/cms/public-settings')
+function refresh(bypassCache = false): void {
+  if (inflight || (!bypassCache && cache && Date.now() - cache.at < FRESH_MS)) return
+  inflight = fetch(bypassCache ? `/api/cms/public-settings?t=${Date.now()}` : '/api/cms/public-settings')
     .then(r => (r.ok ? r.json() : { settings: {} }))
     .then(d => { cache = { at: Date.now(), value: d?.settings ?? {} } })
     .catch(() => { if (!cache) cache = { at: Date.now(), value: {} } })
@@ -20,6 +20,11 @@ function refresh(): void {
       inflight = null
       listeners.forEach(l => l())
     })
+}
+
+/** À appeler après un changement de réglage depuis le site (logo…) : recharge aussitôt, sans attendre le cache. */
+export function invalidateSiteSettings(): void {
+  refresh(true)
 }
 
 function subscribe(onChange: () => void): () => void {

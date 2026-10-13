@@ -7,6 +7,7 @@ import { useCmsContent } from '@/hooks/useCmsContent'
 import { A_PROPOS_DEFAULTS } from '@/lib/cms-defaults/a-propos'
 import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
 import { Fragment, type ReactNode } from 'react'
+import EditableImage from '@/components/EditableImage';
 
 export default function AProposPage() {
   const c = useCmsContent('a-propos', A_PROPOS_DEFAULTS)
@@ -15,7 +16,7 @@ export default function AProposPage() {
   const sections: Record<string, ReactNode> = {
     hero: (
       <section className="relative flex h-[55vh] items-end overflow-hidden bg-stone-900 md:h-[65vh]">
-        <img
+        <EditableImage page="a-propos" fieldKey="hero_image" variant="cover"
           src={c.hero_image || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1400&q=80&auto=format&fit=crop'}
           alt={c.t_monica_schneider_executive_coach}
           className="absolute inset-0 h-full w-full object-cover opacity-40"
@@ -49,7 +50,7 @@ export default function AProposPage() {
             </div>
             <div className="md:col-span-2 space-y-4">
               {c.photo ? (
-                <img src={c.photo} alt={c.t_monica_schneider} className="rounded-2xl object-cover object-top shadow-lg w-full h-80" />
+                <EditableImage page="a-propos" fieldKey="photo" variant="block" src={c.photo} alt={c.t_monica_schneider} className="rounded-2xl object-cover object-top shadow-lg w-full h-80" />
               ) : (
                 <div className="rounded-2xl bg-gradient-to-br from-[#f5f0e8] to-[#eef5f3] h-80 flex items-center justify-center">
                   <div className="text-center">

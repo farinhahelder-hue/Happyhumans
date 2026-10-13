@@ -6,6 +6,7 @@ import { useCmsContent } from '@/hooks/useCmsContent'
 import { COACHING_DEFAULTS } from '@/lib/cms-defaults/coaching'
 import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
 import { Fragment, type ReactNode } from 'react'
+import EditableImage from '@/components/EditableImage';
 
 export default function CoachingPage() {
   const c = useCmsContent('coaching', COACHING_DEFAULTS)
@@ -82,7 +83,7 @@ export default function CoachingPage() {
   const sections: Record<string, ReactNode> = {
     hero: (
       <section className="relative overflow-hidden bg-stone-900 px-6 py-24 text-center md:py-32 md:px-10">
-        <img
+        <EditableImage page="coaching" fieldKey="hero_image" variant="cover"
           src={c.hero_image || 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1600&q=80&auto=format&fit=crop'}
           alt={c.t_bureau_elegant_ambiance_coaching}
           className="absolute inset-0 h-full w-full object-cover opacity-20"
@@ -117,7 +118,7 @@ export default function CoachingPage() {
                 {c.get('coaching_b2c_cta_link')}
               </Link>
             </div>
-            <img
+            <EditableImage page="coaching" fieldKey="coaching_b2c_image" variant="block"
               src={c.coaching_b2c_image || 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=800&q=80&auto=format&fit=crop'}
               alt={c.t_coaching_individuel_introspection_}
               className="rounded-2xl object-cover shadow-lg h-72 w-full"
@@ -206,7 +207,7 @@ export default function CoachingPage() {
       <section className="bg-[#f7f4ef] py-20 md:py-28">
         <div className="mx-auto max-w-5xl px-6 md:px-10">
           <div className="grid gap-12 md:grid-cols-2 items-center">
-            <img
+            <EditableImage page="coaching" fieldKey="coaching_b2b_image" variant="block"
               src={c.coaching_b2b_image || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80&auto=format&fit=crop'}
               alt={c.t_coaching_d_equipe_et}
               className="rounded-2xl object-cover shadow-lg h-72 w-full order-2 md:order-1"

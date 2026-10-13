@@ -6,6 +6,7 @@ import Footer from '@/components/Footer'
 import { useCmsContent } from '@/hooks/useCmsContent'
 import { HOME_DEFAULTS } from '@/lib/cms-defaults/home'
 import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
+import EditableImage from '@/components/EditableImage';
 
 const CARD_DEFS = {
   coaching: {
@@ -70,7 +71,7 @@ export default function LandingPage() {
   const sections: Record<string, ReactNode> = {
     hero: (
       <section className="relative overflow-hidden bg-stone-900 px-6 py-24 text-center md:py-36 md:px-10">
-        <img
+        <EditableImage page="home" fieldKey="hero_image" variant="cover"
           src={c.hero_image}
           alt={c.t_bureau_elegant_avec_lumiere}
           className="absolute inset-0 h-full w-full object-cover opacity-20"

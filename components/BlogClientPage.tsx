@@ -6,6 +6,7 @@ import NewsletterForm from '@/components/NewsletterForm'
 import type { BlogPost } from '@/lib/blog-supabase'
 import { useCmsContent } from '@/hooks/useCmsContent'
 import { BLOG_DEFAULTS } from '@/lib/cms-defaults/blog'
+import EditableImage from '@/components/EditableImage';
 
 const CATEGORY_FALLBACK_BG: Record<string, string> = {
   'Carnets Voyage': 'bg-gradient-to-br from-[#355C7D] to-[#6C5B7B]',
@@ -59,7 +60,7 @@ export default function BlogClientPage({ posts }: Props) {
   return (
     <main className="min-h-screen bg-[#f7f5f1]">
       <section className="relative overflow-hidden bg-stone-950 px-4 py-24 text-white md:py-28">
-        <img
+        <EditableImage page="blog" fieldKey="hero_image" variant="cover"
           src={c.hero_image}
           alt={c.t_ecriture_et_reflexion}
           className="absolute inset-0 h-full w-full object-cover opacity-25"

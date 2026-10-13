@@ -5,6 +5,7 @@ import Footer from '@/components/Footer'
 import Link from 'next/link'
 import { useCmsContent } from '@/hooks/useCmsContent'
 import { FAQ_DEFAULTS, FAQ_ITEMS, FAQ_SLOTS } from '@/lib/cms-defaults/faq'
+import EditableImage from '@/components/EditableImage';
 
 export default function FaqPage() {
   const [open, setOpen] = useState<number | null>(null)
@@ -22,7 +23,7 @@ export default function FaqPage() {
       <main className="pt-[72px]">
         {/* Hero */}
         <section className="relative overflow-hidden bg-stone-900 px-6 py-24 md:py-32 md:px-10 text-center">
-          <img
+          <EditableImage page="faq" fieldKey="hero_image" variant="cover"
             src={c.hero_image}
             alt={c.t_espace_calme_pour_reflechir}
             className="absolute inset-0 h-full w-full object-cover opacity-20"

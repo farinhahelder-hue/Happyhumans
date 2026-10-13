@@ -131,6 +131,7 @@ import { useCmsContent, type CmsResult } from '@/hooks/useCmsContent';
 import { RELATIONS_DEFAULTS } from '@/lib/cms-defaults/relations'
 import Rich from '@/components/Rich'
 import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
+import EditableImage from '@/components/EditableImage';
 
 export default function RelationsPage() {
   const c = useCmsContent('relations', RELATIONS_DEFAULTS);
@@ -151,7 +152,7 @@ export default function RelationsPage() {
   const sections: Record<string, ReactNode> = {
     hero: (
       <section className="relative overflow-hidden bg-stone-900 px-6 py-24 md:py-36 md:px-10 text-center">
-        <img
+        <EditableImage page="relations" fieldKey="hero_image" variant="cover"
           src={c.hero_image}
           alt={c.t_connexion_humaine_mains_tendues}
           className="absolute inset-0 h-full w-full object-cover opacity-20"

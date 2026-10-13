@@ -4,6 +4,7 @@ import Footer from '@/components/Footer'
 import { useCmsContent } from '@/hooks/useCmsContent'
 import { useState } from 'react'
 import { CONTACT_DEFAULTS } from '@/lib/cms-defaults/contact'
+import EditableImage from '@/components/EditableImage';
 
 export default function ContactPage() {
   const c = useCmsContent('contact', CONTACT_DEFAULTS)
@@ -32,7 +33,7 @@ export default function ContactPage() {
       <main>
         {/* HERO */}
         <section className="relative flex h-[40vh] items-end overflow-hidden bg-stone-900">
-          <img
+          <EditableImage page="contact" fieldKey="hero_image" variant="cover"
             src={c.hero_image || 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=80&auto=format&fit=crop'}
             alt={c.t_espace_d_echange_calme}
             className="absolute inset-0 h-full w-full object-cover opacity-20"
@@ -100,7 +101,7 @@ export default function ContactPage() {
               </div>
               <div className="space-y-6">
                 {c.photo ? (
-                  <img src={c.photo} alt={c.t_monica_schneider} className="rounded-2xl object-cover object-top w-full h-64 shadow-lg" />
+                  <EditableImage page="contact" fieldKey="photo" variant="block" src={c.photo} alt={c.t_monica_schneider} className="rounded-2xl object-cover object-top w-full h-64 shadow-lg" />
                 ) : (
                   <div className="rounded-2xl bg-gradient-to-br from-[#eef5f3] to-[#f5f0e8] h-64 flex items-center justify-center">
                     <div className="w-20 h-20 rounded-full bg-[#2d5f54] flex items-center justify-center text-white text-2xl font-serif font-bold">{c.t_ms}</div>

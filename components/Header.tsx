@@ -4,6 +4,9 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/components/AuthProvider'
 import { useCmsNavigation, type NavItem } from '@/hooks/useCmsNavigation'
+import { useOptionalInlineEdit } from '@/contexts/InlineEditContext'
+import NavigationEditor from '@/components/cms/NavigationEditor'
+import LogoQuickEditor from '@/components/cms/LogoQuickEditor'
 import SiteLogo, { resolveLogo } from '@/components/SiteLogo'
 import { useSiteSettings } from '@/hooks/useSiteSettings'
 
@@ -46,6 +49,10 @@ export default function Header() {
   const logoTextSpacing = settings.logo_text_spacing || '0'
 
   const { nav } = useCmsNavigation()
+  // Mode « Éditer le site » : bouton « Menu » pour renommer, réordonner (glisser-déposer), ajouter ou masquer les liens
+  const inlineEdit = useOptionalInlineEdit()
+  const editingMenu = !!inlineEdit?.isEditing
+  const [menuPanel, setMenuPanel] = useState(false)
   const isCmsUser = !loading && !!user
 
 
@@ -181,6 +188,24 @@ export default function Header() {
                   className="text-xs text-center text-stone-400 hover:text-stone-600 mt-2">CMS</Link>
               )}
             </div>
+          </div>
+        )}
+        {editingMenu && (
+          <div className="mx-auto max-w-7xl px-4 pb-2 sm:px-6">
+            <button
+              type="button"
+              onClick={() => setMenuPanel(o => !o)}
+              className="rounded-full border-2 border-dashed border-[#2d5f54] bg-[#f0fff4] px-4 py-1.5 text-xs font-semibold text-[#2d5f54] hover:bg-white"
+            >
+              🧭 {menuPanel ? 'Fermer' : 'Modifier le menu et le logo'}
+            </button>
+          </div>
+        )}
+        {editingMenu && menuPanel && (
+          <div className="mx-auto max-h-[70vh] max-w-3xl overflow-y-auto rounded-b-2xl border border-t-0 border-stone-200 bg-white p-5 shadow-2xl">
+            <LogoQuickEditor />
+            <h3 className="mb-2 text-sm font-bold text-[#2d5f54]">🧭 Menu du site</h3>
+            <NavigationEditor onSaved={() => undefined} />
           </div>
         )}
       </nav>

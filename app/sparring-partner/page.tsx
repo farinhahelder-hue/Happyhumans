@@ -6,6 +6,7 @@ import { useCmsContent } from '@/hooks/useCmsContent'
 import { SPARRING_PARTNER_DEFAULTS } from '@/lib/cms-defaults/sparring-partner'
 import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
 import { Fragment, type ReactNode } from 'react'
+import EditableImage from '@/components/EditableImage';
 
 export default function SparringPartnerPage() {
   const c = useCmsContent('sparring-partner', SPARRING_PARTNER_DEFAULTS)
@@ -24,7 +25,7 @@ export default function SparringPartnerPage() {
   const sections: Record<string, ReactNode> = {
     hero: (
       <section className="relative overflow-hidden bg-stone-900 px-6 py-24 text-center md:py-32 md:px-10">
-        <img src={c.hero_image} alt={c.t_discussion_strategique} className="absolute inset-0 h-full w-full object-cover opacity-20" />
+        <EditableImage page="sparring-partner" fieldKey="hero_image" variant="cover" src={c.hero_image} alt={c.t_discussion_strategique} className="absolute inset-0 h-full w-full object-cover opacity-20" />
         <div className="absolute inset-0 bg-gradient-to-b from-stone-900/60 via-stone-900/40 to-stone-900/70" />
         <div className="relative mx-auto max-w-3xl">
           <p className="mb-4 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">{c.get('hero_badge')}</p>
