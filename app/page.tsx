@@ -8,6 +8,7 @@ import { HOME_DEFAULTS } from '@/lib/cms-defaults/home'
 import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
 import { customSectionDefs, customSectionId, isCustomSectionId, parseBlocks } from '@/lib/custom-sections'
 import { CustomBlockView } from '@/components/CustomSections'
+import EditableImage from '@/components/EditableImage';
 
 const CARD_DEFS = {
   coaching: {
@@ -72,8 +73,8 @@ export default function LandingPage() {
   const sections: Record<string, ReactNode> = {
     hero: (
       <section className="relative overflow-hidden bg-stone-900 px-6 py-24 text-center md:py-36 md:px-10">
-        <img
-          src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=85&auto=format&fit=crop"
+        <EditableImage page="home" fieldKey="hero_image" variant="cover"
+          src={c.hero_image}
           alt={c.t_bureau_elegant_avec_lumiere}
           className="absolute inset-0 h-full w-full object-cover opacity-20"
         />
@@ -264,7 +265,7 @@ export default function LandingPage() {
               </button>
               {s.contact_email && (
                 <p className="text-center text-xs text-stone-400">
-                  Ou directement par email : <a href={`mailto:${s.contact_email}`} className="text-[#2d5f54] hover:underline">{s.contact_email}</a>
+                  {c.contact_email_label} <a href={`mailto:${s.contact_email}`} className="text-[#2d5f54] hover:underline">{s.contact_email}</a>
                 </p>
               )}
             </form>

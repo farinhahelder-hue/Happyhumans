@@ -3,6 +3,7 @@
 // Chaque clé correspond à un champ de PAGES_CONFIG (app/cms-admin/page.tsx).
 
 export const BLOG_DEFAULTS: Record<string, string> = {
+  hero_image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1600&q=80&auto=format&fit=crop',
   hero_badge:       'Blog Happy Humans',
   hero_title:       'Des moments, des détours,\ndes repères qu\'on aurait aimé avoir avant.',
   hero_subtitle:    "On écrit depuis le terrain : une arrivée trop tardive, une adresse trouvée au bon moment, une erreur qu'on ne refera pas. Le reste, on le laisse aux brochures.",
@@ -26,4 +27,25 @@ export const BLOG_DEFAULTS: Record<string, string> = {
   seo_title: "Ressources & Réflexions",
   seo_description: "Articles, réflexions et ressources sur le coaching, les relations et le leadership — par Monica Schneider, Happy Humans.",
   seo_image: '',
+  // ── Textes ajoutés pour le CMS (étaient en dur dans le code) ──
+  article_back: "← Retour au blog",
+  article_read_time: "min de lecture",
+  article_opening: "Introduction",
+  article_unfinished: "L'article n'est pas encore publié en entier.",
+  article_detail: "Pour aller plus loin",
+  article_tags: "Tags",
+  cat_all_label: "Tout lire",
+  cat_1_label: "Carnets",
+  cat_2_label: "Pépites locales",
+  cat_3_label: "Guides",
+  cat_1_eyebrow: "Carnets",
+  cat_2_eyebrow: "Pépites",
+  cat_3_eyebrow: "Guides",
+  article_singular: "article",
+  article_plural: "articles",
+  search_for: "pour",
+  read_more: "Lire l'article →",
+  article_related_badge: "Continuer",
+  article_related_title: "Dans la même veine",
+  article_related_text: "D'autres articles qui pourraient vous intéresser.",
 }

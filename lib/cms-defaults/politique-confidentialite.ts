@@ -41,4 +41,7 @@ export const POLITIQUE_CONFIDENTIALITE_DEFAULTS: Record<string, string> = {
   seo_title: "Politique de confidentialité",
   seo_description: "Consultez la politique de confidentialité et la protection des données personnelles du site Happy Humans.",
   seo_image: '',
+  // ── Textes ajoutés pour le CMS (étaient en dur dans le code) ──
+  email_label: "Email :",
+  rights_intro: "Pour exercer vos droits ou poser une question relative à vos données, contactez-nous à",
 }

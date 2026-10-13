@@ -13,7 +13,7 @@ export async function GET() {
     .from('cms_settings_kv')
     .select('key, value')
     .in('key', [
-      'logo_url', 'logo_size', 'logo_shape', 'logo_position', 'logo_footer_size', 'site_name', 'tagline',
+      'logo_url', 'logo_size', 'logo_shape', 'logo_position', 'logo_footer_size', 'logo_show_name', 'site_name', 'tagline',
       'theme_preset', 'theme_primary', 'theme_accent', 'theme_dark', 'theme_light', 'theme_bg', 'theme_text', 'favicon_url',
       'theme_font_heading', 'theme_font_body',
       'illustration_pack',
@@ -26,6 +26,6 @@ export async function GET() {
 
   return NextResponse.json(
     { settings },
-    { headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60' } }
+    { headers: { 'Cache-Control': 'public, max-age=0, s-maxage=10, stale-while-revalidate=30' } }
   );
 }

@@ -120,10 +120,19 @@ La page d'accueil utilise les réglages globaux (Paramètres → SEO).
 - **Secrets** : jamais dans le code ni dans le dépôt (public). Variables d'environnement uniquement : voir `.env.example`.
 - **URL du site** : `lib/site-url.ts` (variable `NEXT_PUBLIC_SITE_URL`) ; ne pas écrire de nom de domaine en dur.
 
+## Pages « transversales » (éléments communs)
+
+- **Textes communs** (page CMS `site`, `lib/cms-defaults/site.ts`) : bandeau cookies, formulaire newsletter, boutons de partage, page 404, page de maintenance.
+- **Test d'attachement** (page CMS `test-attachement`, `lib/cms-defaults/test-attachement.ts`) : introduction, boutons, 16 questions, libellés de l'échelle, textes des 4 profils (une ligne par force / vigilance / piste), avertissement, SEO.
+  Le code ne garde que la structure (dimension mesurée, sens de la notation) : `lib/attachment-test/questions.ts`, `results-content.ts` et `scoring.ts` lisent leurs textes dans le module de défauts ; `lib/attachment-test/cms.ts` applique les textes du CMS.
+- **Pages rendues côté serveur** (ex. article de blog) : `getPageContent(page, DEFAULTS)` (`lib/cms-content-server.ts`) lit les textes publiés ; les composants « client » utilisent `useCmsContent`.
+- ⚠️ Si la base refuse l'enregistrement des pages `site` ou `test-attachement` (erreur « violates check constraint »), une contrainte CHECK limite les noms de page de `site_content` :
+  `select conname, pg_get_constraintdef(oid) from pg_constraint where conrelid = 'site_content'::regclass and contype = 'c';` puis `alter table site_content drop constraint <nom>;` (ou ajouter ces pages à la liste).
+
 ## Ce qui n'est PAS dans le CMS
 
-- Le quiz d'attachement (`components/attachment-test/`) : questions, scores et résultats sont dans le code.
+- Les textes de l'interface d'administration elle-même (`/cms-admin`, barre d'édition en ligne, médiathèque).
 - Les libellés des `<option>` du formulaire de contact : le texte est la valeur envoyée, il ne faut pas le changer sans adapter le traitement.
 - Les articles de blog et destinations : ils ont leur propre éditeur (onglet Articles).
 - La navigation : éditeur dédié (page « Navigation »).
-- Les pages redirigées par `next.config.js` (`/travel-planning`, `/hotel-consulting`, `/destinations/*`…) : elles ne sont pas servies.
+- Les anciennes adresses de l'ex-site Heldonica (`/travel-planning`, `/hotel-consulting`, `/destinations/*`…) : les pages ont été supprimées, `next.config.js` redirige les anciens liens.

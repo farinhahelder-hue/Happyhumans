@@ -11,6 +11,8 @@ import ShareButtons from '@/components/ShareButtons'
 import EnhancedRichContent from '@/components/EnhancedRichContent'
 import { sanitizeHtml } from '@/lib/sanitize-html'
 import { SITE_URL } from '@/lib/site-url'
+import { getPageContent } from '@/lib/cms-content-server'
+import { BLOG_DEFAULTS } from '@/lib/cms-defaults/blog'
 
 export const revalidate = 60
 
@@ -160,6 +162,8 @@ export default async function BlogPostPage(props: Props) {
   const params = await props.params;
   const post = await getPostBySlug(params.slug)
   if (!post) notFound()
+  // textes de l'article modifiables dans le CMS (page « Blog »)
+  const c = await getPageContent('blog', BLOG_DEFAULTS)
 
   const related = await getRelatedPosts(post.slug, post.category, 3)
   const heroImage = post.featured_image ?? null
@@ -211,7 +215,7 @@ export default async function BlogPostPage(props: Props) {
                 href="/blog"
                 className="mb-5 inline-flex items-center gap-2 text-sm text-white/65 transition-colors duration-200 hover:text-white"
               >
-                ← Retour aux carnets
+                {c.article_back}
               </Link>
               <div className="mb-4 flex flex-wrap items-center gap-2">
                 {post.category && (
@@ -238,7 +242,7 @@ export default async function BlogPostPage(props: Props) {
                 {readTime > 0 && (
                   <>
                     <span>•</span>
-                    <span>{readTime} min de lecture</span>
+                    <span>{readTime} {c.article_read_time}</span>
                   </>
                 )}
               </div>
@@ -249,7 +253,7 @@ export default async function BlogPostPage(props: Props) {
         <div className="mx-auto max-w-3xl px-4 py-12 md:py-16">
           {post.excerpt && (
             <div className="mb-10 rounded-[2rem] border border-amber-200 bg-amber-50 px-6 py-6 md:px-8">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-800">Ouverture</p>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-800">{c.article_opening}</p>
               <p className="text-xl font-light leading-relaxed text-stone-800">{post.excerpt}</p>
             </div>
           )}
@@ -272,14 +276,14 @@ export default async function BlogPostPage(props: Props) {
           ) : (
             <div className="rounded-[2rem] border border-stone-200 bg-stone-50 px-6 py-12 text-center">
               <p className="text-lg leading-relaxed text-stone-500">
-                Le récit n&apos;est pas encore publié en entier.
+                {c.article_unfinished}
               </p>
             </div>
           )}
 
           {post.voice_notes && (
             <aside className="mt-10 rounded-[2rem] border border-stone-200 bg-stone-50 px-6 py-6 md:px-8">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">Détail terrain</p>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-stone-500">{c.article_detail}</p>
               <p className="text-base leading-relaxed text-stone-700">{post.voice_notes}</p>
             </aside>
           )}
@@ -290,7 +294,7 @@ export default async function BlogPostPage(props: Props) {
 
           {post.tags && post.tags.length > 0 && (
             <div className="mt-8 border-t border-stone-100 pt-6">
-              <p className="mb-3 text-xs uppercase tracking-[0.18em] text-stone-400">Tags</p>
+              <p className="mb-3 text-xs uppercase tracking-[0.18em] text-stone-400">{c.article_tags}</p>
               <div className="flex flex-wrap gap-2">
                 {post.tags.slice(0, 3).map((tag) => (
                   <span
@@ -309,7 +313,7 @@ export default async function BlogPostPage(props: Props) {
               href="/blog"
               className="inline-flex items-center gap-2 text-sm font-semibold text-amber-700 transition-colors duration-200 hover:text-amber-800"
             >
-              ← Retour aux carnets
+              {c.article_back}
             </Link>
           </div>
         </div>
@@ -317,10 +321,10 @@ export default async function BlogPostPage(props: Props) {
         {related.length > 0 && (
           <section className="bg-stone-50 py-16">
             <div className="mx-auto max-w-6xl px-4">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">Continuer</p>
-              <h2 className="mb-3 text-3xl font-serif font-light text-stone-900">Dans la même veine</h2>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">{c.article_related_badge}</p>
+              <h2 className="mb-3 text-3xl font-serif font-light text-stone-900">{c.article_related_title}</h2>
               <p className="mb-8 max-w-2xl text-sm leading-relaxed text-stone-600">
-                D&apos;autres récits qui avancent au même rythme : un moment précis, un lieu, un détail qui reste.
+                {c.article_related_text}
               </p>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                 {related.map((relatedPost: BlogPost) => (

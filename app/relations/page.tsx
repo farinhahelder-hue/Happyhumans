@@ -4,11 +4,12 @@ import Link from 'next/link';
 import { AttachmentTest } from '@/components/attachment-test/AttachmentTest';
 import Header from '@/components/Header';
 import LogoSVG from '@/components/LogoSVG';
+import { Icon, type IconName } from '@/components/icons';
 
 const buildSources = (c: CmsResult) => [
   {
     id: 'attached',
-    emoji: '📖',
+    icon: 'book' as IconName,
     title: c.t_attached,
     subtitle: c.t_comprendre_son_style_d,
     content: (
@@ -33,7 +34,7 @@ const buildSources = (c: CmsResult) => [
   },
   {
     id: 'rogers',
-    emoji: '🪞',
+    icon: 'mirror' as IconName,
     title: c.t_carl_rogers,
     subtitle: c.t_deconstruire_l_amour_conditionnel,
     content: (
@@ -63,7 +64,7 @@ const buildSources = (c: CmsResult) => [
   },
   {
     id: 'fromm',
-    emoji: '💝',
+    icon: 'heart' as IconName,
     title: c.t_erich_fromm,
     subtitle: c.t_se_preparer_a_l,
     content: (
@@ -90,7 +91,7 @@ const buildSources = (c: CmsResult) => [
 const buildAttachmentStyles = (c: CmsResult) => [
   {
     id: 'secure',
-    emoji: '🌿',
+    icon: 'leaf' as IconName,
     label: c.t_secure_2,
     percent: '55–60 %',
     color: '#2d5f54',
@@ -99,7 +100,7 @@ const buildAttachmentStyles = (c: CmsResult) => [
   },
   {
     id: 'anxious',
-    emoji: '🌊',
+    icon: 'wave' as IconName,
     label: c.t_anxieux_2,
     percent: '~20 %',
     color: '#b45309',
@@ -108,7 +109,7 @@ const buildAttachmentStyles = (c: CmsResult) => [
   },
   {
     id: 'avoidant',
-    emoji: '🌬️',
+    icon: 'wind' as IconName,
     label: c.t_evitant_2,
     percent: '~25 %',
     color: '#64748b',
@@ -117,7 +118,7 @@ const buildAttachmentStyles = (c: CmsResult) => [
   },
   {
     id: 'disorganized',
-    emoji: '⚡',
+    icon: 'bolt' as IconName,
     label: c.t_desorganise,
     percent: '~5 %',
     color: '#78716c',
@@ -132,6 +133,7 @@ import Rich from '@/components/Rich'
 import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
 import { customSectionDefs, customSectionId, isCustomSectionId, parseBlocks } from '@/lib/custom-sections'
 import { CustomBlockView } from '@/components/CustomSections'
+import EditableImage from '@/components/EditableImage';
 
 export default function RelationsPage() {
   const c = useCmsContent('relations', RELATIONS_DEFAULTS);
@@ -152,8 +154,8 @@ export default function RelationsPage() {
   const sections: Record<string, ReactNode> = {
     hero: (
       <section className="relative overflow-hidden bg-stone-900 px-6 py-24 md:py-36 md:px-10 text-center">
-        <img
-          src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&q=85&auto=format&fit=crop"
+        <EditableImage page="relations" fieldKey="hero_image" variant="cover"
+          src={c.hero_image}
           alt={c.t_connexion_humaine_mains_tendues}
           className="absolute inset-0 h-full w-full object-cover opacity-20"
         />
@@ -198,7 +200,7 @@ export default function RelationsPage() {
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {buildAttachmentStyles(c).map(s => (
               <div key={s.id} className="rounded-2xl bg-white p-6 shadow-sm border-t-4" style={{ borderColor: s.color }}>
-                <div className="text-3xl mb-3">{s.emoji}</div>
+                <div className="mb-3 text-[#2d5f54]"><Icon name={s.icon} size={34} /></div>
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-base font-semibold text-stone-900">{s.label}</h3>
                   <span className="text-xs font-bold rounded-full px-2 py-0.5" style={{ background: s.bg, color: s.color }}>{s.percent}</span>
@@ -234,7 +236,7 @@ export default function RelationsPage() {
           </div>
           <div className="flex flex-col md:flex-row gap-6 items-stretch">
             <div className="flex-1 rounded-2xl p-7 text-center" style={{ background: 'rgba(180,83,9,0.07)', border: '1px solid rgba(180,83,9,0.15)' }}>
-              <div className="text-4xl mb-3">🌊</div>
+              <div className="mb-3 flex justify-center" style={{ color: '#b45309' }}><Icon name="wave" size={40} /></div>
               <h3 className="font-semibold text-lg mb-2" style={{ color: '#b45309' }}>{c.get('manifestations_anxious_title')}</h3>
               <p className="text-sm text-stone-600 leading-relaxed">{c.get('manifestations_anxious_desc')}</p>
             </div>
@@ -242,7 +244,7 @@ export default function RelationsPage() {
               ⟷
             </div>
             <div className="flex-1 rounded-2xl p-7 text-center" style={{ background: 'rgba(29,78,216,0.07)', border: '1px solid rgba(29,78,216,0.12)' }}>
-              <div className="text-4xl mb-3">🌬️</div>
+              <div className="mb-3 flex justify-center" style={{ color: '#1d4ed8' }}><Icon name="wind" size={40} /></div>
               <h3 className="font-semibold text-lg mb-2" style={{ color: '#1d4ed8' }}>{c.get('manifestations_avoidant_title')}</h3>
               <p className="text-sm text-stone-600 leading-relaxed">{c.get('manifestations_avoidant_desc')}</p>
             </div>
@@ -267,17 +269,17 @@ export default function RelationsPage() {
           </div>
           <div className="grid gap-5 md:grid-cols-3">
             <div className="rounded-2xl bg-white p-7 shadow-sm">
-              <div className="text-3xl mb-3">🔍</div>
+              <div className="mb-3 flex justify-center text-[#2d5f54]"><Icon name="search" size={34} /></div>
               <h3 className="font-semibold mb-2 text-stone-900">{c.get('healing_step1_title')}</h3>
               <p className="text-sm text-stone-500 leading-relaxed">{c.get('healing_step1_desc')}</p>
             </div>
             <div className="rounded-2xl bg-white p-7 shadow-sm">
-              <div className="text-3xl mb-3">🤝</div>
+              <div className="mb-3 flex justify-center text-[#2d5f54]"><Icon name="connect" size={34} /></div>
               <h3 className="font-semibold mb-2 text-stone-900">{c.get('healing_step2_title')}</h3>
               <p className="text-sm text-stone-500 leading-relaxed">{c.get('healing_step2_desc')}</p>
             </div>
             <div className="rounded-2xl bg-white p-7 shadow-sm">
-              <div className="text-3xl mb-3">💫</div>
+              <div className="mb-3 flex justify-center text-[#2d5f54]"><Icon name="sparkle" size={34} /></div>
               <h3 className="font-semibold mb-2 text-stone-900">{c.get('healing_step3_title')}</h3>
               <p className="text-sm text-stone-500 leading-relaxed">{c.get('healing_step3_desc')}</p>
             </div>
@@ -297,19 +299,19 @@ export default function RelationsPage() {
           </div>
           <div className="grid gap-5 md:grid-cols-3">
             <div key="comm1" className="rounded-2xl bg-[#f5f0e8] p-7">
-              <div className="text-3xl mb-3">🎯</div>
+              <div className="mb-3 flex justify-center text-[#2d5f54]"><Icon name="target" size={34} /></div>
               <h3 className="font-semibold mb-2 text-stone-900">{c.get('comm_rule1_title')}</h3>
               <p className="text-sm text-stone-600 leading-relaxed mb-3">{c.get('comm_rule1_desc')}</p>
               <p className="text-xs text-stone-400 italic border-l-2 border-amber-300 pl-3 leading-relaxed">{c.get('comm_rule1_example')}</p>
             </div>
             <div key="comm2" className="rounded-2xl bg-[#f5f0e8] p-7">
-              <div className="text-3xl mb-3">💚</div>
+              <div className="mb-3 flex justify-center text-[#2d5f54]"><Icon name="heart" size={34} /></div>
               <h3 className="font-semibold mb-2 text-stone-900">{c.get('comm_rule2_title')}</h3>
               <p className="text-sm text-stone-600 leading-relaxed mb-3">{c.get('comm_rule2_desc')}</p>
               <p className="text-xs text-stone-400 italic border-l-2 border-amber-300 pl-3 leading-relaxed">{c.get('comm_rule2_example')}</p>
             </div>
             <div key="comm3" className="rounded-2xl bg-[#f5f0e8] p-7">
-              <div className="text-3xl mb-3">🦁</div>
+              <div className="mb-3 flex justify-center text-[#2d5f54]"><Icon name="shield" size={34} /></div>
               <h3 className="font-semibold mb-2 text-stone-900">{c.get('comm_rule3_title')}</h3>
               <p className="text-sm text-stone-600 leading-relaxed mb-3">{c.get('comm_rule3_desc')}</p>
               <p className="text-xs text-stone-400 italic border-l-2 border-amber-300 pl-3 leading-relaxed">{c.get('comm_rule3_example')}</p>
@@ -329,9 +331,9 @@ export default function RelationsPage() {
                 {c.get('work_section_desc')}
               </p>
               <ul className="space-y-3 text-sm text-stone-600">
-                <li className="flex items-start gap-2"><span style={{ color: '#2d5f54' }}>🌿</span><span><strong>{c.get('work_secure_label')}</strong> {c.get('work_secure_desc')}</span></li>
-                <li className="flex items-start gap-2"><span style={{ color: '#b45309' }}>🌊</span><span><strong>{c.get('work_anxious_label')}</strong> {c.get('work_anxious_desc')}</span></li>
-                <li className="flex items-start gap-2"><span style={{ color: '#1d4ed8' }}>🌬️</span><span><strong>{c.get('work_avoidant_label')}</strong> {c.get('work_avoidant_desc')}</span></li>
+                <li className="flex items-start gap-2"><span style={{ color: '#2d5f54' }}><Icon name="leaf" size={18} className="mt-0.5" /></span><span><strong>{c.get('work_secure_label')}</strong> {c.get('work_secure_desc')}</span></li>
+                <li className="flex items-start gap-2"><span style={{ color: '#b45309' }}><Icon name="wave" size={18} className="mt-0.5" /></span><span><strong>{c.get('work_anxious_label')}</strong> {c.get('work_anxious_desc')}</span></li>
+                <li className="flex items-start gap-2"><span style={{ color: '#1d4ed8' }}><Icon name="wind" size={18} className="mt-0.5" /></span><span><strong>{c.get('work_avoidant_label')}</strong> {c.get('work_avoidant_desc')}</span></li>
               </ul>
             </div>
             <div className="flex-shrink-0">
@@ -339,7 +341,7 @@ export default function RelationsPage() {
                 onClick={handleBook}
                 className="rounded-2xl bg-[#2d5f54] px-8 py-5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition text-center block"
               >
-                <span className="text-2xl block mb-2">💼</span>
+                <span className="mb-2 block text-[#2d5f54]"><Icon name="briefcase" size={28} /></span>
                 {c.get('work_section_cta')}
               </button>
             </div>
@@ -466,7 +468,7 @@ export default function RelationsPage() {
                 onClick={() => setActiveModal(source.id)}
                 className="rounded-2xl bg-[#f5f0e8] p-6 text-left shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all group"
               >
-                <div className="mb-3 text-3xl">{source.emoji}</div>
+                <div className="mb-3 text-[#2d5f54]"><Icon name={source.icon} size={34} /></div>
                 <h3 className="mb-1 text-base font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">{source.title}</h3>
                 <p className="text-xs text-stone-500">{source.subtitle}</p>
                 <p className="mt-3 text-xs font-semibold text-[#2d5f54]">{c.t_decouvrir}</p>
@@ -529,7 +531,7 @@ export default function RelationsPage() {
               className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-full bg-stone-100 text-stone-500 hover:bg-stone-200"
             >✕</button>
             <div className="mb-6 flex items-center gap-3">
-              <span className="text-3xl">{activeSource.emoji}</span>
+              <span className="text-[#2d5f54]"><Icon name={activeSource.icon} size={34} /></span>
               <div>
                 <h2 className="text-xl font-semibold text-stone-900">{activeSource.title}</h2>
                 <p className="text-sm text-stone-500">{activeSource.subtitle}</p>

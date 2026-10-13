@@ -1,8 +1,14 @@
+'use client'
+
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { useCmsContent } from '@/hooks/useCmsContent'
+import { SITE_DEFAULTS } from '@/lib/cms-defaults/site'
 
 export default function NotFound() {
+  // Textes modifiables dans le CMS (page « Textes communs » → Page introuvable)
+  const c = useCmsContent('site', SITE_DEFAULTS)
   return (
     <>
       <Header />
@@ -14,26 +20,25 @@ export default function NotFound() {
         </p>
 
         <div className="-mt-8 relative z-10 max-w-lg">
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-amber-800">Page introuvable</p>
+          <p className="mb-3 text-xs font-bold uppercase tracking-[0.25em] text-amber-800">{c.notfound_badge}</p>
           <h1 className="text-3xl font-serif font-light text-stone-900 mb-5 md:text-4xl leading-snug">
-            Cette page n&apos;existe plus ou a changé d&apos;adresse.
+            {c.notfound_title}
           </h1>
           <p className="text-base text-stone-500 leading-relaxed mb-10">
-            Elle a peut-être été déplacée ou renommée. Pas d&apos;inquiétude —
-            vous trouverez votre chemin depuis l&apos;accueil.
+            {c.notfound_text}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/"
               className="rounded-full bg-[#2d5f54] px-7 py-3 text-sm font-semibold text-white hover:bg-[#1e3a34] transition"
             >
-              Retour à l&apos;accueil
+              {c.notfound_home}
             </Link>
             <Link
               href="/contact"
               className="rounded-full border border-stone-300 px-7 py-3 text-sm font-semibold text-stone-700 hover:border-[#2d5f54] hover:text-[#2d5f54] transition"
             >
-              Prendre contact
+              {c.notfound_contact}
             </Link>
           </div>
         </div>
@@ -41,10 +46,10 @@ export default function NotFound() {
         {/* Liens utiles */}
         <div className="mt-16 flex flex-wrap gap-x-8 gap-y-3 justify-center text-sm text-stone-400">
           {[
-            { href: '/coaching',          label: 'Coaching' },
-            { href: '/relations',         label: 'Relations' },
-            { href: '/happiness-design',  label: 'Happiness Design' },
-            { href: '/booking',           label: 'Réserver une séance' },
+            { href: '/coaching',          label: c.notfound_link_coaching },
+            { href: '/relations',         label: c.notfound_link_relations },
+            { href: '/happiness-design',  label: c.notfound_link_happiness },
+            { href: '/booking',           label: c.notfound_link_booking },
           ].map(l => (
             <Link key={l.href} href={l.href} className="hover:text-[#2d5f54] transition">{l.label}</Link>
           ))}

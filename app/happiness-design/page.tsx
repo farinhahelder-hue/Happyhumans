@@ -9,6 +9,7 @@ import { HAPPINESS_DESIGN_DEFAULTS } from '@/lib/cms-defaults/happiness-design'
 import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
 import { customSectionDefs, customSectionId, isCustomSectionId, parseBlocks } from '@/lib/custom-sections'
 import { CustomBlockView } from '@/components/CustomSections'
+import EditableImage from '@/components/EditableImage';
 
 const STEP_DESCS = [
   'Neurosciences + gratitude',
@@ -105,8 +106,8 @@ export default function HappinessDesignPage() {
   const sectionsJsx: Record<string, ReactNode> = {
     hero: (
       <section className="bg-stone-900 px-6 py-24 md:py-32 md:px-10 text-center relative overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=1600&q=80&auto=format&fit=crop"
+        <EditableImage page="happiness-design" fieldKey="hero_image" variant="cover"
+          src={c.hero_image}
           alt={c.t_lumiere_doree_symbolisant_la}
           className="absolute inset-0 h-full w-full object-cover opacity-20"
         />

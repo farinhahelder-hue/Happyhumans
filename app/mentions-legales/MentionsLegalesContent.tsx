@@ -109,7 +109,7 @@ export default function MentionsLegalesContent() {
                 {c.t_contact}
               </h2>
               <p style={{ color: '#3d3d3d' }}>
-                Pour toute demande légale ou relative aux données personnelles, vous pouvez nous écrire à{' '}
+                {c.contact_intro}{' '}
                 <a href={`mailto:${c.t_happyhumans_coaching_gmail_com_2}`} style={{ color: '#2d5f54' }}>
                   {c.t_happyhumans_coaching_gmail_com_2}
                 </a>.

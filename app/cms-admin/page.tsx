@@ -7,6 +7,8 @@ import EnhancedRichContent from '@/components/EnhancedRichContent';
 import { bustCmsCache } from '@/hooks/useCmsContent';
 import MediaLibrary from '@/components/MediaLibrary';
 import { sanitizeHtml } from '@/lib/sanitize-html';
+import { uploadImage } from '@/lib/upload-client';
+import SiteLogo, { logoPx, resolveLogo } from '@/components/SiteLogo';
 import CarouselEditor from '@/components/admin/CarouselEditor';
 import CarouselGenerator from '@/components/admin/CarouselGenerator';
 import BlogGenerator from '@/components/admin/BlogGenerator';
@@ -21,7 +23,10 @@ import {
   type CustomBlock, type CustomBlockType,
 } from '@/lib/custom-sections';
 import { THEME_PACKS, DEFAULT_PACK_ID } from '@/lib/theme-packs';
-import { NavItem } from '@/hooks/useCmsNavigation';
+import NavigationEditor from '@/components/cms/NavigationEditor';
+
+// Numéro du dernier message affiché : un message récent n'est pas effacé par le minuteur d'un message plus ancien
+let toastSeq = 0;
 
 const RichEditor = dynamic(() => import('@/components/RichEditor'), { ssr: false });
 
@@ -261,8 +266,10 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Accueil',
     emoji: '🏠',
     sections: [
+      { key: 'contact_email_label', label: 'Contact — Mention « Ou directement par email : »', type: 'text' },
       { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
       { key: 'custom_sections', label: 'Blocs personnalisés — ajouter des sections', type: 'custom-sections' },
+      { key: 'hero_image', label: 'Hero — Photo de fond', type: 'image' },
       { key: 'hero_badge',            label: 'Hero — Badge (ex: Monica Schneider · Executive Coach)',  type: 'text' },
       { key: 'hero_title',            label: 'Hero — Titre principal',                                type: 'text' },
       { key: 'hero_subtitle',         label: 'Hero — Sous-titre / certifications',                   type: 'textarea' },
@@ -536,6 +543,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     sections: [
       { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
       { key: 'custom_sections', label: 'Blocs personnalisés — ajouter des sections', type: 'custom-sections' },
+      { key: 'hero_image', label: 'Hero — Photo de fond', type: 'image' },
       { key: 'hero_badge',    label: 'Hero — Badge',               type: 'text' },
       { key: 'page_title',    label: 'Hero — Titre principal (H1)', type: 'text' },
       { key: 'page_subtitle', label: 'Hero — Sous-titre',          type: 'textarea' },
@@ -620,6 +628,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     sections: [
       { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
       { key: 'custom_sections', label: 'Blocs personnalisés — ajouter des sections', type: 'custom-sections' },
+      { key: 'hero_image', label: 'Photo de fond du haut de page', type: 'image' },
       { key: 'hero_badge',          label: 'Badge intro',                         type: 'text' },
       { key: 'hero_title',          label: 'Titre principal',                     type: 'text' },
       { key: 'hero_description',    label: 'Description intro',                   type: 'textarea' },
@@ -757,6 +766,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Réservation',
     emoji: '📅',
     sections: [
+      { key: 'display_problem', label: 'Textes de la page — Mention « Problème d’affichage ? » (sous le calendrier)', type: 'text' },
       { key: 'hero_badge',           label: 'Badge hero',                          type: 'text' },
       { key: 'hero_title',           label: 'Titre hero',                          type: 'text' },
       { key: 'hero_subtitle',        label: 'Sous-titre hero',                     type: 'textarea' },
@@ -864,6 +874,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     sections: [
       { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
       { key: 'custom_sections', label: 'Blocs personnalisés — ajouter des sections', type: 'custom-sections' },
+      { key: 'hero_image', label: 'Hero — Photo de fond', type: 'image' },
       { key: 'hero_badge',          label: 'Hero — Badge',                                  type: 'text' },
       { key: 'hero_title',          label: 'Hero — Titre principal',                        type: 'text' },
       { key: 'hero_desc',           label: 'Hero — Sous-titre / description',               type: 'textarea' },
@@ -899,6 +910,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'FAQ',
     emoji: '❓',
     sections: [
+      { key: 'hero_image', label: 'Photo de fond du haut de page', type: 'image' },
       { key: 'page_title',    label: 'Titre de la page',                      type: 'text' },
       { key: 'page_subtitle',label: 'Sous-titre de la page',                  type: 'textarea' },
       { key: 'cta_title',    label: 'Section CTA — Titre',                    type: 'text' },
@@ -947,6 +959,27 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Blog',
     emoji: '📝',
     sections: [
+      { key: 'article_related_badge', label: 'Article — Petit titre du bloc « articles liés »', type: 'text' },
+      { key: 'article_related_title', label: 'Article — Titre du bloc « articles liés »', type: 'text' },
+      { key: 'article_related_text', label: 'Article — Texte du bloc « articles liés »', type: 'textarea' },
+      { key: 'article_back', label: 'Article — Lien « Retour » (en haut et en bas de l’article)', type: 'text' },
+      { key: 'article_read_time', label: 'Article — Mention « min de lecture »', type: 'text' },
+      { key: 'article_opening', label: 'Article — Titre de l’encadré d’introduction', type: 'text' },
+      { key: 'article_unfinished', label: 'Article — Message quand le texte est vide', type: 'textarea' },
+      { key: 'article_detail', label: 'Article — Titre de l’encadré de notes', type: 'text' },
+      { key: 'article_tags', label: 'Article — Titre « Tags »', type: 'text' },
+      { key: 'cat_all_label', label: 'Liste — Filtre « tous les articles »', type: 'text' },
+      { key: 'cat_1_label', label: 'Liste — Catégorie « Carnets Voyage » : libellé', type: 'text' },
+      { key: 'cat_2_label', label: 'Liste — Catégorie « Découvertes Locales » : libellé', type: 'text' },
+      { key: 'cat_3_label', label: 'Liste — Catégorie « Guides Pratiques » : libellé', type: 'text' },
+      { key: 'cat_1_eyebrow', label: 'Liste — Petit titre de la section « Carnets »', type: 'text' },
+      { key: 'cat_2_eyebrow', label: 'Liste — Petit titre de la section « Pépites locales »', type: 'text' },
+      { key: 'cat_3_eyebrow', label: 'Liste — Petit titre de la section « Guides »', type: 'text' },
+      { key: 'article_singular', label: 'Liste — Mot « article » (singulier)', type: 'text' },
+      { key: 'article_plural', label: 'Liste — Mot « articles » (pluriel)', type: 'text' },
+      { key: 'search_for', label: 'Liste — Mot « pour » (3 articles pour « mot recherché »)', type: 'text' },
+      { key: 'read_more', label: 'Liste — Lien en bas d’une carte d’article', type: 'text' },
+      { key: 'hero_image', label: 'Photo de fond du haut de page', type: 'image' },
       { key: 'hero_badge',    label: 'Badge hero',                    type: 'text' },
       { key: 'hero_title',    label: 'Titre principal',               type: 'textarea' },
       { key: 'hero_subtitle', label: 'Sous-titre',                    type: 'textarea' },
@@ -974,6 +1007,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Mentions légales',
     emoji: '⚖️',
     sections: [
+      { key: 'contact_intro', label: 'Textes de la page — Phrase d’introduction de l’adresse e-mail (en bas de page)', type: 'textarea' },
       { key: 't_cadre_legal', label: 'Textes de la page — Texte « Cadre légal »', type: 'text' },
       { key: 't_mentions_legales', label: 'Textes de la page — Titre principal « Mentions légales »', type: 'text' },
       { key: 't_derniere_mise_a_jour', label: 'Textes de la page — Texte « Dernière mise à jour : juin 2026 »', type: 'text' },
@@ -1011,6 +1045,8 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Politique de confidentialité',
     emoji: '🔒',
     sections: [
+      { key: 'email_label', label: 'Textes de la page — Mot « Email : »', type: 'text' },
+      { key: 'rights_intro', label: 'Textes de la page — Phrase d’introduction de l’adresse e-mail (en bas de page)', type: 'textarea' },
       { key: 't_donnees_personnelles', label: 'Textes de la page — Texte « Données personnelles »', type: 'text' },
       { key: 't_politique_de_confidentialite', label: 'Textes de la page — Titre principal « Politique de confidentialité »', type: 'text' },
       { key: 't_derniere_mise_a_jour', label: 'Textes de la page — Texte « Dernière mise à jour : juin 2026 »', type: 'text' },
@@ -1049,6 +1085,137 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'seo_image', label: 'Référencement Google — Image de partage (Facebook, LinkedIn, WhatsApp…)', type: 'image' },
     ],
   },
+  'site': {
+    label: 'Textes communs (cookies, newsletter, partage, 404…)',
+    emoji: '🧩',
+    sections: [
+      { key: 'cookie_title', label: 'Bandeau cookies — Titre', type: 'text' },
+      { key: 'cookie_text', label: 'Bandeau cookies — Message', type: 'textarea' },
+      { key: 'cookie_details', label: 'Bandeau cookies — Mot « Détails : »', type: 'text' },
+      { key: 'cookie_privacy_link', label: 'Bandeau cookies — Lien « Politique de confidentialité »', type: 'text' },
+      { key: 'cookie_and', label: 'Bandeau cookies — Mot « et »', type: 'text' },
+      { key: 'cookie_legal_link', label: 'Bandeau cookies — Lien « Mentions légales »', type: 'text' },
+      { key: 'cookie_refuse', label: 'Bandeau cookies — Bouton « Refuser »', type: 'text' },
+      { key: 'cookie_accept', label: 'Bandeau cookies — Bouton « Accepter »', type: 'text' },
+      { key: 'newsletter_badge', label: 'Newsletter — Petit titre (au-dessus du titre)', type: 'text' },
+      { key: 'newsletter_title', label: 'Newsletter — Titre (grand encadré)', type: 'text' },
+      { key: 'newsletter_title_short', label: 'Newsletter — Titre (encadré dans un article)', type: 'text' },
+      { key: 'newsletter_text', label: 'Newsletter — Texte', type: 'textarea' },
+      { key: 'newsletter_placeholder', label: 'Newsletter — Exemple dans le champ e-mail', type: 'text' },
+      { key: 'newsletter_button', label: 'Newsletter — Bouton « Je m’abonne »', type: 'text' },
+      { key: 'newsletter_button_loading', label: 'Newsletter — Bouton pendant l’envoi', type: 'text' },
+      { key: 'newsletter_success', label: 'Newsletter — Message de confirmation', type: 'text' },
+      { key: 'newsletter_success_hint', label: 'Newsletter — Message sous la confirmation', type: 'text' },
+      { key: 'newsletter_error_invalid', label: 'Newsletter — Erreur « adresse invalide »', type: 'text' },
+      { key: 'newsletter_error_generic', label: 'Newsletter — Erreur générale', type: 'text' },
+      { key: 'newsletter_error_network', label: 'Newsletter — Erreur de connexion', type: 'text' },
+      { key: 'newsletter_footnote', label: 'Newsletter — Mention sous le formulaire', type: 'text' },
+      { key: 'share_label', label: 'Partage — Mot « Partager »', type: 'text' },
+      { key: 'share_on', label: 'Partage — Début de l’aide vocale « Partager sur … »', type: 'text' },
+      { key: 'share_pinterest', label: 'Partage — Bouton Pinterest', type: 'text' },
+      { key: 'share_whatsapp', label: 'Partage — Bouton WhatsApp', type: 'text' },
+      { key: 'share_copy', label: 'Partage — Bouton « Copier le lien »', type: 'text' },
+      { key: 'share_copied', label: 'Partage — Message après la copie', type: 'text' },
+      { key: 'share_copy_aria', label: 'Partage — Aide vocale du bouton « Copier le lien »', type: 'text' },
+      { key: 'notfound_badge', label: 'Page introuvable — Petit titre', type: 'text' },
+      { key: 'notfound_title', label: 'Page introuvable — Titre', type: 'text' },
+      { key: 'notfound_text', label: 'Page introuvable — Texte', type: 'textarea' },
+      { key: 'notfound_home', label: 'Page introuvable — Bouton « Retour à l’accueil »', type: 'text' },
+      { key: 'notfound_contact', label: 'Page introuvable — Bouton « Prendre contact »', type: 'text' },
+      { key: 'notfound_link_coaching', label: 'Page introuvable — Lien « Coaching »', type: 'text' },
+      { key: 'notfound_link_relations', label: 'Page introuvable — Lien « Relations »', type: 'text' },
+      { key: 'notfound_link_happiness', label: 'Page introuvable — Lien « Happiness Design »', type: 'text' },
+      { key: 'notfound_link_booking', label: 'Page introuvable — Lien « Réserver une séance »', type: 'text' },
+      { key: 'maintenance_title', label: 'Maintenance — Titre', type: 'text' },
+      { key: 'maintenance_text', label: 'Maintenance — Texte (ligne 1)', type: 'textarea' },
+      { key: 'maintenance_text2', label: 'Maintenance — Texte (ligne 2)', type: 'text' },
+      { key: 'maintenance_help', label: 'Maintenance — Phrase avant l’adresse e-mail', type: 'text' },
+      { key: 'maintenance_email', label: 'Maintenance — Adresse e-mail affichée', type: 'text' },
+    ],
+  },
+  'test-attachement': {
+    label: 'Test d’attachement',
+    emoji: '🧪',
+    sections: [
+      { key: 'back_link', label: 'Page — Lien de retour (en haut)', type: 'text' },
+      { key: 'page_title_sr', label: 'Page — Titre principal (lu par les moteurs de recherche, invisible à l’écran)', type: 'text' },
+      { key: 'intro_title', label: 'Introduction — Titre', type: 'text' },
+      { key: 'intro_text', label: 'Introduction — Texte', type: 'textarea' },
+      { key: 'pill_time', label: 'Introduction — Étiquette « durée »', type: 'text' },
+      { key: 'pill_questions', label: 'Introduction — Étiquette « nombre de questions »', type: 'text' },
+      { key: 'pill_results', label: 'Introduction — Étiquette « résultats »', type: 'text' },
+      { key: 'intro_note', label: 'Introduction — Remarque', type: 'textarea' },
+      { key: 'start_button', label: 'Introduction — Bouton « commencer »', type: 'text' },
+      { key: 'question_word', label: 'Questions — Mot « Question » (Question 3 sur 16)', type: 'text' },
+      { key: 'question_of', label: 'Questions — Mot « sur » (Question 3 sur 16)', type: 'text' },
+      { key: 'scale_legend', label: 'Questions — Légende de l’échelle de réponse', type: 'text' },
+      { key: 'prev_button', label: 'Questions — Bouton « précédent »', type: 'text' },
+      { key: 'next_button', label: 'Questions — Bouton « suivant »', type: 'text' },
+      { key: 'finish_button', label: 'Questions — Bouton de la dernière question', type: 'text' },
+      { key: 'question_1', label: 'Questions — Question 1 (anxiété)', type: 'textarea' },
+      { key: 'question_2', label: 'Questions — Question 2 (anxiété)', type: 'textarea' },
+      { key: 'question_3', label: 'Questions — Question 3 (anxiété)', type: 'textarea' },
+      { key: 'question_4', label: 'Questions — Question 4 (anxiété)', type: 'textarea' },
+      { key: 'question_5', label: 'Questions — Question 5 (anxiété)', type: 'textarea' },
+      { key: 'question_6', label: 'Questions — Question 6 (anxiété)', type: 'textarea' },
+      { key: 'question_7', label: 'Questions — Question 7 (anxiété)', type: 'textarea' },
+      { key: 'question_8', label: 'Questions — Question 8 (anxiété)', type: 'textarea' },
+      { key: 'question_9', label: 'Questions — Question 9 (évitement)', type: 'textarea' },
+      { key: 'question_10', label: 'Questions — Question 10 (évitement)', type: 'textarea' },
+      { key: 'question_11', label: 'Questions — Question 11 (évitement)', type: 'textarea' },
+      { key: 'question_12', label: 'Questions — Question 12 (évitement)', type: 'textarea' },
+      { key: 'question_13', label: 'Questions — Question 13 (évitement)', type: 'textarea' },
+      { key: 'question_14', label: 'Questions — Question 14 (évitement)', type: 'textarea' },
+      { key: 'question_15', label: 'Questions — Question 15 (évitement)', type: 'textarea' },
+      { key: 'question_16', label: 'Questions — Question 16 (évitement)', type: 'textarea' },
+      { key: 'scores_title', label: 'Résultats — Titre « scores »', type: 'text' },
+      { key: 'score_anxiety_label', label: 'Résultats — Barre « anxiété »', type: 'text' },
+      { key: 'score_avoidance_label', label: 'Résultats — Barre « évitement »', type: 'text' },
+      { key: 'strengths_title', label: 'Résultats — Titre « forces »', type: 'text' },
+      { key: 'challenges_title', label: 'Résultats — Titre « vigilance »', type: 'text' },
+      { key: 'growth_title', label: 'Résultats — Titre « croissance »', type: 'text' },
+      { key: 'note_label', label: 'Résultats — Mot d’introduction de l’avertissement', type: 'text' },
+      { key: 'disclaimer', label: 'Résultats — Avertissement (outil de découverte, pas un diagnostic)', type: 'textarea' },
+      { key: 'cta_title', label: 'Résultats — Encadré de réservation : titre', type: 'text' },
+      { key: 'cta_text_before', label: 'Résultats — Encadré de réservation : texte (début)', type: 'text' },
+      { key: 'cta_text_strong', label: 'Résultats — Encadré de réservation : texte (partie en gras)', type: 'text' },
+      { key: 'cta_text_after', label: 'Résultats — Encadré de réservation : texte (fin)', type: 'text' },
+      { key: 'cta_button', label: 'Résultats — Encadré de réservation : bouton', type: 'text' },
+      { key: 'restart_button', label: 'Résultats — Bouton « recommencer »', type: 'text' },
+      { key: 'likert_1', label: 'Questions — Libellé de réponse 1 sur 5', type: 'text' },
+      { key: 'likert_2', label: 'Questions — Libellé de réponse 2 sur 5', type: 'text' },
+      { key: 'likert_3', label: 'Questions — Libellé de réponse 3 sur 5', type: 'text' },
+      { key: 'likert_4', label: 'Questions — Libellé de réponse 4 sur 5', type: 'text' },
+      { key: 'likert_5', label: 'Questions — Libellé de réponse 5 sur 5', type: 'text' },
+      { key: 'copy_intro', label: 'Résultats — Texte copié : début de phrase', type: 'text' },
+      { key: 'copy_anxiety', label: 'Résultats — Texte copié : mot « Anxiété »', type: 'text' },
+      { key: 'copy_avoidance', label: 'Résultats — Texte copié : mot « Évitement »', type: 'text' },
+      { key: 'copy_button', label: 'Résultats — Bouton « copier »', type: 'text' },
+      { key: 'secure_title', label: 'Profil sécure — Titre', type: 'text' },
+      { key: 'secure_summary', label: 'Profil sécure — Description', type: 'textarea' },
+      { key: 'secure_strengths', label: 'Profil sécure — Forces (une par ligne)', type: 'textarea' },
+      { key: 'secure_challenges', label: 'Profil sécure — Points de vigilance (un par ligne)', type: 'textarea' },
+      { key: 'secure_growth', label: 'Profil sécure — Pistes de croissance (une par ligne)', type: 'textarea' },
+      { key: 'anxious_title', label: 'Profil anxieux — Titre', type: 'text' },
+      { key: 'anxious_summary', label: 'Profil anxieux — Description', type: 'textarea' },
+      { key: 'anxious_strengths', label: 'Profil anxieux — Forces (une par ligne)', type: 'textarea' },
+      { key: 'anxious_challenges', label: 'Profil anxieux — Points de vigilance (un par ligne)', type: 'textarea' },
+      { key: 'anxious_growth', label: 'Profil anxieux — Pistes de croissance (une par ligne)', type: 'textarea' },
+      { key: 'avoidant_title', label: 'Profil évitant — Titre', type: 'text' },
+      { key: 'avoidant_summary', label: 'Profil évitant — Description', type: 'textarea' },
+      { key: 'avoidant_strengths', label: 'Profil évitant — Forces (une par ligne)', type: 'textarea' },
+      { key: 'avoidant_challenges', label: 'Profil évitant — Points de vigilance (un par ligne)', type: 'textarea' },
+      { key: 'avoidant_growth', label: 'Profil évitant — Pistes de croissance (une par ligne)', type: 'textarea' },
+      { key: 'disorganized_title', label: 'Profil craintif-évitant — Titre', type: 'text' },
+      { key: 'disorganized_summary', label: 'Profil craintif-évitant — Description', type: 'textarea' },
+      { key: 'disorganized_strengths', label: 'Profil craintif-évitant — Forces (une par ligne)', type: 'textarea' },
+      { key: 'disorganized_challenges', label: 'Profil craintif-évitant — Points de vigilance (un par ligne)', type: 'textarea' },
+      { key: 'disorganized_growth', label: 'Profil craintif-évitant — Pistes de croissance (une par ligne)', type: 'textarea' },
+      { key: 'seo_title', label: 'Référencement Google — Titre (onglet du navigateur et résultat Google)', type: 'text' },
+      { key: 'seo_description', label: 'Référencement Google — Description (l’extrait sous le titre dans Google)', type: 'textarea' },
+      { key: 'seo_image', label: 'Référencement Google — Image de partage (Facebook, LinkedIn, WhatsApp…)', type: 'image' },
+    ],
+  },
   'merci': {
     label: 'Page « Merci »',
     emoji: '🙏',
@@ -1064,6 +1231,9 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     ],
   },
 };
+
+// Réglages déjà gérés par le panneau « Logo » (aperçu, curseurs, boutons) : non répétés dans la liste générique
+const BRANDING_PANEL_KEYS = ['logo_url', 'logo_size', 'logo_shape', 'logo_position', 'logo_footer_size'];
 
 const SETTINGS_GROUPS: Record<string, { label: string; emoji: string }> = {
   theme:      { label: 'Thème & Couleurs',  emoji: '🎨' },
@@ -1240,237 +1410,6 @@ function PageHistoryPanel({ page, onRestored }: { page: string; onRestored?: () 
   );
 }
 
-// ─── Navigation Editor ────────────────────────────────────────
-function NavigationEditor({ onSaved }: { onSaved?: () => void }) {
-  const [nav, setNav] = useState<NavItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  // Drag & drop state
-  const [dragSrc, setDragSrc] = useState<number | null>(null);
-  const [dragOver, setDragOver] = useState<number | null>(null);
-  // Drag state for dropdown sub-items (parentId → dragged index)
-  const [dragSrcSub, setDragSrcSub] = useState<{ parentId: string; idx: number } | null>(null);
-  const [dragOverSub, setDragOverSub] = useState<{ parentId: string; idx: number } | null>(null);
-
-  useEffect(() => {
-    fetch('/api/cms/navigation')
-      .then(r => r.json())
-      .then(d => {
-        const items = d.nav;
-        if (Array.isArray(items) && items.length > 0) setNav(items);
-        else setNav([]);
-      })
-      .catch(() => setError('Impossible de charger la navigation'))
-      .finally(() => setLoading(false));
-  }, []);
-
-  const updateItem = (id: string, updates: Partial<NavItem>) => {
-    setNav(prev => prev.map(item => item.id === id ? { ...item, ...updates } : item));
-  };
-
-  const updateDropdownItem = (parentId: string, dropdownId: string, updates: Partial<NavItem>) => {
-    setNav(prev => prev.map(item => {
-      if (item.id !== parentId) return item;
-      return { ...item, dropdownItems: (item.dropdownItems || []).map(sub => sub.id === dropdownId ? { ...sub, ...updates } : sub) };
-    }));
-  };
-
-  // ── Drag & drop for top-level items ──────────────────────
-  const onItemDragStart = (e: React.DragEvent, idx: number) => {
-    setDragSrc(idx);
-    e.dataTransfer.effectAllowed = 'move';
-  };
-  const onItemDragOver = (e: React.DragEvent, idx: number) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    setDragOver(idx);
-  };
-  const onItemDrop = (e: React.DragEvent, dropIdx: number) => {
-    e.preventDefault();
-    if (dragSrc === null || dragSrc === dropIdx) {
-      setDragSrc(null); setDragOver(null);
-      return;
-    }
-    setNav(prev => {
-      const next = [...prev];
-      const [moved] = next.splice(dragSrc, 1);
-      next.splice(dropIdx, 0, moved);
-      next.forEach((item, i) => { item.position = i + 1; });
-      return next;
-    });
-    setDragSrc(null); setDragOver(null);
-  };
-  const onItemDragEnd = () => { setDragSrc(null); setDragOver(null); };
-
-  // ── Drag & drop for dropdown sub-items ───────────────────
-  const onSubDragStart = (e: React.DragEvent, parentId: string, idx: number) => {
-    setDragSrcSub({ parentId, idx });
-    e.dataTransfer.effectAllowed = 'move';
-  };
-  const onSubDragOver = (e: React.DragEvent, parentId: string, idx: number) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    setDragOverSub({ parentId, idx });
-  };
-  const onSubDrop = (e: React.DragEvent, parentId: string, dropIdx: number) => {
-    e.preventDefault();
-    if (!dragSrcSub || dragSrcSub.parentId !== parentId || dragSrcSub.idx === dropIdx) {
-      setDragSrcSub(null); setDragOverSub(null);
-      return;
-    }
-    setNav(prev => prev.map(item => {
-      if (item.id !== parentId) return item;
-      const subs = [...(item.dropdownItems || [])];
-      const [moved] = subs.splice(dragSrcSub.idx, 1);
-      subs.splice(dropIdx, 0, moved);
-      subs.forEach((sub, i) => { sub.position = i + 1; });
-      return { ...item, dropdownItems: subs };
-    }));
-    setDragSrcSub(null); setDragOverSub(null);
-  };
-  const onSubDragEnd = () => { setDragSrcSub(null); setDragOverSub(null); };
-
-  const saveNav = async () => {
-    setSaving(true); setError(null);
-    try {
-      const res = await fetch('/api/cms/navigation', {
-        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nav }),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || `Erreur ${res.status}`);
-      }
-      bustCmsCache('navigation');
-      onSaved?.();
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Erreur lors de la sauvegarde');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  if (loading) return <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement de la navigation…</p>;
-
-  const cardStyle = (isDragging: boolean, isOver: boolean): React.CSSProperties => ({
-    background: '#faf9f7',
-    border: isOver ? '2px solid #2d5f54' : '1px solid #e8e4df',
-    borderRadius: '.75rem',
-    padding: '1rem',
-    opacity: isDragging ? 0.4 : 1,
-    transition: 'border-color .1s, opacity .15s',
-  });
-
-  return (
-    <div>
-      {error && (
-        <div style={{ padding: '.75rem 1rem', background: '#fee2e2', border: '1px solid #fecaca', borderRadius: '.5rem', color: '#dc2626', fontSize: '.88rem', marginBottom: '1rem' }}>
-          ❌ {error}
-        </div>
-      )}
-      <p style={{ fontSize: '.85rem', color: '#888', marginBottom: '1rem' }}>
-        Glissez-déposez les éléments pour changer l&apos;ordre. Modifiez visibilité et liens ci-dessous.
-      </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0', marginBottom: '1.5rem' }}>
-        {nav.map((item, idx) => (
-          <div key={item.id}>
-            {/* Drop indicator above */}
-            {dragOver === idx && dragSrc !== null && dragSrc !== idx && (
-              <div style={{ height: 3, background: '#2d5f54', borderRadius: 2, margin: '0 .5rem' }} />
-            )}
-            <div
-              draggable
-              onDragStart={e => onItemDragStart(e, idx)}
-              onDragOver={e => onItemDragOver(e, idx)}
-              onDrop={e => onItemDrop(e, idx)}
-              onDragEnd={onItemDragEnd}
-              style={cardStyle(dragSrc === idx, dragOver === idx)}
-            >
-              <div style={{ display: 'flex', gap: '.5rem', alignItems: 'flex-start', marginBottom: '.75rem' }}>
-                {/* Drag handle */}
-                <span style={{ cursor: 'grab', padding: '.35rem .2rem', color: '#bbb', fontSize: '1rem', lineHeight: 1, userSelect: 'none' }} title="Glisser pour réordonner">⠿</span>
-
-                {/* Visibility toggle */}
-                <button onClick={() => updateItem(item.id, { visible: !item.visible })}
-                  title={item.visible ? 'Masquer' : 'Afficher'}
-                  style={{ padding: '.35rem .5rem', background: item.visible ? '#ecfdf5' : '#fef2f2', border: `1px solid ${item.visible ? '#6ee7b7' : '#fca5a5'}`, borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>
-                  {item.visible ? '👁️' : '👁️‍🗨️'}
-                </button>
-
-                {/* Fields */}
-                <div style={{ flex: 1, display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
-                  <input value={item.label} onChange={e => updateItem(item.id, { label: e.target.value })}
-                    placeholder="Label du lien" style={{ ...inp, flex: 1, minWidth: 120 }} />
-                  <input value={item.href || ''} onChange={e => updateItem(item.id, { href: e.target.value })}
-                    placeholder="URL (ex: /contact)" style={{ ...inp, flex: 1, minWidth: 160 }} />
-                </div>
-
-                {/* Badges */}
-                <div style={{ display: 'flex', gap: '.35rem', alignItems: 'center', flexShrink: 0 }}>
-                  {item.isDropdown && <span style={{ padding: '.2rem .5rem', background: '#e0f2fe', color: '#0369a1', borderRadius: '.3rem', fontSize: '.7rem', fontWeight: 600 }}>Menu</span>}
-                  {item.isCta && <span style={{ padding: '.2rem .5rem', background: '#dcfce7', color: '#15803d', borderRadius: '.3rem', fontSize: '.7rem', fontWeight: 600 }}>CTA</span>}
-                </div>
-              </div>
-
-              {/* Dropdown sub-items */}
-              {item.isDropdown && (
-                <div style={{ marginLeft: '2.5rem', display: 'flex', flexDirection: 'column', gap: '0' }}>
-                  <p style={{ fontSize: '.75rem', fontWeight: 600, color: '#888', marginBottom: '.4rem' }}>Sous-éléments :</p>
-                  {(item.dropdownItems || []).map((sub, subIdx) => {
-                    const isSubDragging = dragSrcSub?.parentId === item.id && dragSrcSub.idx === subIdx;
-                    const isSubOver = dragOverSub?.parentId === item.id && dragOverSub.idx === subIdx;
-                    return (
-                      <div key={sub.id}>
-                        {isSubOver && dragSrcSub && !(dragSrcSub.parentId === item.id && dragSrcSub.idx === subIdx) && (
-                          <div style={{ height: 2, background: '#2d5f54', borderRadius: 2, margin: '2px .25rem' }} />
-                        )}
-                        <div
-                          draggable
-                          onDragStart={e => onSubDragStart(e, item.id, subIdx)}
-                          onDragOver={e => onSubDragOver(e, item.id, subIdx)}
-                          onDrop={e => onSubDrop(e, item.id, subIdx)}
-                          onDragEnd={onSubDragEnd}
-                          style={{
-                            display: 'flex', gap: '.4rem', alignItems: 'center',
-                            opacity: isSubDragging ? 0.4 : 1,
-                            background: isSubOver ? '#f0fdf4' : 'transparent',
-                            borderRadius: '.4rem',
-                            padding: isSubOver ? '.35rem .35rem' : '.35rem .35rem',
-                            transition: 'opacity .15s, background .1s',
-                          }}
-                        >
-                          <span style={{ cursor: 'grab', color: '#ccc', fontSize: '.85rem', padding: '0 .1rem', userSelect: 'none' }}>⠿</span>
-                          <button onClick={() => updateDropdownItem(item.id, sub.id, { visible: !sub.visible })}
-                            style={{ padding: '.2rem .35rem', background: sub.visible ? '#ecfdf5' : '#fef2f2', border: `1px solid ${sub.visible ? '#6ee7b7' : '#fca5a5'}`, borderRadius: '.3rem', cursor: 'pointer', fontSize: '.75rem' }}>
-                            {sub.visible ? '👁️' : '👁️‍🗨️'}
-                          </button>
-                          <input value={sub.label} onChange={e => updateDropdownItem(item.id, sub.id, { label: e.target.value })}
-                            placeholder="Label" style={{ ...inp, flex: 1 }} />
-                          <input value={sub.href || ''} onChange={e => updateDropdownItem(item.id, sub.id, { href: e.target.value })}
-                            placeholder="URL" style={{ ...inp, flex: 1 }} />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-        {/* Drop indicator at end */}
-        {dragOver === nav.length && dragSrc !== null && (
-          <div style={{ height: 3, background: '#2d5f54', borderRadius: 2, margin: '0 .5rem' }} />
-        )}
-      </div>
-
-      <button onClick={saveNav} disabled={saving}
-        style={{ padding: '.7rem 2rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.9rem', opacity: saving ? .7 : 1 }}>
-        {saving ? '⏳ Sauvegarde…' : '💾 Sauvegarder la navigation'}
-      </button>
-    </div>
-  );
-}
-
 // ─── Composant principal ──────────────────────────────────────
 function BulkSlotCreator({ onCreated }: { onCreated: () => void }) {
   const [days, setDays] = React.useState<number[]>([1,2,3,4,5])
@@ -1614,10 +1553,26 @@ export default function CMSAdmin() {
   const articleReadTime = getReadTimeMinutes(editingArticle?.content);
   const articlePreviewHtml = sanitizeHtml(editingArticle?.content);
 
-  const showToast = useCallback((msg: string) => {
+  const showToast = useCallback((msg: string, durationMs = 3500) => {
+    const id = ++toastSeq;
     setToast(msg);
-    setTimeout(() => setToast(''), 3500);
+    setTimeout(() => { if (id === toastSeq) setToast(''); }, durationMs);
   }, []);
+  // Envoi d'une image depuis un champ « fichier » : réduit la photo, envoie, et explique toujours le résultat
+  const handleImageFile = useCallback(async (e: React.ChangeEvent<HTMLInputElement>, onUrl: (url: string) => void) => {
+    const input = e.target;
+    const file = input.files?.[0];
+    if (!file) return;
+    showToast('Envoi de l’image en cours…', 30000);
+    try {
+      onUrl(await uploadImage(file));
+      showToast('Image envoyée ✓ — pensez à enregistrer.', 5000);
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Envoi impossible. Réessayez.', 10000);
+    } finally {
+      input.value = '';
+    }
+  }, [showToast]);
   const handleUnauthorized = useCallback((res: Response, message = 'Session expirée. Merci de vous reconnecter.') => {
     if (res.status !== 401) return false;
     setAuthed(false);
@@ -2185,7 +2140,7 @@ export default function CMSAdmin() {
         loadArticles();
       } else {
         const d = await res.json();
-        showToast(`âŒ Erreur : ${d.error}`);
+        showToast(`❌ Erreur : ${d.error}`);
       }
     } catch {
       showToast('Impossible de sauvegarder cet article.');
@@ -2259,28 +2214,17 @@ export default function CMSAdmin() {
   const uploadFeaturedImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const input = e.target;
     setUploadingFeaturedImage(true);
-    const fd = new FormData();
-    fd.append('file', file);
-    fd.append('folder', 'articles');
     try {
-      const res = await fetch('/api/cms/media-upload', {
-        method: 'POST',
-        body: fd,
-      });
-      if (handleUnauthorized(res)) return;
-      const data = await res.json();
-      if (data.url) {
-        setEditingArticle(prev => prev ? { ...prev, featured_image: data.url } : prev);
-        showToast('✅ Image uploadée sur Supabase !');
-      } else {
-        showToast(`âŒ Upload échoué : ${data.error}`);
-      }
-    } catch {
-      showToast('Impossible d’envoyer cette image.');
+      const url = await uploadImage(file, '/api/cms/media-upload', { folder: 'articles' });
+      setEditingArticle(prev => prev ? { ...prev, featured_image: url } : prev);
+      showToast('Image envoyée ✓');
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Impossible d’envoyer cette image.', 10000);
     } finally {
       setUploadingFeaturedImage(false);
-      e.target.value = '';
+      input.value = '';
     }
   };
 
@@ -3104,15 +3048,8 @@ export default function CMSAdmin() {
                                               <button onClick={() => { setMediaPickerTarget(key); setTab('media'); }} style={{ padding: '.5rem 1rem', background: '#01696f', color: 'white', border: 'none', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>🖼️ Choisir dans la médiathèque</button>
                                               <label style={{ padding: '.5rem 1rem', background: '#2d5f54', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>
                                                 ⬆️ Upload
-                                                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
-                                                  const file = e.target.files?.[0];
-                                                  if (!file) return;
-                                                  const fd = new FormData();
-                                                  fd.append('file', file);
-                                                  const res = await fetch('/api/cms/upload', { method: 'POST', body: fd });
-                                                  const data = await res.json();
-                                                  if (data.url) setEditedContent(prev => ({ ...prev, [key]: data.url }));
-                                                }} />
+                                                <input type="file" accept="image/*" style={{ display: 'none' }}
+                                                  onChange={e => handleImageFile(e, url => setEditedContent(prev => ({ ...prev, [key]: url })))} />
                                               </label>
                                               <input value={editedContent[key] ?? ''} onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))} style={{ ...inp, flex: 1, minWidth: 200 }} placeholder="Ou coller une URL d'image..." />
                                             </div>
@@ -3183,7 +3120,7 @@ export default function CMSAdmin() {
               <p style={{ fontSize: '.85rem', color: '#888' }}>Supabase Storage</p>
             </div>
             <div style={{ background: '#faf8f5', borderRadius: '.75rem', padding: '2rem', textAlign: 'center', border: '2px dashed #e8e3dc' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>â˜ï¸</div>
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>☁️</div>
               <p style={{ color: '#555', marginBottom: '1.25rem', lineHeight: 1.6 }}>Toutes tes images sont stockées sur <strong>Supabase Storage</strong>.</p>
               <button onClick={() => setShowMediaLibrary(true)}
                 style={{ padding: '.8rem 1.75rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.95rem' }}
@@ -3192,7 +3129,7 @@ export default function CMSAdmin() {
           </div>
         )}
 
-        {/* ── TRAVEL PLANNING ── */}
+
         {/* ── BOOKING ── */}
         {tab === 'booking' && (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
@@ -3413,30 +3350,9 @@ export default function CMSAdmin() {
                             {/* Prévisualisation live */}
                             <div style={{ marginBottom: '1.5rem', padding: '1rem 1.5rem', background: 'white', borderRadius: '.75rem', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                               <div style={{ width: 260, background: '#fff', borderBottom: '1px solid #f0ece8', borderRadius: '.5rem .5rem 0 0', padding: '.6rem 1rem', display: 'flex', alignItems: 'center', gap: '.75rem', justifyContent: (editedSettings['logo_position'] || 'left') === 'center' ? 'center' : 'flex-start' }}>
-                                {editedSettings['logo_url'] ? (
-                                  <img
-                                    src={editedSettings['logo_url']}
-                                    alt="Logo prévisualisation"
-                                    style={{
-                                      width: Number(editedSettings['logo_size'] || 44),
-                                      height: Number(editedSettings['logo_size'] || 44),
-                                      borderRadius: (editedSettings['logo_shape'] || 'circle') === 'circle' ? '50%' : (editedSettings['logo_shape'] === 'rounded' ? '12px' : '4px'),
-                                      objectFit: 'cover',
-                                      border: '1px solid #eee',
-                                    }}
-                                  />
-                                ) : (
-                                  <div style={{
-                                    width: Number(editedSettings['logo_size'] || 44),
-                                    height: Number(editedSettings['logo_size'] || 44),
-                                    borderRadius: (editedSettings['logo_shape'] || 'circle') === 'circle' ? '50%' : (editedSettings['logo_shape'] === 'rounded' ? '12px' : '4px'),
-                                    background: '#2d5f54',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    color: 'white', fontSize: '.7rem', fontWeight: 700, flexShrink: 0,
-                                  }}>HH</div>
-                                )}
+                                <SiteLogo url={resolveLogo(editedSettings).url} size={resolveLogo(editedSettings).size} shape={resolveLogo(editedSettings).shape} />
                                 <div>
-                                  <p style={{ fontWeight: 700, fontSize: '.9rem', color: '#1a1a1a', margin: 0, fontFamily: 'Georgia, serif' }}>{editedSettings['site_name'] || 'Happy Humans'}</p>
+                                  {resolveLogo(editedSettings).showName && <p style={{ fontWeight: 700, fontSize: '.9rem', color: '#1a1a1a', margin: 0, fontFamily: 'Georgia, serif' }}>{editedSettings['site_name'] || 'Happy Humans'}</p>}
                                   {editedSettings['tagline'] && <p style={{ fontSize: '.7rem', color: '#c9a96e', margin: 0, fontStyle: 'italic' }}>{editedSettings['tagline']}</p>}
                                 </div>
                               </div>
@@ -3449,14 +3365,8 @@ export default function CMSAdmin() {
                               <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
                                 <label style={{ padding: '.5rem 1rem', background: '#2d5f54', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem', display: 'inline-flex', alignItems: 'center', gap: '.4rem' }}>
                                   ⬆ Upload logo
-                                  <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
-                                    const file = e.target.files?.[0];
-                                    if (!file) return;
-                                    const fd = new FormData(); fd.append('file', file);
-                                    const res = await fetch('/api/cms/upload', { method: 'POST', body: fd });
-                                    const { url } = await res.json();
-                                    if (url) setEditedSettings(p => ({ ...p, logo_url: url }));
-                                  }} />
+                                  <input type="file" accept="image/*" style={{ display: 'none' }}
+                                    onChange={e => handleImageFile(e, url => setEditedSettings(p => ({ ...p, logo_url: url })))} />
                                 </label>
                                 <input type="text" value={editedSettings['logo_url'] || ''} placeholder="Ou coller une URL d'image"
                                   onChange={e => setEditedSettings(p => ({ ...p, logo_url: e.target.value }))}
@@ -3470,16 +3380,16 @@ export default function CMSAdmin() {
 
                             {/* Taille du logo */}
                             <div style={{ marginBottom: '1.25rem' }}>
-                              <label style={lbl}>Taille du logo — {editedSettings['logo_size'] || 44}px</label>
+                              <label style={lbl}>Taille du logo — {logoPx(editedSettings['logo_size'], 52)}px</label>
                               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                                 <span style={{ fontSize: '.75rem', color: '#aaa' }}>24px</span>
-                                <input type="range" min="24" max="96" step="4"
-                                  value={Number(editedSettings['logo_size'] || 44)}
+                                <input type="range" min="24" max="64" step="4"
+                                  value={logoPx(editedSettings['logo_size'], 52)}
                                   onChange={e => setEditedSettings(p => ({ ...p, logo_size: e.target.value }))}
                                   style={{ flex: 1, accentColor: '#2d5f54' }} />
-                                <span style={{ fontSize: '.75rem', color: '#aaa' }}>96px</span>
+                                <span style={{ fontSize: '.75rem', color: '#aaa' }}>64px</span>
                                 {/* Tailles prédéfinies */}
-                                {[['XS', '28'], ['S', '36'], ['M', '44'], ['L', '56'], ['XL', '72']].map(([label, val]) => (
+                                {[['XS', '28'], ['S', '36'], ['M', '44'], ['L', '56'], ['XL', '64']].map(([label, val]) => (
                                   <button key={val} onClick={() => setEditedSettings(p => ({ ...p, logo_size: val }))}
                                     style={{ padding: '.2rem .5rem', fontSize: '.72rem', border: `1px solid ${editedSettings['logo_size'] === val ? '#2d5f54' : '#ddd'}`, borderRadius: '.3rem', cursor: 'pointer', background: editedSettings['logo_size'] === val ? '#2d5f54' : 'white', color: editedSettings['logo_size'] === val ? 'white' : '#555' }}>
                                     {label}
@@ -3526,7 +3436,7 @@ export default function CMSAdmin() {
                             <div style={{ marginBottom: '1.25rem' }}>
                               <label style={lbl}>Forme du logo</label>
                               <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
-                                {[['Cercle', 'circle'], ['Arrondi', 'rounded'], ['Carré', 'square']].map(([label, val]) => {
+                                {[['Cercle', 'circle'], ['Arrondi', 'rounded'], ['Sans découpe', 'square']].map(([label, val]) => {
                                   const active = (editedSettings['logo_shape'] || 'circle') === val;
                                   const size = 32;
                                   const radius = val === 'circle' ? '50%' : val === 'rounded' ? '6px' : '2px';
@@ -3707,7 +3617,7 @@ export default function CMSAdmin() {
                         )}
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
-                          {settingsGroup !== 'visibility' && groupItems.map(s => {
+                          {settingsGroup !== 'visibility' && groupItems.filter(s => !(settingsGroup === 'branding' && BRANDING_PANEL_KEYS.includes(s.key))).map(s => {
                             const field = s as { key: string; label: string; type: string; options?: string[]; optionLabels?: string[] };
                             return (
                             <div key={s.key}>
@@ -3721,16 +3631,9 @@ export default function CMSAdmin() {
                                   )}
                                   <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
                                     <label style={{ padding: '.5rem 1rem', background: '#2d5f54', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>
-                                      ⬆️ Upload logo
-                                      <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
-                                        const file = e.target.files?.[0];
-                                        if (!file) return;
-                                        const fd = new FormData();
-                                        fd.append('file', file);
-                                        const res = await fetch('/api/cms/upload', { method: 'POST', body: fd });
-                                        const data = await res.json();
-                                        if (data.url) setEditedSettings(prev => ({ ...prev, [s.key]: data.url }));
-                                      }} />
+                                      ⬆️ Choisir une image
+                                      <input type="file" accept="image/*" style={{ display: 'none' }}
+                                        onChange={e => handleImageFile(e, url => setEditedSettings(prev => ({ ...prev, [s.key]: url })))} />
                                     </label>
                                     <input value={editedSettings[s.key] || ''} onChange={e => setEditedSettings(prev => ({ ...prev, [s.key]: e.target.value }))} style={{ ...inp, flex: 1 }} placeholder="Ou coller une URL..." />
                                     {editedSettings[s.key] && <button onClick={() => setEditedSettings(prev => ({ ...prev, [s.key]: '' }))} style={{ padding: '.5rem .8rem', background: '#fee', color: '#c0392b', border: '1px solid #fcc', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>✕ Supprimer</button>}

@@ -4,7 +4,11 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/components/AuthProvider'
 import { useCmsNavigation, type NavItem } from '@/hooks/useCmsNavigation'
-import LogoSVG from '@/components/LogoSVG'
+import { useOptionalInlineEdit } from '@/contexts/InlineEditContext'
+import NavigationEditor from '@/components/cms/NavigationEditor'
+import LogoQuickEditor from '@/components/cms/LogoQuickEditor'
+import SiteLogo, { resolveLogo } from '@/components/SiteLogo'
+import { useSiteSettings } from '@/hooks/useSiteSettings'
 
 const ICONS: Record<string, string> = {
   star: '<path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>',
@@ -30,41 +34,27 @@ export default function Header() {
   const [dropOpen, setDropOpen] = useState(false)
   const dropRef = useRef<HTMLDivElement>(null)
   const { user, loading } = useAuth()
-  const [logoUrl, setLogoUrl] = useState('/logo-happy-humans.jpg')
-  const [siteName, setSiteName] = useState('Happy Humans')
-  const [logoSize, setLogoSize] = useState(52)
-  const [logoShape, setLogoShape] = useState<'circle'|'rounded'|'square'>('circle')
-  const [logoPosition, setLogoPosition] = useState<'left'|'center'>('left')
-  const [logoTextSize, setLogoTextSize] = useState('2xl')
-  const [logoTextWeight, setLogoTextWeight] = useState('semibold')
-  const [logoTextColor, setLogoTextColor] = useState('#1c1917')
-  const [logoTextFont, setLogoTextFont] = useState('serif')
-  const [logoTextTracking, setLogoTextTracking] = useState('tight')
-  const [logoTextLineHeight, setLogoTextLineHeight] = useState('none')
-  const [logoTextSpacing, setLogoTextSpacing] = useState('0')
+  // Logo et nom : réglés dans le CMS (Paramètres → Logo & Identité) ; sans réglage, logo d'origine
+  const settings = useSiteSettings()
+  const logo = resolveLogo(settings)
+  const siteName = settings.site_name || 'Happy Humans'
+  const logoPosition: 'left' | 'center' = settings.logo_position === 'center' ? 'center' : 'left'
+  const showName = logo.showName
+  const logoTextSize = settings.logo_text_size || '2xl'
+  const logoTextWeight = settings.logo_text_weight || 'semibold'
+  const logoTextColor = settings.logo_text_color || '#1c1917'
+  const logoTextFont = settings.logo_text_font || 'serif'
+  const logoTextTracking = settings.logo_text_tracking || 'tight'
+  const logoTextLineHeight = settings.logo_text_line_height || 'none'
+  const logoTextSpacing = settings.logo_text_spacing || '0'
 
   const { nav } = useCmsNavigation()
+  // Mode « Éditer le site » : bouton « Menu » pour renommer, réordonner (glisser-déposer), ajouter ou masquer les liens
+  const inlineEdit = useOptionalInlineEdit()
+  const editingMenu = !!inlineEdit?.isEditing
+  const [menuPanel, setMenuPanel] = useState(false)
   const isCmsUser = !loading && !!user
 
-  useEffect(() => {
-    fetch('/api/cms/public-settings')
-      .then(r => r.ok ? r.json() : { settings: {} })
-      .then(({ settings }) => {
-        if (settings?.logo_url)           setLogoUrl(settings.logo_url)
-        if (settings?.site_name)          setSiteName(settings.site_name)
-        if (settings?.logo_size)          setLogoSize(Number(settings.logo_size) || 52)
-        if (settings?.logo_shape)          setLogoShape(settings.logo_shape as 'circle'|'rounded'|'square')
-        if (settings?.logo_position)       setLogoPosition(settings.logo_position as 'left'|'center')
-        if (settings?.logo_text_size)      setLogoTextSize(settings.logo_text_size)
-        if (settings?.logo_text_weight)    setLogoTextWeight(settings.logo_text_weight)
-        if (settings?.logo_text_color)      setLogoTextColor(settings.logo_text_color || '#1c1917')
-        if (settings?.logo_text_font)       setLogoTextFont(settings.logo_text_font || 'serif')
-        if (settings?.logo_text_tracking)    setLogoTextTracking(settings.logo_text_tracking)
-        if (settings?.logo_text_line_height) setLogoTextLineHeight(settings.logo_text_line_height)
-        if (settings?.logo_text_spacing)    setLogoTextSpacing(settings.logo_text_spacing || '0')
-      })
-      .catch(() => {})
-  }, [])
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -88,13 +78,15 @@ export default function Header() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
 
           <Link href="/" className={`flex items-center gap-3 transition-colors duration-200 ${logoPosition === 'center' ? 'mx-auto' : ''}`} aria-label={`${siteName} accueil`}>
-            <LogoSVG size={44} className="flex-shrink-0" />
-            <span
-              className={`text-${logoTextSize} font-${logoTextWeight} ${logoTextFont === 'serif' ? 'font-serif' : 'font-sans'} tracking-${logoTextTracking} ${logoTextLineHeight !== 'none' ? `leading-${logoTextLineHeight}` : ''}`}
-              style={{ color: logoTextColor, letterSpacing: logoTextSpacing !== '0' ? `${logoTextSpacing}em` : undefined }}
-            >
-              {siteName}
-            </span>
+            <SiteLogo url={logo.url} size={logo.size} shape={logo.shape} alt={showName ? '' : siteName} className="flex-shrink-0" />
+            {showName && (
+              <span
+                className={`text-${logoTextSize} font-${logoTextWeight} ${logoTextFont === 'serif' ? 'font-serif' : 'font-sans'} tracking-${logoTextTracking} ${logoTextLineHeight !== 'none' ? `leading-${logoTextLineHeight}` : ''}`}
+                style={{ color: logoTextColor, letterSpacing: logoTextSpacing !== '0' ? `${logoTextSpacing}em` : undefined, fontFamily: logoTextFont === 'serif' ? 'var(--hh-font, "Playfair Display", Georgia, serif)' : undefined }}
+              >
+                {siteName}
+              </span>
+            )}
           </Link>
 
           <div className="hidden items-center gap-6 md:flex">
@@ -196,6 +188,24 @@ export default function Header() {
                   className="text-xs text-center text-stone-400 hover:text-stone-600 mt-2">CMS</Link>
               )}
             </div>
+          </div>
+        )}
+        {editingMenu && (
+          <div className="mx-auto max-w-7xl px-4 pb-2 sm:px-6">
+            <button
+              type="button"
+              onClick={() => setMenuPanel(o => !o)}
+              className="rounded-full border-2 border-dashed border-[#2d5f54] bg-[#f0fff4] px-4 py-1.5 text-xs font-semibold text-[#2d5f54] hover:bg-white"
+            >
+              🧭 {menuPanel ? 'Fermer' : 'Modifier le menu et le logo'}
+            </button>
+          </div>
+        )}
+        {editingMenu && menuPanel && (
+          <div className="mx-auto max-h-[70vh] max-w-3xl overflow-y-auto rounded-b-2xl border border-t-0 border-stone-200 bg-white p-5 shadow-2xl">
+            <LogoQuickEditor />
+            <h3 className="mb-2 text-sm font-bold text-[#2d5f54]">🧭 Menu du site</h3>
+            <NavigationEditor onSaved={() => undefined} />
           </div>
         )}
       </nav>

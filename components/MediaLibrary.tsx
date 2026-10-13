@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { uploadImage } from '@/lib/upload-client';
 
 type MediaFile = {
   key: string;
@@ -33,7 +34,7 @@ export default function MediaLibrary({ onSelect, onClose }: Props) {
   const [folder, setFolder] = useState('articles');
   const [deleting, setDeleting] = useState<string | null>(null);
 
-  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 3500); };
+  const showToast = (msg: string, ms = 3500) => { setToast(msg); setTimeout(() => setToast(''), ms); };
 
   const loadFiles = useCallback(async () => {
     setLoading(true);
@@ -57,30 +58,16 @@ export default function MediaLibrary({ onSelect, onClose }: Props) {
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const input = e.target;
     setUploading(true);
-    const fd = new FormData();
-    fd.append('file', file);
-    fd.append('folder', folder);
-    
-    // Même fallback que components/cms/MediaManager.tsx : le cookie de session suffit,
-    // l'en-tête x-cms-auth n'est ajouté que si le mot de passe est en localStorage.
-    const cmsPassword = typeof window !== 'undefined' ? localStorage.getItem('cms_password') : null;
-    const headers: Record<string, string> = {};
-    if (cmsPassword) {
-      headers['x-cms-auth'] = cmsPassword;
-    }
-    
     try {
-      const res = await fetch('/api/cms/media-upload', {
-        method: 'POST',
-        credentials: 'include',
-        body: fd,
-        headers,
-      });
-      const data = await res.json();
-      if (data.url) { showToast('✅ Image uploadée sur Supabase !'); loadFiles(); }
-      else showToast(`❌ ${data.error}`);
-    } finally { setUploading(false); e.target.value = ''; }
+      // les grosses photos sont réduites avant l'envoi ; en cas d'échec, un message clair s'affiche
+      await uploadImage(file, '/api/cms/media-upload', { folder });
+      showToast('✅ Image envoyée !');
+      loadFiles();
+    } catch (err) {
+      showToast(`❌ ${err instanceof Error ? err.message : 'Envoi impossible. Réessayez.'}`, 9000);
+    } finally { setUploading(false); input.value = ''; }
   };
 
   const importFromUrl = async () => {

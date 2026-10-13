@@ -35,6 +35,10 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
+    // le « bucket » de stockage est créé au premier envoi s'il n'existe pas encore
+    const { error: bucketError } = await sb.storage.getBucket('cms-assets');
+    if (bucketError) await sb.storage.createBucket('cms-assets', { public: true });
+
     const { error } = await sb.storage
       .from('cms-assets')
       .upload(fileName, buffer, {

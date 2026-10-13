@@ -8,6 +8,7 @@ import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
 import { customSectionDefs, customSectionId, isCustomSectionId, parseBlocks } from '@/lib/custom-sections'
 import { CustomBlockView } from '@/components/CustomSections'
 import { Fragment, type ReactNode } from 'react'
+import EditableImage from '@/components/EditableImage';
 
 // Champ « liste » du CMS : un élément par ligne
 const lines = (s: string) => s.split('\n').map(l => l.trim()).filter(Boolean)
@@ -52,7 +53,7 @@ export default function EntreprisesPage() {
   const sections: Record<string, ReactNode> = {
     hero: (
       <section className="relative flex h-[55vh] items-end overflow-hidden bg-stone-900 md:h-[65vh]">
-        <img
+        <EditableImage page="entreprises" fieldKey="hero_image" variant="cover"
           src={c.hero_image || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1400&q=80'}
           alt={c.t_entreprises}
           className="absolute inset-0 h-full w-full object-cover opacity-40"
@@ -80,7 +81,7 @@ export default function EntreprisesPage() {
               </Link>
             </div>
             {c.section_image ? (
-              <img src={c.section_image} alt={c.section_title} className="rounded-2xl object-cover shadow-lg h-72 w-full" />
+              <EditableImage page="entreprises" fieldKey="section_image" variant="block" src={c.section_image} alt={c.section_title} className="rounded-2xl object-cover shadow-lg h-72 w-full" />
             ) : (
               <img
                 src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80&auto=format&fit=crop"

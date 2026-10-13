@@ -29,15 +29,31 @@ const PAGES: Record<string, string[]> = {
   booking: ['app/booking/page.tsx'],
   contact: ['app/contact/page.tsx'],
   faq: ['app/faq/page.tsx'],
-  blog: ['components/BlogClientPage.tsx'],
+  blog: ['components/BlogClientPage.tsx', 'app/blog/[slug]/page.tsx'],
   footer: ['components/Footer.tsx'],
   'mentions-legales': ['app/mentions-legales/MentionsLegalesContent.tsx'],
   'politique-confidentialite': ['app/politique-confidentialite/PolitiqueContent.tsx'],
   merci: ['app/merci/page.tsx'],
+  // éléments communs à tout le site : bandeau cookies, newsletter, partage, 404, maintenance
+  site: [
+    'components/CookieConsentBanner.tsx',
+    'components/NewsletterForm.tsx',
+    'components/ShareButtons.tsx',
+    'app/not-found.tsx',
+    'components/MaintenanceNotice.tsx',
+  ],
+  // test de style d'attachement (page /test-attachement et encart de /relations)
+  'test-attachement': [
+    'components/attachment-test/AttachmentTest.tsx',
+    'components/attachment-test/QuestionCard.tsx',
+    'components/attachment-test/ResultCard.tsx',
+    'app/test-attachement/page.tsx',
+    'lib/attachment-test/cms.ts',
+  ],
 }
 
 // Les champs SEO (seo_title, seo_description, seo_image) sont lus par lib/page-seo.ts
-for (const p of ['a-propos','coaching','entreprises','happiness-design','relations','sparring-partner','booking','contact','faq','blog','mentions-legales','politique-confidentialite']) PAGES[p].push('lib/page-seo.ts')
+for (const p of ['a-propos','coaching','entreprises','happiness-design','relations','sparring-partner','booking','contact','faq','blog','mentions-legales','politique-confidentialite','test-attachement']) PAGES[p].push('lib/page-seo.ts')
 
 function adminKeys(page: string): Set<string> {
   const lines = read('app/cms-admin/page.tsx').split('\n')

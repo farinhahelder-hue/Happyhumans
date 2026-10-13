@@ -27,6 +27,7 @@ const DEFAULT_SETTINGS = [
   { key: 'logo_shape',         label: 'Forme du logo',              group_name: 'branding', type: 'text',     value: 'circle' },
   { key: 'logo_position',      label: 'Position dans le header',    group_name: 'branding', type: 'text',     value: 'left' },
   { key: 'logo_footer_size',   label: 'Taille logo footer (px)',  group_name: 'branding', type: 'text',     value: '36' },
+  { key: 'logo_show_name',     label: 'Afficher le nom à côté du logo', group_name: 'branding', type: 'select', value: 'true', options: ['true', 'false'], optionLabels: ['Oui — logo + nom du site', 'Non — logo seul (le nom est déjà dans l’image)'] },
   { key: 'favicon_url',        label: 'Favicon (icône onglet)',    group_name: 'branding', type: 'image',    value: '' },
   { key: 'site_name',          label: 'Nom du site',               group_name: 'branding', type: 'text',     value: 'Happy Humans' },
   { key: 'tagline',            label: 'Tagline / Slogan',          group_name: 'branding', type: 'text',     value: 'philo-coaching' },
@@ -49,7 +50,7 @@ const DEFAULT_SETTINGS = [
   { key: 'seo_description',  label: 'Description SEO par défaut', group_name: 'seo',        type: 'textarea', value: 'Monica Schneider — Executive Coach certifiée AoEC & EMCC. Coaching individuel, Happiness Design™, Sparring Partner. Paris & international.' },
   { key: 'og_image',         label: 'Image Open Graph (réseaux)', group_name: 'seo',        type: 'image',    value: '' },
   { key: 'seo_robots',       label: 'Robots global',              group_name: 'seo',        type: 'text',     value: 'index, follow' },
-  { key: 'seo_canonical_domain', label: 'Domaine canonique',      group_name: 'seo',        type: 'text',     value: 'https://happyhumans.fr' },
+  { key: 'seo_canonical_domain', label: 'Domaine canonique',      group_name: 'seo',        type: 'text',     value: 'https://happyhumans.vercel.app' },
   // Geo / business
   { key: 'geo_business_name',    label: 'Nom entreprise (schema.org)',  group_name: 'geo', type: 'text',     value: 'Happy Humans — Monica Schneider' },
   { key: 'geo_address',          label: 'Adresse complète',             group_name: 'geo', type: 'text',     value: 'Paris, France' },

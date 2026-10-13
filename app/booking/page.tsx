@@ -38,7 +38,7 @@ export default function BookingPage() {
               <CalendlyWidget />
             </Suspense>
             <p className="mt-4 text-center text-xs text-stone-400">
-              Problème d&apos;affichage ?{' '}
+              {c.display_problem}{' '}
               <a
                 href="https://calendly.com/happyhumans-coaching"
                 target="_blank"
