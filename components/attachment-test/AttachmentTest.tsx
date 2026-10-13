@@ -1,13 +1,15 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { attachmentQuestions } from '@/lib/attachment-test/questions';
 import { computeAttachmentResult } from '@/lib/attachment-test/scoring';
 import type { AttachmentAnswer, AttachmentResult } from '@/lib/attachment-test/types';
 import { ProgressBar } from './ProgressBar';
 import { QuestionCard } from './QuestionCard';
 import { ResultCard } from './ResultCard';
 import { Icon } from '@/components/icons';
+import { useCmsContent } from '@/hooks/useCmsContent';
+import { TEST_ATTACHEMENT_DEFAULTS } from '@/lib/cms-defaults/test-attachement';
+import { questionsFromCms, resultFromCms } from '@/lib/attachment-test/cms';
 
 type Phase = 'intro' | 'quiz' | 'result';
 
@@ -16,6 +18,9 @@ interface AttachmentTestProps {
 }
 
 export function AttachmentTest({ onBook }: AttachmentTestProps) {
+  // textes du test (questions, résultats, boutons) : CMS → page « Test d'attachement »
+  const c = useCmsContent('test-attachement', TEST_ATTACHEMENT_DEFAULTS);
+  const attachmentQuestions = questionsFromCms(c);
   const [phase, setPhase] = useState<Phase>('intro');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<AttachmentAnswer[]>([]);
@@ -40,7 +45,7 @@ export function AttachmentTest({ onBook }: AttachmentTestProps) {
     if (currentIndex < total - 1) {
       setCurrentIndex((i) => i + 1);
     } else {
-      const res = computeAttachmentResult(answers);
+      const res = resultFromCms(computeAttachmentResult(answers), c);
       setResult(res);
       setPhase('result');
       if (typeof window !== 'undefined') {
@@ -49,7 +54,7 @@ export function AttachmentTest({ onBook }: AttachmentTestProps) {
         );
       }
     }
-  }, [currentIndex, total, answers]);
+  }, [currentIndex, total, answers, c]);
 
   const handlePrev = useCallback(() => {
     if (currentIndex > 0) setCurrentIndex((i) => i - 1);
@@ -75,24 +80,24 @@ export function AttachmentTest({ onBook }: AttachmentTestProps) {
       <div className="text-center space-y-6 max-w-xl mx-auto">
         <div className="mb-2 flex justify-center text-white/90"><Icon name="knot" size={56} /></div>
         <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">
-          Quel est votre style d&apos;attachement ?
+          {c.intro_title}
         </h2>
         <p className="text-white/70 text-base md:text-lg leading-relaxed">
-          Un outil de découverte douce pour mieux comprendre comment vous vous connectez aux autres — et à vous-même.
+          {c.intro_text}
         </p>
         <div className="flex flex-wrap justify-center gap-3 text-sm">
-          <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 text-white/80"><Icon name="timer" size={16} />3 à 5 minutes</span>
-          <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 text-white/80"><Icon name="note" size={16} />16 questions</span>
-          <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 text-white/80"><Icon name="sparkle" size={16} />Résultats immédiats</span>
+          <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 text-white/80"><Icon name="timer" size={16} />{c.pill_time}</span>
+          <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 text-white/80"><Icon name="note" size={16} />{c.pill_questions}</span>
+          <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 text-white/80"><Icon name="sparkle" size={16} />{c.pill_results}</span>
         </div>
         <p className="text-white/50 text-sm italic">
-          Il n&apos;y a pas de bonne ou de mauvaise réponse. Répondez en suivant votre ressenti spontané.
+          {c.intro_note}
         </p>
         <button
           onClick={handleStart}
           className="mt-4 w-full md:w-auto px-10 py-4 bg-[#2f6b61] hover:bg-[#235249] text-white font-semibold rounded-2xl text-lg transition-all duration-200 shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
         >
-          Commencer le test →
+          {c.start_button}
         </button>
       </div>
     );
@@ -128,7 +133,7 @@ export function AttachmentTest({ onBook }: AttachmentTestProps) {
             onClick={handlePrev}
             className="flex-1 py-4 rounded-2xl bg-white/10 border border-white/20 text-white font-medium hover:bg-white/20 transition-colors"
           >
-            ← Précédent
+            {c.prev_button}
           </button>
         )}
         <button
@@ -140,7 +145,7 @@ export function AttachmentTest({ onBook }: AttachmentTestProps) {
               : 'bg-white/10 border border-white/20 opacity-50 cursor-not-allowed'
           }`}
         >
-          {currentIndex === total - 1 ? 'Voir mes résultats' : 'Suivant →'}
+          {currentIndex === total - 1 ? c.finish_button : c.next_button}
         </button>
       </div>
     </div>

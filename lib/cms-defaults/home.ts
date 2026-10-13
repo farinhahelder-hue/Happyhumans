@@ -61,4 +61,6 @@ export const HOME_DEFAULTS: Record<string, string> = {
   t_reserver_via_calendly: "Réserver via Calendly →",
   // ── Disposition des sections (admin → Structure) : JSON {"order":[…],"hidden":[…]} ; vide = ordre d'origine ──
   sections_layout: '',
+  // ── Textes ajoutés pour le CMS (étaient en dur dans le code) ──
+  contact_email_label: "Ou directement par email :",
 }

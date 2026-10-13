@@ -34,7 +34,7 @@ export default function PolitiqueContent() {
               </h2>
               <p style={{ color: '#3d3d3d' }}>
                 <strong>{c.t_happy_humans_monica_schneider}</strong><br />
-                Email : <a href={`mailto:${c.t_happyhumans_coaching_gmail_com}`} style={{ color: '#2d5f54' }}>{c.t_happyhumans_coaching_gmail_com}</a>
+                {c.email_label} <a href={`mailto:${c.t_happyhumans_coaching_gmail_com}`} style={{ color: '#2d5f54' }}>{c.t_happyhumans_coaching_gmail_com}</a>
               </p>
             </section>
 
@@ -106,7 +106,7 @@ export default function PolitiqueContent() {
                 <li>{c.t_la_limitation_ou_l}</li>
               </ul>
               <p style={{ color: '#3d3d3d' }} className="mt-3">
-                Pour exercer vos droits ou poser une question relative à vos données, contactez-nous à{' '}
+                {c.rights_intro}{' '}
                 <a href={`mailto:${c.t_happyhumans_coaching_gmail_com_2}`} style={{ color: '#2d5f54' }}>
                   {c.t_happyhumans_coaching_gmail_com_2}
                 </a>.

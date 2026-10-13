@@ -36,4 +36,6 @@ export const MENTIONS_LEGALES_DEFAULTS: Record<string, string> = {
   seo_title: "Mentions légales",
   seo_description: "Consultez les mentions légales du site Happy Humans — Monica Schneider, executive coaching et philo-coaching.",
   seo_image: '',
+  // ── Textes ajoutés pour le CMS (étaient en dur dans le code) ──
+  contact_intro: "Pour toute demande légale ou relative aux données personnelles, vous pouvez nous écrire à",
 }

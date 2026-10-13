@@ -1,18 +1,17 @@
 import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import { AttachmentTest } from '@/components/attachment-test/AttachmentTest';
+import { pageMetadata } from '@/lib/page-seo';
+import { getPageContent } from '@/lib/cms-content-server';
+import { TEST_ATTACHEMENT_DEFAULTS } from '@/lib/cms-defaults/test-attachement';
 
-export const metadata: Metadata = {
-  title: "Test de style d'attachement",
-  description:
-    "Découvrez votre style d'attachement en 16 questions. Un outil de développement personnel pour mieux comprendre vos relations.",
-  openGraph: {
-    title: "Quel est votre style d'attachement ?",
-    description: 'Un test doux et moderne en 3–5 minutes. Résultats immédiats.',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata('test-attachement', TEST_ATTACHEMENT_DEFAULTS);
+}
 
-export default function TestAttachementPage() {
+export default async function TestAttachementPage() {
+  // textes de la page : CMS → « Test d'attachement »
+  const c = await getPageContent('test-attachement', TEST_ATTACHEMENT_DEFAULTS);
   return (
     <>
       <Header />
@@ -23,9 +22,9 @@ export default function TestAttachementPage() {
               href="/relations"
               className="inline-flex items-center gap-2 text-rose-300 hover:text-rose-200 text-sm mb-6 transition-colors"
             >
-              ← Retour aux relations
+              {c.back_link}
             </a>
-            <h1 className="sr-only">Test de style d&apos;attachement — Happy Humans</h1>
+            <h1 className="sr-only">{c.page_title_sr}</h1>
           </div>
           <AttachmentTest />
         </div>

@@ -262,7 +262,7 @@ export default function LandingPage() {
               </button>
               {s.contact_email && (
                 <p className="text-center text-xs text-stone-400">
-                  Ou directement par email : <a href={`mailto:${s.contact_email}`} className="text-[#2d5f54] hover:underline">{s.contact_email}</a>
+                  {c.contact_email_label} <a href={`mailto:${s.contact_email}`} className="text-[#2d5f54] hover:underline">{s.contact_email}</a>
                 </p>
               )}
             </form>

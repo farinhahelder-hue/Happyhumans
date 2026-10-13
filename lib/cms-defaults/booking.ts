@@ -22,4 +22,6 @@ export const BOOKING_DEFAULTS: Record<string, string> = {
   seo_title: "Réserver une séance — Monica Schneider",
   seo_description: "Réservez une séance découverte gratuite (1h) avec Monica Schneider. Executive coaching, philosophical counselling et Happiness Design.",
   seo_image: '',
+  // ── Textes ajoutés pour le CMS (étaient en dur dans le code) ──
+  display_problem: "Problème d'affichage ?",
 }

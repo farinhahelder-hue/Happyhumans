@@ -7,20 +7,14 @@ import type { BlogPost } from '@/lib/blog-supabase'
 import { useCmsContent } from '@/hooks/useCmsContent'
 import { BLOG_DEFAULTS } from '@/lib/cms-defaults/blog'
 
-const CATEGORY_LABELS: Record<string, string> = {
-  Tous: 'Tout lire',
-  'Carnets Voyage': 'Carnets',
-  'Découvertes Locales': 'Pépites locales',
-  'Guides Pratiques': 'Guides',
-}
-
 const CATEGORY_FALLBACK_BG: Record<string, string> = {
   'Carnets Voyage': 'bg-gradient-to-br from-[#355C7D] to-[#6C5B7B]',
   'Découvertes Locales': 'bg-gradient-to-br from-[#0F766E] to-[#155E75]',
   'Guides Pratiques': 'bg-gradient-to-br from-[#7C2D12] to-[#9A3412]',
 }
 
-const BADGE_FALLBACK_SRC = '/images/badges-happyhumans.svg'
+// image de repli (article sans photo) : le logo clair de la charte, qui existe dans /public
+const BADGE_FALLBACK_SRC = '/logo-happy-humans-clair.png'
 
 interface Props {
   posts: (BlogPost & { formattedDate: string })[]
@@ -28,6 +22,12 @@ interface Props {
 
 export default function BlogClientPage({ posts }: Props) {
   const c = useCmsContent('blog', BLOG_DEFAULTS)
+  const categoryLabels: Record<string, string> = {
+    Tous: c.cat_all_label,
+    'Carnets Voyage': c.cat_1_label,
+    'Découvertes Locales': c.cat_2_label,
+    'Guides Pratiques': c.cat_3_label,
+  }
   const [activeFilter, setActiveFilter] = useState('Tous')
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -74,9 +74,9 @@ export default function BlogClientPage({ posts }: Props) {
             {c.get('hero_subtitle')}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-white/65">
-            <StatChip value={totalCarnets} label="Carnets" />
-            <StatChip value={totalDecouvertes} label="Pépites locales" />
-            <StatChip value={totalGuides} label="Guides" />
+            <StatChip value={totalCarnets} label={c.cat_1_label} />
+            <StatChip value={totalDecouvertes} label={c.cat_2_label} />
+            <StatChip value={totalGuides} label={c.cat_3_label} />
           </div>
         </div>
       </section>
@@ -145,7 +145,7 @@ export default function BlogClientPage({ posts }: Props) {
                     : 'border border-stone-200 bg-white text-stone-600 hover:border-amber-200 hover:bg-amber-50 hover:text-amber-900'
                 }`}
               >
-                {CATEGORY_LABELS[category]}
+                {categoryLabels[category]}
               </button>
             ))}
           </div>
@@ -184,7 +184,7 @@ export default function BlogClientPage({ posts }: Props) {
 
         {searchQuery && (
           <p className="mt-4 text-sm text-stone-500">
-            {filteredPosts.length} article{filteredPosts.length > 1 ? 's' : ''} pour “{searchQuery}”.
+            {filteredPosts.length} {filteredPosts.length > 1 ? c.article_plural : c.article_singular} {c.search_for} “{searchQuery}”.
           </p>
         )}
       </section>
@@ -212,7 +212,7 @@ export default function BlogClientPage({ posts }: Props) {
           {(activeFilter === 'Tous' || activeFilter === 'Carnets Voyage') && carnets.length > 0 && (
             <section>
               <SectionHeader
-                eyebrow="Carnets"
+                eyebrow={c.cat_1_eyebrow}
                 title={c.carnets_title}
                 description={c.carnets_desc}
                 count={carnets.length}
@@ -228,7 +228,7 @@ export default function BlogClientPage({ posts }: Props) {
           {(activeFilter === 'Tous' || activeFilter === 'Découvertes Locales') && decouvertes.length > 0 && (
             <section className="rounded-[2rem] bg-amber-50 px-4 py-12 md:px-8">
               <SectionHeader
-                eyebrow="Pépites"
+                eyebrow={c.cat_2_eyebrow}
                 title={c.pepites_title}
                 description={c.pepites_desc}
                 count={decouvertes.length}
@@ -244,7 +244,7 @@ export default function BlogClientPage({ posts }: Props) {
           {(activeFilter === 'Tous' || activeFilter === 'Guides Pratiques') && guides.length > 0 && (
             <section>
               <SectionHeader
-                eyebrow="Guides"
+                eyebrow={c.cat_3_eyebrow}
                 title={c.guides_title}
                 description={c.guides_desc}
                 count={guides.length}
@@ -284,6 +284,7 @@ function SectionHeader({
   description: string
   count: number
 }) {
+  const c = useCmsContent('blog', BLOG_DEFAULTS)
   return (
     <div className="border-b border-stone-200 pb-5">
       <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">{eyebrow}</p>
@@ -293,7 +294,7 @@ function SectionHeader({
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-stone-600">{description}</p>
         </div>
         <span className="inline-flex rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-600">
-          {count} article{count > 1 ? 's' : ''}
+          {count} {count > 1 ? c.article_plural : c.article_singular}
         </span>
       </div>
     </div>
@@ -301,6 +302,7 @@ function SectionHeader({
 }
 
 function ArticleCard({ post }: { post: BlogPost & { formattedDate: string } }) {
+  const c = useCmsContent('blog', BLOG_DEFAULTS)
   const fallbackBg = CATEGORY_FALLBACK_BG[post.category ?? ''] ?? 'bg-stone-200'
   const [imageSrc, setImageSrc] = useState(post.featured_image ?? BADGE_FALLBACK_SRC)
 
@@ -371,7 +373,7 @@ function ArticleCard({ post }: { post: BlogPost & { formattedDate: string } }) {
           <div className="mt-auto flex items-center justify-between border-t border-stone-100 pt-4 text-xs text-stone-400">
             <span>{post.formattedDate}</span>
             <span className="font-semibold text-amber-700 transition-transform duration-200 group-hover:translate-x-1">
-              Lire le carnet →
+              {c.read_more}
             </span>
           </div>
         </div>

@@ -2,10 +2,15 @@
 import Link from 'next/link'
 import { useCmsContent } from '@/hooks/useCmsContent'
 import { FOOTER_DEFAULTS } from '@/lib/cms-defaults/footer'
+import SiteLogo, { resolveLogo } from '@/components/SiteLogo'
+import { useSiteSettings } from '@/hooks/useSiteSettings'
 
 export default function Footer() {
   const c = useCmsContent('footer', FOOTER_DEFAULTS)
   const year = new Date().getFullYear()
+  // logo du pied de page : celui du CMS (Paramètres → Logo & Identité), sinon le logo de la charte en version claire
+  const settings = useSiteSettings()
+  const logo = resolveLogo(settings, { sizeKey: 'logo_footer_size', fallbackSize: 48, maxSize: 72, onDark: true })
   return (
     <footer className="border-t px-6 py-10 md:px-10"
       style={{ backgroundColor: '#1e3a34', borderColor: '#2d5f54' }}>
@@ -14,9 +19,10 @@ export default function Footer() {
 
           {/* Brand */}
           <div>
-            <Link href="/"
+            <Link href="/" aria-label={c.site_name} className="inline-flex items-center gap-3"
               style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1.1rem', letterSpacing: '0.08em', color: '#f5f0e8', fontWeight: 400 }}>
-              {c.site_name.toUpperCase()}
+              <SiteLogo url={logo.url} size={logo.size} shape={logo.shape} alt="" />
+              {logo.showName && c.site_name.toUpperCase()}
             </Link>
             <p className="text-xs italic mt-1" style={{ color: '#c9a96e', fontFamily: 'Cormorant Garamond, serif' }}>
               {c.get('tagline')}

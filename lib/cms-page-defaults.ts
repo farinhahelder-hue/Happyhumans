@@ -19,6 +19,8 @@ import { FOOTER_DEFAULTS } from './cms-defaults/footer'
 import { MENTIONS_LEGALES_DEFAULTS } from './cms-defaults/mentions-legales'
 import { POLITIQUE_CONFIDENTIALITE_DEFAULTS } from './cms-defaults/politique-confidentialite'
 import { MERCI_DEFAULTS } from './cms-defaults/merci'
+import { SITE_DEFAULTS } from './cms-defaults/site'
+import { TEST_ATTACHEMENT_DEFAULTS } from './cms-defaults/test-attachement'
 
 export const PAGE_DEFAULTS: Record<string, Record<string, string>> = {
   home: HOME_DEFAULTS,
@@ -36,4 +38,6 @@ export const PAGE_DEFAULTS: Record<string, Record<string, string>> = {
   'mentions-legales': MENTIONS_LEGALES_DEFAULTS,
   'politique-confidentialite': POLITIQUE_CONFIDENTIALITE_DEFAULTS,
   merci: MERCI_DEFAULTS,
+  site: SITE_DEFAULTS,
+  'test-attachement': TEST_ATTACHEMENT_DEFAULTS,
 }
