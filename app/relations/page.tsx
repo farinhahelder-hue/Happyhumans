@@ -151,7 +151,7 @@ export default function RelationsPage() {
     hero: (
       <section className="relative overflow-hidden bg-stone-900 px-6 py-24 md:py-36 md:px-10 text-center">
         <img
-          src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&q=85&auto=format&fit=crop"
+          src={c.hero_image}
           alt={c.t_connexion_humaine_mains_tendues}
           className="absolute inset-0 h-full w-full object-cover opacity-20"
         />

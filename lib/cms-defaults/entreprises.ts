@@ -5,7 +5,7 @@
 
 export const ENTREPRISES_DEFAULTS: Record<string, string> = {
   // Hero
-  hero_image:    '',
+  hero_image:    'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1400&q=80',
   hero_badge:    'Entreprises',
   page_title:    "Remettre de l'alignement et de l'élan dans vos équipes.",
   intro_text:    "Coaching de dirigeants, ateliers de cohésion, accompagnement du changement et séminaires sur mesure.",

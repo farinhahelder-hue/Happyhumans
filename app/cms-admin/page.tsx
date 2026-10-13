@@ -7,6 +7,8 @@ import EnhancedRichContent from '@/components/EnhancedRichContent';
 import { bustCmsCache } from '@/hooks/useCmsContent';
 import MediaLibrary from '@/components/MediaLibrary';
 import { sanitizeHtml } from '@/lib/sanitize-html';
+import { uploadImage } from '@/lib/upload-client';
+import SiteLogo, { logoPx, logoShape } from '@/components/SiteLogo';
 import CarouselEditor from '@/components/admin/CarouselEditor';
 import CarouselGenerator from '@/components/admin/CarouselGenerator';
 import BlogGenerator from '@/components/admin/BlogGenerator';
@@ -15,6 +17,9 @@ import { basePage, isDraftPage, planDraftSave } from '@/lib/cms-drafts';
 import { PAGE_SECTIONS, parseLayout, fullOrder, serializeLayout, moveSection, toggleSection, type SectionDef, type SectionsLayout } from '@/lib/cms-sections';
 import { THEMES } from '@/components/DynamicTheme';
 import { NavItem } from '@/hooks/useCmsNavigation';
+
+// Numéro du dernier message affiché : un message récent n'est pas effacé par le minuteur d'un message plus ancien
+let toastSeq = 0;
 
 const RichEditor = dynamic(() => import('@/components/RichEditor'), { ssr: false });
 
@@ -149,6 +154,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     emoji: '🏠',
     sections: [
       { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
+      { key: 'hero_image', label: 'Hero — Photo de fond', type: 'image' },
       { key: 'hero_badge',            label: 'Hero — Badge (ex: Monica Schneider · Executive Coach)',  type: 'text' },
       { key: 'hero_title',            label: 'Hero — Titre principal',                                type: 'text' },
       { key: 'hero_subtitle',         label: 'Hero — Sous-titre / certifications',                   type: 'textarea' },
@@ -418,6 +424,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     emoji: '☀️',
     sections: [
       { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
+      { key: 'hero_image', label: 'Hero — Photo de fond', type: 'image' },
       { key: 'hero_badge',    label: 'Hero — Badge',               type: 'text' },
       { key: 'page_title',    label: 'Hero — Titre principal (H1)', type: 'text' },
       { key: 'page_subtitle', label: 'Hero — Sous-titre',          type: 'textarea' },
@@ -501,6 +508,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     emoji: '💚',
     sections: [
       { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
+      { key: 'hero_image', label: 'Photo de fond du haut de page', type: 'image' },
       { key: 'hero_badge',          label: 'Badge intro',                         type: 'text' },
       { key: 'hero_title',          label: 'Titre principal',                     type: 'text' },
       { key: 'hero_description',    label: 'Description intro',                   type: 'textarea' },
@@ -744,6 +752,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     emoji: '🥊',
     sections: [
       { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
+      { key: 'hero_image', label: 'Hero — Photo de fond', type: 'image' },
       { key: 'hero_badge',          label: 'Hero — Badge',                                  type: 'text' },
       { key: 'hero_title',          label: 'Hero — Titre principal',                        type: 'text' },
       { key: 'hero_desc',           label: 'Hero — Sous-titre / description',               type: 'textarea' },
@@ -779,6 +788,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'FAQ',
     emoji: '❓',
     sections: [
+      { key: 'hero_image', label: 'Photo de fond du haut de page', type: 'image' },
       { key: 'page_title',    label: 'Titre de la page',                      type: 'text' },
       { key: 'page_subtitle',label: 'Sous-titre de la page',                  type: 'textarea' },
       { key: 'cta_title',    label: 'Section CTA — Titre',                    type: 'text' },
@@ -827,6 +837,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Blog',
     emoji: '📝',
     sections: [
+      { key: 'hero_image', label: 'Photo de fond du haut de page', type: 'image' },
       { key: 'hero_badge',    label: 'Badge hero',                    type: 'text' },
       { key: 'hero_title',    label: 'Titre principal',               type: 'textarea' },
       { key: 'hero_subtitle', label: 'Sous-titre',                    type: 'textarea' },
@@ -944,6 +955,9 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     ],
   },
 };
+
+// Réglages déjà gérés par le panneau « Logo » (aperçu, curseurs, boutons) : non répétés dans la liste générique
+const BRANDING_PANEL_KEYS = ['logo_url', 'logo_size', 'logo_shape', 'logo_position', 'logo_footer_size'];
 
 const SETTINGS_GROUPS: Record<string, { label: string; emoji: string }> = {
   theme:      { label: 'Thème & Couleurs',  emoji: '🎨' },
@@ -1497,10 +1511,26 @@ export default function CMSAdmin() {
   const articleReadTime = getReadTimeMinutes(editingArticle?.content);
   const articlePreviewHtml = sanitizeHtml(editingArticle?.content);
 
-  const showToast = useCallback((msg: string) => {
+  const showToast = useCallback((msg: string, durationMs = 3500) => {
+    const id = ++toastSeq;
     setToast(msg);
-    setTimeout(() => setToast(''), 3500);
+    setTimeout(() => { if (id === toastSeq) setToast(''); }, durationMs);
   }, []);
+  // Envoi d'une image depuis un champ « fichier » : réduit la photo, envoie, et explique toujours le résultat
+  const handleImageFile = useCallback(async (e: React.ChangeEvent<HTMLInputElement>, onUrl: (url: string) => void) => {
+    const input = e.target;
+    const file = input.files?.[0];
+    if (!file) return;
+    showToast('Envoi de l’image en cours…', 30000);
+    try {
+      onUrl(await uploadImage(file));
+      showToast('Image envoyée ✓ — pensez à enregistrer.', 5000);
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Envoi impossible. Réessayez.', 10000);
+    } finally {
+      input.value = '';
+    }
+  }, [showToast]);
   const handleUnauthorized = useCallback((res: Response, message = 'Session expirée. Merci de vous reconnecter.') => {
     if (res.status !== 401) return false;
     setAuthed(false);
@@ -2085,7 +2115,7 @@ export default function CMSAdmin() {
         loadArticles();
       } else {
         const d = await res.json();
-        showToast(`âŒ Erreur : ${d.error}`);
+        showToast(`❌ Erreur : ${d.error}`);
       }
     } catch {
       showToast('Impossible de sauvegarder cet article.');
@@ -2159,28 +2189,17 @@ export default function CMSAdmin() {
   const uploadFeaturedImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const input = e.target;
     setUploadingFeaturedImage(true);
-    const fd = new FormData();
-    fd.append('file', file);
-    fd.append('folder', 'articles');
     try {
-      const res = await fetch('/api/cms/media-upload', {
-        method: 'POST',
-        body: fd,
-      });
-      if (handleUnauthorized(res)) return;
-      const data = await res.json();
-      if (data.url) {
-        setEditingArticle(prev => prev ? { ...prev, featured_image: data.url } : prev);
-        showToast('✅ Image uploadée sur Supabase !');
-      } else {
-        showToast(`âŒ Upload échoué : ${data.error}`);
-      }
-    } catch {
-      showToast('Impossible d’envoyer cette image.');
+      const url = await uploadImage(file, '/api/cms/media-upload', { folder: 'articles' });
+      setEditingArticle(prev => prev ? { ...prev, featured_image: url } : prev);
+      showToast('Image envoyée ✓');
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Impossible d’envoyer cette image.', 10000);
     } finally {
       setUploadingFeaturedImage(false);
-      e.target.value = '';
+      input.value = '';
     }
   };
 
@@ -3016,15 +3035,8 @@ export default function CMSAdmin() {
                                               <button onClick={() => { setMediaPickerTarget(key); setTab('media'); }} style={{ padding: '.5rem 1rem', background: '#01696f', color: 'white', border: 'none', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>🖼️ Choisir dans la médiathèque</button>
                                               <label style={{ padding: '.5rem 1rem', background: '#2d5f54', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>
                                                 ⬆️ Upload
-                                                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
-                                                  const file = e.target.files?.[0];
-                                                  if (!file) return;
-                                                  const fd = new FormData();
-                                                  fd.append('file', file);
-                                                  const res = await fetch('/api/cms/upload', { method: 'POST', body: fd });
-                                                  const data = await res.json();
-                                                  if (data.url) setEditedContent(prev => ({ ...prev, [key]: data.url }));
-                                                }} />
+                                                <input type="file" accept="image/*" style={{ display: 'none' }}
+                                                  onChange={e => handleImageFile(e, url => setEditedContent(prev => ({ ...prev, [key]: url })))} />
                                               </label>
                                               <input value={editedContent[key] ?? ''} onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))} style={{ ...inp, flex: 1, minWidth: 200 }} placeholder="Ou coller une URL d'image..." />
                                             </div>
@@ -3095,7 +3107,7 @@ export default function CMSAdmin() {
               <p style={{ fontSize: '.85rem', color: '#888' }}>Supabase Storage</p>
             </div>
             <div style={{ background: '#faf8f5', borderRadius: '.75rem', padding: '2rem', textAlign: 'center', border: '2px dashed #e8e3dc' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>â˜ï¸</div>
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>☁️</div>
               <p style={{ color: '#555', marginBottom: '1.25rem', lineHeight: 1.6 }}>Toutes tes images sont stockées sur <strong>Supabase Storage</strong>.</p>
               <button onClick={() => setShowMediaLibrary(true)}
                 style={{ padding: '.8rem 1.75rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.95rem' }}
@@ -3136,7 +3148,7 @@ export default function CMSAdmin() {
                             <option value="devis_envoye">📨 Devis envoyé</option>
                             <option value="accepte">✅ Acceptée</option>
                             <option value="terminee">🏁 Terminée</option>
-                            <option value="annulee">âŒ Annulée</option>
+                            <option value="annulee">❌ Annulée</option>
                           </select>
                         </div>
                       </div>
@@ -3378,30 +3390,9 @@ export default function CMSAdmin() {
                             {/* Prévisualisation live */}
                             <div style={{ marginBottom: '1.5rem', padding: '1rem 1.5rem', background: 'white', borderRadius: '.75rem', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                               <div style={{ width: 260, background: '#fff', borderBottom: '1px solid #f0ece8', borderRadius: '.5rem .5rem 0 0', padding: '.6rem 1rem', display: 'flex', alignItems: 'center', gap: '.75rem', justifyContent: (editedSettings['logo_position'] || 'left') === 'center' ? 'center' : 'flex-start' }}>
-                                {editedSettings['logo_url'] ? (
-                                  <img
-                                    src={editedSettings['logo_url']}
-                                    alt="Logo prévisualisation"
-                                    style={{
-                                      width: Number(editedSettings['logo_size'] || 44),
-                                      height: Number(editedSettings['logo_size'] || 44),
-                                      borderRadius: (editedSettings['logo_shape'] || 'circle') === 'circle' ? '50%' : (editedSettings['logo_shape'] === 'rounded' ? '12px' : '4px'),
-                                      objectFit: 'cover',
-                                      border: '1px solid #eee',
-                                    }}
-                                  />
-                                ) : (
-                                  <div style={{
-                                    width: Number(editedSettings['logo_size'] || 44),
-                                    height: Number(editedSettings['logo_size'] || 44),
-                                    borderRadius: (editedSettings['logo_shape'] || 'circle') === 'circle' ? '50%' : (editedSettings['logo_shape'] === 'rounded' ? '12px' : '4px'),
-                                    background: '#2d5f54',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    color: 'white', fontSize: '.7rem', fontWeight: 700, flexShrink: 0,
-                                  }}>HH</div>
-                                )}
+                                <SiteLogo url={editedSettings['logo_url']} size={logoPx(editedSettings['logo_size'], 44)} shape={logoShape(editedSettings['logo_shape'])} />
                                 <div>
-                                  <p style={{ fontWeight: 700, fontSize: '.9rem', color: '#1a1a1a', margin: 0, fontFamily: 'Georgia, serif' }}>{editedSettings['site_name'] || 'Happy Humans'}</p>
+                                  {editedSettings['logo_show_name'] !== 'false' && <p style={{ fontWeight: 700, fontSize: '.9rem', color: '#1a1a1a', margin: 0, fontFamily: 'Georgia, serif' }}>{editedSettings['site_name'] || 'Happy Humans'}</p>}
                                   {editedSettings['tagline'] && <p style={{ fontSize: '.7rem', color: '#c9a96e', margin: 0, fontStyle: 'italic' }}>{editedSettings['tagline']}</p>}
                                 </div>
                               </div>
@@ -3414,14 +3405,8 @@ export default function CMSAdmin() {
                               <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
                                 <label style={{ padding: '.5rem 1rem', background: '#2d5f54', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem', display: 'inline-flex', alignItems: 'center', gap: '.4rem' }}>
                                   ⬆ Upload logo
-                                  <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
-                                    const file = e.target.files?.[0];
-                                    if (!file) return;
-                                    const fd = new FormData(); fd.append('file', file);
-                                    const res = await fetch('/api/cms/upload', { method: 'POST', body: fd });
-                                    const { url } = await res.json();
-                                    if (url) setEditedSettings(p => ({ ...p, logo_url: url }));
-                                  }} />
+                                  <input type="file" accept="image/*" style={{ display: 'none' }}
+                                    onChange={e => handleImageFile(e, url => setEditedSettings(p => ({ ...p, logo_url: url })))} />
                                 </label>
                                 <input type="text" value={editedSettings['logo_url'] || ''} placeholder="Ou coller une URL d'image"
                                   onChange={e => setEditedSettings(p => ({ ...p, logo_url: e.target.value }))}
@@ -3435,16 +3420,16 @@ export default function CMSAdmin() {
 
                             {/* Taille du logo */}
                             <div style={{ marginBottom: '1.25rem' }}>
-                              <label style={lbl}>Taille du logo — {editedSettings['logo_size'] || 44}px</label>
+                              <label style={lbl}>Taille du logo — {logoPx(editedSettings['logo_size'], 44)}px</label>
                               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                                 <span style={{ fontSize: '.75rem', color: '#aaa' }}>24px</span>
-                                <input type="range" min="24" max="96" step="4"
+                                <input type="range" min="24" max="64" step="4"
                                   value={Number(editedSettings['logo_size'] || 44)}
                                   onChange={e => setEditedSettings(p => ({ ...p, logo_size: e.target.value }))}
                                   style={{ flex: 1, accentColor: '#2d5f54' }} />
-                                <span style={{ fontSize: '.75rem', color: '#aaa' }}>96px</span>
+                                <span style={{ fontSize: '.75rem', color: '#aaa' }}>64px</span>
                                 {/* Tailles prédéfinies */}
-                                {[['XS', '28'], ['S', '36'], ['M', '44'], ['L', '56'], ['XL', '72']].map(([label, val]) => (
+                                {[['XS', '28'], ['S', '36'], ['M', '44'], ['L', '56'], ['XL', '64']].map(([label, val]) => (
                                   <button key={val} onClick={() => setEditedSettings(p => ({ ...p, logo_size: val }))}
                                     style={{ padding: '.2rem .5rem', fontSize: '.72rem', border: `1px solid ${editedSettings['logo_size'] === val ? '#2d5f54' : '#ddd'}`, borderRadius: '.3rem', cursor: 'pointer', background: editedSettings['logo_size'] === val ? '#2d5f54' : 'white', color: editedSettings['logo_size'] === val ? 'white' : '#555' }}>
                                     {label}
@@ -3491,7 +3476,7 @@ export default function CMSAdmin() {
                             <div style={{ marginBottom: '1.25rem' }}>
                               <label style={lbl}>Forme du logo</label>
                               <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
-                                {[['Cercle', 'circle'], ['Arrondi', 'rounded'], ['Carré', 'square']].map(([label, val]) => {
+                                {[['Cercle', 'circle'], ['Arrondi', 'rounded'], ['Sans découpe', 'square']].map(([label, val]) => {
                                   const active = (editedSettings['logo_shape'] || 'circle') === val;
                                   const size = 32;
                                   const radius = val === 'circle' ? '50%' : val === 'rounded' ? '6px' : '2px';
@@ -3640,7 +3625,7 @@ export default function CMSAdmin() {
                         )}
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
-                          {settingsGroup !== 'visibility' && groupItems.map(s => {
+                          {settingsGroup !== 'visibility' && groupItems.filter(s => !(settingsGroup === 'branding' && BRANDING_PANEL_KEYS.includes(s.key))).map(s => {
                             const field = s as { key: string; label: string; type: string; options?: string[]; optionLabels?: string[] };
                             return (
                             <div key={s.key}>
@@ -3654,16 +3639,9 @@ export default function CMSAdmin() {
                                   )}
                                   <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
                                     <label style={{ padding: '.5rem 1rem', background: '#2d5f54', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>
-                                      ⬆️ Upload logo
-                                      <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
-                                        const file = e.target.files?.[0];
-                                        if (!file) return;
-                                        const fd = new FormData();
-                                        fd.append('file', file);
-                                        const res = await fetch('/api/cms/upload', { method: 'POST', body: fd });
-                                        const data = await res.json();
-                                        if (data.url) setEditedSettings(prev => ({ ...prev, [s.key]: data.url }));
-                                      }} />
+                                      ⬆️ Choisir une image
+                                      <input type="file" accept="image/*" style={{ display: 'none' }}
+                                        onChange={e => handleImageFile(e, url => setEditedSettings(prev => ({ ...prev, [s.key]: url })))} />
                                     </label>
                                     <input value={editedSettings[s.key] || ''} onChange={e => setEditedSettings(prev => ({ ...prev, [s.key]: e.target.value }))} style={{ ...inp, flex: 1 }} placeholder="Ou coller une URL..." />
                                     {editedSettings[s.key] && <button onClick={() => setEditedSettings(prev => ({ ...prev, [s.key]: '' }))} style={{ padding: '.5rem .8rem', background: '#fee', color: '#c0392b', border: '1px solid #fcc', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>✕ Supprimer</button>}

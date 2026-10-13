@@ -60,7 +60,7 @@ export default function BlogClientPage({ posts }: Props) {
     <main className="min-h-screen bg-[#f7f5f1]">
       <section className="relative overflow-hidden bg-stone-950 px-4 py-24 text-white md:py-28">
         <img
-          src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1600&q=80&auto=format&fit=crop"
+          src={c.hero_image}
           alt={c.t_ecriture_et_reflexion}
           className="absolute inset-0 h-full w-full object-cover opacity-25"
         />

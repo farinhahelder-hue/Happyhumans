@@ -71,7 +71,7 @@ export default function LandingPage() {
     hero: (
       <section className="relative overflow-hidden bg-stone-900 px-6 py-24 text-center md:py-36 md:px-10">
         <img
-          src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=85&auto=format&fit=crop"
+          src={c.hero_image}
           alt={c.t_bureau_elegant_avec_lumiere}
           className="absolute inset-0 h-full w-full object-cover opacity-20"
         />

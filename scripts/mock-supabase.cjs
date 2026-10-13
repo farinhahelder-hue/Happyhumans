@@ -10,6 +10,7 @@
  * déclencheur d'historique de supabase/migrations/20260711000000_content_history.sql.
  *
  * Données : vides au départ. MOCK_SEED_DIR=<dossier de <page>.json> pour préremplir site_content.
+ * Storage (/storage/v1) : buckets + fichiers en mémoire, assez pour /api/cms/upload (envoi d'images du CMS).
  * Endpoints utiles : GET /__state (contenu de la base), POST /__reset, GET /__config?rejectDrafts=1
  * (simule une contrainte de la base qui refuse les brouillons « draft:<page> »).
  *
@@ -32,6 +33,43 @@ function createMockSupabase() {
     }
   }
   seed();
+
+  const buckets = new Set();
+  const files = new Map(); // « bucket/chemin » -> { type, data }
+
+  function handleStorage(req, res, url) {
+    const parts = url.pathname.replace(/^\/storage\/v1\//, '').split('/');
+    const json = (code, body) => { res.writeHead(code, { 'Content-Type': 'application/json' }); res.end(JSON.stringify(body)); };
+    const chunks = [];
+    req.on('data', d => chunks.push(d));
+    req.on('end', () => {
+      const raw = Buffer.concat(chunks);
+      if (parts[0] === 'bucket') {
+        if (req.method === 'POST') {
+          const b = JSON.parse(raw.toString() || '{}');
+          buckets.add(b.id || b.name);
+          return json(200, { name: b.name || b.id });
+        }
+        if (req.method === 'GET' && parts[1]) {
+          return buckets.has(parts[1]) ? json(200, { id: parts[1], name: parts[1], public: true })
+            : json(404, { statusCode: '404', error: 'Bucket not found', message: 'Bucket not found' });
+        }
+      }
+      if (parts[0] === 'object' && parts[1] === 'public' && req.method === 'GET') {
+        const hit = files.get(parts.slice(2).join('/'));
+        if (!hit) return json(404, { error: 'not_found' });
+        res.writeHead(200, { 'Content-Type': hit.type });
+        return res.end(hit.data);
+      }
+      if (parts[0] === 'object' && (req.method === 'POST' || req.method === 'PUT')) {
+        const key = parts.slice(1).join('/');
+        if (!buckets.has(parts[1])) return json(404, { statusCode: '404', error: 'Bucket not found', message: 'Bucket not found' });
+        files.set(key, { type: req.headers['content-type'] || 'application/octet-stream', data: raw });
+        return json(200, { Key: key, Id: crypto.randomUUID() });
+      }
+      json(404, { message: 'mock storage : route inconnue ' + url.pathname });
+    });
+  }
 
   const send = (res, code, body, headers = {}) => { res.writeHead(code, { 'Content-Type': 'application/json', ...headers }); res.end(body === undefined ? '' : JSON.stringify(body)); };
   function parseFilters(url) {
@@ -64,8 +102,9 @@ function createMockSupabase() {
 
   const server = http.createServer((req, res) => {
     const url = new URL(req.url, 'http://x');
+    if (url.pathname.startsWith('/storage/v1/')) return handleStorage(req, res, url);
     if (url.pathname === '/__state') return send(res, 200, db);
-    if (url.pathname === '/__reset') { seed(); rejectDrafts = false; return send(res, 200, { ok: true }); }
+    if (url.pathname === '/__reset') { seed(); rejectDrafts = false; buckets.clear(); files.clear(); return send(res, 200, { ok: true }); }
     if (url.pathname === '/__config') { rejectDrafts = url.searchParams.get('rejectDrafts') === '1'; return send(res, 200, { rejectDrafts }); }
     const m = url.pathname.match(/^\/rest\/v1\/([^/]+)$/);
     let chunks = '';
@@ -126,7 +165,7 @@ function createMockSupabase() {
       send(res, 405, { message: 'mock: méthode non gérée' });
     });
   });
-  return { server, getDb: () => db, reset: () => { seed(); rejectDrafts = false; } };
+  return { server, getDb: () => db, reset: () => { seed(); rejectDrafts = false; buckets.clear(); files.clear(); } };
 }
 
 module.exports = { createMockSupabase };

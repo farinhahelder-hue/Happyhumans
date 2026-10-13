@@ -3,6 +3,7 @@
 // Chaque clé correspond à un champ de PAGES_CONFIG (app/cms-admin/page.tsx).
 
 export const HOME_DEFAULTS: Record<string, string> = {
+  hero_image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=85&auto=format&fit=crop',
   // Hero
   hero_badge:           'Monica Schneider · Executive Coach · Happy Humans',
   hero_title:           'Clarté, confiance et relations qui vous ressemblent',

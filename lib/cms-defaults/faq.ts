@@ -3,6 +3,7 @@
 // Chaque clé correspond à un champ de PAGES_CONFIG (app/cms-admin/page.tsx).
 
 export const FAQ_DEFAULTS: Record<string, string> = {
+  hero_image: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1600&q=80&auto=format&fit=crop',
     page_title: "Ce qu'on nous demande souvent",
     page_subtitle: "Et si votre question n'est pas là, écrivez-nous directement.",
     cta_title: "Une autre question ?",

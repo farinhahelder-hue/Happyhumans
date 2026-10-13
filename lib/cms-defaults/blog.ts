@@ -3,6 +3,7 @@
 // Chaque clé correspond à un champ de PAGES_CONFIG (app/cms-admin/page.tsx).
 
 export const BLOG_DEFAULTS: Record<string, string> = {
+  hero_image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1600&q=80&auto=format&fit=crop',
   hero_badge:       'Blog Happy Humans',
   hero_title:       'Des moments, des détours,\ndes repères qu\'on aurait aimé avoir avant.',
   hero_subtitle:    "On écrit depuis le terrain : une arrivée trop tardive, une adresse trouvée au bon moment, une erreur qu'on ne refera pas. Le reste, on le laisse aux brochures.",

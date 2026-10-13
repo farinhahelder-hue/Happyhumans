@@ -1,8 +1,8 @@
 'use client'
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useCmsContent } from '@/hooks/useCmsContent'
-import LogoSVG from '@/components/LogoSVG'
+import SiteLogo, { logoPx, logoShape } from '@/components/SiteLogo'
+import { useSiteSettings } from '@/hooks/useSiteSettings'
 
 const DEFAULTS: Record<string, string> = {
   site_name:     'Happy Humans',
@@ -13,17 +13,10 @@ const DEFAULTS: Record<string, string> = {
 }
 
 export default function MiniFooter() {
-  const [logoFooterSize, setLogoFooterSize] = useState(36)
+  const settings = useSiteSettings()
+  const logoFooterSize = logoPx(settings.logo_footer_size, 36, 72)
+  const showName = settings.logo_show_name !== 'false'
   const c = useCmsContent('footer', DEFAULTS)
-
-  useEffect(() => {
-    fetch('/api/cms/public-settings')
-      .then(r => r.ok ? r.json() : { settings: {} })
-      .then(({ settings }) => {
-        if (settings?.logo_footer_size) setLogoFooterSize(Number(settings.logo_footer_size) || 36)
-      })
-      .catch(() => {})
-  }, [])
 
   const year = new Date().getFullYear()
 
@@ -34,7 +27,7 @@ export default function MiniFooter() {
 
         <div className="flex items-center gap-3">
           <Link href="/" className="transition">
-            <LogoSVG size={logoFooterSize} />
+            <SiteLogo url={settings.logo_url} size={logoFooterSize} shape={logoShape(settings.logo_shape)} alt={showName ? '' : c.site_name} />
           </Link>
           <div className="flex flex-col">
             <Link href="/" className="transition"

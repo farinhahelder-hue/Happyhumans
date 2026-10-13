@@ -3,6 +3,7 @@
 // Chaque clé correspond à un champ de PAGES_CONFIG (app/cms-admin/page.tsx).
 
 export const SPARRING_PARTNER_DEFAULTS: Record<string, string> = {
+  hero_image: 'https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?w=1600&q=80&auto=format&fit=crop',
   hero_badge:         'Sparring Partner',
   hero_title:         "Un regard extérieur stratégique par une pair qui comprend vos enjeux",
   hero_desc:          "Ex-L'Oreal, ex-LVMH, 5 langues, philo-coaching. Monica vous offre le recul qu'un manager ne peut pas toujours trouver en interne.",

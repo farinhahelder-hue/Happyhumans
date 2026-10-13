@@ -3,6 +3,7 @@
 // Chaque clé correspond à un champ de PAGES_CONFIG (app/cms-admin/page.tsx).
 
 export const HAPPINESS_DESIGN_DEFAULTS: Record<string, string> = {
+  hero_image: 'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=1600&q=80&auto=format&fit=crop',
   // Hero
   hero_badge:    'Programme',
   page_title:    'Happiness Design',

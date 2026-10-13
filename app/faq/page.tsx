@@ -23,7 +23,7 @@ export default function FaqPage() {
         {/* Hero */}
         <section className="relative overflow-hidden bg-stone-900 px-6 py-24 md:py-32 md:px-10 text-center">
           <img
-            src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1600&q=80&auto=format&fit=crop"
+            src={c.hero_image}
             alt={c.t_espace_calme_pour_reflechir}
             className="absolute inset-0 h-full w-full object-cover opacity-20"
           />
