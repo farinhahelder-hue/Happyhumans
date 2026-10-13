@@ -31,13 +31,6 @@ type Article = {
   seo_title?: string; seo_description?: string; og_image?: string;
 };
 
-type Demande = {
-  id: string; prenom: string; nom: string; email: string;
-  telephone: string; destination: string; style_voyage: string;
-  duree_jours: number; budget_fourchette: string; nb_voyageurs: number;
-  mois_depart: string; notes: string; statut: string; created_at: string;
-};
-
 type Setting = { id: number; key: string; value: string; label: string; group_name: string; type?: string; };
 type SiteContent = { id: number; page: string; block_key: string; value: string; label: string; type: string; };
 
@@ -1474,15 +1467,12 @@ export default function CMSAdmin() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loadingMessages, setLoadingMessages] = useState(false);
 
-  // Demandes travel
-  const [demandes, setDemandes] = useState<Demande[]>([]);
+  // Booking (créneaux + demandes de réservation)
   const [bookingSlots, setBookingSlots] = useState<BookingSlot[]>([]);
   const [bookingRequests, setBookingRequests] = useState<BookingRequest[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [savingSlot, setSavingSlot] = useState(false);
   const [newSlot, setNewSlot] = useState({ date: '', time: '10:00', type: 'coaching', notes: '' });
-  const [loadingDemandes, setLoadingDemandes] = useState(false);
-  const [updatingDemandeId, setUpdatingDemandeId] = useState<string | null>(null);
 
   // Paramètres + Contenu pages
   const [settings, setSettings] = useState<Setting[]>([]);
@@ -1701,21 +1691,6 @@ export default function CMSAdmin() {
     }
   }, [handleUnauthorized, search, showToast, statusFilter]);
 
-  // Load demandes
-  const loadDemandes = useCallback(async () => {
-    setLoadingDemandes(true);
-    try {
-      const res = await fetch('/api/cms/demandes-travel');
-      if (handleUnauthorized(res)) return;
-      const data = await res.json();
-      setDemandes(data.demandes || []);
-    } catch {
-      showToast('Impossible de charger les demandes travel.');
-    } finally {
-      setLoadingDemandes(false);
-    }
-  }, [handleUnauthorized, showToast]);
-
   // Load booking slots
   const loadBookingSlots = useCallback(async () => {
     setLoadingSlots(true);
@@ -1853,8 +1828,6 @@ export default function CMSAdmin() {
   // Chargements par onglet : patterns de fetch standards (setState via callbacks async).
   // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
   useEffect(() => { if (authed) loadArticles(); }, [authed, loadArticles]);
-  // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
-  useEffect(() => { if (authed && tab === 'demandes') loadDemandes(); }, [authed, tab, loadDemandes]);
   // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
   useEffect(() => { if (authed && tab === 'booking') { loadBookingSlots(); loadBookingRequests(); } }, [authed, tab, loadBookingSlots, loadBookingRequests]);
   // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
@@ -2200,23 +2173,6 @@ export default function CMSAdmin() {
     } finally {
       setUploadingFeaturedImage(false);
       input.value = '';
-    }
-  };
-
-  const updateStatut = async (id: string, statut: string) => {
-    setUpdatingDemandeId(id);
-    try {
-      const res = await fetch('/api/cms/demandes-travel', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, statut }),
-      });
-      if (handleUnauthorized(res)) return;
-      if (res.ok) { showToast('✅ Statut mis à jour'); loadDemandes(); }
-    } catch {
-      showToast('Impossible de mettre à jour cette demande.');
-    } finally {
-      setUpdatingDemandeId(null);
     }
   };
 
@@ -3116,59 +3072,6 @@ export default function CMSAdmin() {
           </div>
         )}
 
-        {/* ── TRAVEL PLANNING ── */}
-        {tab === 'demandes' && (
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#2d5f54' }}>✈️ Demandes Travel Planning</h2>
-              <button onClick={loadDemandes} disabled={loadingDemandes} style={{ padding: '.5rem 1rem', background: 'white', border: '1.5px solid #ddd', borderRadius: '.5rem', cursor: loadingDemandes ? 'wait' : 'pointer', fontSize: '.85rem', opacity: loadingDemandes ? .7 : 1 }}>{loadingDemandes ? '⏳ Actualisation…' : '🔄 Actualiser'}</button>
-            </div>
-            {loadingDemandes ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement…</p>
-              : demandes.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '4rem', color: '#aaa' }}>
-                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✉️</div>
-                  <p>Aucune demande pour le moment</p>
-                </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  {demandes.map(d => (
-                    <div key={d.id} style={{ background: 'white', borderRadius: '.75rem', padding: '1.25rem 1.5rem', boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '.75rem', flexWrap: 'wrap', gap: '.5rem' }}>
-                        <div>
-                          <div style={{ fontWeight: 700, fontSize: '1rem', color: '#1a1a1a' }}>{d.prenom} {d.nom}</div>
-                          <div style={{ fontSize: '.85rem', color: '#888' }}>{d.email} {d.telephone && `· ${d.telephone}`}</div>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
-                          <span style={{ fontSize: '.75rem', color: '#aaa' }}>{fmt(d.created_at)}</span>
-                          <select value={d.statut || 'nouvelle'} onChange={e => updateStatut(d.id, e.target.value)} disabled={updatingDemandeId === d.id}
-                            style={{ padding: '.3rem .7rem', border: '1.5px solid #ddd', borderRadius: '.4rem', fontSize: '.82rem', cursor: updatingDemandeId === d.id ? 'wait' : 'pointer', opacity: updatingDemandeId === d.id ? .7 : 1 }}
-                          >
-                            <option value="nouvelle">🆕 Nouvelle</option>
-                            <option value="en_cours">🔄 En cours</option>
-                            <option value="devis_envoye">📨 Devis envoyé</option>
-                            <option value="accepte">✅ Acceptée</option>
-                            <option value="terminee">🏁 Terminée</option>
-                            <option value="annulee">❌ Annulée</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '.5rem .75rem', fontSize: '.85rem', color: '#555' }}>
-                        {d.destination && <span>📍 <strong>Destination :</strong> {d.destination}</span>}
-                        {d.style_voyage && <span>🌿 <strong>Style :</strong> {d.style_voyage}</span>}
-                        {d.duree_jours && <span>📅 <strong>Durée :</strong> {d.duree_jours} jours</span>}
-                        {d.mois_depart && <span>🗓 <strong>Départ :</strong> {d.mois_depart}</span>}
-                        {d.budget_fourchette && <span>💶 <strong>Budget :</strong> {d.budget_fourchette}</span>}
-                        {d.nb_voyageurs && <span>👫 <strong>Voyageurs :</strong> {d.nb_voyageurs}</span>}
-                      </div>
-                      {d.notes && (
-                        <div style={{ marginTop: '.75rem', padding: '.75rem', background: '#faf8f5', borderRadius: '.5rem', fontSize: '.85rem', color: '#666', borderLeft: '3px solid #d4a88a' }}>💬 {d.notes}</div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-          </div>
-        )}
 
         {/* ── BOOKING ── */}
         {tab === 'booking' && (

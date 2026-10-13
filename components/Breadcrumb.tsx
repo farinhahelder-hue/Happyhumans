@@ -31,8 +31,6 @@ export default function Breadcrumb() {
     if (crumb.href === '/blog') return { ...crumb, label: 'Blog' };
     if (crumb.href === '/destinations') return { ...crumb, label: 'Destinations' };
     if (crumb.href === '/a-propos') return { ...crumb, label: 'À propos' };
-    if (crumb.href === '/travel-planning') return { ...crumb, label: 'Travel Planning' };
-    if (crumb.href === '/travel-planning-form') return { ...crumb, label: 'Planifier' };
     if (crumb.href === '/hotel-consulting') return { ...crumb, label: 'Consulting' };
     if (crumb.href === '/contact') return { ...crumb, label: 'Contact' };
     if (crumb.href === '/mentions-legales') return { ...crumb, label: 'Mentions légales' };

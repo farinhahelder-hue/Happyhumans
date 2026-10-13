@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import { createClient } from '@supabase/supabase-js';
 import { createHmac } from 'node:crypto';
 import { verifyEditSession } from '@/lib/cms-auth';
+import { Icon } from '@/components/icons';
 
 const CMS_SESSION_COOKIE = 'happyhumans_cms_session';
 
@@ -73,7 +74,7 @@ export default async function MaintenanceGate({ children }: { children: React.Re
     return (
       <div style={{ minHeight: '100vh', background: '#f5f0e8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'system-ui, sans-serif' }}>
         <div style={{ textAlign: 'center', maxWidth: 480, padding: '2rem' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1.5rem' }}>🔧</div>
+          <div style={{ marginBottom: '1.5rem', color: '#2d5f54', display: 'flex', justifyContent: 'center' }}><Icon name="wrench" size={48} /></div>
           <h1 style={{ fontSize: '2rem', fontWeight: 700, color: '#2d5f54', marginBottom: '1rem', fontFamily: 'Georgia, serif' }}>
             Site en maintenance
           </h1>
@@ -82,7 +83,7 @@ export default async function MaintenanceGate({ children }: { children: React.Re
             Nous revenons très vite !
           </p>
           <p style={{ color: '#a8a29e', fontSize: '0.85rem', marginTop: '2rem' }}>
-            💬 Besoin d&apos;aide ? Écrivez à{' '}
+            <Icon name="chat" size={14} style={{ display: 'inline', verticalAlign: '-2px', marginRight: 6 }} />Besoin d&apos;aide ? Écrivez à{' '}
             <a href="mailto:happyhumans.coaching@gmail.com" style={{ color: '#2d5f54' }}>
               happyhumans.coaching@gmail.com
             </a>

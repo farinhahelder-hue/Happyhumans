@@ -10,7 +10,7 @@ type ProfileContent = {
 
 export const profilesContent: Record<AttachmentProfile, ProfileContent> = {
   secure: {
-    title: 'Style sécure 💚',
+    title: 'Style sécure',
     summary:
       "Vous avez tendance à vous sentir à l'aise dans les relations proches. Vous pouvez exprimer vos besoins, faire confiance aux autres et tolérer les moments d'incertitude sans perdre votre équilibre intérieur. Ce style est souvent le fruit d'expériences relationnelles chaleureuses et prévisibles.",
     strengths: [
@@ -30,7 +30,7 @@ export const profilesContent: Record<AttachmentProfile, ProfileContent> = {
     ],
   },
   anxious: {
-    title: 'Style anxieux 💛',
+    title: 'Style anxieux',
     summary:
       "Vous accordez une grande importance à vos relations, parfois au point de vous préoccuper de leur solidité. Vous êtes très attentif(ve) aux signaux de l'autre et cherchez souvent une confirmation que vous êtes aimé(e). Ce style naît souvent d'une disponibilité émotionnelle inconstante dans les premières relations de votre vie.",
     strengths: [
@@ -52,7 +52,7 @@ export const profilesContent: Record<AttachmentProfile, ProfileContent> = {
     ],
   },
   avoidant: {
-    title: 'Style évitant 🔵',
+    title: 'Style évitant',
     summary:
       "Vous valorisez profondément votre autonomie et tendez à vous replier sur vous-même lorsque les émotions deviennent trop intenses. Ce n'est pas un manque d'affection, mais une façon de vous protéger apprise tôt dans votre vie. Vous pouvez avoir du mal à accueillir la vulnérabilité, la vôtre comme celle des autres.",
     strengths: [
@@ -74,7 +74,7 @@ export const profilesContent: Record<AttachmentProfile, ProfileContent> = {
     ],
   },
   disorganized: {
-    title: 'Style craintif-évitant 🌀',
+    title: 'Style craintif-évitant',
     summary:
       "Vous aspirez profondément à la connexion, mais l'intimité vous semble parfois à la fois désirable et menaçante. Vous pouvez osciller entre le besoin de proximité et la peur d'être blessé(e), ce qui rend les relations complexes à naviguer. Ce style souvent lié à des expériences relationnelles imprévisibles mérite une attention bienveillante.",
     strengths: [

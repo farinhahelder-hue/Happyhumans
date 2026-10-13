@@ -7,6 +7,7 @@ import type { AttachmentAnswer, AttachmentResult } from '@/lib/attachment-test/t
 import { ProgressBar } from './ProgressBar';
 import { QuestionCard } from './QuestionCard';
 import { ResultCard } from './ResultCard';
+import { Icon } from '@/components/icons';
 
 type Phase = 'intro' | 'quiz' | 'result';
 
@@ -72,7 +73,7 @@ export function AttachmentTest({ onBook }: AttachmentTestProps) {
   if (phase === 'intro') {
     return (
       <div className="text-center space-y-6 max-w-xl mx-auto">
-        <div className="text-6xl mb-2">🪢</div>
+        <div className="mb-2 flex justify-center text-white/90"><Icon name="knot" size={56} /></div>
         <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">
           Quel est votre style d&apos;attachement ?
         </h2>
@@ -80,9 +81,9 @@ export function AttachmentTest({ onBook }: AttachmentTestProps) {
           Un outil de découverte douce pour mieux comprendre comment vous vous connectez aux autres — et à vous-même.
         </p>
         <div className="flex flex-wrap justify-center gap-3 text-sm">
-          <span className="bg-white/10 border border-white/20 rounded-full px-4 py-2 text-white/80">⏱ 3 à 5 minutes</span>
-          <span className="bg-white/10 border border-white/20 rounded-full px-4 py-2 text-white/80">📝 16 questions</span>
-          <span className="bg-white/10 border border-white/20 rounded-full px-4 py-2 text-white/80">✨ Résultats immédiats</span>
+          <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 text-white/80"><Icon name="timer" size={16} />3 à 5 minutes</span>
+          <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 text-white/80"><Icon name="note" size={16} />16 questions</span>
+          <span className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 text-white/80"><Icon name="sparkle" size={16} />Résultats immédiats</span>
         </div>
         <p className="text-white/50 text-sm italic">
           Il n&apos;y a pas de bonne ou de mauvaise réponse. Répondez en suivant votre ressenti spontané.
@@ -139,7 +140,7 @@ export function AttachmentTest({ onBook }: AttachmentTestProps) {
               : 'bg-white/10 border border-white/20 opacity-50 cursor-not-allowed'
           }`}
         >
-          {currentIndex === total - 1 ? 'Voir mes résultats ✨' : 'Suivant →'}
+          {currentIndex === total - 1 ? 'Voir mes résultats' : 'Suivant →'}
         </button>
       </div>
     </div>
