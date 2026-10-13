@@ -13,7 +13,8 @@ export type NavItem = {
   dropdownItems?: NavItem[];
 };
 
-const DEFAULT_NAV: NavItem[] = [
+/** Menu d'origine du site : affiché tant qu'aucun menu n'a été enregistré dans le CMS (et point de départ de l'éditeur). */
+export const DEFAULT_NAV: NavItem[] = [
   { id: '1', href: '/a-propos',       label: 'Monica',             visible: true, position: 1 },
   { id: '2', label: 'Coaching',      visible: true, position: 2,  isDropdown: true,
     dropdownItems: [
@@ -28,21 +29,28 @@ const DEFAULT_NAV: NavItem[] = [
   { id: '7', href: '/booking',        label: 'Réserver une séance',visible: true, position: 7, isCta: true },
 ];
 
+/** Évènement envoyé par l'éditeur de menu après un enregistrement : l'en-tête recharge le menu aussitôt. */
+export const NAV_UPDATED_EVENT = 'hh-nav-updated';
+
 export function useCmsNavigation(): { nav: NavItem[]; loading: boolean } {
   const [nav, setNav] = useState<NavItem[]>(DEFAULT_NAV);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    fetch('/api/cms/navigation')
-      .then(r => r.ok ? r.json() : { nav: null })
-      .then(({ nav: items }) => {
-        if (items && Array.isArray(items) && items.length > 0) {
-          setNav(items);
-        }
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    let alive = true;
+    const load = (fresh: boolean) => {
+      fetch('/api/cms/navigation', fresh ? { cache: 'no-store' } : undefined)
+        .then(r => r.ok ? r.json() : { nav: null })
+        .then(({ nav: items }) => {
+          if (alive && items && Array.isArray(items) && items.length > 0) setNav(items);
+        })
+        .catch(() => {})
+        .finally(() => { if (alive) setLoading(false); });
+    };
+    load(false);
+    const onUpdated = () => load(true);
+    window.addEventListener(NAV_UPDATED_EVENT, onUpdated);
+    return () => { alive = false; window.removeEventListener(NAV_UPDATED_EVENT, onUpdated); };
   }, []);
 
   return { nav, loading };

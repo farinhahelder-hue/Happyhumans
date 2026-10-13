@@ -17,16 +17,11 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [nextPath, setNextPath] = useState('/dashboard');
-
-  useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const requestedNext = searchParams.get('next');
-
-    if (requestedNext && requestedNext.startsWith('/')) {
-      setNextPath(requestedNext);
-    }
-  }, []);
+  const [nextPath] = useState(() => {
+    if (typeof window === 'undefined') return '/dashboard';
+    const requestedNext = new URLSearchParams(window.location.search).get('next');
+    return requestedNext && requestedNext.startsWith('/') ? requestedNext : '/dashboard';
+  });
 
   useEffect(() => {
     if (!loading && user) {

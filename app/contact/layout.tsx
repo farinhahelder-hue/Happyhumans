@@ -1,6 +1,8 @@
 ﻿import type { Metadata } from 'next'
-export const metadata: Metadata = {
-  title: 'Contact — Monica Schneider · Happy Humans',
-  description: "Écrivez à Monica Schneider, Executive Coach et philo-coaching. Réponse personnelle sous 48h. Coaching individuel, entreprises, Happiness Design, Sparring Partner.",
+import { pageMetadata } from '@/lib/page-seo'
+import { CONTACT_DEFAULTS } from '@/lib/cms-defaults/contact'
+export const revalidate = 300 // la page est régénérée au plus toutes les 5 min (+ immédiatement à chaque sauvegarde du CMS)
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata('contact', CONTACT_DEFAULTS)
 }
 export default function Layout({ children }: { children: React.ReactNode }) { return <>{children}</> }

@@ -1,6 +1,8 @@
 ﻿import type { Metadata } from 'next'
-export const metadata: Metadata = {
-  title: 'Coaching entreprises & leadership — Happy Humans',
-  description: "Coaching de dirigeants, prise de poste, ateliers de cohésion et séminaires sur mesure. Monica Schneider accompagne les équipes et organisations pour remettre de l'alignement.",
+import { pageMetadata } from '@/lib/page-seo'
+import { ENTREPRISES_DEFAULTS } from '@/lib/cms-defaults/entreprises'
+export const revalidate = 300 // la page est régénérée au plus toutes les 5 min (+ immédiatement à chaque sauvegarde du CMS)
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata('entreprises', ENTREPRISES_DEFAULTS)
 }
 export default function Layout({ children }: { children: React.ReactNode }) { return <>{children}</> }

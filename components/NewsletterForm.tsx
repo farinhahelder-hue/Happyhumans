@@ -1,12 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { useCmsContent } from "@/hooks/useCmsContent";
+import { SITE_DEFAULTS } from "@/lib/cms-defaults/site";
 
 interface NewsletterFormProps {
   variant?: "blog" | "article" | "inline";
 }
 
 export default function NewsletterForm({ variant = "blog" }: NewsletterFormProps) {
+  // Tous les textes sont modifiables dans le CMS (page « Textes communs » → Newsletter)
+  const c = useCmsContent("site", SITE_DEFAULTS);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -15,7 +19,7 @@ export default function NewsletterForm({ variant = "blog" }: NewsletterFormProps
     e.preventDefault();
     if (!email || !email.includes("@")) {
       setStatus("error");
-      setMessage("Adresse email invalide.");
+      setMessage(c.newsletter_error_invalid);
       return;
     }
 
@@ -29,15 +33,15 @@ export default function NewsletterForm({ variant = "blog" }: NewsletterFormProps
       const data = await res.json();
       if (res.ok && data.success) {
         setStatus("success");
-        setMessage("C'est noté. On t'écrira quand on aura vraiment quelque chose à dire.");
+        setMessage(c.newsletter_success);
         setEmail("");
       } else {
         setStatus("error");
-        setMessage(data.error || "Une erreur est survenue. Réessaie.");
+        setMessage(data.error || c.newsletter_error_generic);
       }
     } catch {
       setStatus("error");
-      setMessage("Connexion impossible. Réessaie dans quelques instants.");
+      setMessage(c.newsletter_error_network);
     }
   };
 
@@ -45,13 +49,13 @@ export default function NewsletterForm({ variant = "blog" }: NewsletterFormProps
     return (
       <section className="my-14 rounded-2xl bg-gradient-to-br from-stone-900 to-amber-900 px-8 py-10 text-white">
         <p className="text-amber-300 text-xs font-semibold tracking-[0.2em] uppercase mb-3">
-          Une fois par mois
+          {c.newsletter_badge}
         </p>
         <h3 className="text-xl md:text-2xl font-serif font-light mb-2 leading-snug">
-          On t&apos;envoie ce qu&apos;on a vraiment trouvé.
+          {c.newsletter_title_short}
         </h3>
         <p className="text-white/60 text-sm mb-6">
-          Une adresse, un timing, une erreur à éviter. Rien de plus.
+          {c.newsletter_text}
         </p>
         {status === "success" ? (
           <p className="text-amber-300 font-medium text-sm">{message}</p>
@@ -61,7 +65,7 @@ export default function NewsletterForm({ variant = "blog" }: NewsletterFormProps
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="ton@email.fr"
+              placeholder={c.newsletter_placeholder}
               required
               className="flex-1 px-4 py-3 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
             />
@@ -70,7 +74,7 @@ export default function NewsletterForm({ variant = "blog" }: NewsletterFormProps
               disabled={status === "loading"}
               className="px-6 py-3 bg-amber-500 hover:bg-amber-400 text-white text-sm font-semibold rounded-full transition-colors whitespace-nowrap disabled:opacity-60"
             >
-              {status === "loading" ? "…" : "Je m'abonne"}
+              {status === "loading" ? "…" : c.newsletter_button}
             </button>
           </form>
         )}
@@ -90,7 +94,7 @@ export default function NewsletterForm({ variant = "blog" }: NewsletterFormProps
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="ton@email.fr"
+              placeholder={c.newsletter_placeholder}
               required
               className="flex-1 min-w-0 px-5 py-3 rounded-full bg-white/15 border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
             />
@@ -99,7 +103,7 @@ export default function NewsletterForm({ variant = "blog" }: NewsletterFormProps
               disabled={status === "loading"}
               className="shrink-0 px-6 py-3 bg-amber-500 hover:bg-amber-400 text-white text-sm font-semibold rounded-full transition-colors disabled:opacity-60"
             >
-              {status === "loading" ? "…" : "Je m'abonne"}
+              {status === "loading" ? "…" : c.newsletter_button}
             </button>
           </>
         )}
@@ -112,21 +116,19 @@ export default function NewsletterForm({ variant = "blog" }: NewsletterFormProps
     <section className="bg-gradient-to-br from-stone-900 to-amber-900 py-20 px-4">
       <div className="max-w-2xl mx-auto text-center text-white">
         <p className="text-amber-300 text-xs font-semibold tracking-[0.2em] uppercase mb-4">
-          Une fois par mois
+          {c.newsletter_badge}
         </p>
         <h2 className="text-3xl md:text-4xl font-serif font-light mb-4 leading-snug">
-          Ce qu&apos;on a vraiment trouvé,
-          <br />
-          directement dans ta boîte mail
+          {c.newsletter_title}
         </h2>
         <p className="text-white/65 text-sm leading-relaxed mb-8 max-w-md mx-auto">
-          Une adresse, un timing, une erreur à éviter. Rien de plus.
+          {c.newsletter_text}
         </p>
 
         {status === "success" ? (
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl px-8 py-6">
             <p className="text-amber-200 font-medium">{message}</p>
-            <p className="text-white/60 text-sm mt-2">Vérifie ta boîte mail, on arrive doucement.</p>
+            <p className="text-white/60 text-sm mt-2">{c.newsletter_success_hint}</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
@@ -134,7 +136,7 @@ export default function NewsletterForm({ variant = "blog" }: NewsletterFormProps
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="ton@email.fr"
+              placeholder={c.newsletter_placeholder}
               required
               className="flex-1 px-5 py-3.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 text-white placeholder-white/40 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent"
             />
@@ -143,13 +145,13 @@ export default function NewsletterForm({ variant = "blog" }: NewsletterFormProps
               disabled={status === "loading"}
               className="px-7 py-3.5 bg-amber-500 hover:bg-amber-400 text-white text-sm font-semibold rounded-full transition-colors whitespace-nowrap disabled:opacity-60"
             >
-              {status === "loading" ? "Inscription…" : "Je m'abonne"}
+              {status === "loading" ? c.newsletter_button_loading : c.newsletter_button}
             </button>
           </form>
         )}
         {status === "error" && <p className="mt-3 text-red-300 text-sm">{message}</p>}
 
-        <p className="mt-4 text-white/35 text-xs">Pas de spam · Désabonnement en 1 clic</p>
+        <p className="mt-4 text-white/35 text-xs">{c.newsletter_footnote}</p>
       </div>
     </section>
   );

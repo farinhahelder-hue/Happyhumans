@@ -7,8 +7,8 @@ import MaintenanceGate from '@/components/MaintenanceGate';
 import { InlineEditProvider } from '@/contexts/InlineEditContext';
 import InlineEditor from '@/components/InlineEditor';
 import { getKvSettings } from '@/lib/cms-settings-server';
+import { SITE_URL } from '@/lib/site-url';
 
-const SITE_URL = 'https://happyhumans.vercel.app';
 
 export const viewport: Viewport = {
   themeColor: '#2d5f54',
@@ -212,6 +212,7 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://images.unsplash.com" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* eslint-disable-next-line @next/next/no-page-custom-font -- fonts globales du site, next/font : migration ultérieure */}
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
         <script
           type="application/ld+json"

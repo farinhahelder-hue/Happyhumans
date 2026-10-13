@@ -1,8 +1,8 @@
 const LEGACY_REDIRECTS: Record<string, string> = {
   '/a-propos-2': '/a-propos',
   '/presentation-3': '/a-propos',
-  '/travel-planner': '/travel-planning',
-  '/nos-services': '/travel-planning',
+  '/travel-planner': '/coaching',
+  '/nos-services': '/coaching',
   '/bons-plans': '/blog',
   '/sujets/bons-plans': '/blog',
   '/zurich': '/destinations/zurich',

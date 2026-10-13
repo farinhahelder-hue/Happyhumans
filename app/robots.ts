@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { getKvSettings } from '@/lib/cms-settings-server';
+import { SITE_URL as BASE_URL } from '@/lib/site-url';
 
-const BASE_URL = 'https://happyhumans.vercel.app';
 
 // Pages pilotables depuis le CMS (Paramètres → Visibilité pages)
 const TOGGLABLE_PAGES = [
@@ -13,7 +13,7 @@ const TOGGLABLE_PAGES = [
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const kv = await getKvSettings();
 
-  const disallow = ['/cms-admin', '/api/', '/travel-planning-form'];
+  const disallow = ['/cms-admin', '/api/'];
   for (const page of TOGGLABLE_PAGES) {
     if (kv[`page_${page}_indexable`] === 'false') {
       disallow.push(page === 'home' ? '/$' : `/${page}`);

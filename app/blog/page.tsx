@@ -4,24 +4,15 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import BlogClientPage from '@/components/BlogClientPage'
 import Breadcrumb from '@/components/Breadcrumb'
+import { pageMetadata } from '@/lib/page-seo'
+import { BLOG_DEFAULTS } from '@/lib/cms-defaults/blog'
 
 export const revalidate = 60
 
-export const metadata: Metadata = {
-  title: 'Ressources & Réflexions',
-  description: 'Articles, réflexions et ressources sur le coaching, les relations et le leadership — par Monica Schneider, Happy Humans.',
-  keywords: ['coaching', 'executive coaching', 'leadership', 'relations', 'happyhumans', 'Monica Schneider'],
-  alternates: {
-    canonical: 'https://happyhumans.vercel.app/blog',
-  },
-  openGraph: {
-    title: 'Ressources & Réflexions | Happy Humans',
-    description: 'Articles, réflexions et ressources sur le coaching, les relations et le leadership par Monica Schneider.',
-    url: 'https://happyhumans.vercel.app/blog',
-    siteName: 'Happy Humans',
-    type: 'website',
-    locale: 'fr_FR',
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata('blog', BLOG_DEFAULTS, {
+    keywords: ['coaching', 'executive coaching', 'leadership', 'relations', 'happyhumans', 'Monica Schneider'],
+  })
 }
 
 export default async function BlogPage() {

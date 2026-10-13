@@ -43,6 +43,7 @@ export default function DestinationForm({ destinationId, onSave, onCancel }: Des
 
   useEffect(() => {
     if (destinationId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- chargement de la destination depuis l'API
       fetchDestination();
     }
   }, [destinationId, fetchDestination]);

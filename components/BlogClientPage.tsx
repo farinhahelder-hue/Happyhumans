@@ -5,13 +5,8 @@ import Link from 'next/link'
 import NewsletterForm from '@/components/NewsletterForm'
 import type { BlogPost } from '@/lib/blog-supabase'
 import { useCmsContent } from '@/hooks/useCmsContent'
-
-const CATEGORY_LABELS: Record<string, string> = {
-  Tous: 'Tout lire',
-  'Carnets Voyage': 'Carnets',
-  'Découvertes Locales': 'Pépites locales',
-  'Guides Pratiques': 'Guides',
-}
+import { BLOG_DEFAULTS } from '@/lib/cms-defaults/blog'
+import EditableImage from '@/components/EditableImage';
 
 const CATEGORY_FALLBACK_BG: Record<string, string> = {
   'Carnets Voyage': 'bg-gradient-to-br from-[#355C7D] to-[#6C5B7B]',
@@ -19,24 +14,8 @@ const CATEGORY_FALLBACK_BG: Record<string, string> = {
   'Guides Pratiques': 'bg-gradient-to-br from-[#7C2D12] to-[#9A3412]',
 }
 
-const BADGE_FALLBACK_SRC = '/images/badges-happyhumans.svg'
-
-const BLOG_DEFAULTS = {
-  hero_badge:       'Blog Happy Humans',
-  hero_title:       'Des moments, des détours,\ndes repères qu\'on aurait aimé avoir avant.',
-  hero_subtitle:    "On écrit depuis le terrain : une arrivée trop tardive, une adresse trouvée au bon moment, une erreur qu'on ne refera pas. Le reste, on le laisse aux brochures.",
-  featured_label:   'À lire d\'abord',
-  featured_title:   'Un carnet qui donne le ton.',
-  empty_title:      "Rien de juste pour cette recherche, pour l'instant.",
-  empty_text:       "Essaie un lieu, un mot plus simple, ou repars de tout le blog pour reprendre le fil.",
-  empty_action:     'Voir tous les articles →',
-  carnets_title:    'Carnets de voyage',
-  carnets_desc:     "Les récits qui gardent l'heure, le rythme et ce qu'on a retenu sur place.",
-  pepites_title:    'Découvertes locales',
-  pepites_desc:     "Des lieux qu'on n'était pas venus chercher, et qu'on aurait regretté de rater.",
-  guides_title:     'Guides pratiques',
-  guides_desc:      "Des repères concrets quand le terrain devient plus utile que la théorie.",
-}
+// image de repli (article sans photo) : le logo clair de la charte, qui existe dans /public
+const BADGE_FALLBACK_SRC = '/logo-happy-humans-clair.png'
 
 interface Props {
   posts: (BlogPost & { formattedDate: string })[]
@@ -44,6 +23,12 @@ interface Props {
 
 export default function BlogClientPage({ posts }: Props) {
   const c = useCmsContent('blog', BLOG_DEFAULTS)
+  const categoryLabels: Record<string, string> = {
+    Tous: c.cat_all_label,
+    'Carnets Voyage': c.cat_1_label,
+    'Découvertes Locales': c.cat_2_label,
+    'Guides Pratiques': c.cat_3_label,
+  }
   const [activeFilter, setActiveFilter] = useState('Tous')
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -75,9 +60,9 @@ export default function BlogClientPage({ posts }: Props) {
   return (
     <main className="min-h-screen bg-[#f7f5f1]">
       <section className="relative overflow-hidden bg-stone-950 px-4 py-24 text-white md:py-28">
-        <img
-          src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1600&q=80&auto=format&fit=crop"
-          alt="Écriture et réflexion"
+        <EditableImage page="blog" fieldKey="hero_image" variant="cover"
+          src={c.hero_image}
+          alt={c.t_ecriture_et_reflexion}
           className="absolute inset-0 h-full w-full object-cover opacity-25"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-stone-950/80 via-stone-900/75 to-amber-950/65" />
@@ -90,9 +75,9 @@ export default function BlogClientPage({ posts }: Props) {
             {c.get('hero_subtitle')}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-white/65">
-            <StatChip value={totalCarnets} label="Carnets" />
-            <StatChip value={totalDecouvertes} label="Pépites locales" />
-            <StatChip value={totalGuides} label="Guides" />
+            <StatChip value={totalCarnets} label={c.cat_1_label} />
+            <StatChip value={totalDecouvertes} label={c.cat_2_label} />
+            <StatChip value={totalGuides} label={c.cat_3_label} />
           </div>
         </div>
       </section>
@@ -139,7 +124,7 @@ export default function BlogClientPage({ posts }: Props) {
                 <div className="flex flex-wrap items-center gap-4 text-xs text-white/55">
                   <span>{featuredPost.formattedDate}</span>
                   <span className="font-semibold text-amber-300 transition-transform duration-200 group-hover:translate-x-1">
-                    Lire le carnet →
+                    {c.t_lire_le_carnet}
                   </span>
                 </div>
               </div>
@@ -161,7 +146,7 @@ export default function BlogClientPage({ posts }: Props) {
                     : 'border border-stone-200 bg-white text-stone-600 hover:border-amber-200 hover:bg-amber-50 hover:text-amber-900'
                 }`}
               >
-                {CATEGORY_LABELS[category]}
+                {categoryLabels[category]}
               </button>
             ))}
           </div>
@@ -169,7 +154,7 @@ export default function BlogClientPage({ posts }: Props) {
           <div className="relative w-full md:w-80">
             <input
               type="text"
-              placeholder="Rechercher un carnet, un lieu, un détail"
+              placeholder={c.t_rechercher_un_carnet_un}
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
               className="w-full rounded-full border border-stone-200 bg-white py-3 pl-11 pr-4 text-sm text-stone-700 shadow-sm outline-none transition-all duration-200 placeholder:text-stone-400 focus:border-amber-300 focus:ring-2 focus:ring-amber-100"
@@ -192,7 +177,7 @@ export default function BlogClientPage({ posts }: Props) {
                 onClick={() => setSearchQuery('')}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-stone-400 transition-colors duration-200 hover:text-stone-600"
               >
-                Effacer
+                {c.t_effacer}
               </button>
             )}
           </div>
@@ -200,7 +185,7 @@ export default function BlogClientPage({ posts }: Props) {
 
         {searchQuery && (
           <p className="mt-4 text-sm text-stone-500">
-            {filteredPosts.length} article{filteredPosts.length > 1 ? 's' : ''} pour “{searchQuery}”.
+            {filteredPosts.length} {filteredPosts.length > 1 ? c.article_plural : c.article_singular} {c.search_for} “{searchQuery}”.
           </p>
         )}
       </section>
@@ -228,7 +213,7 @@ export default function BlogClientPage({ posts }: Props) {
           {(activeFilter === 'Tous' || activeFilter === 'Carnets Voyage') && carnets.length > 0 && (
             <section>
               <SectionHeader
-                eyebrow="Carnets"
+                eyebrow={c.cat_1_eyebrow}
                 title={c.carnets_title}
                 description={c.carnets_desc}
                 count={carnets.length}
@@ -244,7 +229,7 @@ export default function BlogClientPage({ posts }: Props) {
           {(activeFilter === 'Tous' || activeFilter === 'Découvertes Locales') && decouvertes.length > 0 && (
             <section className="rounded-[2rem] bg-amber-50 px-4 py-12 md:px-8">
               <SectionHeader
-                eyebrow="Pépites"
+                eyebrow={c.cat_2_eyebrow}
                 title={c.pepites_title}
                 description={c.pepites_desc}
                 count={decouvertes.length}
@@ -260,7 +245,7 @@ export default function BlogClientPage({ posts }: Props) {
           {(activeFilter === 'Tous' || activeFilter === 'Guides Pratiques') && guides.length > 0 && (
             <section>
               <SectionHeader
-                eyebrow="Guides"
+                eyebrow={c.cat_3_eyebrow}
                 title={c.guides_title}
                 description={c.guides_desc}
                 count={guides.length}
@@ -300,6 +285,7 @@ function SectionHeader({
   description: string
   count: number
 }) {
+  const c = useCmsContent('blog', BLOG_DEFAULTS)
   return (
     <div className="border-b border-stone-200 pb-5">
       <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">{eyebrow}</p>
@@ -309,7 +295,7 @@ function SectionHeader({
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-stone-600">{description}</p>
         </div>
         <span className="inline-flex rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-600">
-          {count} article{count > 1 ? 's' : ''}
+          {count} {count > 1 ? c.article_plural : c.article_singular}
         </span>
       </div>
     </div>
@@ -317,10 +303,13 @@ function SectionHeader({
 }
 
 function ArticleCard({ post }: { post: BlogPost & { formattedDate: string } }) {
+  const c = useCmsContent('blog', BLOG_DEFAULTS)
   const fallbackBg = CATEGORY_FALLBACK_BG[post.category ?? ''] ?? 'bg-stone-200'
   const [imageSrc, setImageSrc] = useState(post.featured_image ?? BADGE_FALLBACK_SRC)
 
+  // Resynchronise l'image si l'article change (ex. après un fallback onError).
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset sur changement de prop
     setImageSrc(post.featured_image ?? BADGE_FALLBACK_SRC)
   }, [post.featured_image])
 
@@ -385,7 +374,7 @@ function ArticleCard({ post }: { post: BlogPost & { formattedDate: string } }) {
           <div className="mt-auto flex items-center justify-between border-t border-stone-100 pt-4 text-xs text-stone-400">
             <span>{post.formattedDate}</span>
             <span className="font-semibold text-amber-700 transition-transform duration-200 group-hover:translate-x-1">
-              Lire le carnet →
+              {c.read_more}
             </span>
           </div>
         </div>

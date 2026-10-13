@@ -1,4 +1,4 @@
-export default {
+const articleSchema = {
   name: 'article',
   title: 'Article',
   type: 'document',
@@ -84,3 +84,5 @@ export default {
     },
   ],
 }
+
+export default articleSchema;

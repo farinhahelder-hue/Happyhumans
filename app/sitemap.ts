@@ -1,8 +1,8 @@
 import { MetadataRoute } from 'next';
 import { getKvSettings, isPageIndexable } from '@/lib/cms-settings-server';
 import { getAllPosts } from '@/lib/blog-supabase';
+import { SITE_URL as BASE_URL } from '@/lib/site-url';
 
-const BASE_URL = 'https://happyhumans.vercel.app';
 
 type Freq = 'weekly' | 'monthly' | 'yearly';
 
@@ -16,7 +16,6 @@ const PAGES: { path: string; page: string; priority: number; freq: Freq }[] = [
   { path: '/happiness-design',           page: 'happiness-design',          priority: 0.9, freq: 'monthly' },
   { path: '/sparring-partner',           page: 'sparring-partner',          priority: 0.8, freq: 'monthly' },
   { path: '/relations',                  page: 'relations',                 priority: 0.8, freq: 'monthly' },
-  { path: '/temoignages',                page: 'temoignages',               priority: 0.7, freq: 'monthly' },
   { path: '/booking',                    page: 'booking',                   priority: 0.6, freq: 'monthly' },
   { path: '/contact',                    page: 'contact',                   priority: 0.6, freq: 'monthly' },
   { path: '/blog',                       page: 'blog',                      priority: 0.8, freq: 'weekly' },

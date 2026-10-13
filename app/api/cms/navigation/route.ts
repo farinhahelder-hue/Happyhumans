@@ -21,7 +21,7 @@ export async function GET() {
 
   const navItem = (data || []).find((r: { block_key: string }) => r.block_key === 'nav_items');
   const items = navItem?.value ? JSON.parse(navItem.value) : null;
-  return NextResponse.json({ nav: items }, { headers: { 'Cache-Control': 'public, s-maxage=30' } });
+  return NextResponse.json({ nav: items }, { headers: { 'Cache-Control': 'public, max-age=0, s-maxage=10, stale-while-revalidate=30' } });
 }
 
 // PUT /api/cms/navigation — écriture (auth requis)

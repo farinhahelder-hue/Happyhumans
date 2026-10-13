@@ -1,9 +1,12 @@
 ﻿'use client'
-import { useState } from 'react'
+import { useState, Fragment, type ReactNode } from 'react'
 import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { useCmsContent } from '@/hooks/useCmsContent'
+import { HOME_DEFAULTS } from '@/lib/cms-defaults/home'
+import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
+import EditableImage from '@/components/EditableImage';
 
 const CARD_DEFS = {
   coaching: {
@@ -32,52 +35,8 @@ const CARD_DEFS = {
   },
 }
 
-const DEFAULTS = {
-  // Hero
-  hero_badge:           'Monica Schneider · Executive Coach · Happy Humans',
-  hero_title:           'Clarté, confiance et relations qui vous ressemblent',
-  hero_subtitle:        'Executive Coach certifiée AoEC · EMCC Practitioner · Philosophical Counselling',
-  hero_cta_primary:     'Séance découverte gratuite',
-  hero_cta_contact:     'Me contacter',
-  // Services
-  services_badge:       'Accompagnement',
-  services_title:       'Comment puis-je vous aider ?',
-  services_b2c_title:  'Pour les particuliers',
-  services_b2c_text:    'Managers, dirigeants, entrepreneurs ou personnes en transition qui veulent retrouver de la clarté, de la confiance et une direction qui leur ressemble vraiment.',
-  services_b2c_cta:    'Réserver une séance découverte →',
-  services_b2b_title:  'Pour les organisations',
-  services_b2b_text:    "Coaching de leadership, ateliers, séminaires et accompagnement du changement pour remettre de l'alignement et de l'élan dans les équipes.",
-  services_b2b_cta:     "Discuter d'un projet →",
-  // Cards section
-  cards_section_badge:  'Aller plus loin',
-  cards_section_title: 'Explorez les thématiques',
-  cards_link_label:    'Découvrir →',
-  // Booking
-  booking_badge:        'Agenda',
-  booking_widget_title: 'Choisissez votre créneau',
-  booking_widget_subtitle: 'Séance découverte offerte (1h) ou programme de coaching.',
-  // Contact
-  contact_section_badge: 'Contact',
-  contact_section_title: 'Une question ? Écrivez-moi',
-  contact_section_subtitle: 'Réponse sous 48h.',
-  form_success_title:  'Message envoyé !',
-  form_success_body:   'Monica vous répondra sous 48h à {email}.',
-  form_sending:        'Envoi en cours…',
-  form_submit:         'Envoyer le message',
-  // Card order (Explorez les thématiques)
-  home_card_order_1:   'coaching',
-  home_card_order_2:   'organisations',
-  home_card_order_3:   'happiness-design',
-  home_card_order_4:   'relations',
-  // Misc
-  logo_url:            '',
-  contact_email:       'happyhumans.coaching@gmail.com',
-  booking_modal_title: 'Choisissez votre créneau',
-  booking_modal_subtitle: 'Séance découverte offerte · 1h · Sans engagement',
-}
-
 export default function LandingPage() {
-  const c = useCmsContent('home', DEFAULTS)
+  const c = useCmsContent('home', HOME_DEFAULTS)
   const s = useCmsContent('settings', { contact_email: 'happyhumans.coaching@gmail.com', site_name: 'Happy Humans' })
   const [bookingOpen, setBookingOpen] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', message: '' })
@@ -108,213 +67,220 @@ export default function LandingPage() {
     finally { setSending(false) }
   }
 
+  // ── Sections de la page : ordre et affichage modifiables dans le CMS (admin → page → Structure) ──
+  const sections: Record<string, ReactNode> = {
+    hero: (
+      <section className="relative overflow-hidden bg-stone-900 px-6 py-24 text-center md:py-36 md:px-10">
+        <EditableImage page="home" fieldKey="hero_image" variant="cover"
+          src={c.hero_image}
+          alt={c.t_bureau_elegant_avec_lumiere}
+          className="absolute inset-0 h-full w-full object-cover opacity-20"
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(43,111,98,0.35),transparent_50%),radial-gradient(circle_at_bottom_left,rgba(182,140,94,0.2),transparent_40%)]" />
+        <div className="relative mx-auto max-w-3xl">
+          <p className="mb-5 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
+            {c.get('hero_badge')}
+          </p>
+          <h1 className="text-4xl font-serif font-light leading-tight text-white md:text-6xl">
+            {c.get('hero_title')}
+          </h1>
+          <p className="mt-6 text-base text-stone-300 md:text-lg">{c.get('hero_subtitle')}</p>
+          <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <button
+              onClick={() => setBookingOpen(true)}
+              className="rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
+            >
+              {c.get('hero_cta_primary')}
+            </button>
+            <Link
+              href="/contact"
+              className="rounded-full border border-stone-500 px-8 py-3.5 text-sm font-semibold text-stone-200 hover:border-white hover:text-white transition"
+            >
+              {c.get('hero_cta_contact')}
+            </Link>
+          </div>
+        </div>
+      </section>
+    ),
+    services: (
+      <section className="bg-[#f5f0e8] px-6 py-20 md:px-10 md:py-24" id="services">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-12 text-center">
+            <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('services_badge')}</p>
+            <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.services_title || 'Un accompagnement pour deux contextes'}</h2>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="rounded-2xl bg-white p-8 shadow-sm">
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef4f3]">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              </div>
+              <h3 className="mb-3 text-xl font-serif font-semibold text-stone-900">{c.get('services_b2c_title')}</h3>
+              <p className="mb-5 text-sm leading-relaxed text-stone-600">{c.get('services_b2c_text')}</p>
+              <button onClick={() => setBookingOpen(true)} className="text-sm font-semibold text-[#2d5f54] hover:underline">
+                {c.get('services_b2c_cta')}
+              </button>
+            </div>
+            <div className="rounded-2xl bg-white p-8 shadow-sm">
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef4f3]">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+              </div>
+              <h3 className="mb-3 text-xl font-serif font-semibold text-stone-900">{c.get('services_b2b_title')}</h3>
+              <p className="mb-5 text-sm leading-relaxed text-stone-600">{c.get('services_b2b_text')}</p>
+              <a href="#contact" className="text-sm font-semibold text-[#2d5f54] hover:underline">
+                {c.get('services_b2b_cta')}
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    ),
+    explorer: (
+      <section className="bg-white px-6 py-20 md:px-10 md:py-24">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-12 text-center">
+            <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('cards_section_badge')}</p>
+            <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('cards_section_title')}</h2>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {orderedCards.map((card) => (
+              <Link key={card.href} href={card.href} className="group rounded-2xl bg-[#f5f0e8] p-7 hover:bg-[#eef5f3] transition">
+                <div className="mb-5 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
+                  {card.icon}
+                </div>
+                <h3 className="mb-2 text-lg font-serif font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">{card.title}</h3>
+                <p className="text-sm text-stone-500 leading-relaxed mb-4">{card.desc}</p>
+                <span className="text-sm font-semibold text-[#2d5f54]">{c.get('cards_link_label')}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+    ),
+    booking: (
+      <section className="bg-[#f5f0e8] px-6 py-20 md:px-10 md:py-24" id="booking">
+        <div className="mx-auto max-w-4xl">
+          <div className="mb-10 text-center">
+            <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('booking_badge')}</p>
+            <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('booking_widget_title')}</h2>
+            <p className="mt-3 text-sm text-stone-500">{c.get('booking_widget_subtitle')}</p>
+          </div>
+            
+          {/* Calendly CTA Card */}
+          <a
+            href="https://calendly.com/happyhumans-coaching/seance-decouverte-coaching"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative mx-auto flex max-w-sm flex-col items-center rounded-2xl bg-gradient-to-br from-[#2d5f54] via-[#2f6b61] to-[#3d7a72] p-8 text-center shadow-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#2d5f54]/20"
+          >
+            {/* Decorative circles */}
+            <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/10 blur-2xl" />
+            <div className="absolute -left-4 -bottom-4 h-20 w-20 rounded-full bg-white/5 blur-xl" />
+              
+            {/* Calendar icon */}
+            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+              <svg className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+                <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>
+              </svg>
+            </div>
+              
+            {/* Title */}
+            <p className="mb-2 font-serif text-xl font-semibold tracking-wide text-white">
+              {c.t_seance_decouverte}
+            </p>
+            <p className="mb-6 text-sm text-emerald-100">
+              {c.t_gratuite_1h_sans_engagement}
+            </p>
+              
+            {/* Button */}
+            <span className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#2d5f54] shadow-lg transition-all duration-200 group-hover:gap-3">
+              {c.t_reserver_maintenant}
+              <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </span>
+              
+            {/* Trust badges */}
+            <div className="mt-6 flex items-center justify-center gap-4 text-xs text-emerald-200">
+              <span className="flex items-center gap-1">
+                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                {c.t_confidentiel}
+              </span>
+              <span className="flex items-center gap-1">
+                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                {c.t_sans_engagement}
+              </span>
+              <span className="flex items-center gap-1">
+                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                {c.t_reponse_48h}
+              </span>
+            </div>
+          </a>
+        </div>
+      </section>
+    ),
+    contact: (
+      <section className="bg-white px-6 py-20 md:px-10 md:py-24" id="contact">
+        <div className="mx-auto max-w-xl">
+          <div className="mb-10 text-center">
+            <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('contact_section_badge')}</p>
+            <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('contact_section_title')}</h2>
+            <p className="mt-3 text-sm text-stone-500">{c.get('contact_section_subtitle')}</p>
+          </div>
+          {sent ? (
+            <div className="rounded-2xl bg-emerald-50 border border-emerald-200 p-10 text-center">
+              <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[#2d5f54] flex items-center justify-center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+              <h3 className="text-lg font-semibold text-stone-900 mb-2">{c.get('form_success_title')}</h3>
+              <p className="text-sm text-stone-500">{c.form_success_body.replace('{email}', form.email)}</p>
+            </div>
+          ) : (
+            <form onSubmit={handleContact} className="space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-stone-400">{c.t_nom}</label>
+                  <input required value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder={c.t_votre_nom} />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-stone-400">{c.t_email}</label>
+                  <input required type="email" value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder={c.t_votre_email_com} />
+                </div>
+              </div>
+              <div>
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-stone-400">{c.t_message}</label>
+                <textarea required value={form.message} onChange={e => setForm(f => ({...f, message: e.target.value}))} rows={4} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54] resize-none" placeholder={c.t_votre_question_ou_demande} />
+              </div>
+              <button type="submit" disabled={sending} className="w-full rounded-full bg-[#2d5f54] py-3.5 text-sm font-semibold text-white hover:bg-[#1e3a34] disabled:opacity-60 transition">
+                {sending ? c.form_sending : c.form_submit}
+              </button>
+              {s.contact_email && (
+                <p className="text-center text-xs text-stone-400">
+                  {c.contact_email_label} <a href={`mailto:${s.contact_email}`} className="text-[#2d5f54] hover:underline">{s.contact_email}</a>
+                </p>
+              )}
+            </form>
+          )}
+        </div>
+      </section>
+    ),
+  }
+  const sectionIds = resolveSections(PAGE_SECTIONS.home, c.sections_layout)
+
   return (
     <div className="min-h-screen bg-[#f5f0e8] font-sans">
       <Header />
       <main className="pt-[72px]">
-
-        {/* ══ HERO ══════════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden bg-stone-900 px-6 py-24 text-center md:py-36 md:px-10">
-          <img
-            src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=85&auto=format&fit=crop"
-            alt="Bureau élégant avec lumière naturelle, ambiance coaching professionnel"
-            className="absolute inset-0 h-full w-full object-cover opacity-20"
-          />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(43,111,98,0.35),transparent_50%),radial-gradient(circle_at_bottom_left,rgba(182,140,94,0.2),transparent_40%)]" />
-          <div className="relative mx-auto max-w-3xl">
-            <p className="mb-5 text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
-              {c.get('hero_badge')}
-            </p>
-            <h1 className="text-4xl font-serif font-light leading-tight text-white md:text-6xl">
-              {c.get('hero_title')}
-            </h1>
-            <p className="mt-6 text-base text-stone-300 md:text-lg">{c.get('hero_subtitle')}</p>
-            <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-              <button
-                onClick={() => setBookingOpen(true)}
-                className="rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
-              >
-                {c.get('hero_cta_primary')}
-              </button>
-              <Link
-                href="/contact"
-                className="rounded-full border border-stone-500 px-8 py-3.5 text-sm font-semibold text-stone-200 hover:border-white hover:text-white transition"
-              >
-                {c.get('hero_cta_contact')}
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* ══ SERVICES ══════════════════════════════════════════════════ */}
-        <section className="bg-[#f5f0e8] px-6 py-20 md:px-10 md:py-24" id="services">
-          <div className="mx-auto max-w-5xl">
-            <div className="mb-12 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('services_badge')}</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.services_title || 'Un accompagnement pour deux contextes'}</h2>
-            </div>
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="rounded-2xl bg-white p-8 shadow-sm">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef4f3]">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                </div>
-                <h3 className="mb-3 text-xl font-serif font-semibold text-stone-900">{c.get('services_b2c_title')}</h3>
-                <p className="mb-5 text-sm leading-relaxed text-stone-600">{c.get('services_b2c_text')}</p>
-                <button onClick={() => setBookingOpen(true)} className="text-sm font-semibold text-[#2d5f54] hover:underline">
-                  {c.get('services_b2c_cta')}
-                </button>
-              </div>
-              <div className="rounded-2xl bg-white p-8 shadow-sm">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-[#eef4f3]">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
-                </div>
-                <h3 className="mb-3 text-xl font-serif font-semibold text-stone-900">{c.get('services_b2b_title')}</h3>
-                <p className="mb-5 text-sm leading-relaxed text-stone-600">{c.get('services_b2b_text')}</p>
-                <a href="#contact" className="text-sm font-semibold text-[#2d5f54] hover:underline">
-                  {c.get('services_b2b_cta')}
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ══ EXPLORER L'ACCOMPAGNEMENT ════════════════════════════════ */}
-        <section className="bg-white px-6 py-20 md:px-10 md:py-24">
-          <div className="mx-auto max-w-5xl">
-            <div className="mb-12 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('cards_section_badge')}</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('cards_section_title')}</h2>
-            </div>
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {orderedCards.map((card) => (
-                <Link key={card.href} href={card.href} className="group rounded-2xl bg-[#f5f0e8] p-7 hover:bg-[#eef5f3] transition">
-                  <div className="mb-5 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
-                    {card.icon}
-                  </div>
-                  <h3 className="mb-2 text-lg font-serif font-semibold text-stone-900 group-hover:text-[#2d5f54] transition">{card.title}</h3>
-                  <p className="text-sm text-stone-500 leading-relaxed mb-4">{card.desc}</p>
-                  <span className="text-sm font-semibold text-[#2d5f54]">{c.get('cards_link_label')}</span>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ══ BOOKING ═══════════════════════════════════════════════════ */}
-        <section className="bg-[#f5f0e8] px-6 py-20 md:px-10 md:py-24" id="booking">
-          <div className="mx-auto max-w-4xl">
-            <div className="mb-10 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('booking_badge')}</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('booking_widget_title')}</h2>
-              <p className="mt-3 text-sm text-stone-500">{c.get('booking_widget_subtitle')}</p>
-            </div>
-            
-            {/* Calendly CTA Card */}
-            <a
-              href="https://calendly.com/happyhumans-coaching/seance-decouverte-coaching"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative mx-auto flex max-w-sm flex-col items-center rounded-2xl bg-gradient-to-br from-[#2d5f54] via-[#2f6b61] to-[#3d7a72] p-8 text-center shadow-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#2d5f54]/20"
-            >
-              {/* Decorative circles */}
-              <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/10 blur-2xl" />
-              <div className="absolute -left-4 -bottom-4 h-20 w-20 rounded-full bg-white/5 blur-xl" />
-              
-              {/* Calendar icon */}
-              <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
-                <svg className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                  <line x1="16" y1="2" x2="16" y2="6"/>
-                  <line x1="8" y1="2" x2="8" y2="6"/>
-                  <line x1="3" y1="10" x2="21" y2="10"/>
-                  <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>
-                </svg>
-              </div>
-              
-              {/* Title */}
-              <p className="mb-2 font-serif text-xl font-semibold tracking-wide text-white">
-                Séance découverte
-              </p>
-              <p className="mb-6 text-sm text-emerald-100">
-                gratuite · 1h · sans engagement
-              </p>
-              
-              {/* Button */}
-              <span className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-[#2d5f54] shadow-lg transition-all duration-200 group-hover:gap-3">
-                Réserver maintenant
-                <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-              </span>
-              
-              {/* Trust badges */}
-              <div className="mt-6 flex items-center justify-center gap-4 text-xs text-emerald-200">
-                <span className="flex items-center gap-1">
-                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M20 6L9 17l-5-5"/>
-                  </svg>
-                  Confidentiel
-                </span>
-                <span className="flex items-center gap-1">
-                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M20 6L9 17l-5-5"/>
-                  </svg>
-                  Sans engagement
-                </span>
-                <span className="flex items-center gap-1">
-                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M20 6L9 17l-5-5"/>
-                  </svg>
-                  Réponse 48h
-                </span>
-              </div>
-            </a>
-          </div>
-        </section>
-
-        {/* ══ CONTACT ═══════════════════════════════════════════════════ */}
-        <section className="bg-white px-6 py-20 md:px-10 md:py-24" id="contact">
-          <div className="mx-auto max-w-xl">
-            <div className="mb-10 text-center">
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('contact_section_badge')}</p>
-              <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('contact_section_title')}</h2>
-              <p className="mt-3 text-sm text-stone-500">{c.get('contact_section_subtitle')}</p>
-            </div>
-            {sent ? (
-              <div className="rounded-2xl bg-emerald-50 border border-emerald-200 p-10 text-center">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[#2d5f54] flex items-center justify-center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-                <h3 className="text-lg font-semibold text-stone-900 mb-2">{c.get('form_success_title')}</h3>
-                <p className="text-sm text-stone-500">{c.form_success_body.replace('{email}', form.email)}</p>
-              </div>
-            ) : (
-              <form onSubmit={handleContact} className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-stone-400">Nom *</label>
-                    <input required value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder="Votre nom" />
-                  </div>
-                  <div>
-                    <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-stone-400">Email *</label>
-                    <input required type="email" value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54]" placeholder="votre@email.com" />
-                  </div>
-                </div>
-                <div>
-                  <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-stone-400">Message *</label>
-                  <textarea required value={form.message} onChange={e => setForm(f => ({...f, message: e.target.value}))} rows={4} className="w-full rounded-xl border border-stone-200 px-4 py-3 text-sm outline-none focus:border-[#2d5f54] resize-none" placeholder="Votre question ou demande…" />
-                </div>
-                <button type="submit" disabled={sending} className="w-full rounded-full bg-[#2d5f54] py-3.5 text-sm font-semibold text-white hover:bg-[#1e3a34] disabled:opacity-60 transition">
-                  {sending ? c.form_sending : c.form_submit}
-                </button>
-                {s.contact_email && (
-                  <p className="text-center text-xs text-stone-400">
-                    Ou directement par email : <a href={`mailto:${s.contact_email}`} className="text-[#2d5f54] hover:underline">{s.contact_email}</a>
-                  </p>
-                )}
-              </form>
-            )}
-          </div>
-        </section>
-
+        {sectionIds.map(id => (
+          <Fragment key={id}>{sections[id]}</Fragment>
+        ))}
       </main>
 
       <Footer />
@@ -346,7 +312,7 @@ export default function LandingPage() {
                 className="inline-flex items-center gap-2 rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"
                 onClick={() => setBookingOpen(false)}
               >
-                Réserver via Calendly →
+                {c.t_reserver_via_calendly}
               </a>
             </div>
           </div>

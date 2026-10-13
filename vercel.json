@@ -7,23 +7,5 @@
       "path": "/api/keep-alive",
       "schedule": "0 8 * * *"
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/home.html",
-      "destination": "/home.html"
-    },
-    {
-      "source": "/admin.html",
-      "destination": "/admin.html"
-    },
-    {
-      "source": "/cms.html",
-      "destination": "/cms.html"
-    },
-    {
-      "source": "/cms-complete.html",
-      "destination": "/cms-complete.html"
-    }
   ]
 }

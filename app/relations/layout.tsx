@@ -1,6 +1,8 @@
 ﻿import type { Metadata } from 'next'
-export const metadata: Metadata = {
-  title: "Relations & Attachement — Comprendre vos liens",
-  description: "Découvrez votre style d'attachement (sécure, anxieux, évitant) et transformez durablement vos relations. Quiz gratuit · Ressources · Séance offerte avec Monica Schneider.",
+import { pageMetadata } from '@/lib/page-seo'
+import { RELATIONS_DEFAULTS } from '@/lib/cms-defaults/relations'
+export const revalidate = 300 // la page est régénérée au plus toutes les 5 min (+ immédiatement à chaque sauvegarde du CMS)
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata('relations', RELATIONS_DEFAULTS)
 }
 export default function Layout({ children }: { children: React.ReactNode }) { return <>{children}</> }

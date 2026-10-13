@@ -3,11 +3,17 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { readCookieConsent, writeCookieConsent } from '@/lib/consent';
+import { useCmsContent } from '@/hooks/useCmsContent';
+import { SITE_DEFAULTS } from '@/lib/cms-defaults/site';
 
 export default function CookieConsentBanner() {
   const [visible, setVisible] = useState(false);
+  // Textes modifiables dans le CMS (page « Textes communs »)
+  const c = useCmsContent('site', SITE_DEFAULTS);
 
+  // Lecture du cookie reportée après hydratation pour éviter tout mismatch serveur/client.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydratation : lecture cookie côté client uniquement
     setVisible(readCookieConsent() === null);
   }, []);
 
@@ -23,26 +29,25 @@ export default function CookieConsentBanner() {
       <div className="mx-auto max-w-5xl rounded-2xl border border-stone-200 bg-white shadow-2xl">
         <div className="p-5 md:p-6">
           <p className="text-xs uppercase tracking-[0.16em] text-eucalyptus font-semibold mb-2">
-            Cookies et vie privee
+            {c.cookie_title}
           </p>
           <p className="text-sm md:text-base text-charcoal/85 leading-relaxed">
-            Nous utilisons des cookies strictement necessaires au fonctionnement du site. Les
-            cookies de mesure d'audience et marketing ne sont actives qu'avec ton consentement.
+            {c.cookie_text}
           </p>
           <p className="text-sm mt-3 text-charcoal/75">
-            Details :{' '}
+            {c.cookie_details}{' '}
             <Link
               href="/politique-confidentialite"
               className="text-eucalyptus hover:text-teal transition font-medium"
             >
-              Politique de confidentialite
+              {c.cookie_privacy_link}
             </Link>{' '}
-            et{' '}
+            {c.cookie_and}{' '}
             <Link
               href="/mentions-legales"
               className="text-eucalyptus hover:text-teal transition font-medium"
             >
-              Mentions legales
+              {c.cookie_legal_link}
             </Link>
             .
           </p>
@@ -52,14 +57,14 @@ export default function CookieConsentBanner() {
               onClick={() => setConsent('rejected')}
               className="px-5 py-2.5 rounded-lg border border-stone-300 text-charcoal hover:border-stone-400 transition"
             >
-              Refuser
+              {c.cookie_refuse}
             </button>
             <button
               type="button"
               onClick={() => setConsent('accepted')}
               className="px-5 py-2.5 rounded-lg bg-eucalyptus text-white font-medium hover:bg-eucalyptus/90 transition"
             >
-              Accepter
+              {c.cookie_accept}
             </button>
           </div>
         </div>

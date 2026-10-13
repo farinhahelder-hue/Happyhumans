@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
-export const metadata: Metadata = {
-  title: 'Sparring Partner — Monica Schneider · Happy Humans',
-  description: "Monica Schneider comme sparring partner stratégique pour marketers et dirigeants. Ex-L'Oréal, ex-LVMH. Challenger vos idées, préparer vos pitchs, naviguer vos transitions.",
+import { pageMetadata } from '@/lib/page-seo'
+import { SPARRING_PARTNER_DEFAULTS } from '@/lib/cms-defaults/sparring-partner'
+export const revalidate = 300 // la page est régénérée au plus toutes les 5 min (+ immédiatement à chaque sauvegarde du CMS)
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata('sparring-partner', SPARRING_PARTNER_DEFAULTS)
 }
 export default function Layout({ children }: { children: React.ReactNode }) { return <>{children}</> }

@@ -11,6 +11,12 @@ type InlineEditContextValue = {
   saveAll: () => Promise<void>;
   isSaving: boolean;
   changeCount: number;
+  /** Brouillons en attente de publication, par page (rapportés par useCmsContent pendant l'édition) */
+  draftCounts: Record<string, number>;
+  totalDrafts: number;
+  reportDrafts: (page: string, count: number) => void;
+  publishDrafts: () => Promise<void>;
+  isPublishing: boolean;
 };
 
 const InlineEditContext = createContext<InlineEditContextValue | null>(null);
@@ -23,6 +29,12 @@ export function InlineEditProvider({ children }: { children: React.ReactNode }) 
   const [isEditing, setIsEditing] = useState(false);
   const [pendingChanges, setPendingChanges] = useState<Record<string, Record<string, string>>>({});
   const [isSaving, setIsSaving] = useState(false);
+  const [draftCounts, setDraftCounts] = useState<Record<string, number>>({});
+  const [isPublishing, setIsPublishing] = useState(false);
+
+  const reportDrafts = useCallback((page: string, count: number) => {
+    setDraftCounts(prev => (prev[page] === count ? prev : { ...prev, [page]: count }));
+  }, []);
 
   const discardChanges = useCallback(() => {
     setPendingChanges({});
@@ -73,7 +85,7 @@ export function InlineEditProvider({ children }: { children: React.ReactNode }) 
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify({ page: field.page, block_key: field.key, value: field.value }),
+          body: JSON.stringify({ page: field.page, block_key: field.key, value: field.value, draft: true }),
         }).then(async res => {
           if (!res.ok) {
             const d = await res.json().catch(() => ({}));
@@ -127,6 +139,35 @@ export function InlineEditProvider({ children }: { children: React.ReactNode }) 
     }
   }, [pendingChanges]);
 
+  // Publier : recopie les brouillons des pages concernées vers le site public
+  const publishDrafts = useCallback(async () => {
+    const pages = Object.entries(draftCounts).filter(([, n]) => n > 0).map(([p]) => p);
+    if (pages.length === 0) return;
+    setIsPublishing(true);
+    const errors: string[] = [];
+    let published = 0;
+    for (const page of pages) {
+      try {
+        const res = await fetch('/api/cms/publish', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ page }),
+        });
+        const d = await res.json().catch(() => ({}));
+        if (!res.ok) errors.push(`${page} : ${d.error || res.status}`);
+        else { published += d.published || 0; bustCmsCache(page); }
+      } catch {
+        errors.push(`${page} : erreur réseau`);
+      }
+    }
+    setIsPublishing(false);
+    if (errors.length) window.dispatchEvent(new CustomEvent('inline-edit-error', { detail: { errors, partial: published > 0 } }));
+    else window.dispatchEvent(new CustomEvent('inline-edit-published', { detail: { count: published, pages } }));
+    // recharge le contenu affiché (le brouillon n'existe plus, le publié a changé)
+    window.dispatchEvent(new CustomEvent('inline-edit-saved', { detail: { count: 0, pages, silent: true } }));
+  }, [draftCounts]);
+
   // Raccourci clavier global Ctrl+S / Cmd+S
   useEffect(() => {
     if (!isEditing) return;
@@ -152,10 +193,20 @@ export function InlineEditProvider({ children }: { children: React.ReactNode }) 
       saveAll,
       isSaving,
       changeCount: countChanges(pendingChanges),
+      draftCounts,
+      totalDrafts: Object.values(draftCounts).reduce((a, n) => a + n, 0),
+      reportDrafts,
+      publishDrafts,
+      isPublishing,
     }}>
       {children}
     </InlineEditContext.Provider>
   );
+}
+
+/** Comme useInlineEdit, mais renvoie null hors provider (utilisé par useCmsContent, qui peut tourner partout). */
+export function useOptionalInlineEdit() {
+  return useContext(InlineEditContext);
 }
 
 export function useInlineEdit() {

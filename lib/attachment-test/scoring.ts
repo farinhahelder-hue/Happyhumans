@@ -1,6 +1,7 @@
 import type { AttachmentAnswer, AttachmentProfile, AttachmentResult } from './types';
 import { attachmentQuestions } from './questions';
 import { profilesContent } from './results-content';
+import { TEST_ATTACHEMENT_DEFAULTS as D } from '@/lib/cms-defaults/test-attachement';
 
 const MIN_SCORE = 8;
 const MAX_SCORE = 40;
@@ -52,7 +53,6 @@ export function computeAttachmentResult(
     anxietyPercent,
     avoidancePercent,
     ...content,
-    disclaimer:
-      "Ce test est un outil de découverte personnelle et ne constitue en aucun cas un diagnostic médical ou psychologique. Les résultats reflètent des tendances générales et peuvent varier selon le contexte de votre vie. Pour un accompagnement approfondi, nous vous recommandons de consulter un professionnel de santé mentale.",
+    disclaimer: D.disclaimer,
   };
 }

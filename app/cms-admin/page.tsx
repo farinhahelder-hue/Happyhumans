@@ -7,12 +7,19 @@ import EnhancedRichContent from '@/components/EnhancedRichContent';
 import { bustCmsCache } from '@/hooks/useCmsContent';
 import MediaLibrary from '@/components/MediaLibrary';
 import { sanitizeHtml } from '@/lib/sanitize-html';
+import { uploadImage } from '@/lib/upload-client';
+import SiteLogo, { logoPx, resolveLogo } from '@/components/SiteLogo';
 import CarouselEditor from '@/components/admin/CarouselEditor';
 import CarouselGenerator from '@/components/admin/CarouselGenerator';
 import BlogGenerator from '@/components/admin/BlogGenerator';
 import { PAGE_DEFAULTS } from '@/lib/cms-page-defaults';
+import { basePage, isDraftPage, planDraftSave } from '@/lib/cms-drafts';
+import { PAGE_SECTIONS, parseLayout, fullOrder, serializeLayout, moveSection, toggleSection, type SectionDef, type SectionsLayout } from '@/lib/cms-sections';
 import { THEMES } from '@/components/DynamicTheme';
-import { NavItem } from '@/hooks/useCmsNavigation';
+import NavigationEditor from '@/components/cms/NavigationEditor';
+
+// Numéro du dernier message affiché : un message récent n'est pas effacé par le minuteur d'un message plus ancien
+let toastSeq = 0;
 
 const RichEditor = dynamic(() => import('@/components/RichEditor'), { ssr: false });
 
@@ -22,13 +29,6 @@ type Article = {
   published: boolean; published_at: string; created_at: string;
   excerpt: string; featured_image: string; content?: string; voice_notes?: string;
   seo_title?: string; seo_description?: string; og_image?: string;
-};
-
-type Demande = {
-  id: string; prenom: string; nom: string; email: string;
-  telephone: string; destination: string; style_voyage: string;
-  duree_jours: number; budget_fourchette: string; nb_voyageurs: number;
-  mois_depart: string; notes: string; statut: string; created_at: string;
 };
 
 type Setting = { id: number; key: string; value: string; label: string; group_name: string; type?: string; };
@@ -91,20 +91,69 @@ function getReadTimeMinutes(content?: string) {
 }
 
 // ─── Config pages CMS ─────────────────────────────────────────
-const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'richtext' | 'select'; options?: string[]; optionLabels?: string[] }[] }> = {
+// ── Éditeur de structure : ordre et affichage des sections d'une page ─────────────
+// (logique pure et testée : lib/cms-sections.ts). Les sections verrouillées (🔒) restent en place.
+function SectionsEditor({ defs, value, onChange }: { defs: SectionDef[]; value: string; onChange: (v: string) => void }) {
+  const layout = parseLayout(value);
+  const order = fullOrder(defs, layout);
+  const hidden = new Set(layout.hidden);
+  const byId = new Map(defs.map(d => [d.id, d]));
+  const apply = (l: SectionsLayout) => onChange(serializeLayout(defs, l));
+  const isPinned = (id: string) => !!byId.get(id)?.pin;
+  const arrow: React.CSSProperties = { width: 30, height: 30, borderRadius: '.4rem', border: '1px solid #d6d3d1', background: 'white', color: '#44403c', fontSize: '.85rem', cursor: 'pointer' };
+  if (defs.length === 0) return <p style={{ color: '#888', fontSize: '.85rem' }}>Aucune section réordonnable sur cette page.</p>;
+  return (
+    <div>
+      <p style={{ fontSize: '.8rem', color: '#7a7a7a', margin: '0 0 .75rem', lineHeight: 1.5 }}>
+        ▲ ▼ pour changer l’ordre, 👁 pour masquer ou afficher une section. Les sections 🔒 restent à leur place.
+        Cliquez ensuite sur « Enregistrer le brouillon », vérifiez l’aperçu, puis « Publier ».
+      </p>
+      <ol style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '.4rem' }}>
+        {order.map((id, i) => {
+          const def = byId.get(id)!;
+          const pinned = isPinned(id);
+          const off = hidden.has(id);
+          const canUp = !pinned && i > 0 && !isPinned(order[i - 1]);
+          const canDown = !pinned && i < order.length - 1 && !isPinned(order[i + 1]);
+          return (
+            <li key={id} style={{ display: 'flex', alignItems: 'center', gap: '.6rem', padding: '.5rem .75rem', border: '1.5px solid #ece8e2', borderRadius: '.6rem', background: off ? '#f5f5f4' : 'white', opacity: off ? .65 : 1 }}>
+              <span style={{ width: 22, color: '#a8a29e', fontSize: '.8rem', fontWeight: 700 }}>{i + 1}</span>
+              <span style={{ flex: 1, fontSize: '.9rem', fontWeight: 600, color: '#292524', textDecoration: off ? 'line-through' : 'none' }}>
+                {def.label}
+                {pinned && <span title="Section fixe : elle ne peut être ni déplacée ni masquée" style={{ marginLeft: '.5rem', fontWeight: 400, fontSize: '.75rem', color: '#78716c' }}>🔒 {def.pin === 'start' ? 'toujours en haut' : 'toujours en bas'}</span>}
+                {off && <span style={{ marginLeft: '.5rem', fontWeight: 600, fontSize: '.72rem', color: '#a16207' }}>masquée</span>}
+              </span>
+              <button type="button" aria-label={`Monter « ${def.label} »`} disabled={!canUp} onClick={() => apply(moveSection(defs, layout, id, -1))} style={{ ...arrow, opacity: canUp ? 1 : .3, cursor: canUp ? 'pointer' : 'default' }}>▲</button>
+              <button type="button" aria-label={`Descendre « ${def.label} »`} disabled={!canDown} onClick={() => apply(moveSection(defs, layout, id, 1))} style={{ ...arrow, opacity: canDown ? 1 : .3, cursor: canDown ? 'pointer' : 'default' }}>▼</button>
+              <button type="button" aria-label={off ? `Afficher « ${def.label} »` : `Masquer « ${def.label} »`} disabled={pinned} onClick={() => apply(toggleSection(defs, layout, id))} style={{ ...arrow, opacity: pinned ? .3 : 1, cursor: pinned ? 'default' : 'pointer' }}>{off ? '🚫' : '👁'}</button>
+            </li>
+          );
+        })}
+      </ol>
+      {value.trim() !== '' && (
+        <button type="button" onClick={() => onChange('')} style={{ marginTop: '.75rem', background: 'none', border: 'none', color: '#01696f', cursor: 'pointer', fontSize: '.82rem', fontWeight: 600 }}>
+          ↺ Rétablir l’ordre d’origine
+        </button>
+      )}
+    </div>
+  );
+}
+
+const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'richtext' | 'select' | 'sections'; options?: string[]; optionLabels?: string[] }[] }> = {
   // ── Ordre du panneau gauche ──────────────────────────────────
   // 1. Accueil
   'home': {
     label: 'Accueil',
     emoji: '🏠',
     sections: [
-      // Hero
+      { key: 'contact_email_label', label: 'Contact — Mention « Ou directement par email : »', type: 'text' },
+      { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
+      { key: 'hero_image', label: 'Hero — Photo de fond', type: 'image' },
       { key: 'hero_badge',            label: 'Hero — Badge (ex: Monica Schneider · Executive Coach)',  type: 'text' },
       { key: 'hero_title',            label: 'Hero — Titre principal',                                type: 'text' },
       { key: 'hero_subtitle',         label: 'Hero — Sous-titre / certifications',                   type: 'textarea' },
       { key: 'hero_cta_primary',      label: 'Hero — Bouton principal',                              type: 'text' },
       { key: 'hero_cta_contact',      label: 'Hero — Bouton contact',                                type: 'text' },
-      // Services
       { key: 'services_badge',        label: 'Services — Badge section',                             type: 'text' },
       { key: 'services_title',        label: 'Services — Titre section',                             type: 'text' },
       { key: 'services_b2c_title',    label: 'Services — Particuliers : Titre',                      type: 'text' },
@@ -113,11 +162,9 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'services_b2b_title',    label: 'Services — Organisations : Titre',                     type: 'text' },
       { key: 'services_b2b_text',     label: 'Services — Organisations : Texte',                      type: 'textarea' },
       { key: 'services_b2b_cta',      label: 'Services — Organisations : Bouton',                    type: 'text' },
-      // Cards section
       { key: 'cards_section_badge',   label: 'Cartes — Badge section',                              type: 'text' },
       { key: 'cards_section_title',  label: 'Cartes — Titre section',                               type: 'text' },
       { key: 'cards_link_label',     label: 'Cartes — Label lien "Découvrir"',                      type: 'text' },
-      // Ordre des rubriques (accueil)
       { key: 'home_card_order_1', label: 'Ordre — Position 1', type: 'select',
         options: ['coaching', 'organisations', 'happiness-design', 'relations'],
         optionLabels: ['⭐ Coaching', '🏢 Organisations', '☀️ Happiness Design', '💚 Relations'] },
@@ -130,11 +177,9 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'home_card_order_4', label: 'Ordre — Position 4', type: 'select',
         options: ['coaching', 'organisations', 'happiness-design', 'relations'],
         optionLabels: ['⭐ Coaching', '🏢 Organisations', '☀️ Happiness Design', '💚 Relations'] },
-      // Booking
       { key: 'booking_badge',        label: 'Booking — Badge',                                       type: 'text' },
       { key: 'booking_modal_title',  label: 'Booking modal — Titre',                                type: 'text' },
       { key: 'booking_modal_subtitle', label: 'Booking modal — Sous-titre',                         type: 'textarea' },
-      // Contact section
       { key: 'contact_section_badge',   label: 'Contact — Badge section',                            type: 'text' },
       { key: 'contact_section_title',  label: 'Contact — Titre section',                            type: 'text' },
       { key: 'contact_section_subtitle', label: 'Contact — Sous-titre section',                    type: 'text' },
@@ -143,6 +188,22 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'form_sending',         label: 'Formulaire — Texte envoi',                            type: 'text' },
       { key: 'form_submit',          label: 'Formulaire — Bouton envoi',                           type: 'text' },
       { key: 'contact_email',        label: 'Email contact',                                       type: 'text' },
+      { key: 'booking_widget_title', label: 'Réservation — Titre « Choisissez votre créneau »', type: 'text' },
+      { key: 'booking_widget_subtitle', label: 'Réservation — Sous-titre « Séance découverte offerte (1h) ou programme de… »', type: 'text' },
+      { key: 't_bureau_elegant_avec_lumiere', label: 'Section 1 · Clarté, confiance et relations… — Texte alternatif image « Bureau élégant avec lumière naturelle, ambiance coaching professionnel »', type: 'text' },
+      { key: 't_seance_decouverte', label: 'Section 2 · Choisissez votre créneau — Texte « Séance découverte »', type: 'text' },
+      { key: 't_gratuite_1h_sans_engagement', label: 'Section 2 · Choisissez votre créneau — Texte « gratuite · 1h · sans engagement »', type: 'text' },
+      { key: 't_reserver_maintenant', label: 'Section 2 · Choisissez votre créneau — Texte « Réserver maintenant »', type: 'text' },
+      { key: 't_confidentiel', label: 'Section 2 · Choisissez votre créneau — Texte « Confidentiel »', type: 'text' },
+      { key: 't_sans_engagement', label: 'Section 2 · Choisissez votre créneau — Texte « Sans engagement »', type: 'text' },
+      { key: 't_reponse_48h', label: 'Section 2 · Choisissez votre créneau — Texte « Réponse 48h »', type: 'text' },
+      { key: 't_nom', label: 'Section 3 · Une question ? Écrivez-moi — Libellé « Nom * »', type: 'text' },
+      { key: 't_votre_nom', label: 'Section 3 · Une question ? Écrivez-moi — Texte indicatif « Votre nom »', type: 'text' },
+      { key: 't_email', label: 'Section 3 · Une question ? Écrivez-moi — Libellé « Email * »', type: 'text' },
+      { key: 't_votre_email_com', label: 'Section 3 · Une question ? Écrivez-moi — Texte indicatif « votre@email.com »', type: 'text' },
+      { key: 't_message', label: 'Section 3 · Une question ? Écrivez-moi — Libellé « Message * »', type: 'text' },
+      { key: 't_votre_question_ou_demande', label: 'Section 3 · Une question ? Écrivez-moi — Texte indicatif « Votre question ou demande… »', type: 'text' },
+      { key: 't_reserver_via_calendly', label: 'Textes de la page — Lien « Réserver via Calendly → »', type: 'text' },
     ],
   },
   // 2. À propos
@@ -150,17 +211,13 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'À propos',
     emoji: '👋',
     sections: [
+      { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
       { key: 'hero_image',        label: 'Photo principale (hero)',         type: 'image' },
       { key: 'hero_badge',        label: 'Badge hero',                     type: 'text' },
       { key: 'page_title',        label: 'Titre de la page',               type: 'text' },
       { key: 'intro_text',        label: "Texte d'introduction",           type: 'richtext' },
-      { key: 'bio_badge',         label: 'Section bio — Badge',            type: 'text' },
-      { key: 'bio_title',         label: 'Section bio — Titre',            type: 'text' },
-      { key: 'bio_text',          label: 'Section bio — Texte',            type: 'richtext' },
       { key: 'photo',             label: 'Photo Monica',                   type: 'image' },
       { key: 'coaching_label',    label: 'Section coaching — Label',       type: 'text' },
-      { key: 'coaching_text1',    label: 'Section coaching — Texte 1',     type: 'richtext' },
-      { key: 'coaching_text2',    label: 'Section coaching — Texte 2',     type: 'richtext' },
       { key: 'coaching_cta',      label: 'Section coaching — CTA',         type: 'text' },
       { key: 'mentoring_label',   label: 'Section mentoring — Label',      type: 'text' },
       { key: 'mentoring_text',    label: 'Section mentoring — Texte',      type: 'richtext' },
@@ -174,6 +231,25 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'footer_cta_title',  label: 'Footer CTA — Titre',             type: 'text' },
       { key: 'footer_cta_coaching', label: 'Footer CTA — Coaching',        type: 'text' },
       { key: 'footer_cta_booking',  label: 'Footer CTA — Réservation',     type: 'text' },
+      { key: 'parcours_badge', label: 'Parcours — Badge « Parcours »', type: 'text' },
+      { key: 'parcours_title', label: 'Parcours — Titre « Le parcours »', type: 'text' },
+      { key: 'parcours_subtitle', label: 'Parcours — Sous-titre « Deviens qui tu es »', type: 'text' },
+      { key: 'bio_p1', label: 'Bio — Paragraphe 1', type: 'textarea' },
+      { key: 'bio_p2', label: 'Bio — Paragraphe 2', type: 'textarea' },
+      { key: 'bio_p3', label: 'Bio — Paragraphe 3', type: 'textarea' },
+      { key: 'bio_p4', label: 'Bio — Paragraphe 4', type: 'textarea' },
+      { key: 'bio_p5', label: 'Bio — Paragraphe 5', type: 'textarea' },
+      { key: 'bio_p6', label: 'Bio — Paragraphe 6', type: 'textarea' },
+      { key: 'bio_p7', label: 'Bio — Paragraphe 7', type: 'textarea' },
+      { key: 'bio_p8', label: 'Bio — Paragraphe 8', type: 'textarea' },
+      { key: 'coaching_text', label: 'Coaching — Texte « Le coaching est une danse entre le… »', type: 'textarea' },
+      { key: 't_monica_schneider_executive_coach', label: 'Section 1 · Leadership coaching en profondeur — Texte alternatif image « Monica Schneider — Executive Coach »', type: 'text' },
+      { key: 't_monica_schneider', label: 'Section 2 · Le parcours — Texte alternatif image « Monica Schneider »', type: 'text' },
+      { key: 't_ms', label: 'Section 2 · Le parcours — Texte « MS »', type: 'text' },
+      { key: 't_monica_schneider_2', label: 'Section 2 · Le parcours — Texte « Monica Schneider »', type: 'text' },
+      { key: 'seo_title', label: 'Référencement Google — Titre (onglet du navigateur et résultat Google)', type: 'text' },
+      { key: 'seo_description', label: 'Référencement Google — Description (l’extrait sous le titre dans Google)', type: 'textarea' },
+      { key: 'seo_image', label: 'Référencement Google — Image de partage (Facebook, LinkedIn, WhatsApp…)', type: 'image' },
     ],
   },
   // 3. Coaching
@@ -181,6 +257,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Coaching',
     emoji: '⭐',
     sections: [
+      { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
       { key: 'hero_image',          label: 'Image hero',                    type: 'image' },
       { key: 'hero_badge',          label: 'Hero — Badge',                  type: 'text' },
       { key: 'hero_title',          label: 'Hero — Titre',                  type: 'text' },
@@ -197,7 +274,6 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'coaching_b2b_title',  label: 'Coaching entreprises — Titre',  type: 'text' },
       { key: 'coaching_b2b_text',   label: 'Coaching entreprises — Texte', type: 'richtext' },
       { key: 'coaching_b2b_cta_link', label: 'Coaching B2B — CTA lien',    type: 'text' },
-      // Tarifs programmes
       { key: 'programs_badge',      label: 'Tarifs — Badge',               type: 'text' },
       { key: 'programs_title',      label: 'Tarifs — Titre',               type: 'text' },
       { key: 'program_1_label',     label: 'Programme 1 — Label',          type: 'text' },
@@ -215,33 +291,41 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'program_3_price',     label: 'Programme 3 — Prix',           type: 'text' },
       { key: 'program_3_format',    label: 'Programme 3 — Format',        type: 'text' },
       { key: 'program_3_cta',       label: 'Programme 3 — CTA',            type: 'text' },
-      { key: 'program_hd_label',    label: 'Programme HD — Label',         type: 'text' },
-      { key: 'program_hd_unit',     label: 'Programme HD — Unité',        type: 'text' },
-      { key: 'program_hd_desc',     label: 'Programme HD — Description',  type: 'textarea' },
-      { key: 'program_hd_cta',      label: 'Programme HD — CTA',          type: 'text' },
-      // Tunnel CTA
       { key: 'tunnel_title',              label: 'Tunnel rapide — Titre',       type: 'text' },
       { key: 'tunnel_cta_primary',       label: 'Tunnel rapide — Bouton principal', type: 'text' },
       { key: 'tunnel_cta_secondary',     label: 'Tunnel rapide — Bouton secondaire',type: 'text' },
       { key: 'tunnel_reassurance',      label: 'Tunnel rapide — Réassurance', type: 'text' },
-      // Témoignages
-      { key: 'testimonials_badge',      label: 'Témoignages — Badge',         type: 'text' },
-      { key: 'testimonials_title',      label: 'Témoignages — Titre',         type: 'text' },
-      { key: 'testimonials_footnote',  label: 'Témoignages — Note',          type: 'text' },
       { key: 'testimonial_1_quote',     label: 'Témoignage 1 — Texte',        type: 'textarea' },
       { key: 'testimonial_1_name',      label: 'Témoignage 1 — Auteur',      type: 'text' },
-      { key: 'testimonial_1_title',     label: 'Témoignage 1 — Poste',       type: 'text' },
       { key: 'testimonial_2_quote',    label: 'Témoignage 2 — Texte',        type: 'textarea' },
       { key: 'testimonial_2_name',      label: 'Témoignage 2 — Auteur',      type: 'text' },
-      { key: 'testimonial_2_title',    label: 'Témoignage 2 — Poste',       type: 'text' },
       { key: 'testimonial_3_quote',    label: 'Témoignage 3 — Texte',        type: 'textarea' },
       { key: 'testimonial_3_name',      label: 'Témoignage 3 — Auteur',      type: 'text' },
-      { key: 'testimonial_3_title',    label: 'Témoignage 3 — Poste',       type: 'text' },
-      // Form
       { key: 'form_cta_title',          label: 'Formulaire CTA — Titre',      type: 'textarea' },
       { key: 'form_cta_button',        label: 'Formulaire CTA — Bouton',     type: 'text' },
-      { key: 'form_intro',             label: 'Intro formulaire',            type: 'textarea' },
-      { key: 'reassurance',            label: 'Texte réassurance',          type: 'text' },
+      { key: 'cta_title', label: 'Appel à l’action — Titre « Prêt·e à commencer ? »', type: 'text' },
+      { key: 'testimonial_section_title', label: 'Témoignages — Titre « Ils témoignent »', type: 'text' },
+      { key: 'testimonial_section_desc', label: 'Témoignages — Description « Des parcours différents, une même expérience :… »', type: 'text' },
+      { key: 'testimonial_1_role', label: 'Témoignage 1 — Fonction', type: 'text' },
+      { key: 'testimonial_2_role', label: 'Témoignage 2 — Fonction', type: 'text' },
+      { key: 'testimonial_3_role', label: 'Témoignage 3 — Fonction', type: 'text' },
+      { key: 'testimonial_4_quote', label: 'Témoignage 4 — Citation', type: 'textarea' },
+      { key: 'testimonial_4_name', label: 'Témoignage 4 — Nom', type: 'text' },
+      { key: 'testimonial_4_role', label: 'Témoignage 4 — Fonction', type: 'text' },
+      { key: 'testimonial_note', label: 'Témoignages — Note « * Prénom modifié »', type: 'text' },
+      { key: 'program_3_subtitle', label: 'Programme 3 — Sous-titre', type: 'text' },
+      { key: 'program_4_label', label: 'Programme 4 — Libellé', type: 'text' },
+      { key: 'program_4_subtitle', label: 'Programme 4 — Sous-titre', type: 'text' },
+      { key: 'program_4_desc', label: 'Programme 4 — Description', type: 'text' },
+      { key: 'program_4_format', label: 'Programme 4 — Format', type: 'text' },
+      { key: 'program_4_price', label: 'Programme 4 — Prix', type: 'text' },
+      { key: 'program_4_cta', label: 'Programme 4 — Bouton', type: 'text' },
+      { key: 't_bureau_elegant_ambiance_coaching', label: 'Section 1 · Il y a des… — Texte alternatif image « Bureau élégant, ambiance coaching professionnel »', type: 'text' },
+      { key: 't_coaching_individuel_introspection_', label: 'Section 2 · Coaching individuel — Texte alternatif image « Coaching individuel — introspection et clarté »', type: 'text' },
+      { key: 't_coaching_d_equipe_et', label: 'Section 3 · Pour les organisations — Texte alternatif image « Coaching d’équipe et leadership organisationnel »', type: 'text' },
+      { key: 'seo_title', label: 'Référencement Google — Titre (onglet du navigateur et résultat Google)', type: 'text' },
+      { key: 'seo_description', label: 'Référencement Google — Description (l’extrait sous le titre dans Google)', type: 'textarea' },
+      { key: 'seo_image', label: 'Référencement Google — Image de partage (Facebook, LinkedIn, WhatsApp…)', type: 'image' },
     ],
   },
   // 4. Sparring Partner
@@ -249,70 +333,83 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Organisations',
     emoji: '🏢',
     sections: [
-      { key: 'hero_image',   label: 'Image hero',                   type: 'image' },
-      { key: 'page_title',   label: 'Titre de la page',             type: 'text' },
-      { key: 'intro_text',   label: "Texte d'introduction",         type: 'richtext' },
-      { key: 'section_image',label: 'Image section principale',     type: 'image' },
-      { key: 'section_title',label: 'Titre section',                type: 'text' },
-      { key: 'section_text', label: 'Texte section',                type: 'richtext' },
-      // Offres
-      { key: 'offres_badge',   label: 'Offres — Badge',            type: 'text' },
-      { key: 'offres_cta',     label: 'Offres — CTA',              type: 'text' },
-      // Domaines
-      { key: 'domains_badge',     label: 'Domaines — Badge',        type: 'text' },
-      { key: 'domains_title',     label: 'Domaines — Titre',        type: 'text' },
-      { key: 'domains_subtitle',  label: 'Domaines — Sous-titre',  type: 'textarea' },
-      { key: 'domain_1_title',    label: 'Domaine 1 — Titre',       type: 'text' },
-      { key: 'domain_1_desc',      label: 'Domaine 1 — Description', type: 'textarea' },
-      { key: 'domain_2_title',    label: 'Domaine 2 — Titre',       type: 'text' },
-      { key: 'domain_2_desc',      label: 'Domaine 2 — Description', type: 'textarea' },
-      { key: 'domain_3_title',    label: 'Domaine 3 — Titre',       type: 'text' },
-      { key: 'domain_3_desc',      label: 'Domaine 3 — Description', type: 'textarea' },
-      { key: 'domain_4_title',    label: 'Domaine 4 — Titre',       type: 'text' },
-      { key: 'domain_4_desc',      label: 'Domaine 4 — Description', type: 'textarea' },
-      { key: 'domain_5_title',    label: 'Domaine 5 — Titre',       type: 'text' },
-      { key: 'domain_5_desc',      label: 'Domaine 5 — Description', type: 'textarea' },
-      { key: 'domain_6_title',    label: 'Domaine 6 — Titre',       type: 'text' },
-      { key: 'domain_6_desc',      label: 'Domaine 6 — Description', type: 'textarea' },
-      // Flash coaching
-      { key: 'flash_badge',       label: 'Flash — Badge',            type: 'text' },
-      { key: 'flash_title',       label: 'Flash — Titre',            type: 'text' },
-      { key: 'flash_desc',        label: 'Flash — Description',      type: 'textarea' },
-      { key: 'flash_features',    label: 'Flash — Caractéristiques', type: 'textarea' },
-      { key: 'flash_format',      label: 'Flash — Format',          type: 'text' },
-      { key: 'flash_rythme',      label: 'Flash — Rythme',           type: 'text' },
-      { key: 'flash_tarif',       label: 'Flash — Tarif',            type: 'text' },
-      { key: 'flash_cta_link',    label: 'Flash — CTA lien',        type: 'text' },
-      // Sparring
-      { key: 'sparring_badge',    label: 'Sparring — Badge',         type: 'text' },
-      { key: 'sparring_title',    label: 'Sparring — Titre',         type: 'text' },
-      { key: 'sparring_desc',     label: 'Sparring — Description',   type: 'textarea' },
-      { key: 'sparring_features', label: 'Sparring — Caractéristiques', type: 'textarea' },
-      { key: 'sparring_cta_link', label: 'Sparring — CTA lien',    type: 'text' },
-      // CTA final
-      { key: 'cta_title',         label: 'CTA final — Titre',       type: 'text' },
-      { key: 'cta_button',        label: 'CTA final — Bouton',       type: 'text' },
-      // Pricing
-      { key: 'pricing_badge',     label: 'Pricing — Badge',          type: 'text' },
-      { key: 'pricing_title',     label: 'Pricing — Titre',          type: 'text' },
-      { key: 'pricing_subtitle', label: 'Pricing — Sous-titre',    type: 'textarea' },
-      { key: 'pricing_card_1_title',  label: 'Prix carte 1 — Titre',    type: 'text' },
-      { key: 'pricing_card_1_desc',   label: 'Prix carte 1 — Description', type: 'textarea' },
-      { key: 'pricing_card_1_price',   label: 'Prix carte 1 — Prix',     type: 'text' },
-      { key: 'pricing_card_1_cta',    label: 'Prix carte 1 — CTA',      type: 'text' },
-      { key: 'pricing_card_2_title',  label: 'Prix carte 2 — Titre',    type: 'text' },
-      { key: 'pricing_card_2_desc',   label: 'Prix carte 2 — Description', type: 'textarea' },
-      { key: 'pricing_card_2_price',   label: 'Prix carte 2 — Prix',     type: 'text' },
-      { key: 'pricing_card_2_cta',    label: 'Prix carte 2 — CTA',      type: 'text' },
-      { key: 'pricing_card_3_title',  label: 'Prix carte 3 — Titre',    type: 'text' },
-      { key: 'pricing_card_3_desc',   label: 'Prix carte 3 — Description', type: 'textarea' },
-      { key: 'pricing_card_3_price',   label: 'Prix carte 3 — Prix',     type: 'text' },
-      { key: 'pricing_card_3_cta',    label: 'Prix carte 3 — CTA',      type: 'text' },
-      // Différenciateur
-      { key: 'diff_badge',       label: 'Diff — Badge',             type: 'text' },
-      { key: 'diff_title',      label: 'Diff — Titre',             type: 'text' },
-      { key: 'diff_text',       label: 'Diff — Texte',             type: 'textarea' },
-      { key: 'diff_cta_link',   label: 'Diff — CTA lien',         type: 'text' },
+      { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
+      { key: 'hero_image',   label: 'Hero — Image',                  type: 'image' },
+      { key: 'hero_badge',   label: 'Hero — Badge',                  type: 'text' },
+      { key: 'page_title',   label: 'Hero — Titre',                  type: 'text' },
+      { key: 'intro_text',   label: 'Hero — Introduction',           type: 'textarea' },
+      { key: 'section_image',label: 'Offres — Image',                type: 'image' },
+      { key: 'offres_badge', label: 'Offres — Badge',                type: 'text' },
+      { key: 'section_title',label: 'Offres — Titre',                type: 'text' },
+      { key: 'section_text', label: 'Offres — Texte (une ligne vide entre les paragraphes)', type: 'richtext' },
+      { key: 'offres_cta',   label: 'Offres — Texte du lien',        type: 'text' },
+      { key: 'domains_badge',     label: 'Domaines — Badge',         type: 'text' },
+      { key: 'domains_title',     label: 'Domaines — Titre',         type: 'text' },
+      { key: 'domains_subtitle',  label: 'Domaines — Sous-titre',    type: 'textarea' },
+      { key: 'domain_1_title',    label: 'Domaine 1 — Titre',        type: 'text' },
+      { key: 'domain_1_desc',     label: 'Domaine 1 — Description',  type: 'textarea' },
+      { key: 'domain_2_title',    label: 'Domaine 2 — Titre',        type: 'text' },
+      { key: 'domain_2_desc',     label: 'Domaine 2 — Description',  type: 'textarea' },
+      { key: 'domain_3_title',    label: 'Domaine 3 — Titre',        type: 'text' },
+      { key: 'domain_3_desc',     label: 'Domaine 3 — Description',  type: 'textarea' },
+      { key: 'domain_4_title',    label: 'Domaine 4 — Titre',        type: 'text' },
+      { key: 'domain_4_desc',     label: 'Domaine 4 — Description',  type: 'textarea' },
+      { key: 'domain_5_title',    label: 'Domaine 5 — Titre',        type: 'text' },
+      { key: 'domain_5_desc',     label: 'Domaine 5 — Description',  type: 'textarea' },
+      { key: 'domain_6_title',    label: 'Domaine 6 — Titre',        type: 'text' },
+      { key: 'domain_6_desc',     label: 'Domaine 6 — Description',  type: 'textarea' },
+      { key: 'flash_badge',       label: 'Coaching Flash — Badge',                       type: 'text' },
+      { key: 'flash_title',       label: 'Coaching Flash — Titre (retour à la ligne possible)', type: 'textarea' },
+      { key: 'flash_desc',        label: 'Coaching Flash — Description',                 type: 'textarea' },
+      { key: 'flash_features',    label: 'Coaching Flash — Liste (un élément par ligne)', type: 'textarea' },
+      { key: 'flash_format',      label: 'Coaching Flash — Format',                      type: 'text' },
+      { key: 'flash_rythme',      label: 'Coaching Flash — Rythme',                      type: 'text' },
+      { key: 'flash_tarif',       label: 'Coaching Flash — Tarif',                       type: 'text' },
+      { key: 'flash_cta_link',    label: 'Coaching Flash — Texte du lien',               type: 'text' },
+      { key: 'sparring_badge',    label: 'Sparring — Badge',                             type: 'text' },
+      { key: 'sparring_title',    label: 'Sparring — Titre',                             type: 'text' },
+      { key: 'sparring_desc',     label: 'Sparring — Description',                       type: 'textarea' },
+      { key: 'sparring_features', label: 'Sparring — Liste (un élément par ligne)',      type: 'textarea' },
+      { key: 'sparring_cta_link', label: 'Sparring — Texte du bouton',                   type: 'text' },
+      { key: 'cta_title',         label: 'Bandeau contact — Titre',  type: 'text' },
+      { key: 'cta_button',        label: 'Bandeau contact — Bouton', type: 'text' },
+      { key: 'pricing_badge',     label: 'Tarifs — Badge',           type: 'text' },
+      { key: 'pricing_title',     label: 'Tarifs — Titre',           type: 'text' },
+      { key: 'pricing_subtitle',  label: 'Tarifs — Sous-titre',      type: 'textarea' },
+      { key: 'pricing_card_1_title', label: 'Formule 1 — Nom',                          type: 'text' },
+      { key: 'pricing_card_1_price', label: 'Formule 1 — Prix',                         type: 'text' },
+      { key: 'pricing_card_1_unit',  label: 'Formule 1 — Unité (ex : / séance)',        type: 'text' },
+      { key: 'pricing_card_1_desc',  label: 'Formule 1 — Description',                  type: 'textarea' },
+      { key: 'pricing_card_1_items', label: 'Formule 1 — Liste (un élément par ligne)', type: 'textarea' },
+      { key: 'pricing_card_1_cta',   label: 'Formule 1 — Bouton',                       type: 'text' },
+      { key: 'pricing_card_2_title', label: 'Formule 2 — Nom',                          type: 'text' },
+      { key: 'pricing_card_2_price', label: 'Formule 2 — Prix',                         type: 'text' },
+      { key: 'pricing_card_2_unit',  label: 'Formule 2 — Unité (ex : / séance)',        type: 'text' },
+      { key: 'pricing_card_2_desc',  label: 'Formule 2 — Description',                  type: 'textarea' },
+      { key: 'pricing_card_2_items', label: 'Formule 2 — Liste (un élément par ligne)', type: 'textarea' },
+      { key: 'pricing_card_2_cta',   label: 'Formule 2 — Bouton',                       type: 'text' },
+      { key: 'pricing_card_3_title', label: 'Formule 3 — Nom',                          type: 'text' },
+      { key: 'pricing_card_3_price', label: 'Formule 3 — Prix',                         type: 'text' },
+      { key: 'pricing_card_3_unit',  label: 'Formule 3 — Unité (ex : / séance)',        type: 'text' },
+      { key: 'pricing_card_3_desc',  label: 'Formule 3 — Description',                  type: 'textarea' },
+      { key: 'pricing_card_3_items', label: 'Formule 3 — Liste (un élément par ligne)', type: 'textarea' },
+      { key: 'pricing_card_3_cta',   label: 'Formule 3 — Bouton',                       type: 'text' },
+      { key: 'diff_badge',       label: 'Différenciation — Badge',                                 type: 'text' },
+      { key: 'diff_title',       label: 'Différenciation — Titre',                                 type: 'text' },
+      { key: 'diff_text',        label: 'Différenciation — Texte (une ligne vide entre les paragraphes)', type: 'richtext' },
+      { key: 'diff_cta_link',    label: 'Différenciation — Texte du lien',                         type: 'text' },
+      { key: 'temoignage_dorothee_text',   label: 'Témoignage — Citation', type: 'textarea' },
+      { key: 'temoignage_dorothee_author', label: 'Témoignage — Auteur',   type: 'text' },
+      { key: 'temoignage_dorothee_role',   label: 'Témoignage — Fonction', type: 'text' },
+      { key: 't_entreprises', label: 'Section 1 · Remettre de l’alignement et… — Texte alternatif image « Entreprises »', type: 'text' },
+      { key: 't_reunion_d_equipe_et', label: 'Section 2 · Ce que je propose — Texte alternatif image « Réunion d’équipe et leadership en entreprise »', type: 'text' },
+      { key: 't_format', label: 'Section 3 · Coaching Flash Prise de… — Texte « Format »', type: 'text' },
+      { key: 't_rythme', label: 'Section 3 · Coaching Flash Prise de… — Texte « Rythme »', type: 'text' },
+      { key: 't_tarif', label: 'Section 3 · Coaching Flash Prise de… — Texte « Tarif »', type: 'text' },
+      { key: 't_prenom_modifie', label: 'Bas de page — Texte « * Prénom modifié »', type: 'text' },
+      { key: 'seo_title', label: 'Référencement Google — Titre (onglet du navigateur et résultat Google)', type: 'text' },
+      { key: 'seo_description', label: 'Référencement Google — Description (l’extrait sous le titre dans Google)', type: 'textarea' },
+      { key: 'seo_image', label: 'Référencement Google — Image de partage (Facebook, LinkedIn, WhatsApp…)', type: 'image' },
     ],
   },
   // 6. Happiness Design
@@ -320,13 +417,13 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Happiness Design',
     emoji: '☀️',
     sections: [
-      // Hero
+      { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
+      { key: 'hero_image', label: 'Hero — Photo de fond', type: 'image' },
       { key: 'hero_badge',    label: 'Hero — Badge',               type: 'text' },
       { key: 'page_title',    label: 'Hero — Titre principal (H1)', type: 'text' },
       { key: 'page_subtitle', label: 'Hero — Sous-titre',          type: 'textarea' },
       { key: 'intro_text',    label: 'Hero — Texte intro',         type: 'textarea' },
       { key: 'hero_cta',      label: 'Hero — Bouton CTA',          type: 'text' },
-      // Pour qui
       { key: 'pourqui_badge',   label: 'Pour qui — Badge',          type: 'text' },
       { key: 'pourqui_title',   label: 'Pour qui — Titre',          type: 'text' },
       { key: 'pourqui_1_title', label: 'Pour qui 1 — Titre',        type: 'text' },
@@ -335,24 +432,9 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'pourqui_2_desc',  label: 'Pour qui 2 — Description',  type: 'textarea' },
       { key: 'pourqui_3_title', label: 'Pour qui 3 — Titre',        type: 'text' },
       { key: 'pourqui_3_desc',  label: 'Pour qui 3 — Description',  type: 'textarea' },
-      // Ordre des sections de la page
-      { key: 'section_order_1', label: 'Ordre — Section 1', type: 'select',
-        options: ['pourqui', 'program', 'tools', 'pricing'],
-        optionLabels: ['👥 Pour qui', '🔢 Programme (12 étapes)', '🧰 Boîte à outils', '💶 Tarifs'] },
-      { key: 'section_order_2', label: 'Ordre — Section 2', type: 'select',
-        options: ['pourqui', 'program', 'tools', 'pricing'],
-        optionLabels: ['👥 Pour qui', '🔢 Programme (12 étapes)', '🧰 Boîte à outils', '💶 Tarifs'] },
-      { key: 'section_order_3', label: 'Ordre — Section 3', type: 'select',
-        options: ['pourqui', 'program', 'tools', 'pricing'],
-        optionLabels: ['👥 Pour qui', '🔢 Programme (12 étapes)', '🧰 Boîte à outils', '💶 Tarifs'] },
-      { key: 'section_order_4', label: 'Ordre — Section 4', type: 'select',
-        options: ['pourqui', 'program', 'tools', 'pricing'],
-        optionLabels: ['👥 Pour qui', '🔢 Programme (12 étapes)', '🧰 Boîte à outils', '💶 Tarifs'] },
-      // Programme — badge + titre
       { key: 'program_badge', label: 'Programme — Badge',           type: 'text' },
       { key: 'program_title', label: 'Programme — Titre',           type: 'text' },
       { key: 'program_followups_note', label: 'Programme — Note sous les étapes (ex: + bonus…)', type: 'text' },
-      // 12 étapes
       { key: 'step_01_title', label: 'Étape 01 — Titre', type: 'text' },
       { key: 'step_01_desc',  label: 'Étape 01 — Description', type: 'textarea' },
       { key: 'step_02_title', label: 'Étape 02 — Titre', type: 'text' },
@@ -377,7 +459,6 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'step_11_desc',  label: 'Étape 11 — Description', type: 'textarea' },
       { key: 'step_12_title', label: 'Étape 12 — Titre', type: 'text' },
       { key: 'step_12_desc',  label: 'Étape 12 — Description', type: 'textarea' },
-      // Boîte à outils
       { key: 'tools_badge',              label: 'Outils — Badge',                         type: 'text' },
       { key: 'tools_title',              label: 'Outils — Titre',                         type: 'text' },
       { key: 'tools_intro_1',            label: 'Outils — Intro paragraphe 1',            type: 'textarea' },
@@ -388,7 +469,6 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'tools_conclusion_1',       label: 'Outils — Conclusion 1',                 type: 'textarea' },
       { key: 'tools_conclusion_2',       label: 'Outils — Conclusion 2',                 type: 'textarea' },
       { key: 'tools_claim',              label: 'Outils — Claim (phrase différenciante)', type: 'textarea' },
-      // Tarifs
       { key: 'pricing_badge',    label: 'Tarifs — Badge',            type: 'text' },
       { key: 'pricing_title',    label: 'Tarifs — Titre',            type: 'text' },
       { key: 'format_label',     label: 'Prog complet — Label Format',  type: 'text' },
@@ -401,17 +481,19 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'price_value',      label: 'Prog complet — Tarif',        type: 'text' },
       { key: 'cta_label',        label: 'Prog complet — Bouton devis', type: 'text' },
       { key: 'program_complete_features', label: 'Prog complet — Liste bullet (1 item/ligne)', type: 'textarea' },
-      { key: 'program_complete_cta',      label: 'Prog complet — CTA',   type: 'text' },
-      // Découverte
       { key: 'discovery_label',    label: 'Découverte — Label',         type: 'text' },
       { key: 'discovery_price',    label: 'Découverte — Prix',          type: 'text' },
       { key: 'discovery_unit',     label: 'Découverte — Unité',         type: 'text' },
       { key: 'discovery_features', label: 'Découverte — Bullets (1 item/ligne)', type: 'textarea' },
       { key: 'discovery_cta',      label: 'Découverte — CTA',           type: 'text' },
-      // CTA final
       { key: 'cta_title',    label: 'CTA final — Titre',     type: 'text' },
       { key: 'cta_subtitle', label: 'CTA final — Sous-titre', type: 'textarea' },
       { key: 'cta_button',   label: 'CTA final — Bouton',    type: 'text' },
+      { key: 't_lumiere_doree_symbolisant_la', label: 'Section 1 · Happiness Design — Texte alternatif image « Lumière dorée symbolisant la transformation et le bonheur »', type: 'text' },
+      { key: 't_par_happy_humans', label: 'Section 1 · Happiness Design — Texte « — par Happy Humans »', type: 'text' },
+      { key: 'seo_title', label: 'Référencement Google — Titre (onglet du navigateur et résultat Google)', type: 'text' },
+      { key: 'seo_description', label: 'Référencement Google — Description (l’extrait sous le titre dans Google)', type: 'textarea' },
+      { key: 'seo_image', label: 'Référencement Google — Image de partage (Facebook, LinkedIn, WhatsApp…)', type: 'image' },
     ],
   },
   // 7. Relations
@@ -419,28 +501,25 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Relations & Attachement',
     emoji: '💚',
     sections: [
+      { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
+      { key: 'hero_image', label: 'Photo de fond du haut de page', type: 'image' },
       { key: 'hero_badge',          label: 'Badge intro',                         type: 'text' },
       { key: 'hero_title',          label: 'Titre principal',                     type: 'text' },
       { key: 'hero_description',    label: 'Description intro',                   type: 'textarea' },
       { key: 'hero_cta_primary',    label: 'CTA primaire hero',                  type: 'text' },
       { key: 'hero_cta_secondary',  label: 'CTA secondaire hero',                type: 'text' },
-      // Quiz
       { key: 'quiz_badge',          label: 'Quiz — Badge',                       type: 'text' },
-      // Styles
       { key: 'styles_badge',        label: 'Styles — Badge',                     type: 'text' },
       { key: 'styles_title',        label: 'Styles — Titre',                     type: 'text' },
       { key: 'styles_subtitle',    label: 'Styles — Sous-titre',                 type: 'textarea' },
-      // Manifestations
       { key: 'manifestations_badge',          label: 'Manifestations — Badge',           type: 'text' },
       { key: 'manifestations_title',          label: 'Manifestations — Titre',           type: 'text' },
       { key: 'manifestations_subtitle',       label: 'Manifestations — Sous-titre',     type: 'textarea' },
-      { key: 'manifestations_anxious_avoidant_text', label: 'Manifestations — Texte anxieux/évitant', type: 'textarea' },
       { key: 'manifestations_anxious_title',   label: 'Manifestations — Titre anxieux',   type: 'text' },
       { key: 'manifestations_anxious_desc',    label: 'Manifestations — Desc anxieux',   type: 'textarea' },
       { key: 'manifestations_avoidant_title', label: 'Manifestations — Titre évitant',   type: 'text' },
       { key: 'manifestations_avoidant_desc',  label: 'Manifestations — Desc évitant',   type: 'textarea' },
       { key: 'manifestations_goodnews_text',  label: 'Manifestations — Bonne nouvelle', type: 'textarea' },
-      // Healing
       { key: 'healing_badge',       label: 'Guérison — Badge',                  type: 'text' },
       { key: 'healing_title',       label: 'Guérison — Titre',                  type: 'text' },
       { key: 'healing_subtitle',    label: 'Guérison — Sous-titre',            type: 'textarea' },
@@ -450,11 +529,9 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'healing_step2_desc',  label: 'Guérison étape 2 — Description',   type: 'textarea' },
       { key: 'healing_step3_title', label: 'Guérison étape 3 — Titre',         type: 'text' },
       { key: 'healing_step3_desc',  label: 'Guérison étape 3 — Description',   type: 'textarea' },
-      // Communication
       { key: 'comm_badge',          label: 'Communication — Badge',            type: 'text' },
       { key: 'comm_title',          label: 'Communication — Titre',            type: 'text' },
       { key: 'comm_subtitle',       label: 'Communication — Sous-titre',       type: 'textarea' },
-      // Work section
       { key: 'work_section_badge',    label: 'Travail — Badge',                type: 'text' },
       { key: 'work_section_title',    label: 'Travail — Titre',                type: 'text' },
       { key: 'work_section_desc',     label: 'Travail — Description',          type: 'textarea' },
@@ -465,7 +542,6 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'work_anxious_desc',    label: 'Travail — Desc anxieux',         type: 'text' },
       { key: 'work_avoidant_label',  label: 'Travail — Label évitant',         type: 'text' },
       { key: 'work_avoidant_desc',   label: 'Travail — Desc évitant',         type: 'text' },
-      // Steps
       { key: 'steps_badge',         label: 'Étapes — Badge',                    type: 'text' },
       { key: 'steps_title',         label: 'Étapes — Titre',                  type: 'text' },
       { key: 'step1_title',         label: 'Étape 1 — Titre',                 type: 'text' },
@@ -474,58 +550,89 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'step2_desc',          label: 'Étape 2 — Description',           type: 'textarea' },
       { key: 'step3_title',         label: 'Étape 3 — Titre',                 type: 'text' },
       { key: 'step3_desc',          label: 'Étape 3 — Description',           type: 'textarea' },
-      // Multiculture
       { key: 'multiculture_badge',             label: 'Multiculture — Badge',            type: 'text' },
       { key: 'multiculture_title',             label: 'Multiculture — Titre',            type: 'text' },
       { key: 'multiculture_subtitle',          label: 'Multiculture — Sous-titre',       type: 'textarea' },
       { key: 'multiculture_entreprise_title',  label: 'Multiculture — Titre entreprise', type: 'text' },
-      { key: 'multiculture_entreprise_desc',  label: 'Multiculture — Desc entreprise',  type: 'textarea' },
       { key: 'multiculture_mc_title',          label: 'Multiculture — Titre MC',        type: 'text' },
       { key: 'multiculture_mc_desc',            label: 'Multiculture — Desc MC',          type: 'textarea' },
       { key: 'multiculture_note',               label: 'Multiculture — Note',             type: 'textarea' },
       { key: 'multiculture_cta',                label: 'Multiculture — CTA',             type: 'text' },
-      // Booking
       { key: 'booking_badge',       label: 'Booking — Badge',                  type: 'text' },
       { key: 'booking_title',       label: 'Booking — Titre',                  type: 'text' },
       { key: 'booking_subtitle',    label: 'Booking — Sous-titre',            type: 'textarea' },
       { key: 'booking_cta_button',  label: 'Booking — Bouton CTA',            type: 'text' },
-      // Theory
       { key: 'theory_badge',        label: 'Théorie — Badge',                 type: 'text' },
       { key: 'theory_title',        label: 'Théorie — Titre',                 type: 'text' },
       { key: 'theory_subtitle',     label: 'Théorie — Sous-titre',            type: 'textarea' },
-      { key: 'theory_card_1_title', label: 'Carte théorie 1 — Titre',        type: 'text' },
-      { key: 'theory_card_1_text',  label: 'Carte théorie 1 — Texte',        type: 'textarea' },
-      { key: 'theory_card_2_title', label: 'Carte théorie 2 — Titre',        type: 'text' },
-      { key: 'theory_card_2_text',  label: 'Carte théorie 2 — Texte',        type: 'textarea' },
-      { key: 'theory_card_3_title', label: 'Carte théorie 3 — Titre',        type: 'text' },
-      { key: 'theory_card_3_text',  label: 'Carte théorie 3 — Texte',        type: 'textarea' },
       { key: 'theory_modal_cta',    label: 'Théorie modal — CTA',            type: 'text' },
-      // Footer
       { key: 'footer_site_name',    label: 'Footer — Nom du site',            type: 'text' },
       { key: 'footer_copyright',    label: 'Footer — Copyright',              type: 'text' },
-      // Prix
-      { key: 'relations_price',    label: 'Prix (ex: Sur devis)',             type: 'text' },
-    ],
-  },
-  // 8. Témoignages
-  'temoignages': {
-    label: 'Témoignages',
-    emoji: '💬',
-    sections: [
-      { key: 'hero_image',           label: 'Image hero',           type: 'image' },
-      { key: 'page_title',           label: 'Titre de la page',     type: 'text' },
-      { key: 'intro_text',           label: 'Texte introduction',   type: 'textarea' },
-      { key: 'grid_badge',           label: 'Grille — Badge',       type: 'text' },
-      { key: 'grid_empty_state',     label: 'Grille — État vide',   type: 'text' },
-      { key: 'linkedin_badge',       label: 'LinkedIn — Badge',     type: 'text' },
-      { key: 'linkedin_title',       label: 'LinkedIn — Titre',     type: 'text' },
-      { key: 'linkedin_subtitle',    label: 'LinkedIn — Sous-titre', type: 'textarea' },
-      { key: 'linkedin_footnote',    label: 'LinkedIn — Note',      type: 'text' },
-      { key: 'linkedin_intro_note',  label: 'LinkedIn — Note intro', type: 'text' },
-      { key: 'cta_title',            label: 'CTA final — Titre',    type: 'text' },
-      { key: 'cta_subtitle',         label: 'CTA final — Sous-titre', type: 'textarea' },
-      { key: 'cta_coaching',         label: 'CTA — Coaching',       type: 'text' },
-      { key: 'cta_contact',          label: 'CTA — Contact',       type: 'text' },
+      { key: 'comm_rule1_title', label: 'Règle 1 — Titre', type: 'text' },
+      { key: 'comm_rule1_desc', label: 'Règle 1 — Description', type: 'text' },
+      { key: 'comm_rule1_example', label: 'Règle 1 — Exemple', type: 'text' },
+      { key: 'comm_rule2_title', label: 'Règle 2 — Titre', type: 'text' },
+      { key: 'comm_rule2_desc', label: 'Règle 2 — Description', type: 'text' },
+      { key: 'comm_rule2_example', label: 'Règle 2 — Exemple', type: 'text' },
+      { key: 'comm_rule3_title', label: 'Règle 3 — Titre', type: 'text' },
+      { key: 'comm_rule3_desc', label: 'Règle 3 — Description', type: 'text' },
+      { key: 'comm_rule3_example', label: 'Règle 3 — Exemple', type: 'text' },
+      { key: 't_connexion_humaine_mains_tendues', label: 'Section 1 — Texte alternatif image « Connexion humaine, mains tendues symbolisant le lien entre… »', type: 'text' },
+      { key: 't_bonne_nouvelle', label: 'Section 2 · La danse Anxieux–Évitant — Texte « Bonne nouvelle : »', type: 'text' },
+      { key: 't_secure', label: 'Section 3 — Texte « Sécure : »', type: 'text' },
+      { key: 't_anxieux', label: 'Section 3 — Texte « Anxieux : »', type: 'text' },
+      { key: 't_evitant', label: 'Section 3 — Texte « Évitant : »', type: 'text' },
+      { key: 't_decouvrir', label: 'Section 4 · Les fondements théoriques — Texte « Découvrir → »', type: 'text' },
+      { key: 't_mentions_legales', label: 'Bas de page — Lien « Mentions légales »', type: 'text' },
+      { key: 't_confidentialite', label: 'Bas de page — Lien « Confidentialité »', type: 'text' },
+      { key: 't_attached', label: 'Textes de la page — Texte « ATTACHED »', type: 'text' },
+      { key: 't_comprendre_son_style_d', label: 'Textes de la page — Texte « Comprendre son style d’attachement »', type: 'text' },
+      { key: 't_le_livre_attached_applique', label: 'Textes de la page — Texte « Le livre ATTACHED applique la théorie de l’attachement,… » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_le_style_secure_permet', label: 'Textes de la page — Texte « Le style sécure permet une intimité confiante et… »', type: 'text' },
+      { key: 't_le_style_anxieux_genere', label: 'Textes de la page — Texte « Le style anxieux génère une peur constante de… »', type: 'text' },
+      { key: 't_le_style_evitant_pousse', label: 'Textes de la page — Texte « Le style évitant pousse à fuir la proximité,… »', type: 'textarea' },
+      { key: 't_le_livre_propose_des', label: 'Textes de la page — Texte « Le livre propose des tests pour identifier son… »', type: 'textarea' },
+      { key: 't_comment_ces_styles_se', label: 'Textes de la page — Sous-titre « Comment ces styles se forment dans l’enfance »', type: 'text' },
+      { key: 't_selon_bowlby_le_nourrisson', label: 'Textes de la page — Texte « Selon Bowlby, le nourrisson a un besoin biologique… »', type: 'textarea' },
+      { key: 't_si_le_parent_est', label: 'Textes de la page — Texte « Si le parent est globalement disponible et réconfortant,… » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_si_les_reponses_du', label: 'Textes de la page — Texte « Si les réponses du parent sont incohérentes —… » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_si_le_parent_est_2', label: 'Textes de la page — Texte « Si le parent est régulièrement distant, peu expressif… » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_ces_modeles_formes_avant', label: 'Textes de la page — Texte « Ces modèles, formés avant l’âge de deux ans,… »', type: 'text' },
+      { key: 't_carl_rogers', label: 'Textes de la page — Texte « Carl Rogers »', type: 'text' },
+      { key: 't_deconstruire_l_amour_conditionnel', label: 'Textes de la page — Texte « Déconstruire l’amour conditionnel pour enfin s’aimer »', type: 'text' },
+      { key: 't_le_concept_de_carl', label: 'Textes de la page — Sous-titre « Le concept de Carl Rogers sur l’amour inconditionnel »', type: 'text' },
+      { key: 't_l_idee_de_carl', label: 'Textes de la page — Texte « L’idée de Carl Rogers repose sur son concept… »', type: 'textarea' },
+      { key: 't_rogers_pensait_que_la', label: 'Textes de la page — Texte « Rogers pensait que la plupart d’entre nous grandissons… »', type: 'textarea' },
+      { key: 't_le_probleme_c_est', label: 'Textes de la page — Texte « Le problème, c’est que lorsque nous n’avons pas… »', type: 'textarea' },
+      { key: 't_pour_rogers_une_vraie', label: 'Textes de la page — Texte « Pour Rogers, une vraie intimité exige la **congruence**… » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_comment_faire_la_paix', label: 'Textes de la page — Sous-titre « Comment faire la paix avec soi-même selon Rogers »', type: 'text' },
+      { key: 't_rogers_ne_voyait_pas', label: 'Textes de la page — Texte « Rogers ne voyait pas cela comme une technique… »', type: 'textarea' },
+      { key: 't_abandonner_les_conditions_de', label: 'Textes de la page — Texte « **Abandonner les « conditions de valeur »**. Remarquez… » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_faire_confiance_a_sa', label: 'Textes de la page — Texte « **Faire confiance à sa propre expérience** plus qu’au… » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_pratiquer_le_regard_positif', label: 'Textes de la page — Texte « **Pratiquer le regard positif inconditionnel envers soi-même**. La… » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_chercher_des_environnements_ou', label: 'Textes de la page — Texte « **Chercher des environnements où l’on peut être congruent**.… » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_c_est_moins_une', label: 'Textes de la page — Texte « C’est moins une liste de tâches qu’une pratique… »', type: 'text' },
+      { key: 't_erich_fromm', label: 'Textes de la page — Texte « Erich Fromm »', type: 'text' },
+      { key: 't_se_preparer_a_l', label: 'Textes de la page — Texte « Se préparer à l’amour mature »', type: 'text' },
+      { key: 't_erich_fromm_dans_l', label: 'Textes de la page — Texte « Erich Fromm, dans *L’art d’aimer*, soutenait que la… » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_amour_immature', label: 'Textes de la page — Sous-titre « Amour immature »', type: 'text' },
+      { key: 't_je_t_aime_parce', label: 'Textes de la page — Texte « « Je t’aime parce que j’ai besoin de… »', type: 'text' },
+      { key: 't_il_est_enracine_dans', label: 'Textes de la page — Texte « Il est enraciné dans la dépendance — vous… »', type: 'textarea' },
+      { key: 't_amour_mature', label: 'Textes de la page — Sous-titre « Amour mature »', type: 'text' },
+      { key: 't_j_ai_besoin_de', label: 'Textes de la page — Texte « « J’ai besoin de toi parce que je… »', type: 'text' },
+      { key: 't_ici_l_amour_est', label: 'Textes de la page — Texte « Ici, l’amour est une capacité active — fondée… »', type: 'textarea' },
+      { key: 't_pour_fromm_c_est', label: 'Textes de la page — Texte « **Pour Fromm,** c’est pourquoi « trouver la bonne… » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_secure_2', label: 'Textes de la page — Libellé « Sécure »', type: 'text' },
+      { key: 't_a_l_aise_avec', label: 'Textes de la page — Texte « À l’aise avec l’intimité et l’indépendance. Communique ses… »', type: 'textarea' },
+      { key: 't_anxieux_2', label: 'Textes de la page — Libellé « Anxieux »', type: 'text' },
+      { key: 't_peur_du_rejet_et', label: 'Textes de la page — Texte « Peur du rejet et de l’abandon. Grand besoin… »', type: 'textarea' },
+      { key: 't_evitant_2', label: 'Textes de la page — Libellé « Évitant »', type: 'text' },
+      { key: 't_a_appris_a_minimiser', label: 'Textes de la page — Texte « A appris à minimiser ses besoins émotionnels pour… »', type: 'textarea' },
+      { key: 't_desorganise', label: 'Textes de la page — Libellé « Désorganisé »', type: 'text' },
+      { key: 't_conflit_interne_entre_le', label: 'Textes de la page — Texte « Conflit interne entre le besoin désespéré de proximité… »', type: 'textarea' },
+      { key: 'seo_title', label: 'Référencement Google — Titre (onglet du navigateur et résultat Google)', type: 'text' },
+      { key: 'seo_description', label: 'Référencement Google — Description (l’extrait sous le titre dans Google)', type: 'textarea' },
+      { key: 'seo_image', label: 'Référencement Google — Image de partage (Facebook, LinkedIn, WhatsApp…)', type: 'image' },
     ],
   },
   // 9. Réservation
@@ -533,6 +640,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Réservation',
     emoji: '📅',
     sections: [
+      { key: 'display_problem', label: 'Textes de la page — Mention « Problème d’affichage ? » (sous le calendrier)', type: 'text' },
       { key: 'hero_badge',           label: 'Badge hero',                          type: 'text' },
       { key: 'hero_title',           label: 'Titre hero',                          type: 'text' },
       { key: 'hero_subtitle',        label: 'Sous-titre hero',                     type: 'textarea' },
@@ -544,6 +652,12 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'reassurance_3_desc',   label: 'Réassurance 3 — Description',        type: 'textarea' },
       { key: 'footer_note',          label: 'Note footer',                         type: 'textarea' },
       { key: 'email_booking_text',   label: 'Texte email booking',                 type: 'text' },
+      { key: 't_chargement_du_calendrier', label: 'Section 1 — Texte « Chargement du calendrier… »', type: 'text' },
+      { key: 't_ouvrir_calendly_directement', label: 'Section 1 — Lien « Ouvrir Calendly directement → »', type: 'text' },
+      { key: 't_vous_preferez_reserver_par', label: 'Section 2 — Texte « Vous préférez réserver par email ? »', type: 'text' },
+      { key: 'seo_title', label: 'Référencement Google — Titre (onglet du navigateur et résultat Google)', type: 'text' },
+      { key: 'seo_description', label: 'Référencement Google — Description (l’extrait sous le titre dans Google)', type: 'textarea' },
+      { key: 'seo_image', label: 'Référencement Google — Image de partage (Facebook, LinkedIn, WhatsApp…)', type: 'image' },
     ],
   },
   // 10. Contact
@@ -562,8 +676,28 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'form_submit_label', label: 'Formulaire — Bouton Envoyer', type: 'text' },
       { key: 'success_title',     label: 'Message succès — Titre',   type: 'text' },
       { key: 'success_text',      label: 'Message succès — Texte',   type: 'textarea' },
-      { key: 'sidebar_name',      label: 'Sidebar — Nom',            type: 'text' },
-      { key: 'sidebar_title',     label: 'Sidebar — Titre',         type: 'text' },
+      { key: 'photo', label: 'Photo — photo', type: 'image' },
+      { key: 't_espace_d_echange_calme', label: 'Section 1 · Parlons de ce qui… — Texte alternatif image « Espace d’échange calme et chaleureux »', type: 'text' },
+      { key: 't_votre_nom', label: 'Section 2 · Message envoyé ! — Texte indicatif « Votre nom »', type: 'text' },
+      { key: 't_votre_email_com', label: 'Section 2 · Message envoyé ! — Texte indicatif « votre@email.com »', type: 'text' },
+      { key: 't_type_de_demande', label: 'Section 2 · Message envoyé ! — Libellé « Type de demande »', type: 'text' },
+      { key: 't_selectionnez', label: 'Section 2 · Message envoyé ! — Option « Sélectionnez... »', type: 'text' },
+      { key: 't_coaching_individuel', label: 'Section 2 · Message envoyé ! — Option « Coaching individuel »', type: 'text' },
+      { key: 't_coaching_accompagnement_entreprise', label: 'Section 2 · Message envoyé ! — Option « Coaching & accompagnement entreprises »', type: 'text' },
+      { key: 't_accompagnement_relations', label: 'Section 2 · Message envoyé ! — Option « Accompagnement Relations »', type: 'text' },
+      { key: 't_conference_formation', label: 'Section 2 · Message envoyé ! — Option « Conférence / Formation »', type: 'text' },
+      { key: 't_autre_question', label: 'Section 2 · Message envoyé ! — Option « Autre question »', type: 'text' },
+      { key: 't_objet_de_votre_message', label: 'Section 2 · Message envoyé ! — Texte indicatif « Objet de votre message »', type: 'text' },
+      { key: 't_decrivez_votre_situation_ou', label: 'Section 2 · Message envoyé ! — Texte indicatif « Décrivez votre situation ou votre question… »', type: 'text' },
+      { key: 't_monica_schneider', label: 'Section 2 · Message envoyé ! — Texte alternatif image « Monica Schneider »', type: 'text' },
+      { key: 't_ms', label: 'Section 2 · Message envoyé ! — Texte « MS »', type: 'text' },
+      { key: 't_monica_schneider_2', label: 'Section 2 · Message envoyé ! — Texte « Monica Schneider »', type: 'text' },
+      { key: 't_executive_coach_philosophical_coun', label: 'Section 2 · Message envoyé ! — Texte « Executive Coach · Philosophical Counselling »', type: 'text' },
+      { key: 't_francais_anglais_et_roumain', label: 'Section 2 · Message envoyé ! — Texte « Français, anglais et roumain »', type: 'text' },
+      { key: 't_reponse_sous_48h', label: 'Section 2 · Message envoyé ! — Texte « Réponse sous 48h »', type: 'text' },
+      { key: 'seo_title', label: 'Référencement Google — Titre (onglet du navigateur et résultat Google)', type: 'text' },
+      { key: 'seo_description', label: 'Référencement Google — Description (l’extrait sous le titre dans Google)', type: 'textarea' },
+      { key: 'seo_image', label: 'Référencement Google — Image de partage (Facebook, LinkedIn, WhatsApp…)', type: 'image' },
     ],
   },
   // 11. Navigation
@@ -571,13 +705,6 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Navigation',
     emoji: '🧭',
     sections: [
-      { key: 'label_apropos',     label: 'Lien — À propos (ex: Monica)',       type: 'text' },
-      { key: 'label_coaching',    label: 'Lien — Coaching',                    type: 'text' },
-      { key: 'label_entreprises', label: 'Lien — Organisations',              type: 'text' },
-      { key: 'label_relations',   label: 'Lien — Relations',                   type: 'text' },
-      { key: 'label_temoignages', label: 'Lien — Témoignages',                 type: 'text' },
-      { key: 'label_contact',     label: 'Lien — Contact',                     type: 'text' },
-      { key: 'label_cta',         label: 'Bouton CTA (ex: Réserver une séance)', type: 'text' },
     ],
   },
   // 11. Footer
@@ -596,8 +723,22 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'service_4',     label: 'Service 4',                           type: 'text' },
       { key: 'service_5',     label: 'Service 5',                           type: 'text' },
       { key: 'copyright',     label: 'Texte copyright',                     type: 'text' },
-      { key: 'logo_url',      label: 'Logo (MiniFooter)',                   type: 'image' },
-      { key: 'footer_nav_show_temoignages', label: 'Afficher page Témoignages dans le footer', type: 'text' },
+      { key: 'photos_label', label: 'Photos — Libellé « Photos : »', type: 'text' },
+      { key: 'footer_nav_title', label: 'Pied de page — Lien « Navigation »', type: 'text' },
+      { key: 'footer_nav_home', label: 'Pied de page — Lien « Accueil »', type: 'text' },
+      { key: 'footer_nav_coaching', label: 'Pied de page — Lien « Coaching individuel »', type: 'text' },
+      { key: 'footer_nav_hd', label: 'Pied de page — Lien « Happiness Design »', type: 'text' },
+      { key: 'footer_nav_sparring', label: 'Pied de page — Lien « Sparring Partner »', type: 'text' },
+      { key: 'footer_nav_entreprises', label: 'Pied de page — Lien « Entreprises »', type: 'text' },
+      { key: 'footer_nav_relations', label: 'Pied de page — Lien « Relations »', type: 'text' },
+      { key: 'footer_nav_contact', label: 'Pied de page — Lien « Contact »', type: 'text' },
+      { key: 'footer_nav_blog', label: 'Pied de page — Lien « Ressources »', type: 'text' },
+      { key: 'footer_nav_faq', label: 'Pied de page — Lien « FAQ »', type: 'text' },
+      { key: 'footer_services_title', label: 'Pied de page — Titre « Services »', type: 'text' },
+      { key: 't_linkedin', label: 'Bas de page — Lien « LinkedIn → »', type: 'text' },
+      { key: 't_unsplash', label: 'Bas de page — Lien « Unsplash »', type: 'text' },
+      { key: 't_mentions_legales', label: 'Bas de page — Lien « Mentions légales »', type: 'text' },
+      { key: 't_confidentialite', label: 'Bas de page — Lien « Confidentialité »', type: 'text' },
     ],
   },
   // 12. Sparring Partner
@@ -605,6 +746,8 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Sparring Partner',
     emoji: '🥊',
     sections: [
+      { key: 'sections_layout', label: 'Structure — Ordre et affichage des sections', type: 'sections' },
+      { key: 'hero_image', label: 'Hero — Photo de fond', type: 'image' },
       { key: 'hero_badge',          label: 'Hero — Badge',                                  type: 'text' },
       { key: 'hero_title',          label: 'Hero — Titre principal',                        type: 'text' },
       { key: 'hero_desc',           label: 'Hero — Sous-titre / description',               type: 'textarea' },
@@ -629,7 +772,10 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'cta_desc',            label: 'CTA final — Sous-titre',                       type: 'textarea' },
       { key: 'cta_primary',         label: 'CTA final — Bouton réservation',               type: 'text' },
       { key: 'cta_secondary',       label: 'CTA final — Bouton contact',                   type: 'text' },
-      { key: 'sparring_price',      label: 'Tarif (ex: Sur devis)',                        type: 'text' },
+      { key: 't_discussion_strategique', label: 'Section 1 · Un regard extérieur stratégique… — Texte alternatif image « Discussion stratégique »', type: 'text' },
+      { key: 'seo_title', label: 'Référencement Google — Titre (onglet du navigateur et résultat Google)', type: 'text' },
+      { key: 'seo_description', label: 'Référencement Google — Description (l’extrait sous le titre dans Google)', type: 'textarea' },
+      { key: 'seo_image', label: 'Référencement Google — Image de partage (Facebook, LinkedIn, WhatsApp…)', type: 'image' },
     ],
   },
   // 13. FAQ
@@ -637,11 +783,48 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'FAQ',
     emoji: '❓',
     sections: [
+      { key: 'hero_image', label: 'Photo de fond du haut de page', type: 'image' },
       { key: 'page_title',    label: 'Titre de la page',                      type: 'text' },
       { key: 'page_subtitle',label: 'Sous-titre de la page',                  type: 'textarea' },
       { key: 'cta_title',    label: 'Section CTA — Titre',                    type: 'text' },
       { key: 'cta_text',     label: 'Section CTA — Texte',                    type: 'textarea' },
-      { key: 'faqs_json',    label: 'FAQ — JSON (voir format dans le panneau)', type: 'textarea' },
+      { key: 't_espace_calme_pour_reflechir', label: 'Section 1 · Ce qu’on nous demande… — Texte alternatif image « Espace calme pour réfléchir »', type: 'text' },
+      { key: 't_faq', label: 'Section 1 · Ce qu’on nous demande… — Texte « FAQ »', type: 'text' },
+      { key: 't_ecrire_a_monica', label: 'Section 2 · Une autre question ? — Lien « Écrire à Monica → »', type: 'text' },
+      { key: 't_reserver_une_seance', label: 'Section 2 · Une autre question ? — Lien « Réserver une séance »', type: 'text' },
+      { key: 'faq_1_q', label: 'Question 1 — Question', type: 'text' },
+      { key: 'faq_1_a', label: 'Question 1 — Réponse', type: 'textarea' },
+      { key: 'faq_2_q', label: 'Question 2 — Question', type: 'text' },
+      { key: 'faq_2_a', label: 'Question 2 — Réponse', type: 'textarea' },
+      { key: 'faq_3_q', label: 'Question 3 — Question', type: 'text' },
+      { key: 'faq_3_a', label: 'Question 3 — Réponse', type: 'textarea' },
+      { key: 'faq_4_q', label: 'Question 4 — Question', type: 'text' },
+      { key: 'faq_4_a', label: 'Question 4 — Réponse', type: 'textarea' },
+      { key: 'faq_5_q', label: 'Question 5 — Question', type: 'text' },
+      { key: 'faq_5_a', label: 'Question 5 — Réponse', type: 'textarea' },
+      { key: 'faq_6_q', label: 'Question 6 — Question', type: 'text' },
+      { key: 'faq_6_a', label: 'Question 6 — Réponse', type: 'textarea' },
+      { key: 'faq_7_q', label: 'Question 7 — Question', type: 'text' },
+      { key: 'faq_7_a', label: 'Question 7 — Réponse', type: 'textarea' },
+      { key: 'faq_8_q', label: 'Question 8 — Question', type: 'text' },
+      { key: 'faq_8_a', label: 'Question 8 — Réponse', type: 'textarea' },
+      { key: 'faq_9_q', label: 'Question 9 — Question', type: 'text' },
+      { key: 'faq_9_a', label: 'Question 9 — Réponse', type: 'text' },
+      { key: 'faq_10_q', label: 'Question 10 — Question', type: 'text' },
+      { key: 'faq_10_a', label: 'Question 10 — Réponse', type: 'text' },
+      { key: 'faq_11_q', label: 'Question 11 — Question', type: 'text' },
+      { key: 'faq_11_a', label: 'Question 11 — Réponse', type: 'text' },
+      { key: 'faq_12_q', label: 'Question 12 — Question', type: 'text' },
+      { key: 'faq_12_a', label: 'Question 12 — Réponse', type: 'text' },
+      { key: 'faq_13_q', label: 'Question 13 — Question', type: 'text' },
+      { key: 'faq_13_a', label: 'Question 13 — Réponse', type: 'text' },
+      { key: 'faq_14_q', label: 'Question 14 — Question', type: 'text' },
+      { key: 'faq_14_a', label: 'Question 14 — Réponse', type: 'text' },
+      { key: 'faq_15_q', label: 'Question 15 — Question', type: 'text' },
+      { key: 'faq_15_a', label: 'Question 15 — Réponse', type: 'text' },
+      { key: 'seo_title', label: 'Référencement Google — Titre (onglet du navigateur et résultat Google)', type: 'text' },
+      { key: 'seo_description', label: 'Référencement Google — Description (l’extrait sous le titre dans Google)', type: 'textarea' },
+      { key: 'seo_image', label: 'Référencement Google — Image de partage (Facebook, LinkedIn, WhatsApp…)', type: 'image' },
     ],
   },
   // 13. Blog
@@ -649,6 +832,27 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
     label: 'Blog',
     emoji: '📝',
     sections: [
+      { key: 'article_related_badge', label: 'Article — Petit titre du bloc « articles liés »', type: 'text' },
+      { key: 'article_related_title', label: 'Article — Titre du bloc « articles liés »', type: 'text' },
+      { key: 'article_related_text', label: 'Article — Texte du bloc « articles liés »', type: 'textarea' },
+      { key: 'article_back', label: 'Article — Lien « Retour » (en haut et en bas de l’article)', type: 'text' },
+      { key: 'article_read_time', label: 'Article — Mention « min de lecture »', type: 'text' },
+      { key: 'article_opening', label: 'Article — Titre de l’encadré d’introduction', type: 'text' },
+      { key: 'article_unfinished', label: 'Article — Message quand le texte est vide', type: 'textarea' },
+      { key: 'article_detail', label: 'Article — Titre de l’encadré de notes', type: 'text' },
+      { key: 'article_tags', label: 'Article — Titre « Tags »', type: 'text' },
+      { key: 'cat_all_label', label: 'Liste — Filtre « tous les articles »', type: 'text' },
+      { key: 'cat_1_label', label: 'Liste — Catégorie « Carnets Voyage » : libellé', type: 'text' },
+      { key: 'cat_2_label', label: 'Liste — Catégorie « Découvertes Locales » : libellé', type: 'text' },
+      { key: 'cat_3_label', label: 'Liste — Catégorie « Guides Pratiques » : libellé', type: 'text' },
+      { key: 'cat_1_eyebrow', label: 'Liste — Petit titre de la section « Carnets »', type: 'text' },
+      { key: 'cat_2_eyebrow', label: 'Liste — Petit titre de la section « Pépites locales »', type: 'text' },
+      { key: 'cat_3_eyebrow', label: 'Liste — Petit titre de la section « Guides »', type: 'text' },
+      { key: 'article_singular', label: 'Liste — Mot « article » (singulier)', type: 'text' },
+      { key: 'article_plural', label: 'Liste — Mot « articles » (pluriel)', type: 'text' },
+      { key: 'search_for', label: 'Liste — Mot « pour » (3 articles pour « mot recherché »)', type: 'text' },
+      { key: 'read_more', label: 'Liste — Lien en bas d’une carte d’article', type: 'text' },
+      { key: 'hero_image', label: 'Photo de fond du haut de page', type: 'image' },
       { key: 'hero_badge',    label: 'Badge hero',                    type: 'text' },
       { key: 'hero_title',    label: 'Titre principal',               type: 'textarea' },
       { key: 'hero_subtitle', label: 'Sous-titre',                    type: 'textarea' },
@@ -663,9 +867,246 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'pepites_desc',  label: 'Section Pépites — Description', type: 'textarea' },
       { key: 'guides_title',  label: 'Section Guides — Titre',        type: 'text' },
       { key: 'guides_desc',   label: 'Section Guides — Description',  type: 'textarea' },
+      { key: 't_ecriture_et_reflexion', label: 'Section 1 — Texte alternatif image « Écriture et réflexion »', type: 'text' },
+      { key: 't_lire_le_carnet', label: 'Section 2 — Texte « Lire le carnet → »', type: 'text' },
+      { key: 't_rechercher_un_carnet_un', label: 'Section 3 — Texte indicatif « Rechercher un carnet, un lieu, un détail »', type: 'text' },
+      { key: 't_effacer', label: 'Section 3 — Bouton « Effacer »', type: 'text' },
+      { key: 'seo_title', label: 'Référencement Google — Titre (onglet du navigateur et résultat Google)', type: 'text' },
+      { key: 'seo_description', label: 'Référencement Google — Description (l’extrait sous le titre dans Google)', type: 'textarea' },
+      { key: 'seo_image', label: 'Référencement Google — Image de partage (Facebook, LinkedIn, WhatsApp…)', type: 'image' },
+    ],
+  },
+  'mentions-legales': {
+    label: 'Mentions légales',
+    emoji: '⚖️',
+    sections: [
+      { key: 'contact_intro', label: 'Textes de la page — Phrase d’introduction de l’adresse e-mail (en bas de page)', type: 'textarea' },
+      { key: 't_cadre_legal', label: 'Textes de la page — Texte « Cadre légal »', type: 'text' },
+      { key: 't_mentions_legales', label: 'Textes de la page — Titre principal « Mentions légales »', type: 'text' },
+      { key: 't_derniere_mise_a_jour', label: 'Textes de la page — Texte « Dernière mise à jour : juin 2026 »', type: 'text' },
+      { key: 't_identite_de_l_editeur', label: 'Section 1 · Identité de l’éditeur — Titre de section « Identité de l’éditeur »', type: 'text' },
+      { key: 't_nom_commercial_happy_humans', label: 'Section 1 · Identité de l’éditeur — Texte « **Nom commercial :** Happy Humans » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_responsable_monica_schneider', label: 'Section 1 · Identité de l’éditeur — Texte « **Responsable :** Monica Schneider » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_activite_philo_coaching_executive', label: 'Section 1 · Identité de l’éditeur — Texte « **Activité :** Philo-coaching, executive coaching, philosophical counselling, sparring… » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_email', label: 'Section 1 · Identité de l’éditeur — Texte « Email : »', type: 'text' },
+      { key: 't_happyhumans_coaching_gmail_com', label: 'Section 1 · Identité de l’éditeur — Lien « happyhumans.coaching@gmail.com »', type: 'text' },
+      { key: 't_site', label: 'Section 1 · Identité de l’éditeur — Texte « Site : »', type: 'text' },
+      { key: 't_happyhumans_vercel_app', label: 'Section 1 · Identité de l’éditeur — Lien « happyhumans.vercel.app »', type: 'text' },
+      { key: 't_hebergeur', label: 'Section 2 · Hébergeur — Titre de section « Hébergeur »', type: 'text' },
+      { key: 't_societe_vercel_inc', label: 'Section 2 · Hébergeur — Texte « **Société :** Vercel Inc. » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_adresse_340_pine_street', label: 'Section 2 · Hébergeur — Texte « **Adresse :** 340 Pine Street Suite 701, San… » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_site_2', label: 'Section 2 · Hébergeur — Texte « Site : »', type: 'text' },
+      { key: 't_vercel_com', label: 'Section 2 · Hébergeur — Lien « vercel.com »', type: 'text' },
+      { key: 't_base_de_donnees', label: 'Section 3 · Base de données — Titre de section « Base de données »', type: 'text' },
+      { key: 't_service_supabase_supabase_inc', label: 'Section 3 · Base de données — Texte « **Service :** Supabase (Supabase Inc.) » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_site_3', label: 'Section 3 · Base de données — Texte « Site : »', type: 'text' },
+      { key: 't_supabase_com', label: 'Section 3 · Base de données — Lien « supabase.com »', type: 'text' },
+      { key: 't_propriete_intellectuelle', label: 'Section 4 · Propriété intellectuelle — Titre de section « Propriété intellectuelle »', type: 'text' },
+      { key: 't_l_ensemble_des_contenus', label: 'Section 4 · Propriété intellectuelle — Texte « L’ensemble des contenus présents sur ce site (textes,… »', type: 'textarea' },
+      { key: 't_credits_photo_happy_humans', label: 'Section 4 · Propriété intellectuelle — Texte « Crédits photo : Happy Humans et banques d’images… »', type: 'text' },
+      { key: 't_limitation_de_responsabilite', label: 'Section 5 · Limitation de responsabilité — Titre de section « Limitation de responsabilité »', type: 'text' },
+      { key: 't_happy_humans_s_efforce', label: 'Section 5 · Limitation de responsabilité — Texte « Happy Humans s’efforce de fournir des informations fiables… »', type: 'textarea' },
+      { key: 't_contact', label: 'Section 6 · Contact — Titre de section « Contact »', type: 'text' },
+      { key: 't_happyhumans_coaching_gmail_com_2', label: 'Section 6 · Contact — Lien « happyhumans.coaching@gmail.com »', type: 'text' },
+      { key: 't_2026_happy_humans_monica', label: 'Section 7 — Texte « © 2026 Happy Humans — Monica Schneider. Tous… »', type: 'text' },
+      { key: 'seo_title', label: 'Référencement Google — Titre (onglet du navigateur et résultat Google)', type: 'text' },
+      { key: 'seo_description', label: 'Référencement Google — Description (l’extrait sous le titre dans Google)', type: 'textarea' },
+      { key: 'seo_image', label: 'Référencement Google — Image de partage (Facebook, LinkedIn, WhatsApp…)', type: 'image' },
+    ],
+  },
+  'politique-confidentialite': {
+    label: 'Politique de confidentialité',
+    emoji: '🔒',
+    sections: [
+      { key: 'email_label', label: 'Textes de la page — Mot « Email : »', type: 'text' },
+      { key: 'rights_intro', label: 'Textes de la page — Phrase d’introduction de l’adresse e-mail (en bas de page)', type: 'textarea' },
+      { key: 't_donnees_personnelles', label: 'Textes de la page — Texte « Données personnelles »', type: 'text' },
+      { key: 't_politique_de_confidentialite', label: 'Textes de la page — Titre principal « Politique de confidentialité »', type: 'text' },
+      { key: 't_derniere_mise_a_jour', label: 'Textes de la page — Texte « Dernière mise à jour : juin 2026 »', type: 'text' },
+      { key: 't_responsable_du_traitement', label: 'Section 1 · Responsable du traitement — Titre de section « Responsable du traitement »', type: 'text' },
+      { key: 't_happy_humans_monica_schneider', label: 'Section 1 · Responsable du traitement — Texte « Happy Humans — Monica Schneider »', type: 'text' },
+      { key: 't_happyhumans_coaching_gmail_com', label: 'Section 1 · Responsable du traitement — Lien « happyhumans.coaching@gmail.com »', type: 'text' },
+      { key: 't_donnees_collectees', label: 'Section 2 · Données collectées — Titre de section « Données collectées »', type: 'text' },
+      { key: 't_nous_collectons_uniquement_les', label: 'Section 2 · Données collectées — Texte « Nous collectons uniquement les données que vous nous… »', type: 'text' },
+      { key: 't_nom_et_adresse_email', label: 'Section 2 · Données collectées — Élément de liste « Nom et adresse email (formulaire de contact) »', type: 'text' },
+      { key: 't_nom_email_type_de', label: 'Section 2 · Données collectées — Élément de liste « Nom, email, type de séance, créneau choisi (formulaire… »', type: 'text' },
+      { key: 't_resultats_du_test_de', label: 'Section 2 · Données collectées — Élément de liste « Résultats du test de style d’attachement (anonymes) »', type: 'text' },
+      { key: 't_finalites_du_traitement', label: 'Section 3 · Finalités du traitement — Titre de section « Finalités du traitement »', type: 'text' },
+      { key: 't_repondre_a_vos_demandes', label: 'Section 3 · Finalités du traitement — Élément de liste « Répondre à vos demandes de contact ou de… »', type: 'text' },
+      { key: 't_organiser_et_assurer_le', label: 'Section 3 · Finalités du traitement — Élément de liste « Organiser et assurer le suivi des séances de… »', type: 'text' },
+      { key: 't_respecter_les_obligations_legales', label: 'Section 3 · Finalités du traitement — Élément de liste « Respecter les obligations légales applicables »', type: 'text' },
+      { key: 't_duree_de_conservation', label: 'Section 4 · Durée de conservation — Titre de section « Durée de conservation »', type: 'text' },
+      { key: 't_2_ans_maximum_pour', label: 'Section 4 · Durée de conservation — Texte « 2 ans maximum pour les données de contact… »', type: 'text' },
+      { key: 't_les_resultats_anonymes_du', label: 'Section 4 · Durée de conservation — Texte « Les résultats anonymes du test d’attachement ne sont… »', type: 'text' },
+      { key: 't_hebergement_et_sous_traitants', label: 'Section 5 · Hébergement et sous-traitants — Titre de section « Hébergement et sous-traitants »', type: 'text' },
+      { key: 't_les_donnees_peuvent_etre', label: 'Section 5 · Hébergement et sous-traitants — Texte « Les données peuvent être traitées par des prestataires… » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_cookies', label: 'Section 6 · Cookies — Titre de section « Cookies »', type: 'text' },
+      { key: 't_pas_de_cookies_tiers', label: 'Section 6 · Cookies — Texte « Pas de cookies tiers. »', type: 'text' },
+      { key: 't_pas_de_publicite', label: 'Section 6 · Cookies — Texte « Pas de publicité. »', type: 'text' },
+      { key: 't_pas_de_partage_avec', label: 'Section 6 · Cookies — Texte « Pas de partage avec des tiers. »', type: 'text' },
+      { key: 't_les_cookies_strictement_necessaire', label: 'Section 6 · Cookies — Texte « Les cookies strictement nécessaires au fonctionnement du site… »', type: 'text' },
+      { key: 't_vos_droits_rgpd', label: 'Section 7 · Vos droits (RGPD) — Titre de section « Vos droits (RGPD) »', type: 'text' },
+      { key: 't_conformement_au_rgpd_vous', label: 'Section 7 · Vos droits (RGPD) — Texte « Conformément au RGPD, vous pouvez demander : »', type: 'text' },
+      { key: 't_l_acces_a_vos', label: 'Section 7 · Vos droits (RGPD) — Élément de liste « L’accès à vos données personnelles »', type: 'text' },
+      { key: 't_la_rectification_de_donnees', label: 'Section 7 · Vos droits (RGPD) — Élément de liste « La rectification de données inexactes »', type: 'text' },
+      { key: 't_l_effacement_de_vos', label: 'Section 7 · Vos droits (RGPD) — Élément de liste « L’effacement de vos données »', type: 'text' },
+      { key: 't_la_limitation_ou_l', label: 'Section 7 · Vos droits (RGPD) — Élément de liste « La limitation ou l’opposition à certains traitements »', type: 'text' },
+      { key: 't_happyhumans_coaching_gmail_com_2', label: 'Section 7 · Vos droits (RGPD) — Lien « happyhumans.coaching@gmail.com »', type: 'text' },
+      { key: 't_2026_happy_humans_monica', label: 'Section 8 — Texte « © 2026 Happy Humans — Monica Schneider. Tous… »', type: 'text' },
+      { key: 'seo_title', label: 'Référencement Google — Titre (onglet du navigateur et résultat Google)', type: 'text' },
+      { key: 'seo_description', label: 'Référencement Google — Description (l’extrait sous le titre dans Google)', type: 'textarea' },
+      { key: 'seo_image', label: 'Référencement Google — Image de partage (Facebook, LinkedIn, WhatsApp…)', type: 'image' },
+    ],
+  },
+  'site': {
+    label: 'Textes communs (cookies, newsletter, partage, 404…)',
+    emoji: '🧩',
+    sections: [
+      { key: 'cookie_title', label: 'Bandeau cookies — Titre', type: 'text' },
+      { key: 'cookie_text', label: 'Bandeau cookies — Message', type: 'textarea' },
+      { key: 'cookie_details', label: 'Bandeau cookies — Mot « Détails : »', type: 'text' },
+      { key: 'cookie_privacy_link', label: 'Bandeau cookies — Lien « Politique de confidentialité »', type: 'text' },
+      { key: 'cookie_and', label: 'Bandeau cookies — Mot « et »', type: 'text' },
+      { key: 'cookie_legal_link', label: 'Bandeau cookies — Lien « Mentions légales »', type: 'text' },
+      { key: 'cookie_refuse', label: 'Bandeau cookies — Bouton « Refuser »', type: 'text' },
+      { key: 'cookie_accept', label: 'Bandeau cookies — Bouton « Accepter »', type: 'text' },
+      { key: 'newsletter_badge', label: 'Newsletter — Petit titre (au-dessus du titre)', type: 'text' },
+      { key: 'newsletter_title', label: 'Newsletter — Titre (grand encadré)', type: 'text' },
+      { key: 'newsletter_title_short', label: 'Newsletter — Titre (encadré dans un article)', type: 'text' },
+      { key: 'newsletter_text', label: 'Newsletter — Texte', type: 'textarea' },
+      { key: 'newsletter_placeholder', label: 'Newsletter — Exemple dans le champ e-mail', type: 'text' },
+      { key: 'newsletter_button', label: 'Newsletter — Bouton « Je m’abonne »', type: 'text' },
+      { key: 'newsletter_button_loading', label: 'Newsletter — Bouton pendant l’envoi', type: 'text' },
+      { key: 'newsletter_success', label: 'Newsletter — Message de confirmation', type: 'text' },
+      { key: 'newsletter_success_hint', label: 'Newsletter — Message sous la confirmation', type: 'text' },
+      { key: 'newsletter_error_invalid', label: 'Newsletter — Erreur « adresse invalide »', type: 'text' },
+      { key: 'newsletter_error_generic', label: 'Newsletter — Erreur générale', type: 'text' },
+      { key: 'newsletter_error_network', label: 'Newsletter — Erreur de connexion', type: 'text' },
+      { key: 'newsletter_footnote', label: 'Newsletter — Mention sous le formulaire', type: 'text' },
+      { key: 'share_label', label: 'Partage — Mot « Partager »', type: 'text' },
+      { key: 'share_on', label: 'Partage — Début de l’aide vocale « Partager sur … »', type: 'text' },
+      { key: 'share_pinterest', label: 'Partage — Bouton Pinterest', type: 'text' },
+      { key: 'share_whatsapp', label: 'Partage — Bouton WhatsApp', type: 'text' },
+      { key: 'share_copy', label: 'Partage — Bouton « Copier le lien »', type: 'text' },
+      { key: 'share_copied', label: 'Partage — Message après la copie', type: 'text' },
+      { key: 'share_copy_aria', label: 'Partage — Aide vocale du bouton « Copier le lien »', type: 'text' },
+      { key: 'notfound_badge', label: 'Page introuvable — Petit titre', type: 'text' },
+      { key: 'notfound_title', label: 'Page introuvable — Titre', type: 'text' },
+      { key: 'notfound_text', label: 'Page introuvable — Texte', type: 'textarea' },
+      { key: 'notfound_home', label: 'Page introuvable — Bouton « Retour à l’accueil »', type: 'text' },
+      { key: 'notfound_contact', label: 'Page introuvable — Bouton « Prendre contact »', type: 'text' },
+      { key: 'notfound_link_coaching', label: 'Page introuvable — Lien « Coaching »', type: 'text' },
+      { key: 'notfound_link_relations', label: 'Page introuvable — Lien « Relations »', type: 'text' },
+      { key: 'notfound_link_happiness', label: 'Page introuvable — Lien « Happiness Design »', type: 'text' },
+      { key: 'notfound_link_booking', label: 'Page introuvable — Lien « Réserver une séance »', type: 'text' },
+      { key: 'maintenance_title', label: 'Maintenance — Titre', type: 'text' },
+      { key: 'maintenance_text', label: 'Maintenance — Texte (ligne 1)', type: 'textarea' },
+      { key: 'maintenance_text2', label: 'Maintenance — Texte (ligne 2)', type: 'text' },
+      { key: 'maintenance_help', label: 'Maintenance — Phrase avant l’adresse e-mail', type: 'text' },
+      { key: 'maintenance_email', label: 'Maintenance — Adresse e-mail affichée', type: 'text' },
+    ],
+  },
+  'test-attachement': {
+    label: 'Test d’attachement',
+    emoji: '🧪',
+    sections: [
+      { key: 'back_link', label: 'Page — Lien de retour (en haut)', type: 'text' },
+      { key: 'page_title_sr', label: 'Page — Titre principal (lu par les moteurs de recherche, invisible à l’écran)', type: 'text' },
+      { key: 'intro_title', label: 'Introduction — Titre', type: 'text' },
+      { key: 'intro_text', label: 'Introduction — Texte', type: 'textarea' },
+      { key: 'pill_time', label: 'Introduction — Étiquette « durée »', type: 'text' },
+      { key: 'pill_questions', label: 'Introduction — Étiquette « nombre de questions »', type: 'text' },
+      { key: 'pill_results', label: 'Introduction — Étiquette « résultats »', type: 'text' },
+      { key: 'intro_note', label: 'Introduction — Remarque', type: 'textarea' },
+      { key: 'start_button', label: 'Introduction — Bouton « commencer »', type: 'text' },
+      { key: 'question_word', label: 'Questions — Mot « Question » (Question 3 sur 16)', type: 'text' },
+      { key: 'question_of', label: 'Questions — Mot « sur » (Question 3 sur 16)', type: 'text' },
+      { key: 'scale_legend', label: 'Questions — Légende de l’échelle de réponse', type: 'text' },
+      { key: 'prev_button', label: 'Questions — Bouton « précédent »', type: 'text' },
+      { key: 'next_button', label: 'Questions — Bouton « suivant »', type: 'text' },
+      { key: 'finish_button', label: 'Questions — Bouton de la dernière question', type: 'text' },
+      { key: 'question_1', label: 'Questions — Question 1 (anxiété)', type: 'textarea' },
+      { key: 'question_2', label: 'Questions — Question 2 (anxiété)', type: 'textarea' },
+      { key: 'question_3', label: 'Questions — Question 3 (anxiété)', type: 'textarea' },
+      { key: 'question_4', label: 'Questions — Question 4 (anxiété)', type: 'textarea' },
+      { key: 'question_5', label: 'Questions — Question 5 (anxiété)', type: 'textarea' },
+      { key: 'question_6', label: 'Questions — Question 6 (anxiété)', type: 'textarea' },
+      { key: 'question_7', label: 'Questions — Question 7 (anxiété)', type: 'textarea' },
+      { key: 'question_8', label: 'Questions — Question 8 (anxiété)', type: 'textarea' },
+      { key: 'question_9', label: 'Questions — Question 9 (évitement)', type: 'textarea' },
+      { key: 'question_10', label: 'Questions — Question 10 (évitement)', type: 'textarea' },
+      { key: 'question_11', label: 'Questions — Question 11 (évitement)', type: 'textarea' },
+      { key: 'question_12', label: 'Questions — Question 12 (évitement)', type: 'textarea' },
+      { key: 'question_13', label: 'Questions — Question 13 (évitement)', type: 'textarea' },
+      { key: 'question_14', label: 'Questions — Question 14 (évitement)', type: 'textarea' },
+      { key: 'question_15', label: 'Questions — Question 15 (évitement)', type: 'textarea' },
+      { key: 'question_16', label: 'Questions — Question 16 (évitement)', type: 'textarea' },
+      { key: 'scores_title', label: 'Résultats — Titre « scores »', type: 'text' },
+      { key: 'score_anxiety_label', label: 'Résultats — Barre « anxiété »', type: 'text' },
+      { key: 'score_avoidance_label', label: 'Résultats — Barre « évitement »', type: 'text' },
+      { key: 'strengths_title', label: 'Résultats — Titre « forces »', type: 'text' },
+      { key: 'challenges_title', label: 'Résultats — Titre « vigilance »', type: 'text' },
+      { key: 'growth_title', label: 'Résultats — Titre « croissance »', type: 'text' },
+      { key: 'note_label', label: 'Résultats — Mot d’introduction de l’avertissement', type: 'text' },
+      { key: 'disclaimer', label: 'Résultats — Avertissement (outil de découverte, pas un diagnostic)', type: 'textarea' },
+      { key: 'cta_title', label: 'Résultats — Encadré de réservation : titre', type: 'text' },
+      { key: 'cta_text_before', label: 'Résultats — Encadré de réservation : texte (début)', type: 'text' },
+      { key: 'cta_text_strong', label: 'Résultats — Encadré de réservation : texte (partie en gras)', type: 'text' },
+      { key: 'cta_text_after', label: 'Résultats — Encadré de réservation : texte (fin)', type: 'text' },
+      { key: 'cta_button', label: 'Résultats — Encadré de réservation : bouton', type: 'text' },
+      { key: 'restart_button', label: 'Résultats — Bouton « recommencer »', type: 'text' },
+      { key: 'likert_1', label: 'Questions — Libellé de réponse 1 sur 5', type: 'text' },
+      { key: 'likert_2', label: 'Questions — Libellé de réponse 2 sur 5', type: 'text' },
+      { key: 'likert_3', label: 'Questions — Libellé de réponse 3 sur 5', type: 'text' },
+      { key: 'likert_4', label: 'Questions — Libellé de réponse 4 sur 5', type: 'text' },
+      { key: 'likert_5', label: 'Questions — Libellé de réponse 5 sur 5', type: 'text' },
+      { key: 'copy_intro', label: 'Résultats — Texte copié : début de phrase', type: 'text' },
+      { key: 'copy_anxiety', label: 'Résultats — Texte copié : mot « Anxiété »', type: 'text' },
+      { key: 'copy_avoidance', label: 'Résultats — Texte copié : mot « Évitement »', type: 'text' },
+      { key: 'copy_button', label: 'Résultats — Bouton « copier »', type: 'text' },
+      { key: 'secure_title', label: 'Profil sécure — Titre', type: 'text' },
+      { key: 'secure_summary', label: 'Profil sécure — Description', type: 'textarea' },
+      { key: 'secure_strengths', label: 'Profil sécure — Forces (une par ligne)', type: 'textarea' },
+      { key: 'secure_challenges', label: 'Profil sécure — Points de vigilance (un par ligne)', type: 'textarea' },
+      { key: 'secure_growth', label: 'Profil sécure — Pistes de croissance (une par ligne)', type: 'textarea' },
+      { key: 'anxious_title', label: 'Profil anxieux — Titre', type: 'text' },
+      { key: 'anxious_summary', label: 'Profil anxieux — Description', type: 'textarea' },
+      { key: 'anxious_strengths', label: 'Profil anxieux — Forces (une par ligne)', type: 'textarea' },
+      { key: 'anxious_challenges', label: 'Profil anxieux — Points de vigilance (un par ligne)', type: 'textarea' },
+      { key: 'anxious_growth', label: 'Profil anxieux — Pistes de croissance (une par ligne)', type: 'textarea' },
+      { key: 'avoidant_title', label: 'Profil évitant — Titre', type: 'text' },
+      { key: 'avoidant_summary', label: 'Profil évitant — Description', type: 'textarea' },
+      { key: 'avoidant_strengths', label: 'Profil évitant — Forces (une par ligne)', type: 'textarea' },
+      { key: 'avoidant_challenges', label: 'Profil évitant — Points de vigilance (un par ligne)', type: 'textarea' },
+      { key: 'avoidant_growth', label: 'Profil évitant — Pistes de croissance (une par ligne)', type: 'textarea' },
+      { key: 'disorganized_title', label: 'Profil craintif-évitant — Titre', type: 'text' },
+      { key: 'disorganized_summary', label: 'Profil craintif-évitant — Description', type: 'textarea' },
+      { key: 'disorganized_strengths', label: 'Profil craintif-évitant — Forces (une par ligne)', type: 'textarea' },
+      { key: 'disorganized_challenges', label: 'Profil craintif-évitant — Points de vigilance (un par ligne)', type: 'textarea' },
+      { key: 'disorganized_growth', label: 'Profil craintif-évitant — Pistes de croissance (une par ligne)', type: 'textarea' },
+      { key: 'seo_title', label: 'Référencement Google — Titre (onglet du navigateur et résultat Google)', type: 'text' },
+      { key: 'seo_description', label: 'Référencement Google — Description (l’extrait sous le titre dans Google)', type: 'textarea' },
+      { key: 'seo_image', label: 'Référencement Google — Image de partage (Facebook, LinkedIn, WhatsApp…)', type: 'image' },
+    ],
+  },
+  'merci': {
+    label: 'Page « Merci »',
+    emoji: '🙏',
+    sections: [
+      { key: 't_message_recu', label: 'Textes de la page — Texte « Message reçu »', type: 'text' },
+      { key: 't_merci_pour_votre_message', label: 'Textes de la page — Titre principal « Merci pour votre message. »', type: 'text' },
+      { key: 't_monica_vous_repondra_personnelleme', label: 'Textes de la page — Texte « Monica vous répondra personnellement **sous 48h** à l’adresse… » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
+      { key: 't_en_attendant_vous_pouvez', label: 'Textes de la page — Texte « En attendant, vous pouvez explorer les ressources sur… »', type: 'text' },
+      { key: 't_explorer_les_relations', label: 'Textes de la page — Lien « Explorer les relations »', type: 'text' },
+      { key: 't_reserver_une_seance', label: 'Textes de la page — Lien « Réserver une séance »', type: 'text' },
+      { key: 't_pas_de_reponse_recue', label: 'Textes de la page — Texte « Pas de réponse reçue ? »', type: 'text' },
+      { key: 't_verifiez_votre_dossier_spam', label: 'Textes de la page — Texte « Vérifiez votre dossier spam ou écrivez directement à… » — format : **gras** *italique* [lien](adresse)', type: 'textarea' },
     ],
   },
 };
+
+// Réglages déjà gérés par le panneau « Logo » (aperçu, curseurs, boutons) : non répétés dans la liste générique
+const BRANDING_PANEL_KEYS = ['logo_url', 'logo_size', 'logo_shape', 'logo_position', 'logo_footer_size'];
 
 const SETTINGS_GROUPS: Record<string, { label: string; emoji: string }> = {
   theme:      { label: 'Thème & Couleurs',  emoji: '🎨' },
@@ -783,6 +1224,7 @@ function PageHistoryPanel({ page, onRestored }: { page: string; onRestored?: () 
     finally { setLoading(false); }
   }, [page]);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- chargement de l'historique depuis l'API
   useEffect(() => { load(); }, [load]);
 
   const restore = async (id: number) => {
@@ -837,237 +1279,6 @@ function PageHistoryPanel({ page, onRestored }: { page: string; onRestored?: () 
           ))}
         </div>
       )}
-    </div>
-  );
-}
-
-// ─── Navigation Editor ────────────────────────────────────────
-function NavigationEditor({ onSaved }: { onSaved?: () => void }) {
-  const [nav, setNav] = useState<NavItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  // Drag & drop state
-  const [dragSrc, setDragSrc] = useState<number | null>(null);
-  const [dragOver, setDragOver] = useState<number | null>(null);
-  // Drag state for dropdown sub-items (parentId → dragged index)
-  const [dragSrcSub, setDragSrcSub] = useState<{ parentId: string; idx: number } | null>(null);
-  const [dragOverSub, setDragOverSub] = useState<{ parentId: string; idx: number } | null>(null);
-
-  useEffect(() => {
-    fetch('/api/cms/navigation')
-      .then(r => r.json())
-      .then(d => {
-        const items = d.nav;
-        if (Array.isArray(items) && items.length > 0) setNav(items);
-        else setNav([]);
-      })
-      .catch(() => setError('Impossible de charger la navigation'))
-      .finally(() => setLoading(false));
-  }, []);
-
-  const updateItem = (id: string, updates: Partial<NavItem>) => {
-    setNav(prev => prev.map(item => item.id === id ? { ...item, ...updates } : item));
-  };
-
-  const updateDropdownItem = (parentId: string, dropdownId: string, updates: Partial<NavItem>) => {
-    setNav(prev => prev.map(item => {
-      if (item.id !== parentId) return item;
-      return { ...item, dropdownItems: (item.dropdownItems || []).map(sub => sub.id === dropdownId ? { ...sub, ...updates } : sub) };
-    }));
-  };
-
-  // ── Drag & drop for top-level items ──────────────────────
-  const onItemDragStart = (e: React.DragEvent, idx: number) => {
-    setDragSrc(idx);
-    e.dataTransfer.effectAllowed = 'move';
-  };
-  const onItemDragOver = (e: React.DragEvent, idx: number) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    setDragOver(idx);
-  };
-  const onItemDrop = (e: React.DragEvent, dropIdx: number) => {
-    e.preventDefault();
-    if (dragSrc === null || dragSrc === dropIdx) {
-      setDragSrc(null); setDragOver(null);
-      return;
-    }
-    setNav(prev => {
-      const next = [...prev];
-      const [moved] = next.splice(dragSrc, 1);
-      next.splice(dropIdx, 0, moved);
-      next.forEach((item, i) => { item.position = i + 1; });
-      return next;
-    });
-    setDragSrc(null); setDragOver(null);
-  };
-  const onItemDragEnd = () => { setDragSrc(null); setDragOver(null); };
-
-  // ── Drag & drop for dropdown sub-items ───────────────────
-  const onSubDragStart = (e: React.DragEvent, parentId: string, idx: number) => {
-    setDragSrcSub({ parentId, idx });
-    e.dataTransfer.effectAllowed = 'move';
-  };
-  const onSubDragOver = (e: React.DragEvent, parentId: string, idx: number) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    setDragOverSub({ parentId, idx });
-  };
-  const onSubDrop = (e: React.DragEvent, parentId: string, dropIdx: number) => {
-    e.preventDefault();
-    if (!dragSrcSub || dragSrcSub.parentId !== parentId || dragSrcSub.idx === dropIdx) {
-      setDragSrcSub(null); setDragOverSub(null);
-      return;
-    }
-    setNav(prev => prev.map(item => {
-      if (item.id !== parentId) return item;
-      const subs = [...(item.dropdownItems || [])];
-      const [moved] = subs.splice(dragSrcSub.idx, 1);
-      subs.splice(dropIdx, 0, moved);
-      subs.forEach((sub, i) => { sub.position = i + 1; });
-      return { ...item, dropdownItems: subs };
-    }));
-    setDragSrcSub(null); setDragOverSub(null);
-  };
-  const onSubDragEnd = () => { setDragSrcSub(null); setDragOverSub(null); };
-
-  const saveNav = async () => {
-    setSaving(true); setError(null);
-    try {
-      const res = await fetch('/api/cms/navigation', {
-        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nav }),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || `Erreur ${res.status}`);
-      }
-      bustCmsCache('navigation');
-      onSaved?.();
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Erreur lors de la sauvegarde');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  if (loading) return <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement de la navigation…</p>;
-
-  const cardStyle = (isDragging: boolean, isOver: boolean): React.CSSProperties => ({
-    background: '#faf9f7',
-    border: isOver ? '2px solid #2d5f54' : '1px solid #e8e4df',
-    borderRadius: '.75rem',
-    padding: '1rem',
-    opacity: isDragging ? 0.4 : 1,
-    transition: 'border-color .1s, opacity .15s',
-  });
-
-  return (
-    <div>
-      {error && (
-        <div style={{ padding: '.75rem 1rem', background: '#fee2e2', border: '1px solid #fecaca', borderRadius: '.5rem', color: '#dc2626', fontSize: '.88rem', marginBottom: '1rem' }}>
-          ❌ {error}
-        </div>
-      )}
-      <p style={{ fontSize: '.85rem', color: '#888', marginBottom: '1rem' }}>
-        Glissez-déposez les éléments pour changer l&apos;ordre. Modifiez visibilité et liens ci-dessous.
-      </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0', marginBottom: '1.5rem' }}>
-        {nav.map((item, idx) => (
-          <div key={item.id}>
-            {/* Drop indicator above */}
-            {dragOver === idx && dragSrc !== null && dragSrc !== idx && (
-              <div style={{ height: 3, background: '#2d5f54', borderRadius: 2, margin: '0 .5rem' }} />
-            )}
-            <div
-              draggable
-              onDragStart={e => onItemDragStart(e, idx)}
-              onDragOver={e => onItemDragOver(e, idx)}
-              onDrop={e => onItemDrop(e, idx)}
-              onDragEnd={onItemDragEnd}
-              style={cardStyle(dragSrc === idx, dragOver === idx)}
-            >
-              <div style={{ display: 'flex', gap: '.5rem', alignItems: 'flex-start', marginBottom: '.75rem' }}>
-                {/* Drag handle */}
-                <span style={{ cursor: 'grab', padding: '.35rem .2rem', color: '#bbb', fontSize: '1rem', lineHeight: 1, userSelect: 'none' }} title="Glisser pour réordonner">⠿</span>
-
-                {/* Visibility toggle */}
-                <button onClick={() => updateItem(item.id, { visible: !item.visible })}
-                  title={item.visible ? 'Masquer' : 'Afficher'}
-                  style={{ padding: '.35rem .5rem', background: item.visible ? '#ecfdf5' : '#fef2f2', border: `1px solid ${item.visible ? '#6ee7b7' : '#fca5a5'}`, borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>
-                  {item.visible ? '👁️' : '👁️‍🗨️'}
-                </button>
-
-                {/* Fields */}
-                <div style={{ flex: 1, display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
-                  <input value={item.label} onChange={e => updateItem(item.id, { label: e.target.value })}
-                    placeholder="Label du lien" style={{ ...inp, flex: 1, minWidth: 120 }} />
-                  <input value={item.href || ''} onChange={e => updateItem(item.id, { href: e.target.value })}
-                    placeholder="URL (ex: /contact)" style={{ ...inp, flex: 1, minWidth: 160 }} />
-                </div>
-
-                {/* Badges */}
-                <div style={{ display: 'flex', gap: '.35rem', alignItems: 'center', flexShrink: 0 }}>
-                  {item.isDropdown && <span style={{ padding: '.2rem .5rem', background: '#e0f2fe', color: '#0369a1', borderRadius: '.3rem', fontSize: '.7rem', fontWeight: 600 }}>Menu</span>}
-                  {item.isCta && <span style={{ padding: '.2rem .5rem', background: '#dcfce7', color: '#15803d', borderRadius: '.3rem', fontSize: '.7rem', fontWeight: 600 }}>CTA</span>}
-                </div>
-              </div>
-
-              {/* Dropdown sub-items */}
-              {item.isDropdown && (
-                <div style={{ marginLeft: '2.5rem', display: 'flex', flexDirection: 'column', gap: '0' }}>
-                  <p style={{ fontSize: '.75rem', fontWeight: 600, color: '#888', marginBottom: '.4rem' }}>Sous-éléments :</p>
-                  {(item.dropdownItems || []).map((sub, subIdx) => {
-                    const isSubDragging = dragSrcSub?.parentId === item.id && dragSrcSub.idx === subIdx;
-                    const isSubOver = dragOverSub?.parentId === item.id && dragOverSub.idx === subIdx;
-                    return (
-                      <div key={sub.id}>
-                        {isSubOver && dragSrcSub && !(dragSrcSub.parentId === item.id && dragSrcSub.idx === subIdx) && (
-                          <div style={{ height: 2, background: '#2d5f54', borderRadius: 2, margin: '2px .25rem' }} />
-                        )}
-                        <div
-                          draggable
-                          onDragStart={e => onSubDragStart(e, item.id, subIdx)}
-                          onDragOver={e => onSubDragOver(e, item.id, subIdx)}
-                          onDrop={e => onSubDrop(e, item.id, subIdx)}
-                          onDragEnd={onSubDragEnd}
-                          style={{
-                            display: 'flex', gap: '.4rem', alignItems: 'center',
-                            opacity: isSubDragging ? 0.4 : 1,
-                            background: isSubOver ? '#f0fdf4' : 'transparent',
-                            borderRadius: '.4rem',
-                            padding: isSubOver ? '.35rem .35rem' : '.35rem .35rem',
-                            transition: 'opacity .15s, background .1s',
-                          }}
-                        >
-                          <span style={{ cursor: 'grab', color: '#ccc', fontSize: '.85rem', padding: '0 .1rem', userSelect: 'none' }}>⠿</span>
-                          <button onClick={() => updateDropdownItem(item.id, sub.id, { visible: !sub.visible })}
-                            style={{ padding: '.2rem .35rem', background: sub.visible ? '#ecfdf5' : '#fef2f2', border: `1px solid ${sub.visible ? '#6ee7b7' : '#fca5a5'}`, borderRadius: '.3rem', cursor: 'pointer', fontSize: '.75rem' }}>
-                            {sub.visible ? '👁️' : '👁️‍🗨️'}
-                          </button>
-                          <input value={sub.label} onChange={e => updateDropdownItem(item.id, sub.id, { label: e.target.value })}
-                            placeholder="Label" style={{ ...inp, flex: 1 }} />
-                          <input value={sub.href || ''} onChange={e => updateDropdownItem(item.id, sub.id, { href: e.target.value })}
-                            placeholder="URL" style={{ ...inp, flex: 1 }} />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-        {/* Drop indicator at end */}
-        {dragOver === nav.length && dragSrc !== null && (
-          <div style={{ height: 3, background: '#2d5f54', borderRadius: 2, margin: '0 .5rem' }} />
-        )}
-      </div>
-
-      <button onClick={saveNav} disabled={saving}
-        style={{ padding: '.7rem 2rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.9rem', opacity: saving ? .7 : 1 }}>
-        {saving ? '⏳ Sauvegarde…' : '💾 Sauvegarder la navigation'}
-      </button>
     </div>
   );
 }
@@ -1181,15 +1392,12 @@ export default function CMSAdmin() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loadingMessages, setLoadingMessages] = useState(false);
 
-  // Demandes travel
-  const [demandes, setDemandes] = useState<Demande[]>([]);
+  // Booking (créneaux + demandes de réservation)
   const [bookingSlots, setBookingSlots] = useState<BookingSlot[]>([]);
   const [bookingRequests, setBookingRequests] = useState<BookingRequest[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [savingSlot, setSavingSlot] = useState(false);
   const [newSlot, setNewSlot] = useState({ date: '', time: '10:00', type: 'coaching', notes: '' });
-  const [loadingDemandes, setLoadingDemandes] = useState(false);
-  const [updatingDemandeId, setUpdatingDemandeId] = useState<string | null>(null);
 
   // Paramètres + Contenu pages
   const [settings, setSettings] = useState<Setting[]>([]);
@@ -1204,16 +1412,40 @@ export default function CMSAdmin() {
   const [isDirty, setIsDirty] = useState(false);
   const [savedOk, setSavedOk] = useState(false);
   const cleanHash = React.useRef('');
+  // Brouillon / publication (voir lib/cms-drafts.ts)
+  const [baseline, setBaseline] = useState<Record<string, string>>({}); // publié (ou défaut) : `${page}__${key}`
+  const [drafts, setDrafts] = useState<Record<string, string>>({});     // brouillons enregistrés : `${page}__${key}`
+  const [draftSupported, setDraftSupported] = useState(true);            // false si la base refuse les brouillons
+  const [publishing, setPublishing] = useState(false);
+  const cleanContent = React.useRef<Record<string, string>>({});          // contenu tel qu'enregistré (pour détecter les modifs non enregistrées)
+  // Empreinte indépendante de l'ordre des clés
+  const contentHash = (o: Record<string, string>) => JSON.stringify(Object.keys(o).sort().map(k => [k, o[k]]));
 
   const isArticleDirty = getArticleDraftSignature(editingArticle) !== articleBaseline;
   const articleWordCount = getWordCount(editingArticle?.content);
   const articleReadTime = getReadTimeMinutes(editingArticle?.content);
   const articlePreviewHtml = sanitizeHtml(editingArticle?.content);
 
-  const showToast = useCallback((msg: string) => {
+  const showToast = useCallback((msg: string, durationMs = 3500) => {
+    const id = ++toastSeq;
     setToast(msg);
-    setTimeout(() => setToast(''), 3500);
+    setTimeout(() => { if (id === toastSeq) setToast(''); }, durationMs);
   }, []);
+  // Envoi d'une image depuis un champ « fichier » : réduit la photo, envoie, et explique toujours le résultat
+  const handleImageFile = useCallback(async (e: React.ChangeEvent<HTMLInputElement>, onUrl: (url: string) => void) => {
+    const input = e.target;
+    const file = input.files?.[0];
+    if (!file) return;
+    showToast('Envoi de l’image en cours…', 30000);
+    try {
+      onUrl(await uploadImage(file));
+      showToast('Image envoyée ✓ — pensez à enregistrer.', 5000);
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Envoi impossible. Réessayez.', 10000);
+    } finally {
+      input.value = '';
+    }
+  }, [showToast]);
   const handleUnauthorized = useCallback((res: Response, message = 'Session expirée. Merci de vous reconnecter.') => {
     if (res.status !== 401) return false;
     setAuthed(false);
@@ -1238,23 +1470,9 @@ export default function CMSAdmin() {
   // ── Suivi dirty content/settings ────────────────────────
   useEffect(() => {
     if (!cleanHash.current) return; // pas encore chargé
-    const cur = JSON.stringify(editedContent) + '|' + JSON.stringify(editedSettings);
+    const cur = contentHash(editedContent) + '|' + JSON.stringify(editedSettings);
     setIsDirty(cur !== cleanHash.current);
   }, [editedContent, editedSettings]);
-
-  // ── Raccourci Cmd+S / Ctrl+S ─────────────────────────────
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-        e.preventDefault();
-        if (!isDirty || savingSettings) return;
-        if (tab === 'pages') savePageContent(activePage);
-        else if (tab === 'settings') saveSettings();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isDirty, savingSettings, tab, activePage]);
 
   // ── Confirmation avant de quitter ────────────────────────
   useEffect(() => {
@@ -1378,36 +1596,6 @@ export default function CMSAdmin() {
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [isArticleDirty]);
-  // ── Suivi dirty content/settings ────────────────────────
-  useEffect(() => {
-    if (!cleanHash.current) return; // pas encore chargé
-    const cur = JSON.stringify(editedContent) + '|' + JSON.stringify(editedSettings);
-    setIsDirty(cur !== cleanHash.current);
-  }, [editedContent, editedSettings]);
-
-  // ── Raccourci Cmd+S / Ctrl+S ─────────────────────────────
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-        e.preventDefault();
-        if (!isDirty || savingSettings) return;
-        if (tab === 'pages') savePageContent(activePage);
-        else if (tab === 'settings') saveSettings();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isDirty, savingSettings, tab, activePage]);
-
-  // ── Confirmation avant de quitter ────────────────────────
-  useEffect(() => {
-    if (isDirty) {
-      window.onbeforeunload = () => true;
-    } else {
-      window.onbeforeunload = null;
-    }
-    return () => { window.onbeforeunload = null; };
-  }, [isDirty]);
 
 
   // Load articles
@@ -1427,21 +1615,6 @@ export default function CMSAdmin() {
       setLoadingArticles(false);
     }
   }, [handleUnauthorized, search, showToast, statusFilter]);
-
-  // Load demandes
-  const loadDemandes = useCallback(async () => {
-    setLoadingDemandes(true);
-    try {
-      const res = await fetch('/api/cms/demandes-travel');
-      if (handleUnauthorized(res)) return;
-      const data = await res.json();
-      setDemandes(data.demandes || []);
-    } catch {
-      showToast('Impossible de charger les demandes travel.');
-    } finally {
-      setLoadingDemandes(false);
-    }
-  }, [handleUnauthorized, showToast]);
 
   // Load booking slots
   const loadBookingSlots = useCallback(async () => {
@@ -1535,7 +1708,7 @@ export default function CMSAdmin() {
       const sData = await sRes.json();
       const cData = await cRes.json();
       setSettings(sData.settings || []);
-      setSiteContent(cData.content || []);
+      setSiteContent((cData.content || []).filter((c: SiteContent) => !isDraftPage(c.page)));
       const initS: Record<string, string> = {};
       (sData.settings || []).forEach((s: Setting) => { initS[s.key] = s.value || ''; });
       // Pré-remplir avec les defaults de chaque page
@@ -1545,13 +1718,20 @@ export default function CMSAdmin() {
           initC[`${page}__${key}`] = val;
         });
       });
-      // Les valeurs DB écrasent les defaults
+      // Les valeurs DB (publiées) écrasent les defaults ; les brouillons (page « draft:<page> ») viennent par-dessus
+      const loadedDrafts: Record<string, string> = {};
       (cData.content || []).forEach((c: SiteContent) => {
-        if (c.value) initC[`${c.page}__${c.block_key}`] = c.value;
+        if (isDraftPage(c.page)) loadedDrafts[`${basePage(c.page)}__${c.block_key}`] = c.value ?? '';
+        else if (c.value) initC[`${c.page}__${c.block_key}`] = c.value;
       });
+      const published = { ...initC };
+      const withDrafts = { ...initC, ...loadedDrafts };
+      setBaseline(published);
+      setDrafts(loadedDrafts);
       setEditedSettings(initS);
-      setEditedContent(initC);
-      setTimeout(() => { cleanHash.current = JSON.stringify(initC) + '|' + JSON.stringify(initS); setIsDirty(false); }, 50);
+      setEditedContent(withDrafts);
+      cleanContent.current = withDrafts;
+      setTimeout(() => { cleanHash.current = contentHash(withDrafts) + '|' + JSON.stringify(initS); setIsDirty(false); }, 50);
     } catch {
       showToast('Impossible de charger les contenus du CMS.');
     } finally {
@@ -1568,16 +1748,21 @@ export default function CMSAdmin() {
       setMessages(d.messages || []);
     } catch { showToast('Impossible de charger les messages.'); }
     finally { setLoadingMessages(false); }
-  }, [handleUnauthorized, showToast]);
+  }, [showToast]);
 
+  // Chargements par onglet : patterns de fetch standards (setState via callbacks async).
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
   useEffect(() => { if (authed) loadArticles(); }, [authed, loadArticles]);
-  useEffect(() => { if (authed && tab === 'demandes') loadDemandes(); }, [authed, tab, loadDemandes]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
   useEffect(() => { if (authed && tab === 'booking') { loadBookingSlots(); loadBookingRequests(); } }, [authed, tab, loadBookingSlots, loadBookingRequests]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
   useEffect(() => { if (authed && (tab === 'settings' || tab === 'pages')) loadSettings(); }, [authed, tab, loadSettings]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
   useEffect(() => { if (authed && (tab === 'messages' || tab === 'dashboard')) loadMessages(); }, [authed, tab, loadMessages]);
 
   // ── Rafraîchir l'aperçu après une sauvegarde réussie ──────
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- bump de clé d'aperçu après sauvegarde
     if (savedOk) setPreviewKey(k => k + 1);
   }, [savedOk]);
 
@@ -1622,7 +1807,7 @@ export default function CMSAdmin() {
       const responses = await Promise.all(promises);
       if (responses.some(res => handleUnauthorized(res))) return;
       showToast('✅ Paramètres sauvegardés !');
-      cleanHash.current = JSON.stringify(editedContent) + '|' + JSON.stringify(editedSettings); setIsDirty(false); setSavedOk(true); setTimeout(() => setSavedOk(false), 2000);
+      cleanHash.current = contentHash(editedContent) + '|' + JSON.stringify(editedSettings); setIsDirty(false); setSavedOk(true); setTimeout(() => setSavedOk(false), 2000);
       loadSettings();
     } catch {
       showToast('Impossible de sauvegarder les paramètres.');
@@ -1631,47 +1816,169 @@ export default function CMSAdmin() {
     }
   };
 
-  // Save content pour une page donnée
-  const savePageContent = async (pageKey: string) => {
-    setSavingSettings(true);
+  // ── Brouillon / publication ─────────────────────────────────
+  // Principe : « Enregistrer » écrit un BROUILLON (invisible du site public) ; « Publier » le met en ligne.
+  // Seuls les champs réellement modifiés sont écrits : on n'enregistre plus jamais les textes par défaut en base.
+  const jsonHeaders = { 'Content-Type': 'application/json' };
+  const sliceOf = (pageKey: string) => {
     const config = PAGES_CONFIG[pageKey];
-    if (!config) { setSavingSettings(false); return; }
+    const keys = config ? config.sections.map(sec => sec.key) : [];
+    const pick = (src: Record<string, string>) => Object.fromEntries(keys.map(k => [k, src[`${pageKey}__${k}`]]));
+    const saved: Record<string, string> = {};
+    for (const k of keys) { const dk = `${pageKey}__${k}`; if (dk in drafts) saved[k] = drafts[dk]; }
+    return { config, keys, edited: pick(editedContent), base: pick(baseline), saved };
+  };
+  const pageStatus = (pageKey: string) => {
+    const { keys, edited, base, saved } = sliceOf(pageKey);
+    const plan = planDraftSave(keys, edited, base, saved);
+    return { unsaved: plan.save.length + plan.reset.length, draftN: Object.keys(saved).length };
+  };
+  const draftCountOf = (pageKey: string) => Object.keys(drafts).filter(k => k.startsWith(`${pageKey}__`)).length;
+  const markClean = (changes: Record<string, string>) => {
+    cleanContent.current = { ...cleanContent.current, ...changes };
+    cleanHash.current = contentHash(cleanContent.current) + '|' + JSON.stringify(editedSettings);
+    setIsDirty(contentHash(editedContent) + '|' + JSON.stringify(editedSettings) !== cleanHash.current);
+  };
+  const plural = (n: number, one: string, many: string) => (n > 1 ? many : one);
 
+  const saveDraft = async (pageKey: string, opts: { quiet?: boolean } = {}): Promise<{ ok: boolean; draftKeys: string[] }> => {
+    const { config, keys, edited, base, saved } = sliceOf(pageKey);
+    const currentDraftKeys = Object.keys(saved);
+    if (!config) return { ok: false, draftKeys: currentDraftKeys };
+    const plan = planDraftSave(keys, edited, base, saved);
+    if (!plan.save.length && !plan.reset.length) {
+      if (!opts.quiet) showToast('Aucune modification à enregistrer.');
+      return { ok: true, draftKeys: currentDraftKeys };
+    }
+    // Repli : la base de données refuse les brouillons -> écriture directe, après confirmation explicite
+    if (!draftSupported && !confirm(`Les brouillons ne sont pas disponibles sur cette base de données.\n\nCette sauvegarde va mettre ${plan.save.length} modification${plural(plan.save.length, '', 's')} EN LIGNE immédiatement. Continuer ?`)) {
+      return { ok: false, draftKeys: currentDraftKeys };
+    }
+    setSavingSettings(true);
     try {
-      // Sauvegarder TOUS les champs (upsert — pas de diff pour éviter les faux négatifs)
-      const promises = config.sections.map(section => {
-        const key = `${pageKey}__${section.key}`;
-        const value = editedContent[key] ?? '';
-        return fetch('/api/cms/content', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ page: pageKey, block_key: section.key, value }),
-        });
-      });
-
-      const responses = await Promise.all(promises);
-
-      // Vérifier auth
-      if (responses.some(res => handleUnauthorized(res))) return;
-
-      // Vérifier erreurs API (500, 503, etc.)
+      const calls = [
+        ...plan.save.map(fld => fetch('/api/cms/content', { method: 'PUT', headers: jsonHeaders, body: JSON.stringify({ page: pageKey, block_key: fld.key, value: fld.value, draft: draftSupported }) })),
+        ...(draftSupported ? plan.reset.map(k => fetch('/api/cms/content', { method: 'PUT', headers: jsonHeaders, body: JSON.stringify({ page: pageKey, block_key: k, draft: true, reset: true }) })) : []),
+      ];
+      const responses = await Promise.all(calls);
+      if (responses.some(res => handleUnauthorized(res))) return { ok: false, draftKeys: currentDraftKeys };
       const failed = responses.filter(r => !r.ok);
       if (failed.length > 0) {
         const errBody = await failed[0].json().catch(() => ({}));
-        showToast(`❌ Erreur ${failed[0].status}: ${errBody.error || 'Impossible de sauvegarder'}`);
-        return;
+        if (errBody.draftUnsupported) {
+          setDraftSupported(false);
+          showToast('⚠️ Les brouillons ne sont pas disponibles sur cette base : cliquez de nouveau pour mettre en ligne directement.');
+        } else {
+          showToast(`❌ Erreur ${failed[0].status}: ${errBody.error || 'Impossible de sauvegarder'}`);
+        }
+        return { ok: false, draftKeys: currentDraftKeys };
       }
-
-      showToast(`✅ Page "${config.label}" sauvegardée !`);
-      bustCmsCache(pageKey);
-      cleanHash.current = JSON.stringify(editedContent) + '|' + JSON.stringify(editedSettings); setIsDirty(false); setSavedOk(true); setTimeout(() => setSavedOk(false), 2000);
-      loadSettings();
+      const persisted: Record<string, string> = {};
+      for (const fld of plan.save) persisted[`${pageKey}__${fld.key}`] = fld.value;
+      for (const k of plan.reset) persisted[`${pageKey}__${k}`] = base[k] ?? '';
+      if (draftSupported) {
+        setDrafts(prev => {
+          const next = { ...prev };
+          for (const fld of plan.save) next[`${pageKey}__${fld.key}`] = fld.value;
+          for (const k of plan.reset) delete next[`${pageKey}__${k}`];
+          return next;
+        });
+      } else {
+        setBaseline(prev => ({ ...prev, ...persisted }));
+        bustCmsCache(pageKey);
+      }
+      markClean(persisted);
+      setSavedOk(true); setTimeout(() => setSavedOk(false), 2000);
+      if (!opts.quiet) {
+        const n = plan.save.length + plan.reset.length;
+        showToast(draftSupported
+          ? `📝 ${n} modification${plural(n, '', 's')} enregistrée${plural(n, '', 's')} en brouillon — pas encore en ligne`
+          : `✅ ${n} modification${plural(n, '', 's')} mise${plural(n, '', 's')} en ligne`);
+      }
+      const after = [...currentDraftKeys.filter(k => !plan.reset.includes(k)), ...plan.save.map(fld => fld.key).filter(k => !currentDraftKeys.includes(k))];
+      return { ok: true, draftKeys: draftSupported ? after : [] };
     } catch {
       showToast('Impossible de sauvegarder cette page.');
+      return { ok: false, draftKeys: currentDraftKeys };
     } finally {
       setSavingSettings(false);
     }
   };
+
+  const publishPage = async (pageKey: string) => {
+    const config = PAGES_CONFIG[pageKey];
+    if (!config || publishing || savingSettings) return;
+    const { ok, draftKeys } = await saveDraft(pageKey, { quiet: true });
+    if (!ok) return;
+    if (!draftSupported) { showToast('✅ Modifications mises en ligne (publication directe).'); return; }
+    if (draftKeys.length === 0) { showToast('Rien à publier : tout est déjà en ligne.'); return; }
+    const n = draftKeys.length;
+    if (!confirm(`Publier ${n} modification${plural(n, '', 's')} sur « ${config.label} » ?\n\nElles seront visibles par tous les visiteurs.`)) {
+      showToast('📝 Enregistré en brouillon, pas encore publié.');
+      return;
+    }
+    setPublishing(true);
+    try {
+      const res = await fetch('/api/cms/publish', { method: 'POST', headers: jsonHeaders, body: JSON.stringify({ page: pageKey }) });
+      if (handleUnauthorized(res)) return;
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) { showToast(`❌ Publication impossible : ${data.error || res.status}`); return; }
+      const nowLive: Record<string, string> = {};
+      for (const k of draftKeys) nowLive[`${pageKey}__${k}`] = editedContent[`${pageKey}__${k}`] ?? '';
+      setBaseline(prev => ({ ...prev, ...nowLive }));
+      setDrafts(prev => { const next = { ...prev }; for (const k of draftKeys) delete next[`${pageKey}__${k}`]; return next; });
+      bustCmsCache(pageKey);
+      setSavedOk(true); setTimeout(() => setSavedOk(false), 2000);
+      showToast(`🚀 ${data.published ?? n} modification${plural(n, '', 's')} publiée${plural(n, '', 's')} — en ligne !`);
+    } catch {
+      showToast('Impossible de publier : erreur réseau.');
+    } finally {
+      setPublishing(false);
+    }
+  };
+
+  const discardDraft = async (pageKey: string) => {
+    const { config, saved, base } = sliceOf(pageKey);
+    const draftKeys = Object.keys(saved);
+    if (!config || draftKeys.length === 0 || publishing) return;
+    const n = draftKeys.length;
+    if (!confirm(`Abandonner ${n} modification${plural(n, '', 's')} en brouillon sur « ${config.label} » ?\n\nLe site en ligne n'est pas modifié. Ces brouillons seront supprimés.`)) return;
+    setPublishing(true);
+    try {
+      const res = await fetch('/api/cms/publish', { method: 'POST', headers: jsonHeaders, body: JSON.stringify({ page: pageKey, action: 'discard' }) });
+      if (handleUnauthorized(res)) return;
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) { showToast(`❌ Impossible d'abandonner : ${data.error || res.status}`); return; }
+      const reverted: Record<string, string> = {};
+      for (const k of draftKeys) reverted[`${pageKey}__${k}`] = base[k] ?? '';
+      setDrafts(prev => { const next = { ...prev }; for (const k of draftKeys) delete next[`${pageKey}__${k}`]; return next; });
+      setEditedContent(prev => ({ ...prev, ...reverted }));
+      cleanContent.current = { ...cleanContent.current, ...reverted };
+      cleanHash.current = contentHash({ ...editedContent, ...reverted }) + '|' + JSON.stringify(editedSettings);
+      setIsDirty(false);
+      setPreviewKey(k => k + 1);
+      showToast(`↩ ${n} brouillon${plural(n, '', 's')} abandonné${plural(n, '', 's')} — le site en ligne n'a pas changé`);
+    } catch {
+      showToast("Impossible d'abandonner le brouillon : erreur réseau.");
+    } finally {
+      setPublishing(false);
+    }
+  };
+
+  // ── Raccourci Cmd+S / Ctrl+S (après saveDraft/saveSettings pour respecter l'ordre de déclaration) ──
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        if (!isDirty || savingSettings) return;
+        if (tab === 'pages') void saveDraft(activePage);
+        else if (tab === 'settings') void saveSettings();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- saveDraft/saveSettings recréées à chaque rendu, le listener doit rester frais
+  }, [isDirty, savingSettings, tab, activePage]);
 
   // Save article
   const saveArticle = useCallback(async () => {
@@ -1706,7 +2013,7 @@ export default function CMSAdmin() {
         loadArticles();
       } else {
         const d = await res.json();
-        showToast(`âŒ Erreur : ${d.error}`);
+        showToast(`❌ Erreur : ${d.error}`);
       }
     } catch {
       showToast('Impossible de sauvegarder cet article.');
@@ -1780,45 +2087,17 @@ export default function CMSAdmin() {
   const uploadFeaturedImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const input = e.target;
     setUploadingFeaturedImage(true);
-    const fd = new FormData();
-    fd.append('file', file);
-    fd.append('folder', 'articles');
     try {
-      const res = await fetch('/api/cms/media-upload', {
-        method: 'POST',
-        body: fd,
-      });
-      if (handleUnauthorized(res)) return;
-      const data = await res.json();
-      if (data.url) {
-        setEditingArticle(prev => prev ? { ...prev, featured_image: data.url } : prev);
-        showToast('✅ Image uploadée sur Supabase !');
-      } else {
-        showToast(`âŒ Upload échoué : ${data.error}`);
-      }
-    } catch {
-      showToast('Impossible d’envoyer cette image.');
+      const url = await uploadImage(file, '/api/cms/media-upload', { folder: 'articles' });
+      setEditingArticle(prev => prev ? { ...prev, featured_image: url } : prev);
+      showToast('Image envoyée ✓');
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Impossible d’envoyer cette image.', 10000);
     } finally {
       setUploadingFeaturedImage(false);
-      e.target.value = '';
-    }
-  };
-
-  const updateStatut = async (id: string, statut: string) => {
-    setUpdatingDemandeId(id);
-    try {
-      const res = await fetch('/api/cms/demandes-travel', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, statut }),
-      });
-      if (handleUnauthorized(res)) return;
-      if (res.ok) { showToast('✅ Statut mis à jour'); loadDemandes(); }
-    } catch {
-      showToast('Impossible de mettre à jour cette demande.');
-    } finally {
-      setUpdatingDemandeId(null);
+      input.value = '';
     }
   };
 
@@ -1913,7 +2192,9 @@ export default function CMSAdmin() {
       {isDirty && (
         <div style={{ background: '#fff8e1', borderBottom: '1px solid #f0c040', padding: '.6rem 2rem', display: 'flex', alignItems: 'center', gap: '.5rem', fontSize: '.85rem', color: '#7a5c00', fontWeight: 600 }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          Modifications non sauvegardées — utilisez le bouton flottant ou Ctrl+S pour sauvegarder
+          {tab === 'pages'
+            ? 'Modifications non enregistrées — « Enregistrer le brouillon » (bouton flottant ou Ctrl+S). Rien n’est en ligne tant que vous ne publiez pas.'
+            : 'Modifications non sauvegardées — utilisez le bouton flottant ou Ctrl+S pour sauvegarder'}
         </div>
       )}
 
@@ -1925,7 +2206,7 @@ export default function CMSAdmin() {
           transition: 'opacity .2s',
         }}>
           <button
-            onClick={() => { if (tab === 'pages') savePageContent(activePage); else saveSettings(); }}
+            onClick={() => { if (tab === 'pages') saveDraft(activePage); else saveSettings(); }}
             disabled={savingSettings || !isDirty}
             style={{
               display: 'flex', alignItems: 'center', gap: '.5rem',
@@ -1943,17 +2224,17 @@ export default function CMSAdmin() {
             {savingSettings ? (
               <>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ animation: 'spin 1s linear infinite' }}><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
-                Sauvegarde…
+                Enregistrement…
               </>
             ) : savedOk ? (
               <>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                Sauvegardé !
+                {tab === 'pages' ? 'Enregistré !' : 'Sauvegardé !'}
               </>
             ) : (
               <>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                Sauvegarder
+                {tab === 'pages' ? (draftSupported ? 'Enregistrer le brouillon' : 'Enregistrer') : 'Sauvegarder'}
               </>
             )}
           </button>
@@ -2424,6 +2705,12 @@ export default function CMSAdmin() {
                       style={{ display: 'flex', alignItems: 'center', gap: '.5rem', width: '100%', textAlign: 'left', padding: '.6rem .75rem', borderRadius: '.5rem', border: 'none', cursor: 'pointer', fontSize: '.88rem', fontWeight: activePage === key ? 700 : 400, background: activePage === key ? '#f0e8e4' : 'transparent', color: activePage === key ? '#2d5f54' : '#555', marginBottom: '.2rem' }}
                     >
                       <span>{cfg.emoji}</span> {cfg.label}
+                      {draftCountOf(key) > 0 && (
+                        <span title={`${draftCountOf(key)} modification(s) en brouillon, pas encore en ligne`}
+                          style={{ marginLeft: 'auto', background: '#fb923c', color: '#431407', borderRadius: '999px', fontSize: '.68rem', fontWeight: 700, padding: '.05rem .45rem' }}>
+                          {draftCountOf(key)}
+                        </span>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -2444,6 +2731,8 @@ export default function CMSAdmin() {
                       const config = PAGES_CONFIG[activePage];
                       if (!config) return null;
                       const pagePath = activePage === 'home' ? '/' : `/${activePage}`;
+                      const st = pageStatus(activePage);
+                      const busy = savingSettings || publishing;
                       return (
                         <div>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', gap: '.75rem', flexWrap: 'wrap' }}>
@@ -2463,24 +2752,75 @@ export default function CMSAdmin() {
                                 href={pagePath}
                                 target="_blank" rel="noopener noreferrer"
                                 style={{ fontSize: '.82rem', color: '#01696f', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '.3rem' }}
+                                title="La page telle que la voient les visiteurs"
                               >
-                                🔗 Voir la page
+                                🔗 Voir en ligne
                               </a>
-                              <button
-                                onClick={() => savePageContent(activePage)}
-                                disabled={savingSettings}
-                                style={{ padding: '.45rem 1.25rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.85rem', opacity: savingSettings ? .7 : 1 }}
+                              <a
+                                href={`${pagePath}${pagePath.includes('?') ? '&' : '?'}cms_preview=1`}
+                                target="_blank" rel="noopener noreferrer"
+                                style={{ fontSize: '.82rem', color: '#c2410c', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '.3rem' }}
+                                title="La page avec vos brouillons (visible seulement quand vous êtes connecté)"
                               >
-                                {savingSettings ? '⏳ Sauvegarde…' : '💾 Sauvegarder'}
+                                👁 Voir le brouillon
+                              </a>
+                              {draftSupported && st.draftN > 0 && (
+                                <button
+                                  onClick={() => discardDraft(activePage)}
+                                  disabled={busy}
+                                  style={{ padding: '.45rem .9rem', background: 'white', color: '#b91c1c', border: '1.5px solid #fecaca', borderRadius: '.5rem', fontWeight: 600, cursor: 'pointer', fontSize: '.8rem', opacity: busy ? .6 : 1 }}
+                                  title="Supprimer les brouillons de cette page (le site en ligne n'est pas modifié)"
+                                >
+                                  ↩ Abandonner
+                                </button>
+                              )}
+                              <button
+                                onClick={() => saveDraft(activePage)}
+                                disabled={busy || st.unsaved === 0}
+                                style={{ padding: '.45rem 1.1rem', background: 'white', color: '#2d5f54', border: '1.5px solid #2d5f54', borderRadius: '.5rem', fontWeight: 700, cursor: busy || st.unsaved === 0 ? 'default' : 'pointer', fontSize: '.85rem', opacity: busy || st.unsaved === 0 ? .5 : 1 }}
+                                title={draftSupported ? "Enregistrer en brouillon (rien n'est mis en ligne)" : 'Enregistrer (mise en ligne directe)'}
+                              >
+                                {savingSettings ? '⏳ Enregistrement…' : draftSupported ? '💾 Enregistrer le brouillon' : '💾 Enregistrer'}
                               </button>
+                              {draftSupported && (
+                                <button
+                                  onClick={() => publishPage(activePage)}
+                                  disabled={busy || (st.unsaved === 0 && st.draftN === 0)}
+                                  style={{ padding: '.45rem 1.25rem', background: '#c2410c', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: busy || (st.unsaved === 0 && st.draftN === 0) ? 'default' : 'pointer', fontSize: '.85rem', opacity: busy || (st.unsaved === 0 && st.draftN === 0) ? .45 : 1 }}
+                                  title="Mettre les modifications en ligne"
+                                >
+                                  {publishing ? '⏳ Publication…' : '🚀 Publier'}
+                                </button>
+                              )}
                             </div>
                           </div>
+
+                          {/* État : brouillon / en ligne */}
+                          {!draftSupported ? (
+                            <p style={{ margin: '0 0 1rem', padding: '.55rem .8rem', borderRadius: '.5rem', background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', fontSize: '.82rem', fontWeight: 600 }}>
+                              ⚠️ Les brouillons ne sont pas disponibles sur cette base de données : « Enregistrer » met directement en ligne.
+                            </p>
+                          ) : st.unsaved > 0 ? (
+                            <p style={{ margin: '0 0 1rem', padding: '.55rem .8rem', borderRadius: '.5rem', background: '#fff8e1', border: '1px solid #f0c040', color: '#7a5c00', fontSize: '.82rem', fontWeight: 600 }}>
+                              ✏️ {st.unsaved} modification{st.unsaved > 1 ? 's' : ''} non enregistrée{st.unsaved > 1 ? 's' : ''}
+                              {st.draftN > 0 ? ` · ${st.draftN} déjà en brouillon` : ''} — le site en ligne n’est pas modifié.
+                            </p>
+                          ) : st.draftN > 0 ? (
+                            <p style={{ margin: '0 0 1rem', padding: '.55rem .8rem', borderRadius: '.5rem', background: '#fff7ed', border: '1px solid #fed7aa', color: '#9a3412', fontSize: '.82rem', fontWeight: 600 }}>
+                              📝 Brouillon : {st.draftN} modification{st.draftN > 1 ? 's' : ''} pas encore en ligne. Cliquez sur « Publier » pour les mettre en ligne.
+                            </p>
+                          ) : (
+                            <p style={{ margin: '0 0 1rem', padding: '.55rem .8rem', borderRadius: '.5rem', background: '#f0fdf4', border: '1px solid #bbf7d0', color: '#166534', fontSize: '.82rem', fontWeight: 600 }}>
+                              ✓ Tout est en ligne — aucune modification en attente.
+                            </p>
+                          )}
 
                           {showHistory && (
                             <PageHistoryPanel
                               page={activePage}
                               onRestored={() => {
                                 bustCmsCache(activePage);
+                                // eslint-disable-next-line react-hooks/refs -- faux positif : callback de restauration, pas de lecture pendant le rendu
                                 loadSettings();
                                 setPreviewKey(k => k + 1);
                                 showToast('✅ Valeur restaurée !');
@@ -2491,16 +2831,22 @@ export default function CMSAdmin() {
                           {showPreview && (
                             <div style={{ marginBottom: '1.5rem', border: '1.5px solid #ece8e2', borderRadius: '.75rem', overflow: 'hidden' }}>
                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '.5rem .9rem', background: '#faf8f5', borderBottom: '1px solid #ece8e2' }}>
-                                <span style={{ fontSize: '.78rem', fontWeight: 700, color: '#888' }}>👁 Aperçu — {pagePath}</span>
+                                <span style={{ fontSize: '.78rem', fontWeight: 700, color: '#888' }}>👁 Aperçu du brouillon — {pagePath}</span>
                                 <button onClick={() => setPreviewKey(k => k + 1)}
                                   style={{ background: 'none', border: 'none', color: '#01696f', cursor: 'pointer', fontSize: '.78rem', fontWeight: 600 }}>
                                   🔄 Rafraîchir
                                 </button>
                               </div>
-                              <iframe key={previewKey} src={pagePath} title={`Aperçu ${config.label}`}
+                              <iframe key={previewKey} src={`${pagePath}${pagePath.includes('?') ? '&' : '?'}cms_preview=1`} title={`Aperçu ${config.label}`}
                                 style={{ width: '100%', height: 560, border: 'none', display: 'block', background: 'white' }} />
                             </div>
                           )}
+
+                          {/* Aide à la saisie */}
+                          <p style={{ fontSize: '.8rem', color: '#7a7a7a', background: '#faf8f5', border: '1px solid #ece8e2', borderRadius: '.5rem', padding: '.55rem .8rem', marginBottom: '1rem', lineHeight: 1.5 }}>
+                            💡 Dans les textes longs : <code>**gras**</code>, <code>*italique*</code> et <code>[texte du lien](https://…)</code> sont reconnus.
+                            Pour masquer un texte, saisissez un simple espace. Vos modifications restent en brouillon tant que vous ne cliquez pas sur « Publier ».
+                          </p>
 
                           {/* Recherche de champ */}
                           <input
@@ -2531,7 +2877,7 @@ export default function CMSAdmin() {
                             }
                             const searching = q.length > 0;
                             return groups.map(group => (
-                              <details key={group.name} open={searching || groups.length <= 3 || undefined}
+                              <details key={group.name} open={searching || groups.length <= 3 || group.name === 'Structure' || undefined}
                                 style={{ marginBottom: '.85rem', border: '1.5px solid #ece8e2', borderRadius: '.75rem', background: '#fdfcfa' }}>
                                 <summary style={{ padding: '.8rem 1.1rem', cursor: 'pointer', fontWeight: 700, fontSize: '.92rem', color: '#2d5f54', userSelect: 'none' }}>
                                   {group.name} <span style={{ fontWeight: 400, color: '#aaa', fontSize: '.8rem' }}>· {group.sections.length} champ{group.sections.length > 1 ? 's' : ''}</span>
@@ -2544,8 +2890,21 @@ export default function CMSAdmin() {
                                       : section.label;
                                     return (
                                       <div key={key}>
-                                        <label style={lbl}>{shortLabel}</label>
-                                        {section.type === 'image' ? (
+                                        <label style={lbl}>
+                                          {shortLabel}
+                                          {(editedContent[key] ?? '') !== (baseline[key] ?? '') && (
+                                            <span style={{ marginLeft: '.5rem', fontSize: '.68rem', fontWeight: 700, color: '#c2410c', background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: '999px', padding: '.02rem .45rem', textTransform: 'none', letterSpacing: 0 }}>
+                                              ● modifié
+                                            </span>
+                                          )}
+                                        </label>
+                                        {section.type === 'sections' ? (
+                                          <SectionsEditor
+                                            defs={PAGE_SECTIONS[activePage] || []}
+                                            value={editedContent[key] ?? ''}
+                                            onChange={v => setEditedContent(prev => ({ ...prev, [key]: v }))}
+                                          />
+                                        ) : section.type === 'image' ? (
                                           <div>
                                             {editedContent[key] && (
                                               <div style={{ position: 'relative', marginBottom: '.5rem', display: 'inline-block' }}>
@@ -2557,15 +2916,8 @@ export default function CMSAdmin() {
                                               <button onClick={() => { setMediaPickerTarget(key); setTab('media'); }} style={{ padding: '.5rem 1rem', background: '#01696f', color: 'white', border: 'none', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>🖼️ Choisir dans la médiathèque</button>
                                               <label style={{ padding: '.5rem 1rem', background: '#2d5f54', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>
                                                 ⬆️ Upload
-                                                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
-                                                  const file = e.target.files?.[0];
-                                                  if (!file) return;
-                                                  const fd = new FormData();
-                                                  fd.append('file', file);
-                                                  const res = await fetch('/api/cms/upload', { method: 'POST', body: fd });
-                                                  const data = await res.json();
-                                                  if (data.url) setEditedContent(prev => ({ ...prev, [key]: data.url }));
-                                                }} />
+                                                <input type="file" accept="image/*" style={{ display: 'none' }}
+                                                  onChange={e => handleImageFile(e, url => setEditedContent(prev => ({ ...prev, [key]: url })))} />
                                               </label>
                                               <input value={editedContent[key] ?? ''} onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))} style={{ ...inp, flex: 1, minWidth: 200 }} placeholder="Ou coller une URL d'image..." />
                                             </div>
@@ -2600,14 +2952,23 @@ export default function CMSAdmin() {
                             ));
                           })()}
 
-                          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+                          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end', gap: '.6rem', flexWrap: 'wrap' }}>
                             <button
-                              onClick={() => savePageContent(activePage)}
-                              disabled={savingSettings}
-                              style={{ padding: '.75rem 2.25rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.95rem', opacity: savingSettings ? .7 : 1 }}
+                              onClick={() => saveDraft(activePage)}
+                              disabled={busy || st.unsaved === 0}
+                              style={{ padding: '.75rem 1.6rem', background: 'white', color: '#2d5f54', border: '1.5px solid #2d5f54', borderRadius: '.5rem', fontWeight: 700, cursor: busy || st.unsaved === 0 ? 'default' : 'pointer', fontSize: '.95rem', opacity: busy || st.unsaved === 0 ? .5 : 1 }}
                             >
-                              {savingSettings ? '⏳ Sauvegarde…' : '💾 Sauvegarder la page'}
+                              {savingSettings ? '⏳ Enregistrement…' : draftSupported ? '💾 Enregistrer le brouillon' : '💾 Enregistrer'}
                             </button>
+                            {draftSupported && (
+                              <button
+                                onClick={() => publishPage(activePage)}
+                                disabled={busy || (st.unsaved === 0 && st.draftN === 0)}
+                                style={{ padding: '.75rem 2rem', background: '#c2410c', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: busy || (st.unsaved === 0 && st.draftN === 0) ? 'default' : 'pointer', fontSize: '.95rem', opacity: busy || (st.unsaved === 0 && st.draftN === 0) ? .45 : 1 }}
+                              >
+                                {publishing ? '⏳ Publication…' : '🚀 Publier'}
+                              </button>
+                            )}
                           </div>
                         </div>
                       );
@@ -2627,7 +2988,7 @@ export default function CMSAdmin() {
               <p style={{ fontSize: '.85rem', color: '#888' }}>Supabase Storage</p>
             </div>
             <div style={{ background: '#faf8f5', borderRadius: '.75rem', padding: '2rem', textAlign: 'center', border: '2px dashed #e8e3dc' }}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>â˜ï¸</div>
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>☁️</div>
               <p style={{ color: '#555', marginBottom: '1.25rem', lineHeight: 1.6 }}>Toutes tes images sont stockées sur <strong>Supabase Storage</strong>.</p>
               <button onClick={() => setShowMediaLibrary(true)}
                 style={{ padding: '.8rem 1.75rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '.95rem' }}
@@ -2636,59 +2997,6 @@ export default function CMSAdmin() {
           </div>
         )}
 
-        {/* ── TRAVEL PLANNING ── */}
-        {tab === 'demandes' && (
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#2d5f54' }}>✈️ Demandes Travel Planning</h2>
-              <button onClick={loadDemandes} disabled={loadingDemandes} style={{ padding: '.5rem 1rem', background: 'white', border: '1.5px solid #ddd', borderRadius: '.5rem', cursor: loadingDemandes ? 'wait' : 'pointer', fontSize: '.85rem', opacity: loadingDemandes ? .7 : 1 }}>{loadingDemandes ? '⏳ Actualisation…' : '🔄 Actualiser'}</button>
-            </div>
-            {loadingDemandes ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement…</p>
-              : demandes.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '4rem', color: '#aaa' }}>
-                  <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✉️</div>
-                  <p>Aucune demande pour le moment</p>
-                </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  {demandes.map(d => (
-                    <div key={d.id} style={{ background: 'white', borderRadius: '.75rem', padding: '1.25rem 1.5rem', boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '.75rem', flexWrap: 'wrap', gap: '.5rem' }}>
-                        <div>
-                          <div style={{ fontWeight: 700, fontSize: '1rem', color: '#1a1a1a' }}>{d.prenom} {d.nom}</div>
-                          <div style={{ fontSize: '.85rem', color: '#888' }}>{d.email} {d.telephone && `· ${d.telephone}`}</div>
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
-                          <span style={{ fontSize: '.75rem', color: '#aaa' }}>{fmt(d.created_at)}</span>
-                          <select value={d.statut || 'nouvelle'} onChange={e => updateStatut(d.id, e.target.value)} disabled={updatingDemandeId === d.id}
-                            style={{ padding: '.3rem .7rem', border: '1.5px solid #ddd', borderRadius: '.4rem', fontSize: '.82rem', cursor: updatingDemandeId === d.id ? 'wait' : 'pointer', opacity: updatingDemandeId === d.id ? .7 : 1 }}
-                          >
-                            <option value="nouvelle">🆕 Nouvelle</option>
-                            <option value="en_cours">🔄 En cours</option>
-                            <option value="devis_envoye">📨 Devis envoyé</option>
-                            <option value="accepte">✅ Acceptée</option>
-                            <option value="terminee">🏁 Terminée</option>
-                            <option value="annulee">âŒ Annulée</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '.5rem .75rem', fontSize: '.85rem', color: '#555' }}>
-                        {d.destination && <span>📍 <strong>Destination :</strong> {d.destination}</span>}
-                        {d.style_voyage && <span>🌿 <strong>Style :</strong> {d.style_voyage}</span>}
-                        {d.duree_jours && <span>📅 <strong>Durée :</strong> {d.duree_jours} jours</span>}
-                        {d.mois_depart && <span>🗓 <strong>Départ :</strong> {d.mois_depart}</span>}
-                        {d.budget_fourchette && <span>💶 <strong>Budget :</strong> {d.budget_fourchette}</span>}
-                        {d.nb_voyageurs && <span>👫 <strong>Voyageurs :</strong> {d.nb_voyageurs}</span>}
-                      </div>
-                      {d.notes && (
-                        <div style={{ marginTop: '.75rem', padding: '.75rem', background: '#faf8f5', borderRadius: '.5rem', fontSize: '.85rem', color: '#666', borderLeft: '3px solid #d4a88a' }}>💬 {d.notes}</div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-          </div>
-        )}
 
         {/* ── BOOKING ── */}
         {tab === 'booking' && (
@@ -2910,30 +3218,9 @@ export default function CMSAdmin() {
                             {/* Prévisualisation live */}
                             <div style={{ marginBottom: '1.5rem', padding: '1rem 1.5rem', background: 'white', borderRadius: '.75rem', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                               <div style={{ width: 260, background: '#fff', borderBottom: '1px solid #f0ece8', borderRadius: '.5rem .5rem 0 0', padding: '.6rem 1rem', display: 'flex', alignItems: 'center', gap: '.75rem', justifyContent: (editedSettings['logo_position'] || 'left') === 'center' ? 'center' : 'flex-start' }}>
-                                {editedSettings['logo_url'] ? (
-                                  <img
-                                    src={editedSettings['logo_url']}
-                                    alt="Logo prévisualisation"
-                                    style={{
-                                      width: Number(editedSettings['logo_size'] || 44),
-                                      height: Number(editedSettings['logo_size'] || 44),
-                                      borderRadius: (editedSettings['logo_shape'] || 'circle') === 'circle' ? '50%' : (editedSettings['logo_shape'] === 'rounded' ? '12px' : '4px'),
-                                      objectFit: 'cover',
-                                      border: '1px solid #eee',
-                                    }}
-                                  />
-                                ) : (
-                                  <div style={{
-                                    width: Number(editedSettings['logo_size'] || 44),
-                                    height: Number(editedSettings['logo_size'] || 44),
-                                    borderRadius: (editedSettings['logo_shape'] || 'circle') === 'circle' ? '50%' : (editedSettings['logo_shape'] === 'rounded' ? '12px' : '4px'),
-                                    background: '#2d5f54',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    color: 'white', fontSize: '.7rem', fontWeight: 700, flexShrink: 0,
-                                  }}>HH</div>
-                                )}
+                                <SiteLogo url={resolveLogo(editedSettings).url} size={resolveLogo(editedSettings).size} shape={resolveLogo(editedSettings).shape} />
                                 <div>
-                                  <p style={{ fontWeight: 700, fontSize: '.9rem', color: '#1a1a1a', margin: 0, fontFamily: 'Georgia, serif' }}>{editedSettings['site_name'] || 'Happy Humans'}</p>
+                                  {resolveLogo(editedSettings).showName && <p style={{ fontWeight: 700, fontSize: '.9rem', color: '#1a1a1a', margin: 0, fontFamily: 'Georgia, serif' }}>{editedSettings['site_name'] || 'Happy Humans'}</p>}
                                   {editedSettings['tagline'] && <p style={{ fontSize: '.7rem', color: '#c9a96e', margin: 0, fontStyle: 'italic' }}>{editedSettings['tagline']}</p>}
                                 </div>
                               </div>
@@ -2946,14 +3233,8 @@ export default function CMSAdmin() {
                               <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
                                 <label style={{ padding: '.5rem 1rem', background: '#2d5f54', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem', display: 'inline-flex', alignItems: 'center', gap: '.4rem' }}>
                                   ⬆ Upload logo
-                                  <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
-                                    const file = e.target.files?.[0];
-                                    if (!file) return;
-                                    const fd = new FormData(); fd.append('file', file);
-                                    const res = await fetch('/api/cms/upload', { method: 'POST', body: fd });
-                                    const { url } = await res.json();
-                                    if (url) setEditedSettings(p => ({ ...p, logo_url: url }));
-                                  }} />
+                                  <input type="file" accept="image/*" style={{ display: 'none' }}
+                                    onChange={e => handleImageFile(e, url => setEditedSettings(p => ({ ...p, logo_url: url })))} />
                                 </label>
                                 <input type="text" value={editedSettings['logo_url'] || ''} placeholder="Ou coller une URL d'image"
                                   onChange={e => setEditedSettings(p => ({ ...p, logo_url: e.target.value }))}
@@ -2967,16 +3248,16 @@ export default function CMSAdmin() {
 
                             {/* Taille du logo */}
                             <div style={{ marginBottom: '1.25rem' }}>
-                              <label style={lbl}>Taille du logo — {editedSettings['logo_size'] || 44}px</label>
+                              <label style={lbl}>Taille du logo — {logoPx(editedSettings['logo_size'], 52)}px</label>
                               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                                 <span style={{ fontSize: '.75rem', color: '#aaa' }}>24px</span>
-                                <input type="range" min="24" max="96" step="4"
-                                  value={Number(editedSettings['logo_size'] || 44)}
+                                <input type="range" min="24" max="64" step="4"
+                                  value={logoPx(editedSettings['logo_size'], 52)}
                                   onChange={e => setEditedSettings(p => ({ ...p, logo_size: e.target.value }))}
                                   style={{ flex: 1, accentColor: '#2d5f54' }} />
-                                <span style={{ fontSize: '.75rem', color: '#aaa' }}>96px</span>
+                                <span style={{ fontSize: '.75rem', color: '#aaa' }}>64px</span>
                                 {/* Tailles prédéfinies */}
-                                {[['XS', '28'], ['S', '36'], ['M', '44'], ['L', '56'], ['XL', '72']].map(([label, val]) => (
+                                {[['XS', '28'], ['S', '36'], ['M', '44'], ['L', '56'], ['XL', '64']].map(([label, val]) => (
                                   <button key={val} onClick={() => setEditedSettings(p => ({ ...p, logo_size: val }))}
                                     style={{ padding: '.2rem .5rem', fontSize: '.72rem', border: `1px solid ${editedSettings['logo_size'] === val ? '#2d5f54' : '#ddd'}`, borderRadius: '.3rem', cursor: 'pointer', background: editedSettings['logo_size'] === val ? '#2d5f54' : 'white', color: editedSettings['logo_size'] === val ? 'white' : '#555' }}>
                                     {label}
@@ -3023,7 +3304,7 @@ export default function CMSAdmin() {
                             <div style={{ marginBottom: '1.25rem' }}>
                               <label style={lbl}>Forme du logo</label>
                               <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
-                                {[['Cercle', 'circle'], ['Arrondi', 'rounded'], ['Carré', 'square']].map(([label, val]) => {
+                                {[['Cercle', 'circle'], ['Arrondi', 'rounded'], ['Sans découpe', 'square']].map(([label, val]) => {
                                   const active = (editedSettings['logo_shape'] || 'circle') === val;
                                   const size = 32;
                                   const radius = val === 'circle' ? '50%' : val === 'rounded' ? '6px' : '2px';
@@ -3172,7 +3453,7 @@ export default function CMSAdmin() {
                         )}
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
-                          {settingsGroup !== 'visibility' && groupItems.map(s => {
+                          {settingsGroup !== 'visibility' && groupItems.filter(s => !(settingsGroup === 'branding' && BRANDING_PANEL_KEYS.includes(s.key))).map(s => {
                             const field = s as { key: string; label: string; type: string; options?: string[]; optionLabels?: string[] };
                             return (
                             <div key={s.key}>
@@ -3186,16 +3467,9 @@ export default function CMSAdmin() {
                                   )}
                                   <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
                                     <label style={{ padding: '.5rem 1rem', background: '#2d5f54', color: 'white', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>
-                                      ⬆️ Upload logo
-                                      <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
-                                        const file = e.target.files?.[0];
-                                        if (!file) return;
-                                        const fd = new FormData();
-                                        fd.append('file', file);
-                                        const res = await fetch('/api/cms/upload', { method: 'POST', body: fd });
-                                        const data = await res.json();
-                                        if (data.url) setEditedSettings(prev => ({ ...prev, [s.key]: data.url }));
-                                      }} />
+                                      ⬆️ Choisir une image
+                                      <input type="file" accept="image/*" style={{ display: 'none' }}
+                                        onChange={e => handleImageFile(e, url => setEditedSettings(prev => ({ ...prev, [s.key]: url })))} />
                                     </label>
                                     <input value={editedSettings[s.key] || ''} onChange={e => setEditedSettings(prev => ({ ...prev, [s.key]: e.target.value }))} style={{ ...inp, flex: 1 }} placeholder="Ou coller une URL..." />
                                     {editedSettings[s.key] && <button onClick={() => setEditedSettings(prev => ({ ...prev, [s.key]: '' }))} style={{ padding: '.5rem .8rem', background: '#fee', color: '#c0392b', border: '1px solid #fcc', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>✕ Supprimer</button>}

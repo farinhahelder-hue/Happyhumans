@@ -10,10 +10,6 @@ export default function DestinationManager() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchDestinations();
-  }, []);
-
   const fetchDestinations = async () => {
     try {
       setLoading(true);
@@ -26,6 +22,11 @@ export default function DestinationManager() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- chargement initial depuis l'API
+    fetchDestinations();
+  }, []);
 
   const handleSave = async () => {
     setShowForm(false);

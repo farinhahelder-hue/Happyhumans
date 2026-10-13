@@ -1,6 +1,8 @@
 ﻿import type { Metadata } from 'next'
-export const metadata: Metadata = {
-  title: 'Happiness Design — Programme 12 séances',
-  description: "Programme Happiness Design créé par Monica Schneider : 12 séances combinant neurosciences, philosophie pratique, psychologie positive et design thinking pour reprendre les rênes de votre vie.",
+import { pageMetadata } from '@/lib/page-seo'
+import { HAPPINESS_DESIGN_DEFAULTS } from '@/lib/cms-defaults/happiness-design'
+export const revalidate = 300 // la page est régénérée au plus toutes les 5 min (+ immédiatement à chaque sauvegarde du CMS)
+export async function generateMetadata(): Promise<Metadata> {
+  return pageMetadata('happiness-design', HAPPINESS_DESIGN_DEFAULTS)
 }
 export default function Layout({ children }: { children: React.ReactNode }) { return <>{children}</> }
