@@ -64,7 +64,7 @@ const buildSources = (c: CmsResult) => [
   },
   {
     id: 'fromm',
-    icon: 'heart' as IconName,
+    icon: 'hand-heart' as IconName,
     title: c.t_erich_fromm,
     subtitle: c.t_se_preparer_a_l,
     content: (
