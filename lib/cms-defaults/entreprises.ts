@@ -68,7 +68,7 @@ export const ENTREPRISES_DEFAULTS: Record<string, string> = {
   pricing_card_3_title: 'Conférence & formation',
   pricing_card_3_price: 'Sur devis',
   pricing_card_3_unit:  '',
-  pricing_card_3_desc:  'Interventions sur le leadership, la transformation, la qualité de présence et le philosophical counselling.',
+  pricing_card_3_desc:  'Conférence atelier « 7 outils pour sourire dans le chaos » qui booste la collaboration, l’innovation et l’engagement des équipes.',
   pricing_card_3_items: "Format keynote ou atelier\nContenu personnalisé\nSupport de présentation\nSession Q&R incluse",
   pricing_card_3_cta:   'Voir les thèmes',
   // Différenciation
