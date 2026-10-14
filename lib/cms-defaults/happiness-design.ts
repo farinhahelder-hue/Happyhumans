@@ -6,7 +6,7 @@ export const HAPPINESS_DESIGN_DEFAULTS: Record<string, string> = {
   hero_image: 'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?w=1600&q=80&auto=format&fit=crop',
   // Hero
   hero_badge:    'Programme',
-  page_title:    'Happiness Design',
+  page_title:    'Happiness Design (V1/V2)',
   page_subtitle: '12 séances pour reprendre les rênes de votre vie et de votre bonheur — au boulot et ailleurs.',
   intro_text:    "Neurosciences, psychologie positive, philosophie pratique, design thinking — toutes les disciplines au service d'une transformation durable, pour que vous repreniez pleinement les rênes de votre vie.",
   hero_cta:      'Séance découverte gratuite (1h)',
@@ -61,7 +61,7 @@ export const HAPPINESS_DESIGN_DEFAULTS: Record<string, string> = {
   t_lumiere_doree_symbolisant_la: "Lumière dorée symbolisant la transformation et le bonheur",
   t_par_happy_humans: "— par Happy Humans",
   // ── Référencement (Google, réseaux sociaux) — lu par generateMetadata via lib/page-seo.ts ──
-  seo_title: "Happiness Design — Programme 12 séances",
+  seo_title: "Happiness Design (V1/V2) — Programme 12 séances",
   seo_description: "Programme Happiness Design créé par Monica Schneider : 12 séances combinant neurosciences, philosophie pratique, psychologie positive et design thinking pour reprendre les rênes de votre vie.",
   seo_image: '',
   // ── Disposition des sections (admin → Structure) : JSON {"order":[…],"hidden":[…]} ; vide = ordre d'origine ──
