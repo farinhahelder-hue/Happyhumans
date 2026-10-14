@@ -1,47 +1,87 @@
 import { describe, it, expect } from 'vitest'
-import { DEFAULT_NAV } from '@/hooks/useCmsNavigation'
+import { DEFAULT_NAV, type NavItem } from '@/hooks/useCmsNavigation'
 import {
   addNavItem, addSubItem, cloneNav, moveItem, moveSubItem,
   removeNavItem, removeSubItem, renumber, updateNavItem, updateSubItem,
 } from '@/lib/cms-nav'
 
+/** Menu de test, indépendant du menu d'origine du site (dont l'ordre et les libellés peuvent évoluer). */
+const MENU: NavItem[] = [
+  { id: '1', href: '/a-propos', label: 'Monica', visible: true, position: 1 },
+  {
+    id: '2', label: 'Coaching', visible: true, position: 2, isDropdown: true,
+    dropdownItems: [
+      { id: '2a', href: '/coaching', label: 'Coaching individuel', visible: true, position: 1 },
+      { id: '2b', href: '/temoignages', label: 'Témoignages', visible: false, position: 2 },
+      { id: '2c', href: '/sparring-partner', label: 'Sparring Partner', visible: true, position: 3 },
+    ],
+  },
+  { id: '3', href: '/entreprises', label: 'Organisations', visible: true, position: 3 },
+  { id: '4', href: '/happiness-design', label: 'Happiness Design', visible: true, position: 4 },
+  { id: '5', href: '/relations', label: 'Relations', visible: true, position: 5 },
+  { id: '6', href: '/contact', label: 'Contact', visible: true, position: 6 },
+  { id: '7', href: '/booking', label: 'Réserver une séance', visible: true, position: 7, isCta: true },
+]
+const menu = () => cloneNav(MENU)
 const labels = (items: { label: string }[]) => items.map(i => i.label)
+const POSITIONS = [1, 2, 3, 4, 5, 6, 7]
 
-describe('menu du site — opérations de l’éditeur', () => {
-  it('le menu d’origine est complet et ses positions se suivent', () => {
-    expect(labels(DEFAULT_NAV)).toEqual(['Monica', 'Coaching', 'Organisations', 'Happiness Design', 'Relations', 'Contact', 'Réserver une séance'])
-    expect(DEFAULT_NAV.map(i => i.position)).toEqual([1, 2, 3, 4, 5, 6, 7])
+describe('menu d’origine du site', () => {
+  it('« Monica » est placé après « Relations » et avant « Contact »', () => {
+    const hrefs = DEFAULT_NAV.map(i => i.href ?? '(menu déroulant)')
+    expect(hrefs).toEqual(['(menu déroulant)', '/entreprises', '/happiness-design', '/relations', '/a-propos', '/contact', '/booking'])
+    const idx = (href: string) => DEFAULT_NAV.findIndex(i => i.href === href)
+    expect(idx('/a-propos')).toBe(idx('/relations') + 1)
+    expect(idx('/contact')).toBe(idx('/a-propos') + 1)
   })
 
+  it('les positions se suivent (1, 2, 3…) et les identifiants sont uniques', () => {
+    expect(DEFAULT_NAV.map(i => i.position)).toEqual(POSITIONS)
+    expect(new Set(DEFAULT_NAV.map(i => i.id)).size).toBe(DEFAULT_NAV.length)
+  })
+
+  it('le bouton de réservation reste en dernier et le menu déroulant garde ses liens', () => {
+    expect(DEFAULT_NAV.at(-1)).toMatchObject({ href: '/booking', isCta: true })
+    const dropdown = DEFAULT_NAV.find(i => i.isDropdown)!
+    expect(dropdown.dropdownItems!.map(s => s.href)).toEqual(['/coaching', '/temoignages', '/sparring-partner'])
+  })
+})
+
+describe('menu du site — opérations de l’éditeur', () => {
   it('moveItem : glisser vers le bas place l’élément AVANT la cible (comme le trait vert de l’éditeur)', () => {
-    const next = moveItem(cloneNav(DEFAULT_NAV), 0, 3) // Monica glissé sur « Happiness Design »
+    const next = moveItem(menu(), 0, 3) // Monica glissé sur « Happiness Design »
     expect(labels(next)).toEqual(['Coaching', 'Organisations', 'Monica', 'Happiness Design', 'Relations', 'Contact', 'Réserver une séance'])
-    expect(next.map(i => i.position)).toEqual([1, 2, 3, 4, 5, 6, 7])
+    expect(next.map(i => i.position)).toEqual(POSITIONS)
   })
 
   it('moveItem : glisser vers le haut, et dépôt en fin de liste', () => {
-    expect(labels(moveItem(cloneNav(DEFAULT_NAV), 4, 0))[0]).toBe('Relations')
-    const end = moveItem(cloneNav(DEFAULT_NAV), 0, DEFAULT_NAV.length)
+    expect(labels(moveItem(menu(), 4, 0))[0]).toBe('Relations')
+    const end = moveItem(menu(), 0, MENU.length)
     expect(labels(end).at(-1)).toBe('Monica')
-    expect(end.map(i => i.position)).toEqual([1, 2, 3, 4, 5, 6, 7])
+    expect(end.map(i => i.position)).toEqual(POSITIONS)
+  })
+
+  it('moveItem : « Monica » glissé après « Relations » et avant « Contact »', () => {
+    const next = moveItem(menu(), 0, 5) // dépôt sur « Contact » : Monica se place juste avant
+    expect(labels(next).slice(3, 6)).toEqual(['Relations', 'Monica', 'Contact'])
   })
 
   it('moveItem : déplacements sans effet', () => {
-    const base = cloneNav(DEFAULT_NAV)
+    const base = menu()
     expect(moveItem(base, 2, 2)).toBe(base)
     expect(moveItem(base, -1, 2)).toBe(base)
     expect(moveItem(base, 2, 99)).toBe(base)
   })
 
   it('renommer « Organisations » en « Entreprises » sans toucher aux autres liens', () => {
-    const next = updateNavItem(cloneNav(DEFAULT_NAV), '3', { label: 'Entreprises' })
+    const next = updateNavItem(menu(), '3', { label: 'Entreprises' })
     expect(next.find(i => i.id === '3')?.label).toBe('Entreprises')
     expect(next.find(i => i.id === '3')?.href).toBe('/entreprises')
     expect(labels(next).filter(l => l === 'Entreprises')).toHaveLength(1)
   })
 
   it('sous-menu : réordonner, renommer, ajouter, supprimer', () => {
-    let nav = cloneNav(DEFAULT_NAV)
+    let nav = menu()
     nav = moveSubItem(nav, '2', 2, 0)
     expect(labels(nav[1].dropdownItems!)).toEqual(['Sparring Partner', 'Coaching individuel', 'Témoignages'])
     expect(nav[1].dropdownItems!.map(s => s.position)).toEqual([1, 2, 3])
@@ -54,13 +94,13 @@ describe('menu du site — opérations de l’éditeur', () => {
   })
 
   it('ajouter et supprimer un lien du menu', () => {
-    let nav = addNavItem(cloneNav(DEFAULT_NAV))
+    let nav = addNavItem(menu())
     expect(nav).toHaveLength(8)
     expect(nav.at(-1)).toMatchObject({ label: 'Nouveau lien', visible: true, position: 8 })
     const addedId = nav.at(-1)!.id
     nav = removeNavItem(nav, addedId)
     expect(nav).toHaveLength(7)
-    expect(nav.map(i => i.position)).toEqual([1, 2, 3, 4, 5, 6, 7])
+    expect(nav.map(i => i.position)).toEqual(POSITIONS)
   })
 
   it('les identifiants des liens ajoutés sont uniques', () => {
@@ -70,10 +110,12 @@ describe('menu du site — opérations de l’éditeur', () => {
 
   it('cloneNav : modifier la copie ne change pas le menu d’origine', () => {
     const copy = cloneNav(DEFAULT_NAV)
-    copy[1].dropdownItems![0].label = 'X'
+    const dropdown = copy.find(i => i.isDropdown)!
+    const original = DEFAULT_NAV.find(i => i.isDropdown)!.dropdownItems![0].label
+    dropdown.dropdownItems![0].label = 'X'
     copy[0].label = 'Y'
-    expect(DEFAULT_NAV[1].dropdownItems![0].label).toBe('Coaching individuel')
-    expect(DEFAULT_NAV[0].label).toBe('Monica')
+    expect(DEFAULT_NAV.find(i => i.isDropdown)!.dropdownItems![0].label).toBe(original)
+    expect(DEFAULT_NAV[0].label).not.toBe('Y')
   })
 
   it('renumber ne modifie pas la liste d’origine', () => {

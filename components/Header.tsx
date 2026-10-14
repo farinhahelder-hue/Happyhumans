@@ -89,7 +89,7 @@ export default function Header() {
             )}
           </Link>
 
-          <div className="hidden items-center gap-6 md:flex">
+          <div className="hidden items-center gap-6 lg:flex">
 
             {leftItems.map(item => (
               item.href ? (
@@ -155,7 +155,7 @@ export default function Header() {
           </div>
 
           <button onClick={() => { setOpen(!open); setDropOpen(false) }}
-            className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 rounded-lg md:hidden" aria-label="Menu">
+            className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 rounded-lg lg:hidden" aria-label="Menu">
             <span className={`block h-0.5 w-5 bg-stone-700 transition-transform duration-200 ${open ? 'rotate-45 translate-y-2' : ''}`} />
             <span className={`block h-0.5 w-5 bg-stone-700 transition-opacity duration-200 ${open ? 'opacity-0' : ''}`} />
             <span className={`block h-0.5 w-5 bg-stone-700 transition-transform duration-200 ${open ? '-rotate-45 -translate-y-2' : ''}`} />
@@ -163,7 +163,7 @@ export default function Header() {
         </div>
 
         {open && (
-          <div className="border-t border-stone-100 bg-white px-4 py-4 md:hidden">
+          <div className="border-t border-stone-100 bg-white px-4 py-4 lg:hidden">
             <div className="flex flex-col gap-1">
               {visibleItems.filter(item => !item.isCta).map(item => {
                 if (item.isDropdown && item.dropdownItems) {
