@@ -13,7 +13,7 @@ export const ENTREPRISES_DEFAULTS: Record<string, string> = {
   section_image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80&auto=format&fit=crop',
   offres_badge:  'Offres',
   section_title: 'Ce que je propose',
-  section_text:  "Quand une équipe perd de sa cohérence, les résultats s'en ressentent toujours.\n\nAvec 10 ans passés à développer des marques internationales pour Henkel, LVMH et L'Oréal — en Allemagne, France, Royaume-Uni et Europe de l'Est — j'ai vécu de l'intérieur les dynamiques de transformation d'équipe, de prise de poste et de communication interculturelle.\n\nAujourd'hui j'apporte cette expérience dans ma pratique de coaching. Je travaille avec les dirigeants et les organisations pour remettre de l'alignement — entre les personnes, entre les objectifs et les moyens, entre ce qu'on dit et ce qu'on fait — ou tout simplement pour rebooster l'engagement et l'élan commun.",
+  section_text:  "Quand une équipe perd de sa cohérence, les résultats s'en ressentent toujours.\n\nAvec 10 ans passés à développer des marques internationales pour Henkel, LVMH et L'Oréal — en Allemagne, France, Royaume-Uni et Europe de l'Est — j'ai vécu de l'intérieur les dynamiques de transformation d'équipe, de prise de poste et de communication interculturelle.\n\nAujourd'hui j'apporte cette expérience dans ma pratique de coaching. Je travaille avec les dirigeants et les entreprises pour remettre de l'alignement — entre les personnes, entre les objectifs et les moyens, entre ce qu'on dit et ce qu'on fait — ou tout simplement pour rebooster l'engagement et l'élan commun.",
   offres_cta:    'Discuter de votre projet →',
   // Domaines d'intervention
   domains_badge:    'Expertise',
@@ -51,7 +51,7 @@ export const ENTREPRISES_DEFAULTS: Record<string, string> = {
   cta_button: 'Prendre contact',
   // Tarification
   pricing_badge:    'Investissement',
-  pricing_title:    'Des formules adaptées à votre organisation',
+  pricing_title:    'Des formules adaptées à votre entreprise',
   pricing_subtitle: "Chaque engagement est construit sur mesure. Les fourchettes ci-dessous vous donnent un point de repère ; un devis précis est établi après échange.",
   pricing_card_1_title: 'Coaching dirigeant',
   pricing_card_1_price: 'Sur devis',
@@ -89,7 +89,7 @@ export const ENTREPRISES_DEFAULTS: Record<string, string> = {
   t_prenom_modifie: "* Prénom modifié",
   // ── Référencement (Google, réseaux sociaux) — lu par generateMetadata via lib/page-seo.ts ──
   seo_title: "Coaching entreprises & leadership — Happy Humans",
-  seo_description: "Coaching de dirigeants, prise de poste, ateliers de cohésion et séminaires sur mesure. Monica Schneider accompagne les équipes et organisations pour remettre de l'alignement.",
+  seo_description: "Coaching de dirigeants, prise de poste, ateliers de cohésion et séminaires sur mesure. Monica Schneider accompagne les équipes et entreprises pour remettre de l'alignement.",
   seo_image: '',
   // ── Disposition des sections (admin → Structure) : JSON {"order":[…],"hidden":[…]} ; vide = ordre d'origine ──
   sections_layout: '',

@@ -18,7 +18,7 @@ export const viewport: Viewport = {
 
 const DEFAULT_TITLE = 'Happy Humans — Monica Schneider';
 const DEFAULT_DESCRIPTION =
-  "Philo-coaching avec Monica Schneider. Executive coaching, philosophical counselling et sparring partner pour particuliers et organisations. Retrouvez clarté, alignement et relations épanouissantes.";
+  "Philo-coaching avec Monica Schneider. Executive coaching, philosophical counselling et sparring partner pour particuliers et entreprises. Retrouvez clarté, alignement et relations épanouissantes.";
 
 // SEO global piloté par le CMS (Paramètres → SEO global), avec fallback
 export async function generateMetadata(): Promise<Metadata> {
@@ -110,7 +110,7 @@ const baseMetadata: Metadata = {
     siteName: 'Happy Humans',
     title: 'Happy Humans — Monica Schneider',
     description:
-      "Accompagnement individuel et collectif pour managers, dirigeants et organisations en quete d'alignement, de clarte et de transformation durable.",
+      "Accompagnement individuel et collectif pour managers, dirigeants et entreprises en quete d'alignement, de clarte et de transformation durable.",
     images: [
       {
         url: '/og-images/og-default.svg',
@@ -124,7 +124,7 @@ const baseMetadata: Metadata = {
     card: 'summary_large_image',
     title: 'Happy Humans | Coaching & transformation avec Monica Schneider',
     description:
-      'Executive coaching, philosophical counselling et accompagnement des organisations avec Monica Schneider.',
+      'Executive coaching, philosophical counselling et accompagnement des entreprises avec Monica Schneider.',
     images: ['/og-images/og-default.svg'],
   },
 };
