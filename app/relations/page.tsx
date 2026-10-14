@@ -3,7 +3,8 @@ import { useState, useRef, Fragment, type ReactNode } from 'react';
 import Link from 'next/link';
 import { AttachmentTest } from '@/components/attachment-test/AttachmentTest';
 import Header from '@/components/Header';
-import LogoSVG from '@/components/LogoSVG';
+import SiteLogo, { resolveLogo } from '@/components/SiteLogo';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { Icon, type IconName } from '@/components/icons';
 
 const buildSources = (c: CmsResult) => [
@@ -137,6 +138,8 @@ import EditableImage from '@/components/EditableImage';
 
 export default function RelationsPage() {
   const c = useCmsContent('relations', RELATIONS_DEFAULTS);
+  // logo du pied de page : celui du CMS (version claire), sinon le logo de la charte en crème
+  const footerLogo = resolveLogo(useSiteSettings(), { sizeKey: 'logo_footer_size', fallbackSize: 40, maxSize: 72, onDark: true });
 
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const bookingRef = useRef<HTMLDivElement>(null);
@@ -504,9 +507,9 @@ export default function RelationsPage() {
       {/* ══ FOOTER MINIMAL ════════════════════════════════════════════════ */}
       <footer className="border-t border-stone-800 bg-stone-900 px-6 py-8 md:px-10">
         <div className="mx-auto max-w-5xl flex flex-col items-center justify-between gap-4 text-xs text-stone-400 md:flex-row">
-          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-            <LogoSVG size={28} />
-            <span className="font-serif text-base text-stone-300 font-semibold hover:text-white transition">{c.get('footer_site_name')}</span>
+          <Link href="/" aria-label={c.footer_site_name} className="flex items-center gap-2 hover:opacity-80 transition">
+            <SiteLogo url={footerLogo.url} size={footerLogo.size} shape={footerLogo.shape} alt="" />
+            {footerLogo.showName && <span className="font-serif text-base text-stone-300 font-semibold hover:text-white transition">{c.get('footer_site_name')}</span>}
           </Link>
           <p>{c.get('footer_copyright')}</p>
           <div className="flex gap-6">

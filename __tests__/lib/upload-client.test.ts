@@ -103,4 +103,18 @@ describe('resolveLogo — logo de la charte par défaut', () => {
     expect(r).toMatchObject({ url: DEFAULT_LOGO_LIGHT, size: 48 })
     expect(resolveLogo({}, { sizeKey: 'logo_footer_size', fallbackSize: 40, maxSize: 72, onDark: true }).size).toBe(40)
   })
+
+  it('logo du pied de page : sur fond sombre, celui du CMS passe avant le logo de l’en-tête', () => {
+    const onDark = { onDark: true, sizeKey: 'logo_footer_size', fallbackSize: 40, maxSize: 72 }
+    // aucun logo : version claire de la charte
+    expect(resolveLogo({}, onDark).url).toBe(DEFAULT_LOGO_LIGHT)
+    // logo d'en-tête seul : repris dans le pied de page
+    expect(resolveLogo({ logo_url: 'https://x/entete.png' }, onDark).url).toBe('https://x/entete.png')
+    // logo de pied de page dédié : prioritaire en pied de page, sans effet sur l'en-tête
+    const both = { logo_url: 'https://x/entete.png', logo_footer_url: 'https://x/pied-clair.png' }
+    expect(resolveLogo(both, onDark)).toMatchObject({ url: 'https://x/pied-clair.png', isDefault: false })
+    expect(resolveLogo(both).url).toBe('https://x/entete.png')
+    // logo de pied de page sans logo d'en-tête : l'en-tête garde le logo de la charte
+    expect(resolveLogo({ logo_footer_url: 'https://x/pied-clair.png' }).url).toBe(DEFAULT_LOGO)
+  })
 })

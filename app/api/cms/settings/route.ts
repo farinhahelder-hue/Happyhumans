@@ -27,6 +27,7 @@ const DEFAULT_SETTINGS = [
   { key: 'logo_size',          label: 'Taille du logo (px)',        group_name: 'branding', type: 'text',     value: '52' },
   { key: 'logo_shape',         label: 'Forme du logo',              group_name: 'branding', type: 'text',     value: 'circle' },
   { key: 'logo_position',      label: 'Position dans le header',    group_name: 'branding', type: 'text',     value: 'left' },
+  { key: 'logo_footer_url',    label: 'Logo du pied de page (version claire, pour fond vert foncé)', group_name: 'branding', type: 'image', value: '' },
   { key: 'logo_footer_size',   label: 'Taille logo footer (px)',  group_name: 'branding', type: 'text',     value: '36' },
   { key: 'logo_show_name',     label: 'Afficher le nom à côté du logo', group_name: 'branding', type: 'select', value: 'true', options: ['true', 'false'], optionLabels: ['Oui — logo + nom du site', 'Non — logo seul (le nom est déjà dans l’image)'] },
   { key: 'favicon_url',        label: 'Favicon (icône onglet)',    group_name: 'branding', type: 'image',    value: '' },
