@@ -31,7 +31,8 @@ export function resolveLogo(
   s: Record<string, string | undefined>,
   opts: { sizeKey?: string; fallbackSize?: number; maxSize?: number; onDark?: boolean } = {},
 ): { url: string; shape: LogoShape; size: number; showName: boolean; isDefault: boolean } {
-  const custom = s.logo_url || ''
+  // fond sombre (pied de page) : logo du pied de page s'il existe, sinon le logo de l'en-tête, sinon celui de la charte
+  const custom = (opts.onDark && s.logo_footer_url) || s.logo_url || ''
   const size = logoPx(s[opts.sizeKey ?? 'logo_size'], opts.fallbackSize ?? 52, opts.maxSize)
   if (custom) return { url: custom, shape: logoShape(s.logo_shape), size, showName: s.logo_show_name !== 'false', isDefault: false }
   return { url: opts.onDark ? DEFAULT_LOGO_LIGHT : DEFAULT_LOGO, shape: 'square', size, showName: false, isDefault: true }

@@ -5,6 +5,8 @@
 ## 1. Changer le logo
 **Le plus simple, directement sur le site** : bouton **✏️ Éditer** → en haut, **Modifier le menu et le logo** → **📷 Changer le logo**. Le logo change aussitôt. (**↩ Logo d'origine** pour revenir en arrière.)
 
+Le **pied de page a son propre logo**, en version claire (le fond est vert foncé) : même panneau, bloc « Logo du pied de page ». Sans logo dédié, le pied de page reprend le logo de l'en-tête ; sans aucun logo, c'est le logo de la charte en crème. Dans l'administration : **⚙️ Paramètres → Logo & Identité → Logo du pied de page**.
+
 **Pour régler la taille, la forme, la position** :
 1. **⚙️ Paramètres** → **Logo & Identité**.
 2. **⬆ Upload logo** → choisissez votre image. L'aperçu en haut de la page montre le résultat tel qu'il sera sur le site.

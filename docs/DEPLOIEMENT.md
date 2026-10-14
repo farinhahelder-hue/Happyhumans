@@ -25,6 +25,14 @@ Avant, le cookie `hh_cms_edit` valait simplement `1` et le serveur lui faisait c
 3. **Par prudence, supposer que la faille a pu être exploitée** : relire les derniers contenus du site (l'historique de chaque page est dans l'admin), vérifier le mode maintenance, les articles et les réglages, et regarder les e-mails envoyés dans Brevo.
 4. Changer `CMS_PASSWORD`, `CMS_SESSION_SECRET` et `CMS_HMAC_SECRET` si un doute subsiste.
 
+## Accéder à l'administration
+
+- **Adresse** : `https://happyhumans.vercel.app/cms-admin` (puis le bouton « ✏️ Éditer le site » pour modifier directement les pages).
+- **Mot de passe** : la valeur de la variable `CMS_PASSWORD` dans **Vercel → le projet → Settings → Environment Variables** (icône œil pour l'afficher). Il n'est ni dans le dépôt ni dans le code.
+- **Le changer** : modifier `CMS_PASSWORD` dans Vercel, puis **Deployments → Redeploy** (une variable modifiée ne s'applique qu'à un nouveau déploiement). Changer le mot de passe ou `CMS_SESSION_SECRET` déconnecte les sessions en cours.
+- En local, le mot de passe est dans `.env.local` (jamais commité) ; avec `npm run dev:mock` (faux Supabase), c'est `dev-local`. Ces deux mots de passe ne valent pas pour le site en ligne.
+- Message « CMS non configuré : variable CMS_PASSWORD manquante » : la variable est absente ou vide dans le déploiement. Message « Mot de passe incorrect » : ce n'est pas la valeur de `CMS_PASSWORD` du déploiement en cours (si elle vient d'être modifiée, il faut redéployer). `CMS_SESSION_SECRET` est facultatif : sans lui, les sessions sont signées avec le mot de passe.
+
 ## 1. Avant de déployer la branche 2
 
 ### Variables d'environnement
