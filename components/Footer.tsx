@@ -27,11 +27,11 @@ export default function Footer() {
             <p className="text-xs italic mt-1" style={{ color: '#c9a96e', fontFamily: 'Cormorant Garamond, serif' }}>
               {c.get('tagline')}
             </p>
-            <p className="text-xs mt-2" style={{ color: '#5a7a74' }}>{c.get('description')}</p>
-            <p className="text-xs mt-1" style={{ color: '#5a7a74' }}>{c.get('description_2')}</p>
+            <p className="text-xs mt-2" style={{ color: '#a9c4bd' }}>{c.get('description')}</p>
+            <p className="text-xs mt-1" style={{ color: '#a9c4bd' }}>{c.get('description_2')}</p>
             {c.linkedin_url && (
               <a href={c.linkedin_url} target="_blank" rel="noopener noreferrer"
-                className="inline-block mt-3 text-xs hover:text-white transition" style={{ color: '#5a7a74' }}>
+                className="inline-block mt-3 text-xs hover:text-white transition" style={{ color: '#a9c4bd' }}>
                 {c.t_linkedin}
               </a>
             )}
@@ -40,7 +40,7 @@ export default function Footer() {
           {/* Navigation */}
           <div>
             <p className="text-xs uppercase tracking-widest mb-3" style={{ color: '#c9a96e' }}>{c.get('footer_nav_title')}</p>
-            <div className="flex flex-col gap-2 text-xs" style={{ color: '#5a7a74' }}>
+            <div className="flex flex-col gap-2 text-xs" style={{ color: '#a9c4bd' }}>
               <Link href="/" className="hover:text-white transition">{c.get('footer_nav_home')}</Link>
               <Link href="/coaching" className="hover:text-white transition">{c.get('footer_nav_coaching')}</Link>
               <Link href="/happiness-design" className="hover:text-white transition">{c.get('footer_nav_hd')}</Link>
@@ -56,7 +56,7 @@ export default function Footer() {
           {/* Services */}
           <div>
             <p className="text-xs uppercase tracking-widest mb-3" style={{ color: '#c9a96e' }}>{c.get('footer_services_title')}</p>
-            <div className="flex flex-col gap-2 text-xs" style={{ color: '#5a7a74' }}>
+            <div className="flex flex-col gap-2 text-xs" style={{ color: '#a9c4bd' }}>
               {[1,2,3,4,5].map(i => {
                 const val = c.get(`service_${i}`)
                 if (!val) return null
@@ -69,10 +69,10 @@ export default function Footer() {
 
         <div className="w-full h-px mb-6" style={{ backgroundColor: '#2d5f54' }} />
 
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs" style={{ color: '#5a7a74' }}>
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs" style={{ color: '#a9c4bd' }}>
           <div>
             <p>&copy; {year} {c.get('copyright')}</p>
-            <p className="opacity-40 mt-1">
+            <p className="opacity-80 mt-1">
               {c.get('photos_label')}<a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-70 transition">{c.t_unsplash}</a>
             </p>
           </div>

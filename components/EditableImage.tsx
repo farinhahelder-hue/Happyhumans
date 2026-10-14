@@ -2,6 +2,7 @@
 import { useRef, useState } from 'react';
 import { useOptionalInlineEdit } from '@/contexts/InlineEditContext';
 import { uploadImage } from '@/lib/upload-client';
+import { useSiteSettings } from '@/hooks/useSiteSettings';
 
 type EditableImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
   /** Page du CMS et champ « image » qui contiennent l'adresse de la photo */
@@ -13,6 +14,8 @@ type EditableImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
    * 'block' : photo dans la page — elle est enveloppée dans un bloc relatif qui reprend ses classes de disposition.
    */
   variant?: 'cover' | 'block';
+  /** Applique l'effet duotone vert/or de la marque (désactivable dans Paramètres → Thème & Couleurs). */
+  duotone?: boolean;
 };
 
 // classes qui placent l'image dans une grille / un flex : elles doivent rester sur l'élément qui est enfant de la grille
@@ -23,8 +26,10 @@ const LAYOUT_CLASS = /^(?:[a-z]+:)*(?:order|col-span|col-start|row-span|row-star
  * du fichier, la photo est réduite puis envoyée, et s'affiche aussitôt ; elle est enregistrée avec les autres
  * modifications (brouillon, puis « Publier »). Hors mode édition, c'est une simple image.
  */
-export default function EditableImage({ page, fieldKey, src, variant = 'block', className = '', alt = '', ...rest }: EditableImageProps) {
+export default function EditableImage({ page, fieldKey, src, variant = 'block', duotone = false, className = '', alt = '', ...rest }: EditableImageProps) {
   const edit = useOptionalInlineEdit();
+  const siteSettings = useSiteSettings();
+  const tinted = duotone && siteSettings.photo_duotone !== 'false';
   const input = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -69,7 +74,7 @@ export default function EditableImage({ page, fieldKey, src, variant = 'block', 
   if (variant === 'cover') {
     return (
       <>
-        <img src={shown} alt={alt} className={className} {...rest} />
+        <img src={shown} alt={alt} className={`${className} ${tinted ? 'hh-duotone' : ''}`.trim()} {...rest} />
         {controls}
       </>
     );
@@ -80,7 +85,7 @@ export default function EditableImage({ page, fieldKey, src, variant = 'block', 
   const imgClasses = tokens.filter(t => !LAYOUT_CLASS.test(t)).join(' ');
   return (
     <div className={`relative ${wrapperClasses}`.trim()}>
-      <img src={shown} alt={alt} className={`block ${imgClasses}`.trim()} {...rest} />
+      <img src={shown} alt={alt} className={`block ${imgClasses} ${tinted ? 'hh-duotone' : ''}`.trim()} {...rest} />
       {controls}
     </div>
   );

@@ -16,7 +16,7 @@ export default function AProposPage() {
   const sections: Record<string, ReactNode> = {
     hero: (
       <section className="relative flex h-[55vh] items-end overflow-hidden bg-stone-900 md:h-[65vh]">
-        <EditableImage page="a-propos" fieldKey="hero_image" variant="cover"
+        <EditableImage page="a-propos" fieldKey="hero_image" variant="cover" duotone
           src={c.hero_image || 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1400&q=80&auto=format&fit=crop'}
           alt={c.t_monica_schneider_executive_coach}
           className="absolute inset-0 h-full w-full object-cover opacity-40"
