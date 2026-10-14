@@ -9,6 +9,7 @@ import InlineEditor from '@/components/InlineEditor';
 import { getKvSettings } from '@/lib/cms-settings-server';
 import { SITE_URL } from '@/lib/site-url';
 import { buildThemeCSS, resolveTheme, GOOGLE_FONTS_HREF } from '@/lib/themes';
+import DuotoneFilter from '@/components/DuotoneFilter';
 
 
 export const viewport: Viewport = {
@@ -236,6 +237,7 @@ export default async function RootLayout({
         />
       </head>
       <body>
+        <DuotoneFilter />
         <MaintenanceGate>
           <InlineEditProvider>
             <AuthProvider>

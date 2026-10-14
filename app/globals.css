@@ -14,7 +14,7 @@
   --hh-cream:       #f5f0e8;
   --hh-cream-dark:  #ede5d8;
   --hh-text:        #1e3a34;
-  --hh-text-muted:  #5a7a74;
+  --hh-text-muted:  #4a6862;   /* ≥ 4,5:1 sur crème et sur blanc (WCAG AA) */
 }
 
 * {
@@ -139,4 +139,10 @@ h1, h2, h3, h4, h5, h6 {
   .container {
     padding: 0 1rem;
   }
+}
+
+/* Effet duotone vert/or sur les photos (réglable : Paramètres → Thème & Couleurs → « Effet duotone »).
+   Le filtre SVG #hh-duotone est défini par components/DuotoneFilter.tsx. */
+.hh-duotone {
+  filter: url(#hh-duotone);
 }

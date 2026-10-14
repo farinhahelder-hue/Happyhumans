@@ -18,7 +18,7 @@ const config: Config = {
         'hh-cream':      '#f5f0e8',   // beige crème (fond logo)
         'hh-cream-dark': '#ede5d8',   // beige plus foncé (sections alt)
         'hh-text':       '#1e3a34',   // texte principal
-        'hh-text-muted': '#5a7a74',   // texte secondaire
+        'hh-text-muted': '#4a6862',   // texte secondaire
         // Rétrocompatibilité
         'cloud-dancer':  '#f5f0e8',
         'eucalyptus':    '#2d5f54',
