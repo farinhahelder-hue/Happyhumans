@@ -14,26 +14,18 @@ const CARD_DEFS = {
   coaching: {
     href: '/coaching',
     icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>,
-    title: 'Coaching individuel',
-    desc: 'Clarté, confiance et direction — un accompagnement sur mesure pour managers, dirigeants et personnes en transition.',
   },
   organisations: {
     href: '/entreprises',
     icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>,
-    title: 'Pour les organisations',
-    desc: 'Coaching de dirigeants, ateliers de cohésion et accompagnement du changement pour remettre de l\'alignement.',
   },
   'happiness-design': {
     href: '/happiness-design',
     icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c9a96e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>,
-    title: 'Happiness Design',
-    desc: '12 séances pour reprendre les rênes de votre bonheur — au boulot et ailleurs. Un programme multidisciplinaire unique.',
   },
   relations: {
     href: '/relations',
     icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>,
-    title: 'Relations & Attachement',
-    desc: 'Comprenez votre style d\'attachement et transformez durablement vos relations — personnelles et professionnelles.',
   },
 }
 
@@ -45,13 +37,24 @@ export default function LandingPage() {
   const [sent, setSent] = useState(false)
   const [sending, setSending] = useState(false)
 
+  // Titre et texte des cartes « Explorez les thématiques » : modifiables dans le CMS (admin → Accueil → Cartes)
+  const cardText = {
+    coaching: { title: c.home_card_coaching_title, desc: c.home_card_coaching_desc },
+    organisations: { title: c.home_card_organisations_title, desc: c.home_card_organisations_desc },
+    'happiness-design': { title: c.home_card_hd_title, desc: c.home_card_hd_desc },
+    relations: { title: c.home_card_relations_title, desc: c.home_card_relations_desc },
+  }
+
   // Dynamic card order for "Explorez les thématiques"
   const orderedCards = [
     c.home_card_order_1 || 'coaching',
     c.home_card_order_2 || 'organisations',
     c.home_card_order_3 || 'happiness-design',
     c.home_card_order_4 || 'relations',
-  ].map(page => CARD_DEFS[page as keyof typeof CARD_DEFS] || CARD_DEFS.coaching)
+  ].map(page => {
+    const id = (page in CARD_DEFS ? page : 'coaching') as keyof typeof CARD_DEFS
+    return { ...CARD_DEFS[id], ...cardText[id] }
+  })
 
   const year = new Date().getFullYear()
 

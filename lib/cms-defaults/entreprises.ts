@@ -1,4 +1,4 @@
-// Textes par défaut de la page « Organisations » — SOURCE UNIQUE.
+// Textes par défaut de la page « Entreprises » — SOURCE UNIQUE.
 // Lus par la page ET par l'admin du CMS (lib/cms-page-defaults.ts) : ne jamais les dupliquer ailleurs.
 // Chaque clé correspond à un champ de PAGES_CONFIG (app/cms-admin/page.tsx).
 // Les champs « liste » (…_features, …_items) : un élément par ligne.

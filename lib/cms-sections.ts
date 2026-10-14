@@ -23,7 +23,7 @@ export type SectionsLayout = { order: string[]; hidden: string[] }
 export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
   home: [
     { id: 'hero', label: 'Bandeau d’accueil', pin: 'start' },
-    { id: 'services', label: 'Accompagnement : particuliers et organisations' },
+    { id: 'services', label: 'Accompagnement : particuliers et entreprises' },
     { id: 'explorer', label: 'Explorez les thématiques' },
     { id: 'booking', label: 'Réservation d’une séance' },
     { id: 'contact', label: 'Contact' },
@@ -41,7 +41,7 @@ export const PAGE_SECTIONS: Record<string, SectionDef[]> = {
     { id: 'temoignages', label: 'Témoignages' },
     { id: 'tunnel', label: 'Réservation rapide' },
     { id: 'programmes', label: 'Programmes' },
-    { id: 'organisations', label: 'Coaching pour les organisations' },
+    { id: 'organisations', label: 'Coaching pour les entreprises' },
     { id: 'cta', label: 'Appel à l’action final', pin: 'end' },
   ],
   entreprises: [

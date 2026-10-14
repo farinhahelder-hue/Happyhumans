@@ -65,7 +65,7 @@ const DEFAULT_SETTINGS = [
   // Page visibility
   { key: 'page_home_indexable',              label: 'Accueil — indexé Google',          group_name: 'visibility', type: 'text', value: 'true' },
   { key: 'page_coaching_indexable',          label: 'Coaching — indexé Google',         group_name: 'visibility', type: 'text', value: 'true' },
-  { key: 'page_entreprises_indexable',       label: 'Organisations — indexé Google',    group_name: 'visibility', type: 'text', value: 'true' },
+  { key: 'page_entreprises_indexable',       label: 'Entreprises — indexé Google',    group_name: 'visibility', type: 'text', value: 'true' },
   { key: 'page_happiness-design_indexable',  label: 'Happiness Design — indexé',        group_name: 'visibility', type: 'text', value: 'true' },
   { key: 'page_sparring-partner_indexable',  label: 'Sparring Partner — indexé',        group_name: 'visibility', type: 'text', value: 'true' },
   { key: 'page_relations_indexable',         label: 'Relations — indexé Google',        group_name: 'visibility', type: 'text', value: 'true' },
