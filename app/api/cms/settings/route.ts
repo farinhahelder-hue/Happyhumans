@@ -16,6 +16,11 @@ const DEFAULT_SETTINGS = [
   { key: 'theme_accent',     label: 'Couleur accent',             group_name: 'theme',    type: 'text',     value: '' },
   { key: 'theme_dark',       label: 'Couleur sombre',             group_name: 'theme',    type: 'text',     value: '' },
   { key: 'theme_bg',         label: 'Couleur fond',               group_name: 'theme',    type: 'text',     value: '' },
+  { key: 'theme_light',      label: 'Couleur claire (variante)',  group_name: 'theme',    type: 'text',     value: '' },
+  { key: 'theme_text',       label: 'Couleur texte',              group_name: 'theme',    type: 'text',     value: '' },
+  { key: 'theme_font_heading', label: 'Police des titres',        group_name: 'theme',    type: 'text',     value: '' },
+  { key: 'theme_font_body',    label: 'Police du texte',          group_name: 'theme',    type: 'text',     value: '' },
+  { key: 'illustration_pack', label: "Pack d'illustrations",   group_name: 'theme',    type: 'text',     value: 'cactus-nuit' },
   { key: 'photo_duotone',    label: 'Effet duotone sur les photos', group_name: 'theme',  type: 'select',   value: 'true', options: ['true', 'false'], optionLabels: ['Oui — photos teintées vert et or (charte)', 'Non — photos en couleurs naturelles'] },
   // Branding
   { key: 'logo_url',           label: 'Logo du site (image)',       group_name: 'branding', type: 'image',    value: '' },

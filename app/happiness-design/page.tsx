@@ -4,8 +4,11 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 import { useCmsContent } from '@/hooks/useCmsContent'
+import { useIllustrationPack } from '@/hooks/useIllustrationPack'
 import { HAPPINESS_DESIGN_DEFAULTS } from '@/lib/cms-defaults/happiness-design'
 import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
+import { customSectionDefs, customSectionId, isCustomSectionId, parseBlocks } from '@/lib/custom-sections'
+import { CustomBlockView } from '@/components/CustomSections'
 import EditableImage from '@/components/EditableImage';
 
 const STEP_DESCS = [
@@ -41,8 +44,50 @@ const POUR_QUI = [
   },
 ]
 
+// ── Les 7 outils de la conférence « 7 outils pour sourire dans le chaos » ──
+// Textes fidèles aux slides ; visuels via le pack d'illustrations actif (CMS → theme).
+const OUTILS_META: { title: string; desc: string; alt: string }[] = [
+  {
+    title: 'Comprendre : ne croyez pas tout ce que vous pensez',
+    desc: 'Sortir du pilote automatique, reprendre la main.',
+    alt: 'Cerveau-cactus : nos pensées ne sont que des alertes de survie',
+  },
+  {
+    title: 'Recalibrer son cerveau pour l\u2019optimisme',
+    desc: 'La liste des 3 choses positives, 21 jours pour créer l\u2019habitude.',
+    alt: 'Cerveau-cactus en fleurs : recalibrer son cerveau vers l\u2019optimisme',
+  },
+  {
+    title: 'Adversité : le cadeau caché qui nous révèle',
+    desc: 'Quel est le cadeau là-dedans ? Voir des opportunités.',
+    alt: 'Cadeau-cactus : l\u2019adversité comme cadeau caché',
+  },
+  {
+    title: 'La liberté est beaucoup plus proche qu\u2019on ne le pense',
+    desc: 'Moins impacté par les conflits et les inconvénients.',
+    alt: 'Fleur de cactus : la liberté dans l\u2019espace de nos réactions',
+  },
+  {
+    title: 'Je suis Homo Risibilis',
+    desc: 'Ne pas se prendre tant au sérieux : plus de légèreté, moins de charge mentale.',
+    alt: 'Penseur-cactus : habiter les contradictions avec humour',
+  },
+  {
+    title: 'Cultiver l\u2019action',
+    desc: 'Vivre avec sens et impact.',
+    alt: 'Bras-cactus : l\u2019action qui crée du sens',
+  },
+  {
+    title: 'V1 / V2 : à nous de choisir notre version',
+    desc: 'Passer du pilote automatique (anxiété, doute) au filtre des outils (confiance, fierté).',
+    alt: 'V1 cactus épineux face à V2 cactus en fleurs',
+  },
+]
+
 export default function HappinessDesignPage() {
   const c = useCmsContent('happiness-design', HAPPINESS_DESIGN_DEFAULTS)
+  const pack = useIllustrationPack()
+  const outils = OUTILS_META.map((meta, i) => ({ ...meta, srcs: pack.slots.outils[i] || [] }))
 
   const getStep = (i: number) => {
     const num = String(i + 1).padStart(2, '0')
@@ -146,6 +191,28 @@ export default function HappinessDesignPage() {
             <p className="text-base leading-relaxed text-stone-600">{c.get('tools_intro_2')}</p>
           </div>
 
+          {/* Les 7 outils illustrés — visuels du pack d'illustrations actif */}
+          <div className="grid gap-6 md:grid-cols-2">
+            {outils.map((outil, i) => (
+              <article key={i} className="overflow-hidden rounded-2xl bg-stone-950 text-white shadow-sm">
+                {outil.srcs.length === 1 ? (
+                  <img src={outil.srcs[0]} alt={outil.alt} loading="lazy" className="h-52 w-full object-cover" />
+                ) : (
+                  <div className="grid grid-cols-2">
+                    {outil.srcs.map((src) => (
+                      <img key={src} src={src} alt={outil.alt} loading="lazy" className="h-52 w-full object-cover" />
+                    ))}
+                  </div>
+                )}
+                <div className="p-6">
+                  <p className="mb-1 text-xs font-bold text-amber-400">Outil {i + 1}</p>
+                  <h3 className="mb-2 font-serif text-lg font-light">{outil.title}</h3>
+                  <p className="text-sm leading-relaxed text-stone-300">{outil.desc}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+
           {/* L'ORIGINE */}
           <div className="rounded-2xl bg-[#f5f0e8] border border-amber-200 p-8">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-800 mb-4">{c.get('tools_origin_label')}</p>
@@ -237,15 +304,24 @@ export default function HappinessDesignPage() {
   }
 
   // Ordre et affichage des sections : modifiables dans le CMS (admin → page → Structure)
-  const sectionIds = resolveSections(PAGE_SECTIONS['happiness-design'], c.sections_layout)
+  // + blocs personnalisés positionnables librement dans la même liste.
+  const customBlocks = parseBlocks(c.content?.['custom_sections'] ?? '')
+  const sectionIds = resolveSections(
+    [...PAGE_SECTIONS['happiness-design'], ...customSectionDefs(customBlocks)],
+    c.sections_layout,
+  )
 
   return (
     <>
       <Header />
       <main className="pt-[72px]">
-        {sectionIds.map(id => (
-          <Fragment key={id}>{sectionsJsx[id]}</Fragment>
-        ))}
+        {sectionIds.map(id => {
+          if (isCustomSectionId(id)) {
+            const b = customBlocks.find(x => customSectionId(x.id) === id);
+            return b ? <CustomBlockView key={id} b={b} /> : null;
+          }
+          return <Fragment key={id}>{sectionsJsx[id]}</Fragment>;
+        })}
       </main>
       <Footer />
     </>

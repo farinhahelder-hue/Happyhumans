@@ -36,4 +36,5 @@ export const SPARRING_PARTNER_DEFAULTS: Record<string, string> = {
   seo_image: '',
   // ── Disposition des sections (admin → Structure) : JSON {"order":[…],"hidden":[…]} ; vide = ordre d'origine ──
   sections_layout: '',
+  custom_sections: '',
 }
