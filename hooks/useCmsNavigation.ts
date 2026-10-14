@@ -21,7 +21,7 @@ export const DEFAULT_NAV: NavItem[] = [
       { id: '2b', href: '/temoignages',      label: 'Témoignages',        visible: false, position: 2, icon: 'chat' },
       { id: '2c', href: '/sparring-partner', label: 'Sparring Partner',   visible: true, position: 3, icon: 'users' },
     ]},
-  { id: '3', href: '/entreprises',    label: 'Organisations',      visible: true, position: 2 },
+  { id: '3', href: '/entreprises',    label: 'Entreprises',        visible: true, position: 2 },
   { id: '4', href: '/happiness-design',label: 'Happiness Design (V1/V2)',visible: true, position: 3 },
   { id: '5', href: '/relations',      label: 'Relations',          visible: true, position: 4 },
   { id: '1', href: '/a-propos',       label: 'Monica',             visible: true, position: 5 },

@@ -16,7 +16,7 @@ export const HOME_DEFAULTS: Record<string, string> = {
   services_b2c_title:  'Pour les particuliers',
   services_b2c_text:    'Managers, dirigeants, entrepreneurs ou personnes en transition qui veulent retrouver de la clarté, de la confiance et une direction qui leur ressemble vraiment.',
   services_b2c_cta:    'Réserver une séance découverte →',
-  services_b2b_title:  'Pour les organisations',
+  services_b2b_title:  'Pour les entreprises',
   services_b2b_text:    "Coaching de leadership, ateliers, séminaires et accompagnement du changement pour remettre de l'alignement et de l'élan dans les équipes.",
   services_b2b_cta:     "Discuter d'un projet →",
   // Cards section
@@ -64,4 +64,13 @@ export const HOME_DEFAULTS: Record<string, string> = {
   custom_sections: '',
   // ── Textes ajoutés pour le CMS (étaient en dur dans le code) ──
   contact_email_label: "Ou directement par email :",
+  // ── Cartes « Explorez les thématiques » (étaient en dur dans la page) ──
+  home_card_coaching_title: "Coaching individuel",
+  home_card_coaching_desc: "Clarté, confiance et direction — un accompagnement sur mesure pour managers, dirigeants et personnes en transition.",
+  home_card_organisations_title: "Pour les entreprises",
+  home_card_organisations_desc: "Coaching de dirigeants, ateliers de cohésion et accompagnement du changement pour remettre de l'alignement.",
+  home_card_hd_title: "Happiness Design",
+  home_card_hd_desc: "12 séances pour reprendre les rênes de votre bonheur — au boulot et ailleurs. Un programme multidisciplinaire unique.",
+  home_card_relations_title: "Relations & Attachement",
+  home_card_relations_desc: "Comprenez votre style d'attachement et transformez durablement vos relations — personnelles et professionnelles.",
 }
