@@ -29,6 +29,7 @@
 4. **Enregistrer le brouillon**, puis **Publier** : la photo est alors en ligne.
 
 > Les grosses photos (téléphone, appareil photo) sont **réduites automatiquement** avant l'envoi : inutile de les retoucher. Formats acceptés : JPG, PNG, WebP, GIF, SVG (les photos HEIC d'iPhone doivent d'abord être exportées en JPG).
+> **Effet vert et or** : les photos de fond et d'illustration (pas les portraits) sont teintées aux couleurs de la charte. Pour les voir en couleurs naturelles : **⚙️ Paramètres → Thème & Couleurs → Effet duotone sur les photos → Non**, puis **Sauvegarder** (visible au prochain rechargement de la page).
 > Pour remettre la photo d'origine : cliquez la croix rouge sur la photo, puis enregistrez et publiez.
 
 ## Changer un nom du menu (ex. « Organisations » → « Entreprises »), l'ordre, ajouter ou masquer un lien

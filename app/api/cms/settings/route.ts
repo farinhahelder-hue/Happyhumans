@@ -16,6 +16,7 @@ const DEFAULT_SETTINGS = [
   { key: 'theme_accent',     label: 'Couleur accent',             group_name: 'theme',    type: 'text',     value: '' },
   { key: 'theme_dark',       label: 'Couleur sombre',             group_name: 'theme',    type: 'text',     value: '' },
   { key: 'theme_bg',         label: 'Couleur fond',               group_name: 'theme',    type: 'text',     value: '' },
+  { key: 'photo_duotone',    label: 'Effet duotone sur les photos', group_name: 'theme',  type: 'select',   value: 'true', options: ['true', 'false'], optionLabels: ['Oui — photos teintées vert et or (charte)', 'Non — photos en couleurs naturelles'] },
   // Branding
   { key: 'logo_url',           label: 'Logo du site (image)',       group_name: 'branding', type: 'image',    value: '' },
   { key: 'logo_size',          label: 'Taille du logo (px)',        group_name: 'branding', type: 'text',     value: '52' },

@@ -22,7 +22,7 @@ export default function PolitiqueContent() {
               {c.t_politique_de_confidentialite}
             </h1>
             <div className="mx-auto mt-4 w-12 h-px" style={{ backgroundColor: '#c9a96e' }} />
-            <p className="mt-4 text-sm" style={{ color: '#5a7a74' }}>{c.t_derniere_mise_a_jour}</p>
+            <p className="mt-4 text-sm" style={{ color: '#4a6862' }}>{c.t_derniere_mise_a_jour}</p>
           </div>
 
           <div className="space-y-10 text-sm leading-relaxed" style={{ color: '#1e3a34' }}>
@@ -115,7 +115,7 @@ export default function PolitiqueContent() {
 
             {/* Copyright */}
             <section className="pt-6 border-t" style={{ borderColor: '#e8d5b0' }}>
-              <p className="text-xs" style={{ color: '#5a7a74' }}>
+              <p className="text-xs" style={{ color: '#4a6862' }}>
                 {c.t_2026_happy_humans_monica}
               </p>
             </section>

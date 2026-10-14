@@ -152,7 +152,7 @@ export default function RelationsPage() {
   const sections: Record<string, ReactNode> = {
     hero: (
       <section className="relative overflow-hidden bg-stone-900 px-6 py-24 md:py-36 md:px-10 text-center">
-        <EditableImage page="relations" fieldKey="hero_image" variant="cover"
+        <EditableImage page="relations" fieldKey="hero_image" variant="cover" duotone
           src={c.hero_image}
           alt={c.t_connexion_humaine_mains_tendues}
           className="absolute inset-0 h-full w-full object-cover opacity-20"
