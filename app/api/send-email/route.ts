@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendEmail, bookingConfirmationHtml, contactConfirmationHtml, adminNotifHtml } from '@/lib/send-email';
 import { requireCmsAuth } from '@/lib/cms-auth';
+import { getKvSettings } from '@/lib/cms-settings-server';
+import { emailSubject } from '@/lib/email-subjects';
 
 // Endpoint HTTP pour tests manuels ou intégrations tierces
 // Les routes internes (booking, contact) utilisent lib/send-email directement
@@ -15,17 +17,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'to et type requis' }, { status: 400 });
   }
 
+  // Objets réglables dans ⚙️ Paramètres → 📧 Emails automatiques
+  const kv = await getKvSettings();
   let subject = '';
   let html = '';
 
   if (type === 'booking_confirmation') {
-    subject = 'Votre séance est bien reçue — Happy Humans';
+    subject = emailSubject('booking_confirmation', kv, { name: data?.name });
     html = bookingConfirmationHtml(data || {});
   } else if (type === 'contact_confirmation') {
-    subject = 'Message bien reçu — Happy Humans';
+    subject = emailSubject('contact_confirmation', kv, { name: data?.name });
     html = contactConfirmationHtml(data?.name || '');
   } else if (type === 'booking_admin' || type === 'admin') {
-    subject = `Nouvelle demande — ${data?.name || 'Inconnu'}`;
+    subject = emailSubject('admin_notice', kv, { name: data?.name });
     html = adminNotifHtml(data || {});
   } else {
     return NextResponse.json({ error: `Type inconnu: ${type}` }, { status: 400 });

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -7,10 +7,13 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/components/AuthProvider';
 import { trackEvent } from '@/lib/analytics';
+import { useCmsContent } from '@/hooks/useCmsContent';
+import { COMPTE_DEFAULTS } from '@/lib/cms-defaults/compte';
 
 export default function DashboardPage() {
   const router = useRouter();
   const { user, loading, signOut } = useAuth();
+  const c = useCmsContent('compte', COMPTE_DEFAULTS);
 
   useEffect(() => {
     if (loading) return;
@@ -35,10 +38,10 @@ export default function DashboardPage() {
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-12">
             <div>
-              <p className="text-xs tracking-[0.16em] uppercase text-[#8d5d2f] mb-2">Espace client</p>
-              <h1 className="text-3xl md:text-4xl font-serif text-stone-900">Bienvenue{user?.email ? `, ${user.email.split('@')[0]}` : ''}</h1>
+              <p className="text-xs tracking-[0.16em] uppercase text-[#8d5d2f] mb-2">{c.get('compte_badge')}</p>
+              <h1 className="text-3xl md:text-4xl font-serif text-stone-900">{c.dash_welcome}{user?.email ? `, ${user.email.split('@')[0]}` : ''}</h1>
               <p className="text-stone-600 mt-2">
-                Ton espace pour suivre ton accompagnement et accéder à tes ressources.
+                {c.get('dash_subtitle', undefined, { multiline: true })}
               </p>
             </div>
 
@@ -47,13 +50,13 @@ export default function DashboardPage() {
               onClick={handleSignOut}
               className="self-start sm:self-auto px-5 py-2.5 rounded-full border border-stone-300 text-stone-700 hover:border-[#2f6b61] hover:text-[#2f6b61] transition"
             >
-              Déconnexion
+              {c.get('dash_signout')}
             </button>
           </div>
 
           {/* Ressources */}
           <div className="mb-10">
-            <h2 className="text-xl font-serif text-stone-900 mb-6">Tes ressources</h2>
+            <h2 className="text-xl font-serif text-stone-900 mb-6">{c.get('dash_resources_title')}</h2>
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="bg-white rounded-2xl border border-stone-200 p-6">
                 <div className="w-10 h-10 rounded-full bg-[#2f6b61]/10 flex items-center justify-center mb-4">
@@ -63,15 +66,15 @@ export default function DashboardPage() {
                     <path d="M2 12l10 5 10-5"/>
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-stone-900 mb-2">Test d&apos;attachement</h3>
+                <h3 className="text-lg font-medium text-stone-900 mb-2">{c.get('dash_test_title')}</h3>
                 <p className="text-sm text-stone-600 mb-4">
-                  Découvre ton style d&apos;attachement et reçois 3 actions personnalisées.
+                  {c.get('dash_test_text', undefined, { multiline: true })}
                 </p>
                 <Link
                   href="/test-attachement"
                   className="inline-flex items-center text-sm font-medium text-[#2f6b61] hover:underline"
                 >
-                  Faire le test →
+                  {c.get('dash_test_cta')}
                 </Link>
               </div>
 
@@ -82,15 +85,15 @@ export default function DashboardPage() {
                     <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-stone-900 mb-2">Ressources Relations</h3>
+                <h3 className="text-lg font-medium text-stone-900 mb-2">{c.get('dash_relations_title')}</h3>
                 <p className="text-sm text-stone-600 mb-4">
-                  Articles et outils pour des relations plus épanouissantes.
+                  {c.get('dash_relations_text', undefined, { multiline: true })}
                 </p>
                 <Link
                   href="/relations"
                   className="inline-flex items-center text-sm font-medium text-[#8d5d2f] hover:underline"
                 >
-                  Explorer →
+                  {c.get('dash_relations_cta')}
                 </Link>
               </div>
             </div>
@@ -98,22 +101,22 @@ export default function DashboardPage() {
 
           {/* Prochaines étapes */}
           <div className="bg-white rounded-2xl border border-stone-200 p-8">
-            <h2 className="text-xl font-serif text-stone-900 mb-4">Continuer ton parcours</h2>
+            <h2 className="text-xl font-serif text-stone-900 mb-4">{c.get('dash_next_title')}</h2>
             <p className="text-stone-600 mb-6">
-              Tu as des questions ou tu souhaites planifier ta prochaine session ? Monica est là pour t&apos;accompagner.
+              {c.get('dash_next_text', undefined, { multiline: true })}
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/contact"
                 className="inline-flex items-center px-6 py-3 rounded-full bg-[#2f6b61] text-white font-medium hover:bg-[#275a52] transition"
               >
-                Contacter Monica
+                {c.get('dash_contact_cta')}
               </Link>
               <Link
                 href="/coaching"
                 className="inline-flex items-center px-6 py-3 rounded-full border border-stone-300 text-stone-700 font-medium hover:border-[#2f6b61] hover:text-[#2f6b61] transition"
               >
-                Découvrir le coaching
+                {c.get('dash_coaching_cta')}
               </Link>
             </div>
           </div>
@@ -121,9 +124,9 @@ export default function DashboardPage() {
           {/* Contact rapide */}
           <div className="mt-8 text-center">
             <p className="text-sm text-stone-500">
-              Des questions sur ton accompagnement ?{' '}
-              <a href="mailto:happyhumans.coaching@gmail.com" className="text-[#2f6b61] hover:underline">
-                happyhumans.coaching@gmail.com
+              {c.get('dash_help_text')}{' '}
+              <a href={`mailto:${c.dash_email}`} className="text-[#2f6b61] hover:underline">
+                {c.dash_email}
               </a>
             </p>
           </div>

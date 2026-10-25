@@ -17,13 +17,11 @@ import { basePage, isDraftPage, planDraftSave } from '@/lib/cms-drafts';
 import { PAGE_SECTIONS, parseLayout, fullOrder, serializeLayout, moveSection, toggleSection, type SectionDef, type SectionsLayout } from '@/lib/cms-sections';
 import { THEMES } from '@/components/DynamicTheme';
 import { FONT_CHOICES } from '@/lib/themes';
-import {
-  BLOCK_TEMPLATES, blankBlock, customSectionDefs, moveBlock, parseBlocks, removeBlock,
-  serializeBlocks, updateBlock,
-  type CustomBlock, type CustomBlockType,
-} from '@/lib/custom-sections';
+import { customSectionDefs, parseBlocks } from '@/lib/custom-sections';
 import { THEME_PACKS, DEFAULT_PACK_ID } from '@/lib/theme-packs';
 import NavigationEditor from '@/components/cms/NavigationEditor';
+import CustomSectionsEditor from '@/components/cms/CustomSectionsEditor';
+import CustomPagesManager from '@/components/cms/CustomPagesManager';
 
 // Numéro du dernier message affiché : un message récent n'est pas effacé par le minuteur d'un message plus ancien
 let toastSeq = 0;
@@ -146,119 +144,8 @@ function SectionsEditor({ defs, value, onChange }: { defs: SectionDef[]; value: 
   );
 }
 
-// ─── Éditeur de blocs personnalisés (« ajouter des sections ») ───
-// Stockés en JSON dans la clé `custom_sections` de la page : brouillon,
-// aperçu et publication passent par le circuit contenu habituel.
-function CustomSectionsEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  const blocks = parseBlocks(value);
-  const apply = (next: CustomBlock[]) => onChange(serializeBlocks(next));
-  const set = (id: string, patch: Partial<CustomBlock>) => apply(updateBlock(blocks, id, patch));
-  const smallBtn: React.CSSProperties = { width: 28, height: 28, borderRadius: '.4rem', border: '1px solid #d6d3d1', background: 'white', color: '#44403c', fontSize: '.8rem', cursor: 'pointer' };
-  const T = (label: string, val: string | undefined, onV: (v: string) => void, placeholder = '') => (
-    <div style={{ marginBottom: '.5rem' }}>
-      <label style={{ ...lbl, fontSize: '.78rem' }}>{label}</label>
-      <input value={val ?? ''} onChange={e => onV(e.target.value)} placeholder={placeholder} style={{ ...inp, padding: '.5rem .7rem', fontSize: '.85rem' }} />
-    </div>
-  );
-  const TA = (label: string, val: string | undefined, onV: (v: string) => void) => (
-    <div style={{ marginBottom: '.5rem' }}>
-      <label style={{ ...lbl, fontSize: '.78rem' }}>{label}</label>
-      <textarea value={val ?? ''} onChange={e => onV(e.target.value)} style={{ ...inp, padding: '.5rem .7rem', fontSize: '.85rem', height: 80, resize: 'vertical' }} />
-    </div>
-  );
-  return (
-    <div>
-      <p style={{ fontSize: '.8rem', color: '#7a7a7a', margin: '0 0 .75rem', lineHeight: 1.5 }}>
-        Ajoutez des sections (titre+texte+image, texte, image, appel à l'action, citation), déplacez-les avec ▲ ▼.
-        Elles s'affichent juste avant l'appel à l'action final. Enregistrez le brouillon puis publiez.
-      </p>
-      {blocks.length === 0 && <p style={{ fontSize: '.82rem', color: '#a8a29e', margin: '0 0 .75rem' }}>Aucun bloc pour le moment.</p>}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '.6rem', marginBottom: '.9rem' }}>
-        {blocks.map((b, i) => {
-          const tpl = BLOCK_TEMPLATES.find(t => t.type === b.type);
-          return (
-            <div key={b.id} style={{ border: '1.5px solid #ece8e2', borderRadius: '.6rem', padding: '.7rem .8rem', background: 'white' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', marginBottom: '.6rem' }}>
-                <span style={{ fontSize: '.75rem', fontWeight: 700, color: '#a8a29e' }}>{i + 1}</span>
-                <span style={{ flex: 1, fontSize: '.85rem', fontWeight: 600 }}>
-                  {tpl ? `${tpl.emoji} ${tpl.label}` : b.type}
-                  {'badge' in b && b.badge ? ` — ${b.badge}` : ''}
-                  {'title' in b && b.title ? ` — ${(b.title as string).slice(0, 40)}` : ''}
-                </span>
-                <button type="button" aria-label="Monter" onClick={() => apply(moveBlock(blocks, b.id, -1))} style={smallBtn}>▲</button>
-                <button type="button" aria-label="Descendre" onClick={() => apply(moveBlock(blocks, b.id, 1))} style={smallBtn}>▼</button>
-                <button type="button" aria-label="Supprimer" onClick={() => { if (confirm('Supprimer ce bloc ?')) apply(removeBlock(blocks, b.id)); }} style={{ ...smallBtn, color: '#dc2626' }}>✕</button>
-              </div>
-              {b.type === 'split' && (
-                <>
-                  {T('Badge (petit sur-titre)', b.badge, v => set(b.id, { badge: v }))}
-                  {T('Titre', b.title, v => set(b.id, { title: v }))}
-                  {TA('Texte', b.text, v => set(b.id, { text: v }))}
-                  {T("Image (URL — via la médiathèque ou collée)", b.image, v => set(b.id, { image: v }), 'https://…')}
-                  {T("Texte alternatif de l'image", b.imageAlt, v => set(b.id, { imageAlt: v }))}
-                  {T('Bouton (libellé, vide = sans bouton)', b.ctaLabel, v => set(b.id, { ctaLabel: v }))}
-                  {T('Bouton (lien)', b.ctaHref, v => set(b.id, { ctaHref: v }), '/contact')}
-                  <div style={{ marginBottom: '.5rem' }}>
-                    <label style={{ ...lbl, fontSize: '.78rem' }}>Disposition texte / image</label>
-                    <select value={b.layout} onChange={e => set(b.id, { layout: e.target.value as 'image-right' | 'image-left' })} style={{ ...inp, padding: '.5rem .7rem', fontSize: '.85rem' }}>
-                      <option value="image-right">Texte à gauche, image à droite</option>
-                      <option value="image-left">Image à gauche, texte à droite</option>
-                    </select>
-                  </div>
-                </>
-              )}
-              {b.type === 'texte' && (
-                <>
-                  {T('Badge (petit sur-titre)', b.badge, v => set(b.id, { badge: v }))}
-                  {T('Titre (vide = sans titre)', b.title, v => set(b.id, { title: v }))}
-                  {TA('Texte', b.text, v => set(b.id, { text: v }))}
-                  <div style={{ marginBottom: '.5rem' }}>
-                    <label style={{ ...lbl, fontSize: '.78rem' }}>Alignement</label>
-                    <select value={b.align} onChange={e => set(b.id, { align: e.target.value as 'left' | 'center' })} style={{ ...inp, padding: '.5rem .7rem', fontSize: '.85rem' }}>
-                      <option value="left">À gauche</option>
-                      <option value="center">Centré</option>
-                    </select>
-                  </div>
-                </>
-              )}
-              {b.type === 'image' && (
-                <>
-                  {T("Image (URL — via la médiathèque ou collée)", b.image, v => set(b.id, { image: v }), 'https://…')}
-                  {T("Texte alternatif", b.alt, v => set(b.id, { alt: v }))}
-                  {T('Légende (vide = sans légende)', b.caption, v => set(b.id, { caption: v }))}
-                </>
-              )}
-              {b.type === 'cta' && (
-                <>
-                  {T('Titre', b.title, v => set(b.id, { title: v }))}
-                  {TA('Texte (vide = sans texte)', b.text, v => set(b.id, { text: v }))}
-                  {T('Bouton', b.button, v => set(b.id, { button: v }))}
-                  {T('Lien du bouton', b.href, v => set(b.id, { href: v }), '/contact')}
-                </>
-              )}
-              {b.type === 'citation' && (
-                <>
-                  {TA('Citation', b.quote, v => set(b.id, { quote: v }))}
-                  {T('Auteur (vide = anonyme)', b.author, v => set(b.id, { author: v }))}
-                </>
-              )}
-            </div>
-          );
-        })}
-      </div>
-      <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
-        {BLOCK_TEMPLATES.map(t => (
-          <button key={t.type} type="button"
-            onClick={() => apply([...blocks, blankBlock(t.type as CustomBlockType)])}
-            style={{ padding: '.45rem .9rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.82rem', fontWeight: 600 }}>
-            + {t.emoji} {t.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
+// ─── Champs modifiables de chaque page ───────────────────────
+// L'éditeur de blocs personnalisés vit dans components/cms/CustomSectionsEditor.tsx.
 const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'richtext' | 'select' | 'sections' | 'custom-sections'; options?: string[]; optionLabels?: string[] }[] }> = {
   // ── Ordre du panneau gauche ──────────────────────────────────
   // 1. Accueil
@@ -316,7 +203,6 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'form_success_body',    label: 'Formulaire — Corps succès',                           type: 'text' },
       { key: 'form_sending',         label: 'Formulaire — Texte envoi',                            type: 'text' },
       { key: 'form_submit',          label: 'Formulaire — Bouton envoi',                           type: 'text' },
-      { key: 'contact_email',        label: 'Email contact',                                       type: 'text' },
       { key: 'booking_widget_title', label: 'Réservation — Titre « Choisissez votre créneau »', type: 'text' },
       { key: 'booking_widget_subtitle', label: 'Réservation — Sous-titre « Séance découverte offerte (1h) ou programme de… »', type: 'text' },
       { key: 't_bureau_elegant_avec_lumiere', label: 'Section 1 · Clarté, confiance et relations… — Texte alternatif image « Bureau élégant avec lumière naturelle, ambiance coaching professionnel »', type: 'text' },
@@ -602,6 +488,28 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'tools_conclusion_1',       label: 'Outils — Conclusion 1',                 type: 'textarea' },
       { key: 'tools_conclusion_2',       label: 'Outils — Conclusion 2',                 type: 'textarea' },
       { key: 'tools_claim',              label: 'Outils — Claim (phrase différenciante)', type: 'textarea' },
+      { key: 'outil_label',              label: 'Les 7 outils — Petit label devant le numéro (ex: « Outil »)', type: 'text' },
+      { key: 'outil_1_title', label: 'Outil 1 — Titre', type: 'text' },
+      { key: 'outil_1_desc',  label: 'Outil 1 — Description', type: 'textarea' },
+      { key: 'outil_1_alt',   label: 'Outil 1 — Texte alternatif de l’image (accessibilité)', type: 'text' },
+      { key: 'outil_2_title', label: 'Outil 2 — Titre', type: 'text' },
+      { key: 'outil_2_desc',  label: 'Outil 2 — Description', type: 'textarea' },
+      { key: 'outil_2_alt',   label: 'Outil 2 — Texte alternatif de l’image (accessibilité)', type: 'text' },
+      { key: 'outil_3_title', label: 'Outil 3 — Titre', type: 'text' },
+      { key: 'outil_3_desc',  label: 'Outil 3 — Description', type: 'textarea' },
+      { key: 'outil_3_alt',   label: 'Outil 3 — Texte alternatif de l’image (accessibilité)', type: 'text' },
+      { key: 'outil_4_title', label: 'Outil 4 — Titre', type: 'text' },
+      { key: 'outil_4_desc',  label: 'Outil 4 — Description', type: 'textarea' },
+      { key: 'outil_4_alt',   label: 'Outil 4 — Texte alternatif de l’image (accessibilité)', type: 'text' },
+      { key: 'outil_5_title', label: 'Outil 5 — Titre', type: 'text' },
+      { key: 'outil_5_desc',  label: 'Outil 5 — Description', type: 'textarea' },
+      { key: 'outil_5_alt',   label: 'Outil 5 — Texte alternatif de l’image (accessibilité)', type: 'text' },
+      { key: 'outil_6_title', label: 'Outil 6 — Titre', type: 'text' },
+      { key: 'outil_6_desc',  label: 'Outil 6 — Description', type: 'textarea' },
+      { key: 'outil_6_alt',   label: 'Outil 6 — Texte alternatif de l’image (accessibilité)', type: 'text' },
+      { key: 'outil_7_title', label: 'Outil 7 — Titre', type: 'text' },
+      { key: 'outil_7_desc',  label: 'Outil 7 — Description', type: 'textarea' },
+      { key: 'outil_7_alt',   label: 'Outil 7 — Texte alternatif de l’image (accessibilité)', type: 'text' },
       { key: 'pricing_badge',    label: 'Tarifs — Badge',            type: 'text' },
       { key: 'pricing_title',    label: 'Tarifs — Titre',            type: 'text' },
       { key: 'format_label',     label: 'Prog complet — Label Format',  type: 'text' },
@@ -788,6 +696,11 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'email_booking_text',   label: 'Texte email booking',                 type: 'text' },
       { key: 't_chargement_du_calendrier', label: 'Section 1 — Texte « Chargement du calendrier… »', type: 'text' },
       { key: 't_ouvrir_calendly_directement', label: 'Section 1 — Lien « Ouvrir Calendly directement → »', type: 'text' },
+      { key: 'service_label_coaching', label: 'Agenda — Pastille service « Coaching individuel »', type: 'text' },
+      { key: 'service_label_happiness_design', label: 'Agenda — Pastille service « Programme Happiness Design »', type: 'text' },
+      { key: 'service_label_sparring_partner', label: 'Agenda — Pastille service « Sparring Partner »', type: 'text' },
+      { key: 'service_label_entreprises', label: 'Agenda — Pastille service « Coaching entreprises »', type: 'text' },
+      { key: 'service_label_relations', label: 'Agenda — Pastille service « Coaching Relations »', type: 'text' },
       { key: 't_vous_preferez_reserver_par', label: 'Section 2 — Texte « Vous préférez réserver par email ? »', type: 'text' },
       { key: 'seo_title', label: 'Référencement Google — Titre (onglet du navigateur et résultat Google)', type: 'text' },
       { key: 'seo_description', label: 'Référencement Google — Description (l’extrait sous le titre dans Google)', type: 'textarea' },
@@ -834,11 +747,28 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'seo_image', label: 'Référencement Google — Image de partage (Facebook, LinkedIn, WhatsApp…)', type: 'image' },
     ],
   },
-  // 11. Navigation
-  'navigation': {
-    label: 'Navigation',
-    emoji: '🧭',
+  // 11. Fil d'Ariane (onglet dédié) — libellés des maillons et affichage général
+  'fil-ariane': {
+    label: 'Fil d’Ariane',
+    emoji: '🔗',
     sections: [
+      { key: 'bc_enabled', label: 'Affichage — Afficher le fil d’Ariane sur le site (1 = oui, 0 = non)', type: 'text' },
+      { key: 'bc_home_label', label: 'Libellés — Premier maillon « Accueil »', type: 'text' },
+      { key: 'bc_a_propos', label: 'Libellés — Page « Monica » (/a-propos)', type: 'text' },
+      { key: 'bc_coaching', label: 'Libellés — Page « Coaching individuel » (/coaching)', type: 'text' },
+      { key: 'bc_entreprises', label: 'Libellés — Page « Entreprises » (/entreprises)', type: 'text' },
+      { key: 'bc_happiness_design', label: 'Libellés — Page « Happiness Design » (/happiness-design)', type: 'text' },
+      { key: 'bc_relations', label: 'Libellés — Page « Relations » (/relations)', type: 'text' },
+      { key: 'bc_sparring_partner', label: 'Libellés — Page « Sparring Partner » (/sparring-partner)', type: 'text' },
+      { key: 'bc_booking', label: 'Libellés — Page « Réserver une séance » (/booking)', type: 'text' },
+      { key: 'bc_contact', label: 'Libellés — Page « Contact » (/contact)', type: 'text' },
+      { key: 'bc_blog', label: 'Libellés — Page « Ressources » (/blog)', type: 'text' },
+      { key: 'bc_faq', label: 'Libellés — Page « FAQ » (/faq)', type: 'text' },
+      { key: 'bc_merci', label: 'Libellés — Page « Merci » (/merci)', type: 'text' },
+      { key: 'bc_mentions_legales', label: 'Libellés — Page « Mentions légales » (/mentions-legales)', type: 'text' },
+      { key: 'bc_politique_confidentialite', label: 'Libellés — Page « Confidentialité » (/politique-confidentialite)', type: 'text' },
+      { key: 'bc_temoignages', label: 'Libellés — Page « Témoignages » (/temoignages)', type: 'text' },
+      { key: 'bc_test_attachement', label: 'Libellés — Page « Test d’attachement » (/test-attachement)', type: 'text' },
     ],
   },
   // 11. Footer
@@ -971,6 +901,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'article_related_title', label: 'Article — Titre du bloc « articles liés »', type: 'text' },
       { key: 'article_related_text', label: 'Article — Texte du bloc « articles liés »', type: 'textarea' },
       { key: 'article_back', label: 'Article — Lien « Retour » (en haut et en bas de l’article)', type: 'text' },
+      { key: 'article_default_description', label: 'Article — Description Google par défaut (si l’article n’a ni extrait ni description SEO)', type: 'textarea' },
       { key: 'article_read_time', label: 'Article — Mention « min de lecture »', type: 'text' },
       { key: 'article_opening', label: 'Article — Titre de l’encadré d’introduction', type: 'text' },
       { key: 'article_unfinished', label: 'Article — Message quand le texte est vide', type: 'textarea' },
@@ -1224,6 +1155,54 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'seo_image', label: 'Référencement Google — Image de partage (Facebook, LinkedIn, WhatsApp…)', type: 'image' },
     ],
   },
+  'compte': {
+    label: 'Espace client',
+    emoji: '🔐',
+    sections: [
+      { key: 'compte_badge', label: 'Bandeau « Espace client » (haut des 3 pages)', type: 'text' },
+      { key: 'login_title', label: 'Connexion — Titre', type: 'text' },
+      { key: 'login_subtitle', label: 'Connexion — Sous-titre', type: 'textarea' },
+      { key: 'login_email_label', label: 'Formulaire — Label du champ email', type: 'text' },
+      { key: 'login_email_placeholder', label: 'Formulaire — Exemple dans le champ email', type: 'text' },
+      { key: 'login_password_label', label: 'Formulaire — Label du champ mot de passe', type: 'text' },
+      { key: 'login_password_placeholder', label: 'Connexion — Exemple dans le champ mot de passe', type: 'text' },
+      { key: 'login_submit', label: 'Connexion — Bouton', type: 'text' },
+      { key: 'login_submitting', label: 'Connexion — Bouton pendant la connexion', type: 'text' },
+      { key: 'login_no_account', label: 'Connexion — Phrase « Pas encore de compte ? »', type: 'text' },
+      { key: 'login_create_link', label: 'Connexion — Lien vers l’inscription', type: 'text' },
+      { key: 'login_error_unavailable', label: 'Connexion — Message si Supabase manque', type: 'textarea' },
+      { key: 'login_not_configured', label: 'Encart « Supabase non configuré » (connexion et inscription)', type: 'textarea' },
+      { key: 'register_title', label: 'Inscription — Titre', type: 'text' },
+      { key: 'register_subtitle', label: 'Inscription — Sous-titre', type: 'textarea' },
+      { key: 'register_password_placeholder', label: 'Inscription — Exemple dans le champ mot de passe', type: 'text' },
+      { key: 'register_confirm_label', label: 'Inscription — Label « Confirmer le mot de passe »', type: 'text' },
+      { key: 'register_confirm_placeholder', label: 'Inscription — Exemple dans le champ confirmation', type: 'text' },
+      { key: 'register_submit', label: 'Inscription — Bouton', type: 'text' },
+      { key: 'register_submitting', label: 'Inscription — Bouton pendant la création', type: 'text' },
+      { key: 'register_success', label: 'Inscription — Message de succès', type: 'textarea' },
+      { key: 'register_error_unavailable', label: 'Inscription — Message si Supabase manque', type: 'textarea' },
+      { key: 'register_error_short_password', label: 'Inscription — Erreur mot de passe trop court', type: 'textarea' },
+      { key: 'register_error_mismatch', label: 'Inscription — Erreur mots de passe différents', type: 'textarea' },
+      { key: 'register_have_account', label: 'Inscription — Phrase « Déjà inscrit ? »', type: 'text' },
+      { key: 'register_login_link', label: 'Inscription — Lien vers la connexion', type: 'text' },
+      { key: 'dash_welcome', label: 'Espace client — Titre « Bienvenue » (le prénom est ajouté automatiquement)', type: 'text' },
+      { key: 'dash_subtitle', label: 'Espace client — Sous-titre', type: 'textarea' },
+      { key: 'dash_signout', label: 'Espace client — Bouton déconnexion', type: 'text' },
+      { key: 'dash_resources_title', label: 'Espace client — Titre « Tes ressources »', type: 'text' },
+      { key: 'dash_test_title', label: 'Espace client — Carte test d’attachement : titre', type: 'text' },
+      { key: 'dash_test_text', label: 'Espace client — Carte test d’attachement : texte', type: 'textarea' },
+      { key: 'dash_test_cta', label: 'Espace client — Carte test d’attachement : lien', type: 'text' },
+      { key: 'dash_relations_title', label: 'Espace client — Carte Relations : titre', type: 'text' },
+      { key: 'dash_relations_text', label: 'Espace client — Carte Relations : texte', type: 'textarea' },
+      { key: 'dash_relations_cta', label: 'Espace client — Carte Relations : lien', type: 'text' },
+      { key: 'dash_next_title', label: 'Espace client — Bloc « Continuer ton parcours » : titre', type: 'text' },
+      { key: 'dash_next_text', label: 'Espace client — Bloc « Continuer ton parcours » : texte', type: 'textarea' },
+      { key: 'dash_contact_cta', label: 'Espace client — Bouton « Contacter Monica »', type: 'text' },
+      { key: 'dash_coaching_cta', label: 'Espace client — Bouton « Découvrir le coaching »', type: 'text' },
+      { key: 'dash_help_text', label: 'Espace client — Phrase avant l’adresse email', type: 'text' },
+      { key: 'dash_email', label: 'Espace client — Adresse email de contact', type: 'text' },
+    ],
+  },
   'merci': {
     label: 'Page « Merci »',
     emoji: '🙏',
@@ -1247,7 +1226,9 @@ const SETTINGS_GROUPS: Record<string, { label: string; emoji: string }> = {
   theme:      { label: 'Thème & Couleurs',  emoji: '🎨' },
   branding:   { label: 'Logo & Identité',   emoji: '🖼' },
   general:    { label: 'Général',           emoji: '🌍' },
+  booking:    { label: 'Réservation (Calendly)', emoji: '📅' },
   social:     { label: 'Réseaux sociaux',   emoji: '📱' },
+  emails:     { label: 'Emails automatiques', emoji: '📧' },
   seo:        { label: 'SEO global',        emoji: '🔍' },
   geo:        { label: 'Géo & Business',    emoji: '📍' },
   visibility: { label: 'Visibilité pages',  emoji: '👁️' },
@@ -1891,7 +1872,7 @@ export default function CMSAdmin() {
   // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
   useEffect(() => { if (authed && tab === 'booking') { loadBookingSlots(); loadBookingRequests(); } }, [authed, tab, loadBookingSlots, loadBookingRequests]);
   // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
-  useEffect(() => { if (authed && (tab === 'settings' || tab === 'pages')) loadSettings(); }, [authed, tab, loadSettings]);
+  useEffect(() => { if (authed && (tab === 'settings' || tab === 'pages' || tab === 'fil-ariane')) loadSettings(); }, [authed, tab, loadSettings]);
   // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
   useEffect(() => { if (authed && (tab === 'messages' || tab === 'dashboard')) loadMessages(); }, [authed, tab, loadMessages]);
 
@@ -2107,6 +2088,7 @@ export default function CMSAdmin() {
         e.preventDefault();
         if (!isDirty || savingSettings) return;
         if (tab === 'pages') void saveDraft(activePage);
+        else if (tab === 'fil-ariane') void saveDraft('fil-ariane');
         else if (tab === 'settings') void saveSettings();
       }
     };
@@ -2274,6 +2256,9 @@ export default function CMSAdmin() {
     { id: 'articles', label: '📝 Articles', count: articles.length },
     { id: 'new',      label: '✏️ Nouvel article', count: null },
     { id: 'pages',    label: '🗂️ Pages', count: null },
+    { id: 'menu',         label: '🧭 Menu', count: null },
+    { id: 'fil-ariane',   label: '🔗 Fil d’Ariane', count: null },
+    { id: 'custom-pages', label: '📄 Pages libres', count: null },
     { id: 'media',    label: '🖼️ Médiathèque', count: null },
     { id: 'booking',  label: '📅 Réservations', count: null },
     { id: 'messages', label: '💬 Messages', count: messages.filter(m => m.status === 'unread').length || null },
@@ -2327,21 +2312,21 @@ export default function CMSAdmin() {
       {isDirty && (
         <div style={{ background: '#fff8e1', borderBottom: '1px solid #f0c040', padding: '.6rem 2rem', display: 'flex', alignItems: 'center', gap: '.5rem', fontSize: '.85rem', color: '#7a5c00', fontWeight: 600 }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          {tab === 'pages'
+          {tab === 'pages' || tab === 'fil-ariane' || tab === 'custom-pages' || tab === 'menu'
             ? 'Modifications non enregistrées — « Enregistrer le brouillon » (bouton flottant ou Ctrl+S). Rien n’est en ligne tant que vous ne publiez pas.'
             : 'Modifications non sauvegardées — utilisez le bouton flottant ou Ctrl+S pour sauvegarder'}
         </div>
       )}
 
       {/* Bouton flottant sticky */}
-      {(tab === 'pages' || tab === 'settings') && (
+      {(tab === 'pages' || tab === 'settings' || tab === 'fil-ariane') && (
         <div style={{
           position: 'fixed', bottom: 24, right: 24, zIndex: 100,
           display: isDirty || savedOk ? 'block' : 'none',
           transition: 'opacity .2s',
         }}>
           <button
-            onClick={() => { if (tab === 'pages') saveDraft(activePage); else saveSettings(); }}
+            onClick={() => { if (tab === 'pages') saveDraft(activePage); else if (tab === 'fil-ariane') saveDraft('fil-ariane'); else saveSettings(); }}
             disabled={savingSettings || !isDirty}
             style={{
               display: 'flex', alignItems: 'center', gap: '.5rem',
@@ -2364,12 +2349,12 @@ export default function CMSAdmin() {
             ) : savedOk ? (
               <>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                {tab === 'pages' ? 'Enregistré !' : 'Sauvegardé !'}
+                {tab === 'pages' || tab === 'fil-ariane' ? 'Enregistré !' : 'Sauvegardé !'}
               </>
             ) : (
               <>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                {tab === 'pages' ? (draftSupported ? 'Enregistrer le brouillon' : 'Enregistrer') : 'Sauvegarder'}
+                {tab === 'pages' || tab === 'fil-ariane' ? (draftSupported ? 'Enregistrer le brouillon' : 'Enregistrer') : 'Sauvegarder'}
               </>
             )}
           </button>
@@ -2399,7 +2384,7 @@ export default function CMSAdmin() {
       )}
 
       {/* Tabs */}
-      <div style={{ background: 'white', borderBottom: '1.5px solid #e8e3dc', padding: '0 2rem', display: 'flex', gap: '.25rem', overflowX: 'auto' }}>
+      <div style={{ background: 'white', borderBottom: '1.5px solid #e8e3dc', padding: '0 2rem', display: 'flex', gap: '.25rem', flexWrap: 'wrap' }}>
         {TABS.map(t => (
           <button key={t.id}
             onClick={() => handleTabChange(t.id)}
@@ -2826,6 +2811,112 @@ export default function CMSAdmin() {
           </div>
         )}
 
+        {/* ── MENU ── */}
+        {tab === 'menu' && (
+          <div style={{ maxWidth: 860, margin: '0 auto', background: 'white', borderRadius: '1rem', padding: '2rem', boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
+            <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#2d5f54', margin: '0 0 .35rem' }}>🧭 Menu du site</h2>
+            <p style={{ margin: '0 0 1.25rem', fontSize: '.85rem', color: '#7a7a7a', lineHeight: 1.5 }}>
+              Renommez les liens, changez leur adresse, masquez-les, ajoutez-en, et déplacez-les par glisser-déposer.
+              L’enregistrement est immédiat sur le site (pas de brouillon).
+            </p>
+            <NavigationEditor />
+          </div>
+        )}
+
+        {/* ── FIL D'ARIANE ── */}
+        {tab === 'fil-ariane' && (() => {
+          const fields = (PAGES_CONFIG['fil-ariane']?.sections ?? []).filter(sec => sec.key !== 'bc_enabled');
+          const enabledKey = 'fil-ariane__bc_enabled';
+          const enabled = (editedContent[enabledKey] ?? PAGE_DEFAULTS['fil-ariane']?.bc_enabled ?? '1') !== '0';
+          const st = pageStatus('fil-ariane');
+          const busy = savingSettings || publishing;
+          return (
+            <div style={{ maxWidth: 860, margin: '0 auto', background: 'white', borderRadius: '1rem', padding: '2rem', boxShadow: '0 1px 4px rgba(0,0,0,.06)' }}>
+              <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#2d5f54', margin: '0 0 .35rem' }}>🔗 Fil d’Ariane</h2>
+              <p style={{ margin: '0 0 1.25rem', fontSize: '.85rem', color: '#7a7a7a', lineHeight: 1.5 }}>
+                Le petit chemin affiché sous le menu (« Accueil › Coaching individuel »). Il apparaît sur toutes les pages
+                sauf l’accueil. L’adresse de chaque maillon est automatique : vous ne réglez ici que le texte affiché.
+              </p>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '.9rem', padding: '.85rem 1rem', borderRadius: '.6rem', border: `1.5px solid ${enabled ? '#bbf7d0' : '#e8e4df'}`, background: enabled ? '#f0fdf4' : '#faf9f7', marginBottom: '1.5rem' }}>
+                <button type="button" role="switch" aria-checked={enabled}
+                  onClick={() => setEditedContent(prev => ({ ...prev, [enabledKey]: enabled ? '0' : '1' }))}
+                  title={enabled ? 'Masquer le fil d’Ariane' : 'Afficher le fil d’Ariane'}
+                  style={{ flexShrink: 0, width: 50, height: 28, borderRadius: 9999, border: 'none', cursor: 'pointer', background: enabled ? '#16a34a' : '#d1d5db', position: 'relative', transition: 'background .2s' }}>
+                  <span style={{ position: 'absolute', top: 3, left: enabled ? 25 : 3, width: 22, height: 22, borderRadius: '50%', background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,.25)', transition: 'left .2s', display: 'block' }} />
+                </button>
+                <div>
+                  <p style={{ margin: 0, fontSize: '.9rem', fontWeight: 700, color: enabled ? '#166534' : '#44403c' }}>
+                    {enabled ? 'Fil d’Ariane affiché' : 'Fil d’Ariane masqué'}
+                  </p>
+                  <p style={{ margin: '.2rem 0 0', fontSize: '.8rem', color: '#7a7a7a' }}>
+                    {enabled ? 'Visible sur toutes les pages, sauf l’accueil.' : 'Aucun visiteur ne le voit, sur aucune page.'}
+                  </p>
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+                {fields.map(sec => {
+                  const key = `fil-ariane__${sec.key}`;
+                  const modified = (editedContent[key] ?? '') !== (baseline[key] ?? '');
+                  return (
+                    <div key={sec.key}>
+                      <label style={lbl} htmlFor={`bc-${sec.key}`}>{sec.label.replace(/^Libellés — /, '').replace(/^Affichage — /, '')}</label>
+                      <input
+                        id={`bc-${sec.key}`}
+                        value={editedContent[key] ?? ''}
+                        onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))}
+                        style={inp}
+                      />
+                      {modified && <span style={{ fontSize: '.72rem', color: '#c2410c' }}>● modifié</span>}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {!draftSupported ? (
+                <p style={{ margin: '0 0 1rem', padding: '.55rem .8rem', borderRadius: '.5rem', background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', fontSize: '.82rem', fontWeight: 600 }}>
+                  ⚠️ Les brouillons ne sont pas disponibles sur cette base : « Enregistrer » met directement en ligne.
+                </p>
+              ) : st.draftN > 0 ? (
+                <p style={{ margin: '0 0 1rem', padding: '.55rem .8rem', borderRadius: '.5rem', background: '#fff7ed', border: '1px solid #fed7aa', color: '#9a3412', fontSize: '.82rem', fontWeight: 600 }}>
+                  📝 Brouillon : {st.draftN} modification{st.draftN > 1 ? 's' : ''} pas encore en ligne. Cliquez sur « Publier ».
+                </p>
+              ) : (
+                <p style={{ margin: '0 0 1rem', padding: '.55rem .8rem', borderRadius: '.5rem', background: '#f0fdf4', border: '1px solid #bbf7d0', color: '#166534', fontSize: '.82rem', fontWeight: 600 }}>
+                  ✓ Tout est en ligne — aucune modification en attente.
+                </p>
+              )}
+
+              <div style={{ display: 'flex', gap: '.6rem', flexWrap: 'wrap', justifyContent: 'flex-end', borderTop: '1.5px solid #ece8e2', paddingTop: '1rem' }}>
+                {draftSupported && st.draftN > 0 && (
+                  <button onClick={() => discardDraft('fil-ariane')} disabled={busy}
+                    style={{ padding: '.45rem .9rem', background: 'white', color: '#b91c1c', border: '1.5px solid #fecaca', borderRadius: '.5rem', fontWeight: 600, cursor: busy ? 'default' : 'pointer', fontSize: '.85rem', opacity: busy ? .6 : 1 }}>
+                    ↩ Abandonner
+                  </button>
+                )}
+                <button onClick={() => saveDraft('fil-ariane')} disabled={busy || st.unsaved === 0}
+                  style={{ padding: '.65rem 1.4rem', background: 'white', color: '#2d5f54', border: '1.5px solid #2d5f54', borderRadius: '.5rem', fontWeight: 700, cursor: busy || st.unsaved === 0 ? 'default' : 'pointer', fontSize: '.88rem', opacity: busy || st.unsaved === 0 ? .5 : 1 }}>
+                  {savingSettings ? '⏳ Enregistrement…' : draftSupported ? '💾 Enregistrer le brouillon' : '💾 Enregistrer'}
+                </button>
+                {draftSupported && (
+                  <button onClick={() => publishPage('fil-ariane')} disabled={busy || (st.unsaved === 0 && st.draftN === 0)}
+                    style={{ padding: '.65rem 1.5rem', background: '#c2410c', color: 'white', border: 'none', borderRadius: '.5rem', fontWeight: 700, cursor: busy || (st.unsaved === 0 && st.draftN === 0) ? 'default' : 'pointer', fontSize: '.88rem', opacity: busy || (st.unsaved === 0 && st.draftN === 0) ? .45 : 1 }}>
+                    {publishing ? '⏳ Publication…' : '🚀 Publier'}
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* ── PAGES LIBRES ── */}
+        {tab === 'custom-pages' && (
+          <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+            <CustomPagesManager />
+          </div>
+        )}
+
         {/* ── PAGES ── */}
         {tab === 'pages' && (
           <div>
@@ -3023,9 +3114,13 @@ export default function CMSAdmin() {
                                     const shortLabel = section.label.includes('—')
                                       ? section.label.split('—').slice(1).join('—').trim()
                                       : section.label;
+                                    // Id stable : permet au <label> de désigner son champ (lecteur d'écran) et de
+                                    // cibler le bon champ depuis les tests.
+                                    const fieldId = `f-${activePage}-${section.key}`;
+                                    const labelled = section.type === 'text' || section.type === 'textarea' || section.type === 'richtext';
                                     return (
                                       <div key={key}>
-                                        <label style={lbl}>
+                                        <label style={lbl} htmlFor={labelled ? fieldId : undefined}>
                                           {shortLabel}
                                           {(editedContent[key] ?? '') !== (baseline[key] ?? '') && (
                                             <span style={{ marginLeft: '.5rem', fontSize: '.68rem', fontWeight: 700, color: '#c2410c', background: '#fff7ed', border: '1px solid #fed7aa', borderRadius: '999px', padding: '.02rem .45rem', textTransform: 'none', letterSpacing: 0 }}>
@@ -3059,11 +3154,12 @@ export default function CMSAdmin() {
                                                 <input type="file" accept="image/*" style={{ display: 'none' }}
                                                   onChange={e => handleImageFile(e, url => setEditedContent(prev => ({ ...prev, [key]: url })))} />
                                               </label>
-                                              <input value={editedContent[key] ?? ''} onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))} style={{ ...inp, flex: 1, minWidth: 200 }} placeholder="Ou coller une URL d'image..." />
+                                              <input aria-label={`${section.label} — adresse de l'image (URL)`} value={editedContent[key] ?? ''} onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))} style={{ ...inp, flex: 1, minWidth: 200 }} placeholder="Ou coller une URL d'image..." />
                                             </div>
                                           </div>
                                         ) : section.type === 'richtext' ? (
                                           <textarea
+                                            id={fieldId}
                                             value={editedContent[key] ?? ''}
                                             onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))}
                                             style={{ ...inp, height: 180, resize: 'vertical', fontFamily: 'monospace', fontSize: '.85rem' }}
@@ -3071,6 +3167,7 @@ export default function CMSAdmin() {
                                           />
                                         ) : section.type === 'textarea' ? (
                                           <textarea
+                                            id={fieldId}
                                             value={editedContent[key] ?? ''}
                                             onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))}
                                             style={{ ...inp, height: 110, resize: 'vertical' }}
@@ -3078,6 +3175,7 @@ export default function CMSAdmin() {
                                           />
                                         ) : (
                                           <input
+                                            id={fieldId}
                                             value={editedContent[key] ?? ''}
                                             onChange={e => setEditedContent(prev => ({ ...prev, [key]: e.target.value }))}
                                             style={inp}
@@ -3629,7 +3727,7 @@ export default function CMSAdmin() {
                             const field = s as { key: string; label: string; type: string; options?: string[]; optionLabels?: string[] };
                             return (
                             <div key={s.key}>
-                              <label style={lbl}>{s.label}</label>
+                              <label style={lbl} htmlFor={`set-${s.key}`}>{s.label}</label>
                               {field.type === 'image' ? (
                                 <div>
                                   {editedSettings[s.key] && (
@@ -3643,14 +3741,15 @@ export default function CMSAdmin() {
                                       <input type="file" accept="image/*" style={{ display: 'none' }}
                                         onChange={e => handleImageFile(e, url => setEditedSettings(prev => ({ ...prev, [s.key]: url })))} />
                                     </label>
-                                    <input value={editedSettings[s.key] || ''} onChange={e => setEditedSettings(prev => ({ ...prev, [s.key]: e.target.value }))} style={{ ...inp, flex: 1 }} placeholder="Ou coller une URL..." />
+                                    <input id={`set-${s.key}`} value={editedSettings[s.key] || ''} onChange={e => setEditedSettings(prev => ({ ...prev, [s.key]: e.target.value }))} style={{ ...inp, flex: 1 }} placeholder="Ou coller une URL..." />
                                     {editedSettings[s.key] && <button onClick={() => setEditedSettings(prev => ({ ...prev, [s.key]: '' }))} style={{ padding: '.5rem .8rem', background: '#fee', color: '#c0392b', border: '1px solid #fcc', borderRadius: '.4rem', cursor: 'pointer', fontSize: '.85rem' }}>✕ Supprimer</button>}
                                   </div>
                                 </div>
                               ) : field.type === 'textarea' ? (
-                                <textarea value={editedSettings[s.key] || ''} onChange={e => setEditedSettings(prev => ({ ...prev, [s.key]: e.target.value }))} style={{ ...inp, height: 100, resize: 'vertical' }} placeholder={s.label} />
+                                <textarea id={`set-${s.key}`} value={editedSettings[s.key] || ''} onChange={e => setEditedSettings(prev => ({ ...prev, [s.key]: e.target.value }))} style={{ ...inp, height: 100, resize: 'vertical' }} placeholder={s.label} />
                               ) : field.type === 'select' && field.options ? (
                                 <select
+                                  id={`set-${s.key}`}
                                   value={editedSettings[s.key] || field.options[0]}
                                   onChange={e => setEditedSettings(prev => ({ ...prev, [s.key]: e.target.value }))}
                                   style={{ ...inp, cursor: 'pointer' }}
@@ -3660,7 +3759,7 @@ export default function CMSAdmin() {
                                   ))}
                                 </select>
                               ) : (
-                                <input value={editedSettings[s.key] || ''}
+                                <input id={`set-${s.key}`} value={editedSettings[s.key] || ''}
                                   onChange={e => setEditedSettings(prev => ({ ...prev, [s.key]: e.target.value }))}
                                   style={inp} placeholder={s.label} />
                               )}

@@ -1,6 +1,8 @@
 import { MetadataRoute } from 'next';
 import { getKvSettings, isPageIndexable } from '@/lib/cms-settings-server';
 import { getAllPosts } from '@/lib/blog-supabase';
+import { getCustomPages } from '@/lib/custom-pages-server';
+import { pageHref } from '@/lib/custom-pages';
 import { SITE_URL as BASE_URL } from '@/lib/site-url';
 
 
@@ -51,6 +53,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     } catch {
       // Blog indisponible → sitemap des pages statiques uniquement
     }
+  }
+
+  // Pages créées dans le CMS (admin → « 📄 Pages libres »), en ligne uniquement
+  try {
+    for (const page of await getCustomPages()) {
+      if (!page.published) continue;
+      entries.push({
+        url: `${BASE_URL}${pageHref(page.slug)}`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly',
+        priority: 0.6,
+      });
+    }
+  } catch {
+    // Pages libres indisponibles → sitemap sans elles
   }
 
   return entries;

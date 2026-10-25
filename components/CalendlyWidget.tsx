@@ -1,34 +1,36 @@
 'use client'
 import Script from 'next/script'
 import { useSearchParams } from 'next/navigation'
+import { useCalendly } from '@/hooks/useCalendly'
+import { calendlyServiceFrom, calendlyWidgetUrl, type CalendlyService } from '@/lib/calendly-config'
 
-const EVENT_TYPES: Record<string, string> = {
-  'happiness-design': 'seance-decouverte-happiness-design',
-  'coaching':         'seance-decouverte-coaching',
-  'sparring-partner': 'seance-decouverte-sparring',
-  'entreprises':      'seance-decouverte-entreprises',
-  'relations':        'seance-decouverte-relations',
-}
-
-export const SERVICE_LABELS: Record<string, string> = {
-  'happiness-design': 'Programme Happiness Design',
-  'coaching':         'Coaching individuel',
-  'sparring-partner': 'Sparring Partner',
-  'entreprises':      'Coaching entreprises',
-  'relations':        'Coaching Relations',
-}
-
-export default function CalendlyWidget() {
+/**
+ * Agenda Calendly intégré. L'adresse du compte et les rendez-vous par service viennent du CMS
+ * (⚙️ Paramètres → 📅 Réservation) ; les libellés affichés au-dessus viennent de la page « Réservation ».
+ */
+export default function CalendlyWidget({
+  labels,
+  loadingLabel = '',
+}: {
+  labels?: Partial<Record<CalendlyService, string>>
+  /** Texte affiché le temps que les réglages arrivent (fourni par la page, donc modifiable dans le CMS). */
+  loadingLabel?: string
+}) {
   const params = useSearchParams()
-  const from = params.get('from') ?? ''
-  const eventSlug = EVENT_TYPES[from] ?? ''
-  const label = SERVICE_LABELS[from] ?? ''
+  const service = calendlyServiceFrom(params.get('from'))
+  const { ready, eventUrl, profileUrl } = useCalendly()
 
-  const baseUrl = eventSlug
-    ? `https://calendly.com/happyhumans-coaching/${eventSlug}`
-    : 'https://calendly.com/happyhumans-coaching'
+  // On attend les réglages du CMS : sinon l'agenda se lancerait sur le compte par défaut.
+  if (!ready) {
+    return (
+      <div className="flex h-[700px] items-center justify-center text-sm text-stone-400">
+        {loadingLabel}
+      </div>
+    )
+  }
 
-  const calendlyUrl = `${baseUrl}?hide_landing_page_details=1&hide_gdpr_banner=1&primary_color=2d5f54`
+  const url = service ? eventUrl(service) : profileUrl
+  const label = service ? (labels?.[service] ?? '') : ''
 
   return (
     <>
@@ -41,7 +43,7 @@ export default function CalendlyWidget() {
       )}
       <div
         className="calendly-inline-widget rounded-2xl overflow-hidden"
-        data-url={calendlyUrl}
+        data-url={calendlyWidgetUrl(url)}
         style={{ minWidth: 320, height: 700 }}
       />
       <Script

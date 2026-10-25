@@ -31,6 +31,16 @@ Les valeurs saisies dans l'admin sont stockées dans la table Supabase `site_con
 
 `npm test` vérifie ces trois points (`__tests__/cms/consistency.test.ts`) : si vous oubliez une étape, le test dit exactement quelle clé manque.
 
+## Aucun texte en dur sur le site public
+
+Règle du projet : **toute phrase visible par un visiteur vient du CMS**. Le code ne contient que la structure et les valeurs par défaut de `lib/cms-defaults/`.
+
+`__tests__/cms/no-hardcoded-text.test.ts` scanne `app/` et `components/` et échoue dès qu'une phrase française réapparaît en dur, en indiquant `fichier:ligne` et le texte fautif.
+
+- Sont ignorés, volontairement : l'administration (`app/cms-admin/`, `components/admin/`), les outils d'édition (barre d'édition en ligne, médiathèque, éditeurs de texte) et les métadonnées de secours de `app/layout.tsx`.
+- Pour autoriser un texte précis (attribut d'accessibilité, libellé visible seulement en mode édition), l'ajouter dans `ALLOWED_STRINGS` du test avec sa raison.
+- Piège déjà rencontré : `{c.titre || 'Un texte'}` est **inutile** (le défaut est toujours fusionné) et masque une divergence — un tel littéral affichait « Un accompagnement pour deux contextes » alors que le défaut disait « Comment puis-je vous aider ? ». Écrire simplement `{c.titre}`.
+
 ### `c.ma_cle` ou `c.get('ma_cle')` ?
 
 `c.get()` rend un champ cliquable pour l'édition en ligne, mais il est chargé en `ssr: false` : son texte **n'est pas dans le HTML envoyé par le serveur** (donc invisible pour Google au premier chargement). Les nouveaux champs utilisent la lecture simple `c.ma_cle`. Les anciens `c.get()` sont conservés tels quels.
@@ -125,14 +135,61 @@ La page d'accueil utilise les réglages globaux (Paramètres → SEO).
 - **Textes communs** (page CMS `site`, `lib/cms-defaults/site.ts`) : bandeau cookies, formulaire newsletter, boutons de partage, page 404, page de maintenance.
 - **Test d'attachement** (page CMS `test-attachement`, `lib/cms-defaults/test-attachement.ts`) : introduction, boutons, 16 questions, libellés de l'échelle, textes des 4 profils (une ligne par force / vigilance / piste), avertissement, SEO.
   Le code ne garde que la structure (dimension mesurée, sens de la notation) : `lib/attachment-test/questions.ts`, `results-content.ts` et `scoring.ts` lisent leurs textes dans le module de défauts ; `lib/attachment-test/cms.ts` applique les textes du CMS.
+- **Espace client** (page CMS `compte`, `lib/cms-defaults/compte.ts`) : `/auth/login`, `/auth/register` et `/dashboard` (bandeau « Espace client », libellés et messages du formulaire, textes du tableau de bord, adresse email de contact).
+  Les messages d'erreur affichés par Supabase lui-même restent ceux de Supabase (trop variables pour être réécrits sans risque).
 - **Pages rendues côté serveur** (ex. article de blog) : `getPageContent(page, DEFAULTS)` (`lib/cms-content-server.ts`) lit les textes publiés ; les composants « client » utilisent `useCmsContent`.
 - ⚠️ Si la base refuse l'enregistrement des pages `site` ou `test-attachement` (erreur « violates check constraint »), une contrainte CHECK limite les noms de page de `site_content` :
   `select conname, pg_get_constraintdef(oid) from pg_constraint where conrelid = 'site_content'::regclass and contype = 'c';` puis `alter table site_content drop constraint <nom>;` (ou ajouter ces pages à la liste).
+
+## Menu du site (onglet 🧭 Menu)
+
+- Éditeur : `components/cms/NavigationEditor.tsx`, logique pure dans `lib/cms-nav.ts` (testée).
+- Stockage : deux clés de `site_content`, page `navigation` — `nav_items` (JSON des liens) et `nav_locked`.
+- **Verrou d'ordre** : `nav_locked = '1'` désactive le glisser-déposer (renommer, masquer, ajouter, supprimer restent possibles). Absent ou `'0'` → menu libre. `isNavLocked()` dans `lib/cms-nav.ts`.
+- Le menu s'enregistre **directement** (pas de brouillon) via `PUT /api/cms/navigation`.
+
+## Fil d'Ariane (onglet 🔗 Fil d'Ariane, page CMS « fil-ariane »)
+
+- Rendu par `components/Breadcrumb.tsx`, monté une seule fois dans `components/Header.tsx` : il apparaît donc sur toutes les pages, sauf l'accueil.
+- Logique pure : `lib/breadcrumb.ts` (`buildCrumbs`, `isBreadcrumbHidden`, testée). L'adresse des maillons vient du chemin ; le CMS ne fournit que les **libellés** (`bc_<page>`) et l'interrupteur `bc_enabled` (`'0'`/`non`/`false`/`off` = masqué).
+- Les adresses techniques n'apparaissent jamais : le préfixe `/p/` des pages libres et `/auth/` sont ignorés, et `ROUTE_LABELS` donne un nom lisible à `/dashboard`, `/auth/login` et `/auth/register`. Un libellé saisi dans le CMS reste prioritaire.
+- `bc_enabled` et les libellés suivent le circuit brouillon → publication.
+- `app/globals.css` : `.hh-crumb + main { padding-top: 0 }` — quand le fil est affiché, il occupe déjà la place sous l'en-tête fixe (sinon les pages gardent leur `pt-[72px]`).
+- Pour ajouter une page au fil : ajouter un champ `bc_<page>` dans `lib/cms-defaults/fil-ariane.ts`, dans `PAGES_CONFIG['fil-ariane']` et dans la table `labels` de `components/Breadcrumb.tsx` (le test de cohérence le vérifie).
+
+## Pages libres (onglet 📄 Pages libres)
+
+Créer des pages entières depuis l'admin : adresse `/p/<slug>`, titre, accroche, blocs et SEO.
+
+- Rendu : `app/p/[slug]/page.tsx` (serveur, `revalidate = 60`), blocs via `CustomBlockView`. Une page hors ligne ou supprimée répond **404**.
+- Stockage : **une seule ligne** de `site_content` — page `custom-pages`, bloc `pages` — dont la valeur est le tableau JSON des pages. Aucune migration SQL.
+- Code partagé : `lib/custom-pages.ts` (types + helpers purs, testés dans `__tests__/lib/custom-pages.test.ts`) et `lib/custom-pages-server.ts` (lecture serveur).
+- Admin : `components/cms/CustomPagesManager.tsx` ; l'éditeur de blocs est partagé avec les pages historiques (`components/cms/CustomSectionsEditor.tsx`).
+- Ces pages s'enregistrent **directement** (pas de brouillon) ; l'interrupteur « En ligne » décide de leur visibilité. Elles sont ajoutées au `sitemap.xml` quand elles sont en ligne.
+- Le lien de menu correspondant s'ajoute dans l'onglet 🧭 Menu (adresse `/p/<slug>`).
+- Pour une nouvelle page « historique » (avec sections réordonnables et brouillon), voir « Ajouter une page » plus haut.
+
+## Réglages globaux (⚙️ Paramètres)
+
+Les valeurs qui ne sont propres à aucune page vivent dans la table `cms_settings_kv` et sont servies au site par `GET /api/cms/public-settings` (lecture côté navigateur : `useSiteSettings()`, côté serveur : `getKvSettings()`).
+
+| Groupe | Clés | Utilisé par |
+|---|---|---|
+| 🌍 Général | `contact_email` | pied de page, page d'accueil, e-mail de contact du schéma JSON-LD |
+| 📅 Réservation (Calendly) | `calendly_base_url`, `calendly_event_*` (5 services) | `hooks/useCalendly.ts` → accueil, coaching, page Réservation, agenda intégré |
+| 📧 Emails automatiques | `email_subject_*` | `lib/email-subjects.ts` → e-mails de réservation et de contact |
+
+**Règle** : aucune adresse Calendly, aucun email de contact écrit en dur dans une page. Les valeurs de secours sont centralisées dans `lib/calendly-config.ts`, `lib/site-contact.ts` et `lib/site-social.ts`, et le test `__tests__/cms/no-hardcoded-text.test.ts` échoue si une page en contient une.
+
+`public-settings` complète toujours les clés absentes avec ces valeurs de secours : un bouton de réservation n'est jamais vide, même sur une base neuve. L'agenda Calendly attend l'arrivée des réglages avant de s'afficher (`ready` dans `useCalendly`) : son script lit `data-url` une seule fois, donc le lancer trop tôt l'aurait initialisé sur le compte par défaut.
 
 ## Ce qui n'est PAS dans le CMS
 
 - Les textes de l'interface d'administration elle-même (`/cms-admin`, barre d'édition en ligne, médiathèque).
 - Les libellés des `<option>` du formulaire de contact : le texte est la valeur envoyée, il ne faut pas le changer sans adapter le traitement.
 - Les articles de blog et destinations : ils ont leur propre éditeur (onglet Articles).
-- La navigation : éditeur dédié (page « Navigation »).
+- Le **corps** des e-mails automatiques (`lib/send-email.ts`) : gabarits HTML avec échappement des valeurs saisies ; seuls les objets sont réglables (⚙️ Paramètres → 📧 Emails automatiques).
+- Le nom de la marque dans les métadonnées (`Happy Humans` dans `app/layout.tsx` et `lib/page-seo.ts`) : c'est un identifiant technique du site, pas un texte éditorial.
+- La navigation : éditeur dédié (onglet 🧭 Menu).
+- Les styles et la structure des blocs libres : seuls les textes, images et liens des blocs sont éditables.
 - Les anciennes adresses de l'ex-site Heldonica (`/travel-planning`, `/hotel-consulting`, `/destinations/*`…) : les pages ont été supprimées, `next.config.js` redirige les anciens liens.

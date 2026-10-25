@@ -34,7 +34,7 @@ export default function ContactPage() {
         {/* HERO */}
         <section className="relative flex h-[40vh] items-end overflow-hidden bg-stone-900">
           <EditableImage page="contact" fieldKey="hero_image" variant="cover" duotone
-            src={c.hero_image || 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=80&auto=format&fit=crop'}
+            src={c.hero_image || CONTACT_DEFAULTS.hero_image}
             alt={c.t_espace_d_echange_calme}
             className="absolute inset-0 h-full w-full object-cover opacity-20"
           />

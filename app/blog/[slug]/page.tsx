@@ -34,7 +34,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   const ogImage = post.og_image ?? post.featured_image ?? DEFAULT_OG
   const canonical = `${SITE_URL}/blog/${post.slug}`
-  const description = post.seo_description ?? post.excerpt ?? 'Un article Happy Humans — coaching, bonheur et leadership.'
+  const description = post.seo_description ?? post.excerpt ?? BLOG_DEFAULTS.article_default_description
   const seoTitle = post.seo_title ?? `${post.title} | Happy Humans`
 
   return {

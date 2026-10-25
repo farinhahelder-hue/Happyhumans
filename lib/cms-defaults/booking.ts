@@ -24,4 +24,10 @@ export const BOOKING_DEFAULTS: Record<string, string> = {
   seo_image: '',
   // ── Textes ajoutés pour le CMS (étaient en dur dans le code) ──
   display_problem: "Problème d'affichage ?",
+  // Pastille affichée au-dessus de l'agenda quand le visiteur arrive avec ?from=<service>
+  service_label_coaching: 'Coaching individuel',
+  service_label_happiness_design: 'Programme Happiness Design',
+  service_label_sparring_partner: 'Sparring Partner',
+  service_label_entreprises: 'Coaching entreprises',
+  service_label_relations: 'Coaching Relations',
 }

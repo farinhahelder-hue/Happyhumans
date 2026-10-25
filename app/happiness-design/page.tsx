@@ -11,83 +11,22 @@ import { customSectionDefs, customSectionId, isCustomSectionId, parseBlocks } fr
 import { CustomBlockView } from '@/components/CustomSections'
 import EditableImage from '@/components/EditableImage';
 
-const STEP_DESCS = [
-  'Neurosciences + gratitude',
-  'Life Design / Bonheur',
-  'Design Thinking appliqué à votre vie professionnelle',
-  'Identifier vos ressources et atouts profonds',
-  "Via Character Strengths — lesquelles activez-vous vraiment ?",
-  "Changer son rapport à l'échec — audit des freins",
-  "Syndrome de l'imposteur · Attachement (TA) · Peurs (fears)",
-  "Imparfait mais impactant — l'action salvatrice",
-  'Qui je suis, qui je veux devenir',
-  'Les trois transformations clés de votre parcours',
-  'Jalons avec rappels pour ancrer les engagements',
-  '4 sessions de suivi pour consolider et ancrer le changement',
-]
-
-const POUR_QUI = [
-  {
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>,
-    title: 'Vous traversez une transition',
-    text: "Prise de poste, reconversion, promotion, départ, retraite, parentalité, séparation. Un nouveau chapitre s'ouvre — vous voulez l'aborder avec clarté.",
-  },
-  {
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="11" y2="16"/></svg>,
-    title: 'Vous avez perdu le fil',
-    text: 'Le boulot tourne, mais quelque chose sonne creux. Vous fonctionnez, mais vous n\'habitez plus vraiment votre vie.',
-  },
-  {
-    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>,
-    title: 'Vous voulez reprendre les rênes',
-    text: "Pas juste 'aller mieux' — reprendre activement en main votre bonheur, vos relations, votre impact. Avec des outils concrets, pas du développement personnel vague.",
-  },
-]
-
-// ── Les 7 outils de la conférence « 7 outils pour sourire dans le chaos » ──
-// Textes fidèles aux slides ; visuels via le pack d'illustrations actif (CMS → theme).
-const OUTILS_META: { title: string; desc: string; alt: string }[] = [
-  {
-    title: 'Comprendre : ne croyez pas tout ce que vous pensez',
-    desc: 'Sortir du pilote automatique, reprendre la main.',
-    alt: 'Cerveau-cactus : nos pensées ne sont que des alertes de survie',
-  },
-  {
-    title: 'Recalibrer son cerveau pour l\u2019optimisme',
-    desc: 'La liste des 3 choses positives, 21 jours pour créer l\u2019habitude.',
-    alt: 'Cerveau-cactus en fleurs : recalibrer son cerveau vers l\u2019optimisme',
-  },
-  {
-    title: 'Adversité : le cadeau caché qui nous révèle',
-    desc: 'Quel est le cadeau là-dedans ? Voir des opportunités.',
-    alt: 'Cadeau-cactus : l\u2019adversité comme cadeau caché',
-  },
-  {
-    title: 'La liberté est beaucoup plus proche qu\u2019on ne le pense',
-    desc: 'Moins impacté par les conflits et les inconvénients.',
-    alt: 'Fleur de cactus : la liberté dans l\u2019espace de nos réactions',
-  },
-  {
-    title: 'Je suis Homo Risibilis',
-    desc: 'Ne pas se prendre tant au sérieux : plus de légèreté, moins de charge mentale.',
-    alt: 'Penseur-cactus : habiter les contradictions avec humour',
-  },
-  {
-    title: 'Cultiver l\u2019action',
-    desc: 'Vivre avec sens et impact.',
-    alt: 'Bras-cactus : l\u2019action qui crée du sens',
-  },
-  {
-    title: 'V1 / V2 : à nous de choisir notre version',
-    desc: 'Passer du pilote automatique (anxiété, doute) au filtre des outils (confiance, fierté).',
-    alt: 'V1 cactus épineux face à V2 cactus en fleurs',
-  },
-]
-
 export default function HappinessDesignPage() {
   const c = useCmsContent('happiness-design', HAPPINESS_DESIGN_DEFAULTS)
   const pack = useIllustrationPack()
-  const outils = OUTILS_META.map((meta, i) => ({ ...meta, srcs: pack.slots.outils[i] || [] }))
+
+  // ── Les 7 outils de la conférence « 7 outils pour sourire dans le chaos » ──
+  // Titres, descriptions et textes alternatifs viennent du CMS ; les visuels, du pack d'illustrations actif.
+  const outils = Array.from({ length: 7 }, (_, i) => {
+    const n = i + 1
+    const read = (k: string) => (c[k] as string) || HAPPINESS_DESIGN_DEFAULTS[k] || ''
+    return {
+      title: read(`outil_${n}_title`),
+      desc: read(`outil_${n}_desc`),
+      alt: read(`outil_${n}_alt`),
+      srcs: pack.slots.outils[i] || [],
+    }
+  })
 
   const getStep = (i: number) => {
     const num = String(i + 1).padStart(2, '0')
@@ -205,8 +144,9 @@ export default function HappinessDesignPage() {
                   </div>
                 )}
                 <div className="p-6">
-                  <p className="mb-1 text-xs font-bold text-amber-400">Outil {i + 1}</p>
-                  <h3 className="mb-2 font-serif text-lg font-light">{outil.title}</h3>
+                  <p className="mb-1 text-xs font-bold text-amber-400">{c.get('outil_label')} {i + 1}</p>
+                  {/* text-white : la règle globale h1…h6 impose le vert foncé, illisible sur cette carte sombre */}
+                  <h3 className="mb-2 font-serif text-lg font-light text-white">{outil.title}</h3>
                   <p className="text-sm leading-relaxed text-stone-300">{outil.desc}</p>
                 </div>
               </article>

@@ -6,10 +6,12 @@ import Footer from '@/components/Footer'
 import Link from 'next/link'
 import CalendlyWidget from '@/components/CalendlyWidget'
 import { useCmsContent } from '@/hooks/useCmsContent'
+import { useCalendly } from '@/hooks/useCalendly'
 import { BOOKING_DEFAULTS } from '@/lib/cms-defaults/booking'
 
 export default function BookingPage() {
   const c = useCmsContent('booking', BOOKING_DEFAULTS)
+  const { profileUrl } = useCalendly()
 
   return (
     <>
@@ -35,12 +37,18 @@ export default function BookingPage() {
                 {c.t_chargement_du_calendrier}
               </div>
             }>
-              <CalendlyWidget />
+              <CalendlyWidget loadingLabel={String(c.t_chargement_du_calendrier)} labels={{
+                coaching: c.service_label_coaching,
+                'happiness-design': c.service_label_happiness_design,
+                'sparring-partner': c.service_label_sparring_partner,
+                entreprises: c.service_label_entreprises,
+                relations: c.service_label_relations,
+              }} />
             </Suspense>
             <p className="mt-4 text-center text-xs text-stone-400">
               {c.display_problem}{' '}
               <a
-                href="https://calendly.com/happyhumans-coaching"
+                href={profileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[#2d5f54] hover:underline"

@@ -21,6 +21,8 @@ import { POLITIQUE_CONFIDENTIALITE_DEFAULTS } from './cms-defaults/politique-con
 import { MERCI_DEFAULTS } from './cms-defaults/merci'
 import { SITE_DEFAULTS } from './cms-defaults/site'
 import { TEST_ATTACHEMENT_DEFAULTS } from './cms-defaults/test-attachement'
+import { FIL_ARIANE_DEFAULTS } from './cms-defaults/fil-ariane'
+import { COMPTE_DEFAULTS } from './cms-defaults/compte'
 
 export const PAGE_DEFAULTS: Record<string, Record<string, string>> = {
   home: HOME_DEFAULTS,
@@ -40,4 +42,6 @@ export const PAGE_DEFAULTS: Record<string, Record<string, string>> = {
   merci: MERCI_DEFAULTS,
   site: SITE_DEFAULTS,
   'test-attachement': TEST_ATTACHEMENT_DEFAULTS,
+  'fil-ariane': FIL_ARIANE_DEFAULTS,
+  compte: COMPTE_DEFAULTS,
 }

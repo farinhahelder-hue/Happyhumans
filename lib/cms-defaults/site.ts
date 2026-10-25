@@ -2,6 +2,7 @@
 // Bandeau cookies, formulaire newsletter, boutons de partage, page 404, page de maintenance.
 // Lus par les composants ET par l'admin du CMS (lib/cms-page-defaults.ts) : ne jamais les dupliquer ailleurs.
 // Chaque clé correspond à un champ de PAGES_CONFIG (app/cms-admin/page.tsx).
+import { DEFAULT_CONTACT_EMAIL } from '@/lib/site-contact'
 
 export const SITE_DEFAULTS: Record<string, string> = {
   // ── Bandeau cookies ──
@@ -50,5 +51,5 @@ export const SITE_DEFAULTS: Record<string, string> = {
   maintenance_text: "Happy Humans est actuellement en cours de mise à jour.",
   maintenance_text2: "Nous revenons très vite !",
   maintenance_help: "Besoin d'aide ? Écrivez à",
-  maintenance_email: "happyhumans.coaching@gmail.com",
+  maintenance_email: DEFAULT_CONTACT_EMAIL,
 }

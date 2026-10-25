@@ -34,6 +34,10 @@ const PAGES: Record<string, string[]> = {
   'mentions-legales': ['app/mentions-legales/MentionsLegalesContent.tsx'],
   'politique-confidentialite': ['app/politique-confidentialite/PolitiqueContent.tsx'],
   merci: ['app/merci/page.tsx'],
+  // espace client : connexion, inscription, tableau de bord
+  compte: ['app/auth/login/page.tsx', 'app/auth/register/page.tsx', 'app/dashboard/page.tsx'],
+  // fil d'Ariane : libellés des maillons et affichage général
+  'fil-ariane': ['components/Breadcrumb.tsx'],
   // éléments communs à tout le site : bandeau cookies, newsletter, partage, 404, maintenance
   site: [
     'components/CookieConsentBanner.tsx',
@@ -67,7 +71,10 @@ function adminKeys(page: string): Set<string> {
 function defaultKeys(page: string): Set<string> {
   const txt = read(`lib/cms-defaults/${page}.ts`)
   // une clé par ligne, ou plusieurs séparées par des virgules (ex. step_01_num: '01', step_01_title: '…')
-  return new Set([...txt.matchAll(/(?:^|,)\s*['"]?([A-Za-z0-9_]+)['"]?\s*:\s*["'`]/gm)].map(m => m[1]))
+  // la valeur peut être une chaîne ('…', "…", `…`) ou une constante importée partagée (DEFAULT_CONTACT_EMAIL)
+  return new Set(
+    [...txt.matchAll(/(?:^|,)\s*['"]?([A-Za-z0-9_]+)['"]?\s*:\s*(?:["'`]|[A-Za-z_$])/gm)].map(m => m[1]),
+  )
 }
 
 /** Clés lues par le code : littérales (c.get('x'), c.x, c['x']) et gabarits (`prefix_${i}_suffix`). */

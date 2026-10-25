@@ -5,6 +5,19 @@ import type { NavItem } from '@/hooks/useCmsNavigation'
  * (admin et mode édition du site) et testées dans __tests__/lib/cms-nav.test.ts.
  */
 
+/** Clés de `site_content` (page « navigation ») : les liens du menu et le verrou d'ordre. */
+export const NAV_KEY = 'nav_items'
+export const NAV_LOCKED_KEY = 'nav_locked'
+
+/**
+ * Verrou d'ordre : « 1 » = l'ordre du menu ne peut plus être modifié par glisser-déposer
+ * (renommer, masquer, ajouter ou supprimer restent possibles). Une valeur absente ou illisible
+ * laisse le menu libre.
+ */
+export function isNavLocked(value: string | null | undefined): boolean {
+  return (value ?? '').trim() === '1'
+}
+
 /** Renumérote les positions (1, 2, 3…) dans l'ordre actuel de la liste. */
 export function renumber<T extends { position: number }>(items: T[]): T[] {
   return items.map((item, i) => ({ ...item, position: i + 1 }))

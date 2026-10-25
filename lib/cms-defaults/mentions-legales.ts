@@ -1,6 +1,7 @@
 // Textes par défaut de la page « mentions-legales » — SOURCE UNIQUE.
 // Lus par la page ET par l'admin du CMS (lib/cms-page-defaults.ts) : ne jamais les dupliquer ailleurs.
 // Chaque clé correspond à un champ de PAGES_CONFIG (app/cms-admin/page.tsx).
+import { DEFAULT_CONTACT_EMAIL } from '@/lib/site-contact'
 
 export const MENTIONS_LEGALES_DEFAULTS: Record<string, string> = {
   // ── Textes câblés automatiquement (étaient en dur dans la page) ──
@@ -12,7 +13,7 @@ export const MENTIONS_LEGALES_DEFAULTS: Record<string, string> = {
   t_responsable_monica_schneider: "**Responsable :** Monica Schneider",
   t_activite_philo_coaching_executive: "**Activité :** Philo-coaching, executive coaching, philosophical counselling, sparring partner",
   t_email: "Email :",
-  t_happyhumans_coaching_gmail_com: "happyhumans.coaching@gmail.com",
+  t_happyhumans_coaching_gmail_com: DEFAULT_CONTACT_EMAIL,
   t_site: "Site :",
   t_happyhumans_vercel_app: "happyhumans.vercel.app",
   t_hebergeur: "Hébergeur",
@@ -30,7 +31,7 @@ export const MENTIONS_LEGALES_DEFAULTS: Record<string, string> = {
   t_limitation_de_responsabilite: "Limitation de responsabilité",
   t_happy_humans_s_efforce: "Happy Humans s'efforce de fournir des informations fiables et à jour, sans garantie d'exhaustivité ou d'absence d'erreur. Happy Humans ne pourra être tenue responsable des dommages directs ou indirects liés à l'utilisation du site, à l'indisponibilité temporaire du service ou à l'usage d'informations externes référencées. Les liens sortants sont fournis à titre informatif et n'emportent pas validation de leur contenu.",
   t_contact: "Contact",
-  t_happyhumans_coaching_gmail_com_2: "happyhumans.coaching@gmail.com",
+  t_happyhumans_coaching_gmail_com_2: DEFAULT_CONTACT_EMAIL,
   t_2026_happy_humans_monica: "© 2026 Happy Humans — Monica Schneider. Tous droits réservés.",
   // ── Référencement (Google, réseaux sociaux) — lu par generateMetadata via lib/page-seo.ts ──
   seo_title: "Mentions légales",

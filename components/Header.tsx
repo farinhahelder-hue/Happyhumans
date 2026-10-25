@@ -6,6 +6,7 @@ import { useAuth } from '@/components/AuthProvider'
 import { useCmsNavigation, type NavItem } from '@/hooks/useCmsNavigation'
 import { useOptionalInlineEdit } from '@/contexts/InlineEditContext'
 import NavigationEditor from '@/components/cms/NavigationEditor'
+import Breadcrumb from '@/components/Breadcrumb'
 import LogoQuickEditor from '@/components/cms/LogoQuickEditor'
 import SiteLogo, { resolveLogo } from '@/components/SiteLogo'
 import { useSiteSettings } from '@/hooks/useSiteSettings'
@@ -209,6 +210,8 @@ export default function Header() {
           </div>
         )}
       </nav>
+      {/* Fil d'Ariane : affiché sur toutes les pages sauf l'accueil (libellés réglés dans le CMS) */}
+      <Breadcrumb />
     </>
   )
 }

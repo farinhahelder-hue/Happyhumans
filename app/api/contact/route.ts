@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { DEFAULT_CONTACT_EMAIL } from '@/lib/site-contact';
 import { createClient } from '@supabase/supabase-js'
 import { sendEmail, contactConfirmationHtml, adminNotifHtml } from '@/lib/send-email'
 
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    const adminEmail = process.env.ADMIN_EMAIL || 'happyhumans.coaching@gmail.com'
+    const adminEmail = process.env.ADMIN_EMAIL || DEFAULT_CONTACT_EMAIL
     Promise.all([
       sendEmail({ to: email,       subject: 'Message bien reçu — Happy Humans',    html: contactConfirmationHtml(name) }),
       sendEmail({ to: adminEmail,  subject: `Nouveau message — ${name}`,            html: adminNotifHtml({ name, email, message }) }),

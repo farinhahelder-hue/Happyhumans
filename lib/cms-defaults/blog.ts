@@ -28,6 +28,7 @@ export const BLOG_DEFAULTS: Record<string, string> = {
   seo_description: "Articles, réflexions et ressources sur le coaching, les relations et le leadership — par Monica Schneider, Happy Humans.",
   seo_image: '',
   // ── Textes ajoutés pour le CMS (étaient en dur dans le code) ──
+  article_default_description: "Un article Happy Humans — coaching, bonheur et leadership.",
   article_back: "← Retour au blog",
   article_read_time: "min de lecture",
   article_opening: "Introduction",

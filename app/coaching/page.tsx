@@ -3,6 +3,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 import { useCmsContent } from '@/hooks/useCmsContent'
+import { useCalendly } from '@/hooks/useCalendly'
 import { COACHING_DEFAULTS } from '@/lib/cms-defaults/coaching'
 import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
 import { customSectionDefs, customSectionId, isCustomSectionId, parseBlocks } from '@/lib/custom-sections'
@@ -12,46 +13,48 @@ import EditableImage from '@/components/EditableImage';
 
 export default function CoachingPage() {
   const c = useCmsContent('coaching', COACHING_DEFAULTS)
+  // Lien du rendez-vous de découverte : réglage CMS (⚙️ Paramètres → 📅 Réservation)
+  const { eventUrl: calendlyEventUrl } = useCalendly()
 
   const programs = [
     {
-      label: c.program_1_label || 'Séance découverte',
-      price: c.program_1_price || 'Gratuit',
-      unit: c.program_1_unit || '1h',
+      label: c.program_1_label,
+      price: c.program_1_price,
+      unit: c.program_1_unit,
       desc: c.program_1_desc,
-      cta: c.program_1_cta || 'Réserver une séance découverte',
-      href: 'https://calendly.com/happyhumans-coaching/seance-decouverte-coaching',
+      cta: c.program_1_cta,
+      href: calendlyEventUrl('coaching'),
       calendly: true,
       highlight: false,
     },
     {
-      label: c.program_2_label || 'Séance individuelle',
-      price: c.program_2_price || '120 €',
-      unit: c.program_2_unit || '60 min',
+      label: c.program_2_label,
+      price: c.program_2_price,
+      unit: c.program_2_unit,
       desc: c.program_2_desc,
-      cta: c.program_2_cta || 'Réserver une séance',
+      cta: c.program_2_cta,
       href: '/booking',
       calendly: false,
       highlight: false,
     },
     {
-      label: c.program_3_label || 'Programme Prise de Poste',
-      subtitle: c.program_3_subtitle || 'Les 90 premiers jours sont décisifs',
-      price: c.program_3_price || 'Sur devis',
-      unit: c.program_3_format || '6 séances · 60 min + points hebdo 30 min',
+      label: c.program_3_label,
+      subtitle: c.program_3_subtitle,
+      price: c.program_3_price,
+      unit: c.program_3_format,
       desc: c.program_3_desc,
-      cta: c.program_3_cta || 'Réserver ce programme',
+      cta: c.program_3_cta,
       href: '/booking',
       calendly: false,
       highlight: true,
     },
     {
-      label: c.program_4_label || 'Programme Happiness Design',
-      subtitle: c.program_4_subtitle || '12 séances pour reprendre les rênes de votre vie',
-      price: c.program_4_price || 'Sur devis',
-      unit: c.program_4_format || '12 séances + 4 follow-ups',
+      label: c.program_4_label,
+      subtitle: c.program_4_subtitle,
+      price: c.program_4_price,
+      unit: c.program_4_format,
       desc: c.program_4_desc,
-      cta: c.program_4_cta || 'En savoir plus',
+      cta: c.program_4_cta,
       href: '/happiness-design',
       calendly: false,
       highlight: false,
@@ -61,23 +64,23 @@ export default function CoachingPage() {
   const temoignages = [
     {
       quote: c.testimonial_1_quote,
-      name: c.testimonial_1_name || 'Témoignage 1',
-      role: c.testimonial_1_role || '',
+      name: c.testimonial_1_name,
+      role: c.testimonial_1_role,
     },
     {
       quote: c.testimonial_2_quote,
-      name: c.testimonial_2_name || 'Témoignage 2',
-      role: c.testimonial_2_role || '',
+      name: c.testimonial_2_name,
+      role: c.testimonial_2_role,
     },
     {
       quote: c.testimonial_3_quote,
-      name: c.testimonial_3_name || 'Témoignage 3',
-      role: c.testimonial_3_role || '',
+      name: c.testimonial_3_name,
+      role: c.testimonial_3_role,
     },
     {
       quote: c.testimonial_4_quote,
-      name: c.testimonial_4_name || 'Témoignage 4',
-      role: c.testimonial_4_role || '',
+      name: c.testimonial_4_name,
+      role: c.testimonial_4_role,
     },
   ]
 
@@ -86,7 +89,7 @@ export default function CoachingPage() {
     hero: (
       <section className="relative overflow-hidden bg-stone-900 px-6 py-24 text-center md:py-32 md:px-10">
         <EditableImage page="coaching" fieldKey="hero_image" variant="cover" duotone
-          src={c.hero_image || 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1600&q=80&auto=format&fit=crop'}
+          src={c.hero_image}
           alt={c.t_bureau_elegant_ambiance_coaching}
           className="absolute inset-0 h-full w-full object-cover opacity-20"
         />
@@ -121,7 +124,7 @@ export default function CoachingPage() {
               </Link>
             </div>
             <EditableImage page="coaching" fieldKey="coaching_b2c_image" variant="block" duotone
-              src={c.coaching_b2c_image || 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=800&q=80&auto=format&fit=crop'}
+              src={c.coaching_b2c_image}
               alt={c.t_coaching_individuel_introspection_}
               className="rounded-2xl object-cover shadow-lg h-72 w-full"
             />
@@ -210,7 +213,7 @@ export default function CoachingPage() {
         <div className="mx-auto max-w-5xl px-6 md:px-10">
           <div className="grid gap-12 md:grid-cols-2 items-center">
             <EditableImage page="coaching" fieldKey="coaching_b2b_image" variant="block" duotone
-              src={c.coaching_b2b_image || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=80&auto=format&fit=crop'}
+              src={c.coaching_b2b_image}
               alt={c.t_coaching_d_equipe_et}
               className="rounded-2xl object-cover shadow-lg h-72 w-full order-2 md:order-1"
             />

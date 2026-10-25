@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { sendEmail, bookingConfirmationHtml, adminNotifHtml } from '@/lib/send-email';
+import { getKvSettings } from '@/lib/cms-settings-server';
+import { emailSubject } from '@/lib/email-subjects';
+import { DEFAULT_CONTACT_EMAIL } from '@/lib/site-contact';
 
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -65,10 +68,12 @@ export async function POST(req: NextRequest) {
 
   // Emails asynchrones (ne bloque pas la réponse)
   const emailData = { name: client_name, email: client_email, phone: client_phone, date: slot?.slot_date, time: slot?.slot_time, slot_type: slot?.slot_type, message };
-  const adminEmail = process.env.ADMIN_EMAIL || 'happyhumans.coaching@gmail.com';
+  const adminEmail = process.env.ADMIN_EMAIL || DEFAULT_CONTACT_EMAIL;
+  // Objets réglables dans ⚙️ Paramètres → 📧 Emails automatiques
+  const kv = await getKvSettings();
   Promise.all([
-    sendEmail({ to: client_email, subject: 'Votre séance est bien reçue — Happy Humans', html: bookingConfirmationHtml(emailData) }),
-    sendEmail({ to: adminEmail,   subject: `Nouvelle réservation — ${client_name}`,       html: adminNotifHtml(emailData) }),
+    sendEmail({ to: client_email, subject: emailSubject('booking_confirmation', kv, { name: client_name }), html: bookingConfirmationHtml(emailData) }),
+    sendEmail({ to: adminEmail,   subject: emailSubject('admin_notice', kv, { name: client_name }),       html: adminNotifHtml(emailData) }),
   ]).catch(() => {});
 
   return NextResponse.json({ booking, success: true }, { status: 201 });

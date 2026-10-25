@@ -7,10 +7,13 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/components/AuthProvider';
 import { supabase } from '@/lib/supabase-client';
+import { useCmsContent } from '@/hooks/useCmsContent';
+import { COMPTE_DEFAULTS } from '@/lib/cms-defaults/compte';
 
 export default function RegisterPage() {
   const router = useRouter();
   const { user, loading, isConfigured } = useAuth();
+  const c = useCmsContent('compte', COMPTE_DEFAULTS);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,17 +32,17 @@ export default function RegisterPage() {
     event.preventDefault();
 
     if (!supabase || !isConfigured) {
-      setError('Inscription indisponible : variables Supabase manquantes.');
+      setError(c.register_error_unavailable);
       return;
     }
 
     if (password.length < 8) {
-      setError('Le mot de passe doit contenir au moins 8 caractères.');
+      setError(c.register_error_short_password);
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Les mots de passe ne correspondent pas.');
+      setError(c.register_error_mismatch);
       return;
     }
 
@@ -63,7 +66,7 @@ export default function RegisterPage() {
       return;
     }
 
-    setSuccess('Compte créé. Vérifie ton email pour confirmer ton inscription.');
+    setSuccess(c.register_success);
     setSubmitting(false);
   };
 
@@ -73,51 +76,54 @@ export default function RegisterPage() {
 
       <section className="pt-28 pb-16 px-4">
         <div className="max-w-md mx-auto bg-white rounded-2xl border border-stone-200 shadow-sm p-8">
-          <p className="text-xs tracking-[0.16em] uppercase text-eucalyptus mb-3">Espace client</p>
-          <h1 className="text-3xl font-serif text-mahogany mb-2">Créer ton compte</h1>
+          <p className="text-xs tracking-[0.16em] uppercase text-eucalyptus mb-3">{c.get('compte_badge')}</p>
+          <h1 className="text-3xl font-serif text-mahogany mb-2">{c.get('register_title')}</h1>
           <p className="text-stone-600 mb-8">
-            Crée ton compte pour accéder à ton espace de suivi et aux ressources de coaching.
+            {c.get('register_subtitle', undefined, { multiline: true })}
           </p>
 
           {!isConfigured && (
             <div className="mb-6 p-4 rounded-xl border border-amber-200 bg-amber-50 text-sm text-amber-900">
-              Supabase n&apos;est pas configuré en environnement courant.
+              {c.get('login_not_configured')}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1.5">Email</label>
+              <label htmlFor="register-email" className="block text-sm font-medium text-stone-700 mb-1.5">{c.get('login_email_label')}</label>
               <input
+                id="register-email"
                 type="email"
                 required
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
-                placeholder="ton.email@exemple.fr"
+                placeholder={c.login_email_placeholder}
                 className="w-full rounded-lg border border-stone-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-eucalyptus/30 focus:border-eucalyptus"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1.5">Mot de passe</label>
+              <label htmlFor="register-password" className="block text-sm font-medium text-stone-700 mb-1.5">{c.get('login_password_label')}</label>
               <input
+                id="register-password"
                 type="password"
                 required
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
-                placeholder="8 caractères minimum"
+                placeholder={c.register_password_placeholder}
                 className="w-full rounded-lg border border-stone-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-eucalyptus/30 focus:border-eucalyptus"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1.5">Confirmer le mot de passe</label>
+              <label htmlFor="register-confirm" className="block text-sm font-medium text-stone-700 mb-1.5">{c.get('register_confirm_label')}</label>
               <input
+                id="register-confirm"
                 type="password"
                 required
                 value={confirmPassword}
                 onChange={(event) => setConfirmPassword(event.target.value)}
-                placeholder="Répète ton mot de passe"
+                placeholder={c.register_confirm_placeholder}
                 className="w-full rounded-lg border border-stone-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-eucalyptus/30 focus:border-eucalyptus"
               />
             </div>
@@ -139,14 +145,14 @@ export default function RegisterPage() {
               disabled={submitting || !isConfigured}
               className="w-full bg-eucalyptus text-white font-medium py-3 rounded-lg hover:bg-eucalyptus/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {submitting ? 'Création en cours...' : 'Créer mon compte'}
+              {submitting ? c.register_submitting : c.register_submit}
             </button>
           </form>
 
           <p className="text-sm text-stone-600 mt-6">
-            Déjà inscrit ?{' '}
+            {c.get('register_have_account')}{' '}
             <Link href="/auth/login" className="text-mahogany font-semibold hover:underline">
-              Me connecter
+              {c.get('register_login_link')}
             </Link>
           </p>
         </div>

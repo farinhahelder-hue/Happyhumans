@@ -3,7 +3,6 @@ import { getAllPosts, formatDate } from '@/lib/blog-supabase'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import BlogClientPage from '@/components/BlogClientPage'
-import Breadcrumb from '@/components/Breadcrumb'
 import { pageMetadata } from '@/lib/page-seo'
 import { BLOG_DEFAULTS } from '@/lib/cms-defaults/blog'
 
@@ -25,7 +24,6 @@ export default async function BlogPage() {
   return (
     <>
       <Header />
-      <Breadcrumb />
       <BlogClientPage posts={postsWithFormattedDate} />
       <Footer />
     </>

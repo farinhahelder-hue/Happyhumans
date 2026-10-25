@@ -41,7 +41,6 @@ export const HOME_DEFAULTS: Record<string, string> = {
   home_card_order_3:   'happiness-design',
   home_card_order_4:   'relations',
   // Misc
-  contact_email:       'happyhumans.coaching@gmail.com',
   booking_modal_title: 'Choisissez votre créneau',
   booking_modal_subtitle: 'Séance découverte offerte · 1h · Sans engagement',
   // ── Textes câblés automatiquement (étaient en dur dans la page) ──

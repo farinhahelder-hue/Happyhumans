@@ -7,6 +7,8 @@ import MaintenanceGate from '@/components/MaintenanceGate';
 import { InlineEditProvider } from '@/contexts/InlineEditContext';
 import InlineEditor from '@/components/InlineEditor';
 import { getKvSettings } from '@/lib/cms-settings-server';
+import { DEFAULT_CONTACT_EMAIL } from '@/lib/site-contact';
+import { DEFAULT_PROFILES } from '@/lib/site-social';
 import { SITE_URL } from '@/lib/site-url';
 import { buildThemeCSS, resolveTheme, GOOGLE_FONTS_HREF } from '@/lib/themes';
 import DuotoneFilter from '@/components/DuotoneFilter';
@@ -70,8 +72,8 @@ const baseMetadata: Metadata = {
     'coaching leadership',
     'Monica Schneider',
     'Happy Humans',
-    'coaching de carriere',
-    'transformation equipes',
+    'coaching de carrière',
+    'transformation équipes',
   ],
   authors: [{ name: 'Monica Schneider', url: SITE_URL }],
   creator: 'Monica Schneider',
@@ -110,7 +112,7 @@ const baseMetadata: Metadata = {
     siteName: 'Happy Humans',
     title: 'Happy Humans — Monica Schneider',
     description:
-      "Accompagnement individuel et collectif pour managers, dirigeants et entreprises en quete d'alignement, de clarte et de transformation durable.",
+      "Accompagnement individuel et collectif pour managers, dirigeants et entreprises en quête d'alignement, de clarté et de transformation durable.",
     images: [
       {
         url: '/og-images/og-default.svg',
@@ -141,13 +143,18 @@ function buildSchemas(kv: Record<string, string>) {
   const areaServed = (kv.geo_service_area || 'Paris, France, Europe')
     .split(',').map(s => s.trim()).filter(Boolean);
 
+  // Profils publics : réglés dans ⚙️ Paramètres → Réseaux sociaux (jamais écrits en dur ici).
+  const profiles = [kv.linkedin_url, kv.instagram_url, kv.facebook_url, kv.personal_site_url].filter(
+    (url): url is string => Boolean(url && url.trim()),
+  );
+
   const schemaWebSite = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'Happy Humans',
     alternateName: businessName,
     url: SITE_URL,
-    description: 'Plateforme de coaching et de transformation portee par Monica Schneider.',
+    description: 'Plateforme de coaching et de transformation portée par Monica Schneider.',
     inLanguage: locale,
   };
 
@@ -165,14 +172,12 @@ function buildSchemas(kv: Record<string, string>) {
     ...(geo ? { geo } : {}),
     areaServed,
     ...(kv.geo_price_range ? { priceRange: kv.geo_price_range } : {}),
-    sameAs: [
-      'https://fr.linkedin.com/in/monica-schneider-philo-coaching',
-      'https://monicaschneider.me/',
-    ],
+    sameAs: profiles.length ? profiles : DEFAULT_PROFILES,
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer service',
-      email: 'happyhumans.coaching@gmail.com',
+      // adresse réglée dans ⚙️ Paramètres → Général, repli si elle n'est pas encore enregistrée
+      email: kv.contact_email || DEFAULT_CONTACT_EMAIL,
       availableLanguage: ['French', 'English', 'Romanian'],
     },
   };
@@ -185,10 +190,7 @@ function buildSchemas(kv: Record<string, string>) {
     url: SITE_URL,
     image: `${SITE_URL}/og-default.jpg`,
     ...(locality ? { workLocation: { '@type': 'Place', address: { '@type': 'PostalAddress', addressLocality: locality } } } : {}),
-    sameAs: [
-      'https://fr.linkedin.com/in/monica-schneider-philo-coaching',
-      'https://monicaschneider.me/',
-    ],
+    sameAs: profiles.length ? profiles : DEFAULT_PROFILES,
     knowsLanguage: ['fr', 'en', 'ro'],
     worksFor: {
       '@type': 'Organization',

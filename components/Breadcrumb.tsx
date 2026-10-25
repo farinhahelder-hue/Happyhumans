@@ -2,64 +2,69 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useCmsContent } from '@/hooks/useCmsContent';
+import { FIL_ARIANE_DEFAULTS } from '@/lib/cms-defaults/fil-ariane';
+import { buildCrumbs, isBreadcrumbHidden } from '@/lib/breadcrumb';
 
+/**
+ * Fil d'Ariane de tout le site.
+ *
+ * Affiché par l'en-tête (components/Header.tsx) sur toutes les pages sauf l'accueil.
+ * Les libellés, le libellé de départ et l'affichage général se règlent dans
+ * l'admin → « 🔗 Fil d'Ariane » (page CMS « fil-ariane »). L'adresse de chaque
+ * étape est déduite du chemin : aucune saisie technique n'est nécessaire.
+ */
 export default function Breadcrumb() {
-  const pathname = usePathname();
+  const pathname = usePathname() || '/';
+  const c = useCmsContent('fil-ariane', FIL_ARIANE_DEFAULTS);
 
-  // Ne pas afficher sur la page d'accueil
-  if (pathname === '/') {
-    return null;
-  }
+  if (isBreadcrumbHidden(c.bc_enabled, pathname)) return null;
 
-  // Générer les segments du breadcrumb
-  const segments = pathname.split('/').filter(Boolean);
-  
-  const breadcrumbs = [
-    { label: 'Accueil', href: '/' },
-    ...segments.map((segment, index) => {
-      const href = '/' + segments.slice(0, index + 1).join('/');
-      const label = segment
-        .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-      return { label, href };
-    }),
-  ];
+  // Libellés réglables, un par page du site (voir lib/cms-defaults/fil-ariane.ts)
+  const labels: Record<string, string> = {
+    '/a-propos': c.bc_a_propos,
+    '/coaching': c.bc_coaching,
+    '/entreprises': c.bc_entreprises,
+    '/happiness-design': c.bc_happiness_design,
+    '/relations': c.bc_relations,
+    '/sparring-partner': c.bc_sparring_partner,
+    '/booking': c.bc_booking,
+    '/contact': c.bc_contact,
+    '/blog': c.bc_blog,
+    '/faq': c.bc_faq,
+    '/merci': c.bc_merci,
+    '/mentions-legales': c.bc_mentions_legales,
+    '/politique-confidentialite': c.bc_politique_confidentialite,
+    '/temoignages': c.bc_temoignages,
+    '/test-attachement': c.bc_test_attachement,
+  };
 
-  // Cas spéciaux pour les pages principales
-  const breadcrumbsWithNames = breadcrumbs.map((crumb) => {
-    if (crumb.href === '/blog') return { ...crumb, label: 'Blog' };
-    if (crumb.href === '/destinations') return { ...crumb, label: 'Destinations' };
-    if (crumb.href === '/a-propos') return { ...crumb, label: 'À propos' };
-    if (crumb.href === '/hotel-consulting') return { ...crumb, label: 'Consulting' };
-    if (crumb.href === '/contact') return { ...crumb, label: 'Contact' };
-    if (crumb.href === '/mentions-legales') return { ...crumb, label: 'Mentions légales' };
-    return crumb;
-  });
+  const crumbs = buildCrumbs(pathname, c.bc_home_label, labels);
+  if (crumbs.length < 2) return null;
 
   return (
-    <nav className="bg-stone-50/80 backdrop-blur-sm border-b border-stone-100 py-3 px-4 md:px-6 mt-16">
-      <div className="max-w-7xl mx-auto">
-        <ol className="flex items-center gap-1.5 text-xs md:text-sm overflow-x-auto no-scrollbar">
-          {breadcrumbsWithNames.map((crumb, index) => (
-            <li key={crumb.href} className="flex items-center gap-1.5 whitespace-nowrap">
-              {index > 0 && (
-                <svg className="w-3 h-3 text-stone-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              )}
-              {index === breadcrumbsWithNames.length - 1 ? (
-                <span className="text-stone-500 font-medium">{crumb.label}</span>
-              ) : (
-                <Link
-                  href={crumb.href}
-                  className="text-stone-400 hover:text-amber-700 transition-colors"
-                >
-                  {crumb.label}
-                </Link>
-              )}
-            </li>
-          ))}
+    <nav aria-label="Fil d’Ariane" className="hh-crumb mt-[72px] border-b border-stone-100 bg-stone-50/80 px-4 py-3 backdrop-blur-sm md:px-6">
+      <div className="mx-auto max-w-7xl">
+        <ol className="no-scrollbar flex items-center gap-1.5 overflow-x-auto text-xs md:text-sm">
+          {crumbs.map((crumb, index) => {
+            const last = index === crumbs.length - 1;
+            return (
+              <li key={crumb.href} className="flex items-center gap-1.5 whitespace-nowrap">
+                {index > 0 && (
+                  <svg aria-hidden="true" className="h-3 w-3 flex-shrink-0 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                )}
+                {last ? (
+                  <span aria-current="page" className="font-medium text-stone-500">{crumb.label}</span>
+                ) : (
+                  <Link href={crumb.href} className="text-stone-400 transition-colors hover:text-amber-700">
+                    {crumb.label}
+                  </Link>
+                )}
+              </li>
+            );
+          })}
         </ol>
       </div>
     </nav>

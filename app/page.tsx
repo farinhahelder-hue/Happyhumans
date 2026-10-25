@@ -4,6 +4,9 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { useCmsContent } from '@/hooks/useCmsContent'
+import { useSiteSettings } from '@/hooks/useSiteSettings'
+import { useCalendly } from '@/hooks/useCalendly'
+import { DEFAULT_CONTACT_EMAIL } from '@/lib/site-contact'
 import { HOME_DEFAULTS } from '@/lib/cms-defaults/home'
 import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
 import { customSectionDefs, customSectionId, isCustomSectionId, parseBlocks } from '@/lib/custom-sections'
@@ -31,7 +34,10 @@ const CARD_DEFS = {
 
 export default function LandingPage() {
   const c = useCmsContent('home', HOME_DEFAULTS)
-  const s = useCmsContent('settings', { contact_email: 'happyhumans.coaching@gmail.com', site_name: 'Happy Humans' })
+  // Email de contact : réglage global du CMS (⚙️ Paramètres → Général), pas un texte de page
+  const settings = useSiteSettings()
+  const contactEmail = settings.contact_email || DEFAULT_CONTACT_EMAIL
+  const { eventUrl } = useCalendly()
   const [bookingOpen, setBookingOpen] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [sent, setSent] = useState(false)
@@ -112,7 +118,7 @@ export default function LandingPage() {
         <div className="mx-auto max-w-5xl">
           <div className="mb-12 text-center">
             <p className="mb-2 text-xs font-bold uppercase tracking-[0.22em] text-amber-800">{c.get('services_badge')}</p>
-            <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.services_title || 'Un accompagnement pour deux contextes'}</h2>
+            <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.services_title}</h2>
           </div>
           <div className="grid gap-6 md:grid-cols-2">
             <div className="rounded-2xl bg-white p-8 shadow-sm">
@@ -172,7 +178,7 @@ export default function LandingPage() {
             
           {/* Calendly CTA Card */}
           <a
-            href="https://calendly.com/happyhumans-coaching/seance-decouverte-coaching"
+            href={eventUrl('coaching')}
             target="_blank"
             rel="noopener noreferrer"
             className="group relative mx-auto flex max-w-sm flex-col items-center rounded-2xl bg-gradient-to-br from-[#2d5f54] via-[#2f6b61] to-[#3d7a72] p-8 text-center shadow-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:shadow-[#2d5f54]/20"
@@ -266,9 +272,9 @@ export default function LandingPage() {
               <button type="submit" disabled={sending} className="w-full rounded-full bg-[#2d5f54] py-3.5 text-sm font-semibold text-white hover:bg-[#1e3a34] disabled:opacity-60 transition">
                 {sending ? c.form_sending : c.form_submit}
               </button>
-              {s.contact_email && (
+              {contactEmail && (
                 <p className="text-center text-xs text-stone-400">
-                  {c.contact_email_label} <a href={`mailto:${s.contact_email}`} className="text-[#2d5f54] hover:underline">{s.contact_email}</a>
+                  {c.contact_email_label} <a href={`mailto:${contactEmail}`} className="text-[#2d5f54] hover:underline">{contactEmail}</a>
                 </p>
               )}
             </form>
@@ -319,7 +325,7 @@ export default function LandingPage() {
               <h2 className="text-xl font-semibold text-stone-900 mb-2">{c.get('booking_modal_title')}</h2>
               <p className="text-sm text-stone-500 mt-1 mb-6">{c.get('booking_modal_subtitle')}</p>
               <a
-                href="https://calendly.com/happyhumans-coaching/seance-decouverte-coaching"
+                href={eventUrl('coaching')}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full bg-[#2d5f54] px-8 py-3.5 text-sm font-semibold text-white shadow hover:bg-[#1e3a34] transition"

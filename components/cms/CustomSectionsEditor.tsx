@@ -1,0 +1,132 @@
+'use client'
+
+import React from 'react'
+import {
+  BLOCK_TEMPLATES, blankBlock, moveBlock, parseBlocks, removeBlock,
+  serializeBlocks, updateBlock,
+  type CustomBlock, type CustomBlockType,
+} from '@/lib/custom-sections'
+
+/**
+ * Éditeur de blocs personnalisés (« ajouter des sections ») d'une page.
+ * Partagé par l'admin des pages (clé `custom_sections`) et par l'admin des
+ * pages libres (blocs d'une page entière).
+ */
+const lbl: React.CSSProperties = {
+  display: 'block', fontWeight: 600, fontSize: '.85rem', color: '#555', marginBottom: '.35rem',
+}
+const inp: React.CSSProperties = {
+  width: '100%', padding: '.65rem .9rem',
+  border: '1.5px solid #e0dbd5', borderRadius: '.5rem',
+  fontSize: '.9rem', outline: 'none', background: '#faf9f7', color: '#1a1a1a',
+}
+
+export default function CustomSectionsEditor({ value, onChange, hint }: { value: string; onChange: (v: string) => void; hint?: string }) {
+  const blocks = parseBlocks(value);
+  const apply = (next: CustomBlock[]) => onChange(serializeBlocks(next));
+  const set = (id: string, patch: Partial<CustomBlock>) => apply(updateBlock(blocks, id, patch));
+  const smallBtn: React.CSSProperties = { width: 28, height: 28, borderRadius: '.4rem', border: '1px solid #d6d3d1', background: 'white', color: '#44403c', fontSize: '.8rem', cursor: 'pointer' };
+  const T = (label: string, val: string | undefined, onV: (v: string) => void, placeholder = '') => (
+    <div style={{ marginBottom: '.5rem' }}>
+      <label style={{ ...lbl, fontSize: '.78rem' }}>{label}</label>
+      <input value={val ?? ''} onChange={e => onV(e.target.value)} placeholder={placeholder} style={{ ...inp, padding: '.5rem .7rem', fontSize: '.85rem' }} />
+    </div>
+  );
+  const TA = (label: string, val: string | undefined, onV: (v: string) => void) => (
+    <div style={{ marginBottom: '.5rem' }}>
+      <label style={{ ...lbl, fontSize: '.78rem' }}>{label}</label>
+      <textarea value={val ?? ''} onChange={e => onV(e.target.value)} style={{ ...inp, padding: '.5rem .7rem', fontSize: '.85rem', height: 80, resize: 'vertical' }} />
+    </div>
+  );
+  return (
+    <div>
+      <p style={{ fontSize: '.8rem', color: '#7a7a7a', margin: '0 0 .75rem', lineHeight: 1.5 }}>
+        {hint ?? `Ajoutez des sections (titre+texte+image, texte, image, appel à l'action, citation), déplacez-les avec ▲ ▼.
+        Elles s'affichent juste avant l'appel à l'action final. Enregistrez le brouillon puis publiez.`}
+      </p>
+      {blocks.length === 0 && <p style={{ fontSize: '.82rem', color: '#a8a29e', margin: '0 0 .75rem' }}>Aucun bloc pour le moment.</p>}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '.6rem', marginBottom: '.9rem' }}>
+        {blocks.map((b, i) => {
+          const tpl = BLOCK_TEMPLATES.find(t => t.type === b.type);
+          return (
+            <div key={b.id} style={{ border: '1.5px solid #ece8e2', borderRadius: '.6rem', padding: '.7rem .8rem', background: 'white' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', marginBottom: '.6rem' }}>
+                <span style={{ fontSize: '.75rem', fontWeight: 700, color: '#a8a29e' }}>{i + 1}</span>
+                <span style={{ flex: 1, fontSize: '.85rem', fontWeight: 600 }}>
+                  {tpl ? `${tpl.emoji} ${tpl.label}` : b.type}
+                  {'badge' in b && b.badge ? ` — ${b.badge}` : ''}
+                  {'title' in b && b.title ? ` — ${(b.title as string).slice(0, 40)}` : ''}
+                </span>
+                <button type="button" aria-label="Monter" onClick={() => apply(moveBlock(blocks, b.id, -1))} style={smallBtn}>▲</button>
+                <button type="button" aria-label="Descendre" onClick={() => apply(moveBlock(blocks, b.id, 1))} style={smallBtn}>▼</button>
+                <button type="button" aria-label="Supprimer" onClick={() => { if (confirm('Supprimer ce bloc ?')) apply(removeBlock(blocks, b.id)); }} style={{ ...smallBtn, color: '#dc2626' }}>✕</button>
+              </div>
+              {b.type === 'split' && (
+                <>
+                  {T('Badge (petit sur-titre)', b.badge, v => set(b.id, { badge: v }))}
+                  {T('Titre', b.title, v => set(b.id, { title: v }))}
+                  {TA('Texte', b.text, v => set(b.id, { text: v }))}
+                  {T("Image (URL — via la médiathèque ou collée)", b.image, v => set(b.id, { image: v }), 'https://…')}
+                  {T("Texte alternatif de l'image", b.imageAlt, v => set(b.id, { imageAlt: v }))}
+                  {T('Bouton (libellé, vide = sans bouton)', b.ctaLabel, v => set(b.id, { ctaLabel: v }))}
+                  {T('Bouton (lien)', b.ctaHref, v => set(b.id, { ctaHref: v }), '/contact')}
+                  <div style={{ marginBottom: '.5rem' }}>
+                    <label style={{ ...lbl, fontSize: '.78rem' }}>Disposition texte / image</label>
+                    <select value={b.layout} onChange={e => set(b.id, { layout: e.target.value as 'image-right' | 'image-left' })} style={{ ...inp, padding: '.5rem .7rem', fontSize: '.85rem' }}>
+                      <option value="image-right">Texte à gauche, image à droite</option>
+                      <option value="image-left">Image à gauche, texte à droite</option>
+                    </select>
+                  </div>
+                </>
+              )}
+              {b.type === 'texte' && (
+                <>
+                  {T('Badge (petit sur-titre)', b.badge, v => set(b.id, { badge: v }))}
+                  {T('Titre (vide = sans titre)', b.title, v => set(b.id, { title: v }))}
+                  {TA('Texte', b.text, v => set(b.id, { text: v }))}
+                  <div style={{ marginBottom: '.5rem' }}>
+                    <label style={{ ...lbl, fontSize: '.78rem' }}>Alignement</label>
+                    <select value={b.align} onChange={e => set(b.id, { align: e.target.value as 'left' | 'center' })} style={{ ...inp, padding: '.5rem .7rem', fontSize: '.85rem' }}>
+                      <option value="left">À gauche</option>
+                      <option value="center">Centré</option>
+                    </select>
+                  </div>
+                </>
+              )}
+              {b.type === 'image' && (
+                <>
+                  {T("Image (URL — via la médiathèque ou collée)", b.image, v => set(b.id, { image: v }), 'https://…')}
+                  {T("Texte alternatif", b.alt, v => set(b.id, { alt: v }))}
+                  {T('Légende (vide = sans légende)', b.caption, v => set(b.id, { caption: v }))}
+                </>
+              )}
+              {b.type === 'cta' && (
+                <>
+                  {T('Titre', b.title, v => set(b.id, { title: v }))}
+                  {TA('Texte (vide = sans texte)', b.text, v => set(b.id, { text: v }))}
+                  {T('Bouton', b.button, v => set(b.id, { button: v }))}
+                  {T('Lien du bouton', b.href, v => set(b.id, { href: v }), '/contact')}
+                </>
+              )}
+              {b.type === 'citation' && (
+                <>
+                  {TA('Citation', b.quote, v => set(b.id, { quote: v }))}
+                  {T('Auteur (vide = anonyme)', b.author, v => set(b.id, { author: v }))}
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
+        {BLOCK_TEMPLATES.map(t => (
+          <button key={t.type} type="button"
+            onClick={() => apply([...blocks, blankBlock(t.type as CustomBlockType)])}
+            style={{ padding: '.45rem .9rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.5rem', cursor: 'pointer', fontSize: '.82rem', fontWeight: 600 }}>
+            + {t.emoji} {t.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}

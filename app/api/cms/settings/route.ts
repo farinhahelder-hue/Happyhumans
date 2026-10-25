@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { requireCmsAuth } from '@/lib/cms-auth';
+import { requireCmsAuth } from '@/lib/cms-auth'
+import { DEFAULT_CONTACT_EMAIL } from '@/lib/site-contact'
+import { CALENDLY_BASE_DEFAULT, CALENDLY_EVENTS_DEFAULT } from '@/lib/calendly-config';
+import { EMAIL_SUBJECT_DEFAULTS, EMAIL_SUBJECT_SETTING } from '@/lib/email-subjects';
 
 function getSupabase() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -41,13 +44,25 @@ const DEFAULT_SETTINGS = [
   { key: 'logo_text_tracking',   label: 'Espacement lettres logo',    group_name: 'branding', type: 'text',     value: 'tight' },
   { key: 'logo_text_line_height',label: 'Hauteur de ligne logo',      group_name: 'branding', type: 'text',     value: 'none' },
   { key: 'logo_text_spacing',    label: 'Letter-spacing logo (em)',   group_name: 'branding', type: 'text',     value: '0' },
-  { key: 'contact_email',    label: 'Email de contact',            group_name: 'general',  type: 'text',     value: '' },
+  { key: 'contact_email',    label: 'Email de contact',            group_name: 'general',  type: 'text',     value: DEFAULT_CONTACT_EMAIL },
+    // Réservation : un seul endroit pour changer le compte Calendly et les rendez-vous proposés
+  { key: 'calendly_base_url', label: 'Compte Calendly (ex : https://calendly.com/mon-compte)', group_name: 'booking', type: 'text', value: CALENDLY_BASE_DEFAULT },
+  { key: 'calendly_event_coaching', label: 'Rendez-vous — Coaching individuel (fin de l’adresse)', group_name: 'booking', type: 'text', value: CALENDLY_EVENTS_DEFAULT.coaching },
+  { key: 'calendly_event_happiness_design', label: 'Rendez-vous — Happiness Design', group_name: 'booking', type: 'text', value: CALENDLY_EVENTS_DEFAULT['happiness-design'] },
+  { key: 'calendly_event_sparring', label: 'Rendez-vous — Sparring Partner', group_name: 'booking', type: 'text', value: CALENDLY_EVENTS_DEFAULT['sparring-partner'] },
+  { key: 'calendly_event_entreprises', label: 'Rendez-vous — Entreprises', group_name: 'booking', type: 'text', value: CALENDLY_EVENTS_DEFAULT.entreprises },
+  { key: 'calendly_event_relations', label: 'Rendez-vous — Relations', group_name: 'booking', type: 'text', value: CALENDLY_EVENTS_DEFAULT.relations },
   { key: 'contact_phone',    label: 'Téléphone',                   group_name: 'general',  type: 'text',     value: '' },
   { key: 'address',          label: 'Adresse / Ville',             group_name: 'general',  type: 'text',     value: '' },
-  { key: 'linkedin_url',     label: 'LinkedIn URL',                group_name: 'social',   type: 'text',     value: '' },
+  { key: 'linkedin_url',     label: 'LinkedIn URL',                group_name: 'social',   type: 'text',     value: 'https://fr.linkedin.com/in/monica-schneider-philo-coaching' },
+  { key: 'personal_site_url', label: 'Site personnel (profil schema.org)', group_name: 'social', type: 'text', value: 'https://monicaschneider.me/' },
   { key: 'instagram_url',    label: 'Instagram URL',               group_name: 'social',   type: 'text',     value: '' },
   { key: 'instagram_handle', label: 'Instagram @handle',           group_name: 'social',   type: 'text',     value: '' },
   { key: 'facebook_url',     label: 'Facebook URL',                group_name: 'social',   type: 'text',     value: '' },
+  // Objets des e-mails automatiques (le corps des messages reste dans lib/send-email.ts)
+  { key: EMAIL_SUBJECT_SETTING.booking_confirmation, label: 'Email — Objet « séance bien reçue » (visiteur)', group_name: 'emails', type: 'text', value: EMAIL_SUBJECT_DEFAULTS.booking_confirmation },
+  { key: EMAIL_SUBJECT_SETTING.contact_confirmation, label: 'Email — Objet « message bien reçu » (visiteur)', group_name: 'emails', type: 'text', value: EMAIL_SUBJECT_DEFAULTS.contact_confirmation },
+  { key: EMAIL_SUBJECT_SETTING.admin_notice, label: 'Email — Objet des notifications à Monica ({name} = nom du visiteur)', group_name: 'emails', type: 'text', value: EMAIL_SUBJECT_DEFAULTS.admin_notice },
   { key: 'seo_title',        label: 'Titre SEO par défaut',        group_name: 'seo',        type: 'text',     value: 'Happy Humans — Monica Schneider · Executive Coach' },
   { key: 'seo_description',  label: 'Description SEO par défaut', group_name: 'seo',        type: 'textarea', value: 'Monica Schneider — Executive Coach certifiée AoEC & EMCC. Coaching individuel, Happiness Design™, Sparring Partner. Paris & international.' },
   { key: 'og_image',         label: 'Image Open Graph (réseaux)', group_name: 'seo',        type: 'image',    value: '' },

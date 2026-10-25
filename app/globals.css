@@ -146,3 +146,10 @@ h1, h2, h3, h4, h5, h6 {
 .hh-duotone {
   filter: url(#hh-duotone);
 }
+
+/* Le fil d'Ariane (components/Breadcrumb.tsx) est rendu juste sous l'en-tête fixe :
+   il occupe déjà la hauteur de dégagement, donc la page n'a plus besoin de sa marge
+   haute de 72 px. Sans fil (accueil, ou fil désactivé dans le CMS), rien ne change. */
+.hh-crumb + main {
+  padding-top: 0;
+}

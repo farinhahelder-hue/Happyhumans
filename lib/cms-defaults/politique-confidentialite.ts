@@ -1,6 +1,7 @@
 // Textes par défaut de la page « politique-confidentialite » — SOURCE UNIQUE.
 // Lus par la page ET par l'admin du CMS (lib/cms-page-defaults.ts) : ne jamais les dupliquer ailleurs.
 // Chaque clé correspond à un champ de PAGES_CONFIG (app/cms-admin/page.tsx).
+import { DEFAULT_CONTACT_EMAIL } from '@/lib/site-contact'
 
 export const POLITIQUE_CONFIDENTIALITE_DEFAULTS: Record<string, string> = {
   // ── Textes câblés automatiquement (étaient en dur dans la page) ──
@@ -9,7 +10,7 @@ export const POLITIQUE_CONFIDENTIALITE_DEFAULTS: Record<string, string> = {
   t_derniere_mise_a_jour: "Dernière mise à jour : juin 2026",
   t_responsable_du_traitement: "Responsable du traitement",
   t_happy_humans_monica_schneider: "Happy Humans — Monica Schneider",
-  t_happyhumans_coaching_gmail_com: "happyhumans.coaching@gmail.com",
+  t_happyhumans_coaching_gmail_com: DEFAULT_CONTACT_EMAIL,
   t_donnees_collectees: "Données collectées",
   t_nous_collectons_uniquement_les: "Nous collectons uniquement les données que vous nous transmettez volontairement :",
   t_nom_et_adresse_email: "Nom et adresse email (formulaire de contact)",
@@ -35,7 +36,7 @@ export const POLITIQUE_CONFIDENTIALITE_DEFAULTS: Record<string, string> = {
   t_la_rectification_de_donnees: "La rectification de données inexactes",
   t_l_effacement_de_vos: "L'effacement de vos données",
   t_la_limitation_ou_l: "La limitation ou l'opposition à certains traitements",
-  t_happyhumans_coaching_gmail_com_2: "happyhumans.coaching@gmail.com",
+  t_happyhumans_coaching_gmail_com_2: DEFAULT_CONTACT_EMAIL,
   t_2026_happy_humans_monica: "© 2026 Happy Humans — Monica Schneider. Tous droits réservés.",
   // ── Référencement (Google, réseaux sociaux) — lu par generateMetadata via lib/page-seo.ts ──
   seo_title: "Politique de confidentialité",
