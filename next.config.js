@@ -40,6 +40,12 @@ const securityHeaders = [
 ]
 
 const nextConfig = {
+  // Hôtes autorisés à charger les ressources du serveur de développement (aperçu cloud, tunnel).
+  // Fourni par l'environnement de dev : aucun nom d'hôte propre à un poste n'est écrit ici.
+  allowedDevOrigins: (process.env.NEXT_ALLOWED_DEV_ORIGINS || '')
+    .split(',')
+    .map(h => h.trim())
+    .filter(Boolean),
   typescript: {
     ignoreBuildErrors: true,
   },

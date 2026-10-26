@@ -50,6 +50,36 @@ Même éditeur dans l'administration : onglet **🧭 Menu**. Le bas de page (lis
 - **Ou page par page** : **🗂️ Pages** → la page → le champ (la barre de recherche en haut retrouve un champ par un mot).
 - Dans les deux cas : **Enregistrer le brouillon**, relire, puis **Publier**. Un brouillon n'est visible que de vous (bouton **👁 Voir le brouillon**).
 
+## Chercher un texte dans tout le site (onglet 🔎 Contenu)
+**🔎 Contenu** rassemble tous les textes du site sur un seul écran, sans avoir à deviner dans quelle page ils se trouvent.
+
+1. Ouvrez l'onglet **🔎 Contenu**.
+2. Tapez un mot dans la barre de recherche : « tarif », « équipe », « témoignage », le début d'une phrase… Les accents et les majuscules n'ont pas d'importance (« equipe » trouve « équipe »). La recherche regarde les textes, les noms de champs et les noms de pages.
+3. Cliquez **Ouvrir** sur le résultat : l'administration bascule sur la bonne page, ouvre le bon bloc et **surligne le champ** — il ne reste plus qu'à le modifier, l'enregistrer en brouillon puis publier.
+
+En haut, quatre compteurs vous disent où vous en êtes : nombre de textes éditables, textes **personnalisés**, modifications **en attente de publication**, pages avec un brouillon.
+
+Les boutons **Tout**, **● Personnalisés** et **📝 En attente de publication** filtrent la liste :
+- **Personnalisés** : uniquement les textes que vous avez réécrits (le reste du site est resté d'origine).
+- **En attente** : uniquement ce qui est en brouillon, donc pas encore visible par les visiteurs. La même page se publie directement avec **🚀 Publier** à droite du nom de la page.
+
+Sur un texte personnalisé, **↺ Original** retire votre version et fait revenir le texte d'origine du site (une confirmation est demandée). C'est immédiat : le texte d'origine est de nouveau en ligne.
+
+> La recherche descend aussi **dans les cartes** (programmes, témoignages, domaines, formules, FAQ) : « yoga » trouve la question de la FAQ qui en parle et affiche « 📋 Question 5 — … ». **Ouvrir** vous amène à la liste, où la carte se modifie.
+
+### Remplacer un mot dans tout le site
+Pour changer un mot partout à la fois (« Organisations » → « Entreprises », « coach » → « accompagnante »…) :
+1. Onglet **🔎 Contenu**, tapez le mot à remplacer (ex. `organisations`).
+2. Cliquez **🔁 Remplacer ce mot dans plusieurs textes**.
+3. Saisissez le nouveau mot. Un aperçu s'affiche : combien de textes, sur combien de pages, et pour chacun l'ancienne phrase barrée suivie de la nouvelle.
+4. Cliquez **Remplacer dans N textes (brouillon)**. Vérifiez l'aperçu d'une page avec **👁 Voir le brouillon**, puis publique page par page (**🚀 Publier** à droite du nom de la page).
+
+Bon à savoir :
+- Rien n'est en ligne tant que vous n'avez pas publié : c'est un brouillon comme un autre.
+- Les accents et les majuscules n'ont pas d'importance ; la majuscule initiale est conservée (« Organisations » devient bien « Entreprises »).
+- Les **cartes** (programmes, témoignages, formules, FAQ) sont incluses, texte par texte : l'aperçu montre chaque carte touchée (« Programme 2 — Description »). Les **images**, les **liens de bouton** et les choix fermés (mise en avant oui/non, icône) ne sont jamais modifiés.
+- Si l'administration signale « des modifications non enregistrées », retournez dans 🗂️ Pages et enregistrez le brouillon de cette page, puis recommencez le remplacement.
+
 ## 3 bis. Modifier les textes de l'espace client (connexion, inscription, tableau de bord)
 Onglet **🔐 Espace client**.
 - **Connexion** (`/auth/login`) : titre, sous-titre, libellés des champs, texte du bouton, phrase « Pas encore de compte ? ».
@@ -98,6 +128,32 @@ Cliquez **💾 Sauvegarder** en bas de la page. Délai d'affichage : ~30 seconde
 
 ## 4. Réorganiser ou masquer des sections d'une page
 **🗂️ Pages** → la page → bloc **Structure** : flèches ↑ ↓ pour changer l'ordre, bouton **Masquer / Afficher** pour retirer ou remettre une section. Puis enregistrer et publier.
+
+## 4 bis. Ajouter, retirer ou déplacer des cartes (programmes, témoignages, domaines, formules, FAQ)
+**🗂️ Pages** → la page → ouvrez le bloc de la liste :
+
+| Page | Bloc dans l'administration |
+|---|---|
+| Coaching | **Programmes** (cartes de tarifs) et **Témoignages** |
+| Entreprises | **Domaines** (cartes « Domaines d'intervention ») et **Tarifs** (les 3 formules) |
+| Sparring Partner | **Cas d'usage** |
+| FAQ | **Questions** |
+
+Pour chaque carte :
+- **▲ ▼** la déplace (l'ordre du site suit celui de l'administration) ;
+- **⧉** la duplique (pratique pour une variante : vous modifiez ensuite les textes) ;
+- **✕** la supprime ;
+- les champs en dessous sont ses textes (nom, prix, description…).
+
+**Ajouter une carte** : bouton **＋ Ajouter un programme** (ou une question, un témoignage…) en bas du bloc, puis remplissez-la. Une carte encore vide n'apparaît pas sur le site : vous pouvez l'enregistrer en brouillon et la compléter plus tard.
+
+Deux réglages utiles sur les cartes de tarifs : **Lien du bouton** (`calendly` = votre agenda de réservation, sinon `/booking`, `/contact`, `/happiness-design` ou une adresse complète) et **Mise en avant** (Oui = carte verte).
+
+**Tout remettre comme avant** : **↺ Rétablir la liste d'origine**. Les cartes d'origine reviennent (les textes que vous aviez saisis dans l'ancienne version sont conservés tant que vous n'avez pas enregistré de liste).
+
+Terminez par **Enregistrer le brouillon**, relisez avec **👁 Voir le brouillon**, puis **Publier**.
+
+> Supprimer toutes les cartes d'une liste masque cette partie de la page : c'est normal, le site n'invente rien.
 
 ## 5. Si quelque chose ne marche pas
 | Ce que vous voyez | Que faire |

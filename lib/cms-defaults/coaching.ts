@@ -88,4 +88,7 @@ export const COACHING_DEFAULTS: Record<string, string> = { ...DEFAULTS, ...DEFAU
   // ── Disposition des sections (admin → Structure) : JSON {"order":[…],"hidden":[…]} ; vide = ordre d'origine ──
   sections_layout: '',
   custom_sections: '',
+  // ── Listes modifiables (admin → Coaching) : JSON [{…}] ; vide = anciens champs numérotés ──
+  coaching_programs: '',
+  coaching_testimonials: '',
 }

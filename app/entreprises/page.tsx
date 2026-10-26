@@ -6,6 +6,7 @@ import { useCmsContent } from '@/hooks/useCmsContent'
 import { ENTREPRISES_DEFAULTS } from '@/lib/cms-defaults/entreprises'
 import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
 import { customSectionDefs, customSectionId, isCustomSectionId, parseBlocks } from '@/lib/custom-sections'
+import { readList } from '@/lib/cms-lists'
 import { CustomBlockView } from '@/components/CustomSections'
 import { Fragment, type ReactNode } from 'react'
 import EditableImage from '@/components/EditableImage';
@@ -13,41 +14,39 @@ import EditableImage from '@/components/EditableImage';
 // Champ « liste » du CMS : un élément par ligne
 const lines = (s: string) => s.split('\n').map(l => l.trim()).filter(Boolean)
 
+// Icônes des cartes « Domaines d'intervention » : choisies par carte dans le CMS.
+const DOMAIN_ICONS: Record<string, ReactNode> = {
+  people: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+  globe: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
+  chat: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
+  growth: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
+  users: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+  smile: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>,
+}
+
 export default function EntreprisesPage() {
   const c = useCmsContent('entreprises', ENTREPRISES_DEFAULTS)
 
-  const domains = [
-    {
-      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
-      title: c.domain_1_title,
-      text: c.domain_1_desc,
-    },
-    {
-      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
-      title: c.domain_2_title,
-      text: c.domain_2_desc,
-    },
-    {
-      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
-      title: c.domain_3_title,
-      text: c.domain_3_desc,
-    },
-    {
-      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
-      title: c.domain_4_title,
-      text: c.domain_4_desc,
-    },
-    {
-      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
-      title: c.domain_5_title,
-      text: c.domain_5_desc,
-    },
-    {
-      icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5f54" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>,
-      title: c.domain_6_title,
-      text: c.domain_6_desc,
-    },
-  ]
+  // Cartes modifiables dans le CMS (⚙️ Pages → Entreprises) : ajouter, retirer ou réordonner.
+  const domains = readList(c.content, 'entreprises_domains')
+    .filter(d => (d.title ?? '').trim() || (d.desc ?? '').trim())
+    .map(d => ({
+      icon: DOMAIN_ICONS[d.icon] ?? DOMAIN_ICONS.people,
+      title: d.title,
+      text: d.desc,
+    }))
+
+  const pricingCards = readList(c.content, 'entreprises_pricing')
+    .filter(card => (card.title ?? '').trim())
+    .map(card => ({
+      label: card.title,
+      price: card.price,
+      unit: card.unit,
+      desc: card.desc,
+      items: lines(card.items ?? ''),
+      cta: card.cta,
+      highlight: card.highlight === 'oui',
+    }))
 
   // ── Sections de la page : ordre et affichage modifiables dans le CMS (admin → page → Structure) ──
   const sections: Record<string, ReactNode> = {
@@ -189,17 +188,8 @@ export default function EntreprisesPage() {
             <p className="mt-3 text-sm text-stone-500 max-w-xl mx-auto">{c.pricing_subtitle}</p>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
-            {[1, 2, 3].map(n => ({
-              n,
-              label: c.content[`pricing_card_${n}_title`],
-              price: c.content[`pricing_card_${n}_price`],
-              unit: c.content[`pricing_card_${n}_unit`],
-              desc: c.content[`pricing_card_${n}_desc`],
-              items: lines(c.content[`pricing_card_${n}_items`] ?? ''),
-              cta: c.content[`pricing_card_${n}_cta`],
-              highlight: n === 2,
-            })).map(({ n, label, price, unit, desc, items, cta, highlight }) => (
-              <div key={n} className={`rounded-2xl p-7 flex flex-col ${highlight ? 'bg-[#2f6b61] text-white shadow-lg ring-2 ring-[#2f6b61]' : 'bg-[#f7f4ef] text-stone-900'}`}>
+            {pricingCards.map(({ label, price, unit, desc, items, cta, highlight }, i) => (
+              <div key={`${label}-${i}`} className={`rounded-2xl p-7 flex flex-col ${highlight ? 'bg-[#2f6b61] text-white shadow-lg ring-2 ring-[#2f6b61]' : 'bg-[#f7f4ef] text-stone-900'}`}>
                 <p className={`text-xs font-bold uppercase tracking-[0.2em] mb-3 ${highlight ? 'text-emerald-200' : 'text-amber-800'}`}>{label}</p>
                 <div className="mb-1">
                   <span className={`text-2xl font-serif font-semibold ${highlight ? 'text-white' : 'text-stone-900'}`}>{price}</span>

@@ -4,18 +4,18 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 import { useCmsContent } from '@/hooks/useCmsContent'
-import { FAQ_DEFAULTS, FAQ_ITEMS, FAQ_SLOTS } from '@/lib/cms-defaults/faq'
+import { FAQ_DEFAULTS, FAQ_ITEMS } from '@/lib/cms-defaults/faq'
+import { readList } from '@/lib/cms-lists'
 import EditableImage from '@/components/EditableImage';
 
 export default function FaqPage() {
   const [open, setOpen] = useState<number | null>(null)
   const c = useCmsContent('faq', FAQ_DEFAULTS)
 
-  // Questions saisies dans le CMS (emplacements 1..15) ; une question sans réponse (ou l'inverse) est masquée.
-  // Tant que rien n'est enregistré, on affiche les questions d'origine (FAQ_ITEMS).
-  const slot = (src: Record<string, string>, i: number) => ({ q: (src[`faq_${i}_q`] || '').trim(), a: (src[`faq_${i}_a`] || '').trim() })
-  const fromCms = Array.from({ length: FAQ_SLOTS }, (_, i) => slot(c, i + 1)).filter(f => f.q && f.a)
-  const faqs = fromCms.length ? fromCms : Array.from({ length: FAQ_SLOTS }, (_, i) => slot(FAQ_ITEMS, i + 1)).filter(f => f.q && f.a)
+  // Questions saisies dans le CMS (liste modifiable : ajouter, retirer, réordonner).
+  // Tant qu'aucune liste n'est enregistrée, on affiche les questions d'origine (FAQ_ITEMS), et les
+  // anciens emplacements numérotés (faq_1_q…) restent lus s'ils contiennent déjà des textes.
+  const faqs = readList(c.content, 'faq_questions', FAQ_ITEMS).filter(f => (f.q ?? '').trim() && (f.a ?? '').trim())
 
   return (
     <>

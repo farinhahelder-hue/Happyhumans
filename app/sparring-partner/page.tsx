@@ -6,6 +6,7 @@ import { useCmsContent } from '@/hooks/useCmsContent'
 import { SPARRING_PARTNER_DEFAULTS } from '@/lib/cms-defaults/sparring-partner'
 import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
 import { customSectionDefs, customSectionId, isCustomSectionId, parseBlocks } from '@/lib/custom-sections'
+import { readList } from '@/lib/cms-lists'
 import { CustomBlockView } from '@/components/CustomSections'
 import { Fragment, type ReactNode } from 'react'
 import EditableImage from '@/components/EditableImage';
@@ -13,13 +14,10 @@ import EditableImage from '@/components/EditableImage';
 export default function SparringPartnerPage() {
   const c = useCmsContent('sparring-partner', SPARRING_PARTNER_DEFAULTS)
 
-  const useCases = [
-    { title: c.use_case_1_title, desc: c.use_case_1_desc },
-    { title: c.use_case_2_title, desc: c.use_case_2_desc },
-    { title: c.use_case_3_title, desc: c.use_case_3_desc },
-    { title: c.use_case_4_title, desc: c.use_case_4_desc },
-    { title: c.use_case_5_title, desc: c.use_case_5_desc },
-  ]
+  // Situations : liste modifiable dans le CMS (⚙️ Pages → Sparring Partner).
+  const useCases = readList(c.content, 'sparring_use_cases')
+    .filter(u => (u.title ?? '').trim() || (u.desc ?? '').trim())
+    .map(u => ({ title: u.title ?? '', desc: u.desc ?? '' }))
 
   const experienceItems = c.experience_items.split('\n').filter(Boolean)
 
@@ -48,8 +46,8 @@ export default function SparringPartnerPage() {
             <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('section_title')}</h2>
           </div>
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {useCases.map(({ title, desc }) => (
-              <div key={title} className="bg-white rounded-2xl p-6 shadow-sm">
+            {useCases.map(({ title, desc }, i) => (
+              <div key={`${title}-${i}`} className="bg-white rounded-2xl p-6 shadow-sm">
                 <h3 className="text-sm font-semibold text-stone-900 mb-2">{title}</h3>
                 <p className="text-xs text-stone-500 leading-relaxed">{desc}</p>
               </div>

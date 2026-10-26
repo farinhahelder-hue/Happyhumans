@@ -17,6 +17,8 @@ export const FAQ_DEFAULTS: Record<string, string> = {
   seo_title: "Questions fréquentes — Happy Humans",
   seo_description: "Tout ce que vous vous demandez sur le coaching, le philo-coaching et la méthode Happiness Design de Monica Schneider. Séance découverte, tarifs, déroulé.",
   seo_image: '',
+  // ── Liste modifiable (admin → FAQ) : JSON [{ q, a }] ; vide = FAQ_ITEMS puis anciens champs numérotés ──
+  faq_questions: '',
 }
 
 // Questions de la FAQ : 15 emplacements numérotés (les 8 premiers sont remplis).

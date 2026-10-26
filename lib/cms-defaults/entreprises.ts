@@ -94,4 +94,7 @@ export const ENTREPRISES_DEFAULTS: Record<string, string> = {
   // ── Disposition des sections (admin → Structure) : JSON {"order":[…],"hidden":[…]} ; vide = ordre d'origine ──
   sections_layout: '',
   custom_sections: '',
+  // ── Listes modifiables (admin → Entreprises) : JSON [{…}] ; vide = anciens champs numérotés ──
+  entreprises_domains: '',
+  entreprises_pricing: '',
 };

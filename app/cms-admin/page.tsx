@@ -13,8 +13,10 @@ import CarouselEditor from '@/components/admin/CarouselEditor';
 import CarouselGenerator from '@/components/admin/CarouselGenerator';
 import BlogGenerator from '@/components/admin/BlogGenerator';
 import { PAGE_DEFAULTS } from '@/lib/cms-page-defaults';
-import { basePage, isDraftPage, planDraftSave } from '@/lib/cms-drafts';
+import { basePage, draftPage, isDraftPage, planDraftSave } from '@/lib/cms-drafts';
+import { buildContentIndex, fieldAnchor, labelParts, replacementStats, type ContentField, type ReplacementPlanItem } from '@/lib/cms-search';
 import { PAGE_SECTIONS, parseLayout, fullOrder, serializeLayout, moveSection, toggleSection, type SectionDef, type SectionsLayout } from '@/lib/cms-sections';
+import { LIST_DEFS, parseItems, readList, serializeList, blankItem, moveListItem, setListItemField, duplicateListItem, removeListItem, type ListItem } from '@/lib/cms-lists';
 import { THEMES } from '@/components/DynamicTheme';
 import { FONT_CHOICES } from '@/lib/themes';
 import { customSectionDefs, parseBlocks } from '@/lib/custom-sections';
@@ -22,6 +24,7 @@ import { THEME_PACKS, DEFAULT_PACK_ID } from '@/lib/theme-packs';
 import NavigationEditor from '@/components/cms/NavigationEditor';
 import CustomSectionsEditor from '@/components/cms/CustomSectionsEditor';
 import CustomPagesManager from '@/components/cms/CustomPagesManager';
+import ContentOverview from '@/components/cms/ContentOverview';
 
 // Numéro du dernier message affiché : un message récent n'est pas effacé par le minuteur d'un message plus ancien
 let toastSeq = 0;
@@ -63,6 +66,12 @@ type ContactMessage = {
 const fmt = (d: string) => d ? new Date(d).toLocaleDateString('fr-FR') : '—';
 const slug = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+/** Contenu d'une page tel qu'il est édité dans l'admin : « page__clé » → « clé ». */
+const pageContentOf = (edited: Record<string, string>, page: string): Record<string, string> =>
+  Object.fromEntries(Object.entries(edited)
+    .filter(([k]) => k.startsWith(`${page}__`))
+    .map(([k, v]) => [k.slice(page.length + 2), v]));
 
 function normalizeArticleDraft(article: Partial<Article> | null | undefined) {
   return {
@@ -144,9 +153,79 @@ function SectionsEditor({ defs, value, onChange }: { defs: SectionDef[]; value: 
   );
 }
 
+// ── Éditeur de liste : ajouter, retirer et réordonner les éléments (FAQ, programmes, témoignages…) ──
+// La logique pure (lecture des anciens emplacements numérotés, sérialisation) vit dans lib/cms-lists.ts.
+function ListEditor({ defKey, initialItems, value, onChange }: { defKey: string; initialItems: ListItem[]; value: string; onChange: (v: string) => void }) {
+  const def = LIST_DEFS[defKey];
+  if (!def) return <p style={{ color: '#b91c1c', fontSize: '.85rem' }}>Liste inconnue : {defKey}</p>;
+  const items = parseItems(value) ?? initialItems;
+  const apply = (next: ListItem[]) => onChange(serializeList(next));
+  const arrow: React.CSSProperties = { width: 30, height: 30, borderRadius: '.4rem', border: '1px solid #d6d3d1', background: 'white', color: '#44403c', fontSize: '.85rem', cursor: 'pointer' };
+  return (
+    <div>
+      <p style={{ fontSize: '.8rem', color: '#7a7a7a', margin: '0 0 .75rem', lineHeight: 1.5 }}>
+        {def.label} — {items.length} élément{items.length > 1 ? 's' : ''}. Ajoutez, retirez ou déplacez les lignes : le site suit cet ordre.
+        Enregistrez le brouillon, vérifiez l’aperçu, puis publiez.
+      </p>
+      {items.length === 0 && (
+        <p style={{ fontSize: '.85rem', color: '#a8a29e', background: '#faf8f5', border: '1px dashed #e8e3dc', borderRadius: '.5rem', padding: '.9rem', margin: '0 0 .75rem' }}>
+          Aucun élément : cette partie du site n’affichera rien tant que vous n’en ajoutez pas.
+        </p>
+      )}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
+        {items.map((item, i) => (
+          <div key={i} style={{ border: '1.5px solid #ece8e2', borderRadius: '.75rem', background: 'white', padding: '.9rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '.4rem', marginBottom: '.7rem' }}>
+              <strong style={{ flex: 1, fontSize: '.85rem', color: '#2d5f54' }}>{def.itemLabel.charAt(0).toUpperCase() + def.itemLabel.slice(1)} {i + 1}</strong>
+              <button type="button" aria-label={`Monter « ${def.itemLabel} ${i + 1} »`} disabled={i === 0} onClick={() => apply(moveListItem(items, i, -1))} style={{ ...arrow, opacity: i === 0 ? .3 : 1, cursor: i === 0 ? 'default' : 'pointer' }}>▲</button>
+              <button type="button" aria-label={`Descendre « ${def.itemLabel} ${i + 1} »`} disabled={i === items.length - 1} onClick={() => apply(moveListItem(items, i, 1))} style={{ ...arrow, opacity: i === items.length - 1 ? .3 : 1, cursor: i === items.length - 1 ? 'default' : 'pointer' }}>▼</button>
+              <button type="button" aria-label={`Dupliquer « ${def.itemLabel} ${i + 1} »`} title="Dupliquer" onClick={() => apply(duplicateListItem(items, i))} style={arrow}>📋</button>
+              <button type="button" aria-label={`Supprimer « ${def.itemLabel} ${i + 1} »`} title="Supprimer" onClick={() => apply(removeListItem(items, i))} style={{ ...arrow, color: '#b91c1c', borderColor: '#fecaca' }}>✕</button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '.6rem' }}>
+              {def.fields.map(f => {
+                const id = `list-${defKey}-${i}-${f.key}`;
+                const common = { id, value: item[f.key] ?? '', 'aria-label': `${def.itemLabel} ${i + 1} — ${f.label}` };
+                return (
+                  <div key={f.key}>
+                    <label htmlFor={id} style={lbl}>{f.label}</label>
+                    {f.type === 'select' ? (
+                      <select {...common} onChange={e => apply(setListItemField(items, i, f.key, e.target.value))} style={inp}>
+                        {(f.options ?? []).map((opt, oi) => <option key={opt} value={opt}>{f.optionLabels?.[oi] ?? opt}</option>)}
+                      </select>
+                    ) : f.type === 'textarea' ? (
+                      <textarea {...common} onChange={e => apply(setListItemField(items, i, f.key, e.target.value))}
+                        rows={f.lines ? 4 : 3} style={{ ...inp, height: 'auto', minHeight: f.lines ? 84 : 68, resize: 'vertical', lineHeight: 1.5 }} />
+                    ) : (
+                      <input {...common} onChange={e => apply(setListItemField(items, i, f.key, e.target.value))} style={inp} />
+                    )}
+                    {f.hint && <p style={{ fontSize: '.75rem', color: '#a8a29e', margin: '.25rem 0 0' }}>{f.hint}</p>}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap', alignItems: 'center', marginTop: '.75rem' }}>
+        <button type="button" onClick={() => apply([...items, blankItem(def)])}
+          style={{ padding: '.5rem 1rem', background: '#2d5f54', color: 'white', border: 'none', borderRadius: '.45rem', cursor: 'pointer', fontSize: '.85rem', fontWeight: 600 }}>
+          + {def.addLabel}
+        </button>
+        {value.trim() !== '' && (
+          <button type="button" onClick={() => onChange('')}
+            style={{ background: 'none', border: 'none', color: '#01696f', cursor: 'pointer', fontSize: '.82rem', fontWeight: 600 }}>
+            ↺ Rétablir la liste d’origine
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Champs modifiables de chaque page ───────────────────────
 // L'éditeur de blocs personnalisés vit dans components/cms/CustomSectionsEditor.tsx.
-const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'richtext' | 'select' | 'sections' | 'custom-sections'; options?: string[]; optionLabels?: string[] }[] }> = {
+const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { key: string; label: string; type: 'text' | 'textarea' | 'image' | 'richtext' | 'select' | 'sections' | 'custom-sections' | 'list'; options?: string[]; optionLabels?: string[] }[] }> = {
   // ── Ordre du panneau gauche ──────────────────────────────────
   // 1. Accueil
   'home': {
@@ -293,50 +372,18 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'coaching_b2b_cta_link', label: 'Coaching B2B — CTA lien',    type: 'text' },
       { key: 'programs_badge',      label: 'Tarifs — Badge',               type: 'text' },
       { key: 'programs_title',      label: 'Tarifs — Titre',               type: 'text' },
-      { key: 'program_1_label',     label: 'Programme 1 — Label',          type: 'text' },
-      { key: 'program_1_desc',      label: 'Programme 1 — Description',   type: 'textarea' },
-      { key: 'program_1_price',     label: 'Programme 1 — Prix',           type: 'text' },
-      { key: 'program_1_unit',      label: 'Programme 1 — Unité',          type: 'text' },
-      { key: 'program_1_cta',       label: 'Programme 1 — CTA',            type: 'text' },
-      { key: 'program_2_label',     label: 'Programme 2 — Label',          type: 'text' },
-      { key: 'program_2_desc',      label: 'Programme 2 — Description',   type: 'textarea' },
-      { key: 'program_2_price',     label: 'Programme 2 — Prix',           type: 'text' },
-      { key: 'program_2_unit',     label: 'Programme 2 — Unité',          type: 'text' },
-      { key: 'program_2_cta',       label: 'Programme 2 — CTA',            type: 'text' },
-      { key: 'program_3_label',     label: 'Programme 3 — Label',          type: 'text' },
-      { key: 'program_3_desc',      label: 'Programme 3 — Description',   type: 'textarea' },
-      { key: 'program_3_price',     label: 'Programme 3 — Prix',           type: 'text' },
-      { key: 'program_3_format',    label: 'Programme 3 — Format',        type: 'text' },
-      { key: 'program_3_cta',       label: 'Programme 3 — CTA',            type: 'text' },
+      { key: 'coaching_programs', label: 'Programmes — Cartes (ajouter, retirer, réordonner)', type: 'list' },
       { key: 'tunnel_title',              label: 'Tunnel rapide — Titre',       type: 'text' },
       { key: 'tunnel_cta_primary',       label: 'Tunnel rapide — Bouton principal', type: 'text' },
       { key: 'tunnel_cta_secondary',     label: 'Tunnel rapide — Bouton secondaire',type: 'text' },
       { key: 'tunnel_reassurance',      label: 'Tunnel rapide — Réassurance', type: 'text' },
-      { key: 'testimonial_1_quote',     label: 'Témoignage 1 — Texte',        type: 'textarea' },
-      { key: 'testimonial_1_name',      label: 'Témoignage 1 — Auteur',      type: 'text' },
-      { key: 'testimonial_2_quote',    label: 'Témoignage 2 — Texte',        type: 'textarea' },
-      { key: 'testimonial_2_name',      label: 'Témoignage 2 — Auteur',      type: 'text' },
-      { key: 'testimonial_3_quote',    label: 'Témoignage 3 — Texte',        type: 'textarea' },
-      { key: 'testimonial_3_name',      label: 'Témoignage 3 — Auteur',      type: 'text' },
+      { key: 'coaching_testimonials', label: 'Témoignages — Cartes (ajouter, retirer, réordonner)', type: 'list' },
       { key: 'form_cta_title',          label: 'Formulaire CTA — Titre',      type: 'textarea' },
       { key: 'form_cta_button',        label: 'Formulaire CTA — Bouton',     type: 'text' },
       { key: 'cta_title', label: 'Appel à l’action — Titre « Prêt·e à commencer ? »', type: 'text' },
       { key: 'testimonial_section_title', label: 'Témoignages — Titre « Ils témoignent »', type: 'text' },
       { key: 'testimonial_section_desc', label: 'Témoignages — Description « Des parcours différents, une même expérience :… »', type: 'text' },
-      { key: 'testimonial_1_role', label: 'Témoignage 1 — Fonction', type: 'text' },
-      { key: 'testimonial_2_role', label: 'Témoignage 2 — Fonction', type: 'text' },
-      { key: 'testimonial_3_role', label: 'Témoignage 3 — Fonction', type: 'text' },
-      { key: 'testimonial_4_quote', label: 'Témoignage 4 — Citation', type: 'textarea' },
-      { key: 'testimonial_4_name', label: 'Témoignage 4 — Nom', type: 'text' },
-      { key: 'testimonial_4_role', label: 'Témoignage 4 — Fonction', type: 'text' },
       { key: 'testimonial_note', label: 'Témoignages — Note « * Prénom modifié »', type: 'text' },
-      { key: 'program_3_subtitle', label: 'Programme 3 — Sous-titre', type: 'text' },
-      { key: 'program_4_label', label: 'Programme 4 — Libellé', type: 'text' },
-      { key: 'program_4_subtitle', label: 'Programme 4 — Sous-titre', type: 'text' },
-      { key: 'program_4_desc', label: 'Programme 4 — Description', type: 'text' },
-      { key: 'program_4_format', label: 'Programme 4 — Format', type: 'text' },
-      { key: 'program_4_price', label: 'Programme 4 — Prix', type: 'text' },
-      { key: 'program_4_cta', label: 'Programme 4 — Bouton', type: 'text' },
       { key: 't_bureau_elegant_ambiance_coaching', label: 'Section 1 · Il y a des… — Texte alternatif image « Bureau élégant, ambiance coaching professionnel »', type: 'text' },
       { key: 't_coaching_individuel_introspection_', label: 'Section 2 · Coaching individuel — Texte alternatif image « Coaching individuel — introspection et clarté »', type: 'text' },
       { key: 't_coaching_d_equipe_et', label: 'Section 3 · Pour les entreprises — Texte alternatif image « Coaching d’équipe et leadership organisationnel »', type: 'text' },
@@ -364,18 +411,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'domains_badge',     label: 'Domaines — Badge',         type: 'text' },
       { key: 'domains_title',     label: 'Domaines — Titre',         type: 'text' },
       { key: 'domains_subtitle',  label: 'Domaines — Sous-titre',    type: 'textarea' },
-      { key: 'domain_1_title',    label: 'Domaine 1 — Titre',        type: 'text' },
-      { key: 'domain_1_desc',     label: 'Domaine 1 — Description',  type: 'textarea' },
-      { key: 'domain_2_title',    label: 'Domaine 2 — Titre',        type: 'text' },
-      { key: 'domain_2_desc',     label: 'Domaine 2 — Description',  type: 'textarea' },
-      { key: 'domain_3_title',    label: 'Domaine 3 — Titre',        type: 'text' },
-      { key: 'domain_3_desc',     label: 'Domaine 3 — Description',  type: 'textarea' },
-      { key: 'domain_4_title',    label: 'Domaine 4 — Titre',        type: 'text' },
-      { key: 'domain_4_desc',     label: 'Domaine 4 — Description',  type: 'textarea' },
-      { key: 'domain_5_title',    label: 'Domaine 5 — Titre',        type: 'text' },
-      { key: 'domain_5_desc',     label: 'Domaine 5 — Description',  type: 'textarea' },
-      { key: 'domain_6_title',    label: 'Domaine 6 — Titre',        type: 'text' },
-      { key: 'domain_6_desc',     label: 'Domaine 6 — Description',  type: 'textarea' },
+      { key: 'entreprises_domains', label: 'Domaines — Cartes (ajouter, retirer, réordonner)', type: 'list' },
       { key: 'flash_badge',       label: 'Coaching Flash — Badge',                       type: 'text' },
       { key: 'flash_title',       label: 'Coaching Flash — Titre (retour à la ligne possible)', type: 'textarea' },
       { key: 'flash_desc',        label: 'Coaching Flash — Description',                 type: 'textarea' },
@@ -394,24 +430,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'pricing_badge',     label: 'Tarifs — Badge',           type: 'text' },
       { key: 'pricing_title',     label: 'Tarifs — Titre',           type: 'text' },
       { key: 'pricing_subtitle',  label: 'Tarifs — Sous-titre',      type: 'textarea' },
-      { key: 'pricing_card_1_title', label: 'Formule 1 — Nom',                          type: 'text' },
-      { key: 'pricing_card_1_price', label: 'Formule 1 — Prix',                         type: 'text' },
-      { key: 'pricing_card_1_unit',  label: 'Formule 1 — Unité (ex : / séance)',        type: 'text' },
-      { key: 'pricing_card_1_desc',  label: 'Formule 1 — Description',                  type: 'textarea' },
-      { key: 'pricing_card_1_items', label: 'Formule 1 — Liste (un élément par ligne)', type: 'textarea' },
-      { key: 'pricing_card_1_cta',   label: 'Formule 1 — Bouton',                       type: 'text' },
-      { key: 'pricing_card_2_title', label: 'Formule 2 — Nom',                          type: 'text' },
-      { key: 'pricing_card_2_price', label: 'Formule 2 — Prix',                         type: 'text' },
-      { key: 'pricing_card_2_unit',  label: 'Formule 2 — Unité (ex : / séance)',        type: 'text' },
-      { key: 'pricing_card_2_desc',  label: 'Formule 2 — Description',                  type: 'textarea' },
-      { key: 'pricing_card_2_items', label: 'Formule 2 — Liste (un élément par ligne)', type: 'textarea' },
-      { key: 'pricing_card_2_cta',   label: 'Formule 2 — Bouton',                       type: 'text' },
-      { key: 'pricing_card_3_title', label: 'Formule 3 — Nom',                          type: 'text' },
-      { key: 'pricing_card_3_price', label: 'Formule 3 — Prix',                         type: 'text' },
-      { key: 'pricing_card_3_unit',  label: 'Formule 3 — Unité (ex : / séance)',        type: 'text' },
-      { key: 'pricing_card_3_desc',  label: 'Formule 3 — Description',                  type: 'textarea' },
-      { key: 'pricing_card_3_items', label: 'Formule 3 — Liste (un élément par ligne)', type: 'textarea' },
-      { key: 'pricing_card_3_cta',   label: 'Formule 3 — Bouton',                       type: 'text' },
+      { key: 'entreprises_pricing', label: 'Tarifs — Cartes (ajouter, retirer, réordonner)', type: 'list' },
       { key: 'diff_badge',       label: 'Différenciation — Badge',                                 type: 'text' },
       { key: 'diff_title',       label: 'Différenciation — Titre',                                 type: 'text' },
       { key: 'diff_text',        label: 'Différenciation — Texte (une ligne vide entre les paragraphes)', type: 'richtext' },
@@ -820,16 +839,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 'hero_cta_secondary',  label: 'Hero — Bouton question',                        type: 'text' },
       { key: 'section_badge',       label: 'Cas d\'usage — Badge',                          type: 'text' },
       { key: 'section_title',       label: 'Cas d\'usage — Titre section',                  type: 'text' },
-      { key: 'use_case_1_title',    label: 'Cas 1 — Titre',                                type: 'text' },
-      { key: 'use_case_1_desc',     label: 'Cas 1 — Description',                          type: 'textarea' },
-      { key: 'use_case_2_title',    label: 'Cas 2 — Titre',                                type: 'text' },
-      { key: 'use_case_2_desc',     label: 'Cas 2 — Description',                          type: 'textarea' },
-      { key: 'use_case_3_title',    label: 'Cas 3 — Titre',                                type: 'text' },
-      { key: 'use_case_3_desc',     label: 'Cas 3 — Description',                          type: 'textarea' },
-      { key: 'use_case_4_title',    label: 'Cas 4 — Titre',                                type: 'text' },
-      { key: 'use_case_4_desc',     label: 'Cas 4 — Description',                          type: 'textarea' },
-      { key: 'use_case_5_title',    label: 'Cas 5 — Titre',                                type: 'text' },
-      { key: 'use_case_5_desc',     label: 'Cas 5 — Description',                          type: 'textarea' },
+      { key: 'sparring_use_cases', label: 'Cas d\'usage — Cartes (ajouter, retirer, réordonner)', type: 'list' },
       { key: 'why_section_badge',   label: 'Profil Monica — Badge',                        type: 'text' },
       { key: 'why_section_title',   label: 'Profil Monica — Titre',                        type: 'text' },
       { key: 'experience_items',    label: 'Expérience Monica (1 item par ligne)',          type: 'textarea' },
@@ -857,36 +867,7 @@ const PAGES_CONFIG: Record<string, { label: string; emoji: string; sections: { k
       { key: 't_faq', label: 'Section 1 · Ce qu’on nous demande… — Texte « FAQ »', type: 'text' },
       { key: 't_ecrire_a_monica', label: 'Section 2 · Une autre question ? — Lien « Écrire à Monica → »', type: 'text' },
       { key: 't_reserver_une_seance', label: 'Section 2 · Une autre question ? — Lien « Réserver une séance »', type: 'text' },
-      { key: 'faq_1_q', label: 'Question 1 — Question', type: 'text' },
-      { key: 'faq_1_a', label: 'Question 1 — Réponse', type: 'textarea' },
-      { key: 'faq_2_q', label: 'Question 2 — Question', type: 'text' },
-      { key: 'faq_2_a', label: 'Question 2 — Réponse', type: 'textarea' },
-      { key: 'faq_3_q', label: 'Question 3 — Question', type: 'text' },
-      { key: 'faq_3_a', label: 'Question 3 — Réponse', type: 'textarea' },
-      { key: 'faq_4_q', label: 'Question 4 — Question', type: 'text' },
-      { key: 'faq_4_a', label: 'Question 4 — Réponse', type: 'textarea' },
-      { key: 'faq_5_q', label: 'Question 5 — Question', type: 'text' },
-      { key: 'faq_5_a', label: 'Question 5 — Réponse', type: 'textarea' },
-      { key: 'faq_6_q', label: 'Question 6 — Question', type: 'text' },
-      { key: 'faq_6_a', label: 'Question 6 — Réponse', type: 'textarea' },
-      { key: 'faq_7_q', label: 'Question 7 — Question', type: 'text' },
-      { key: 'faq_7_a', label: 'Question 7 — Réponse', type: 'textarea' },
-      { key: 'faq_8_q', label: 'Question 8 — Question', type: 'text' },
-      { key: 'faq_8_a', label: 'Question 8 — Réponse', type: 'textarea' },
-      { key: 'faq_9_q', label: 'Question 9 — Question', type: 'text' },
-      { key: 'faq_9_a', label: 'Question 9 — Réponse', type: 'text' },
-      { key: 'faq_10_q', label: 'Question 10 — Question', type: 'text' },
-      { key: 'faq_10_a', label: 'Question 10 — Réponse', type: 'text' },
-      { key: 'faq_11_q', label: 'Question 11 — Question', type: 'text' },
-      { key: 'faq_11_a', label: 'Question 11 — Réponse', type: 'text' },
-      { key: 'faq_12_q', label: 'Question 12 — Question', type: 'text' },
-      { key: 'faq_12_a', label: 'Question 12 — Réponse', type: 'text' },
-      { key: 'faq_13_q', label: 'Question 13 — Question', type: 'text' },
-      { key: 'faq_13_a', label: 'Question 13 — Réponse', type: 'text' },
-      { key: 'faq_14_q', label: 'Question 14 — Question', type: 'text' },
-      { key: 'faq_14_a', label: 'Question 14 — Réponse', type: 'text' },
-      { key: 'faq_15_q', label: 'Question 15 — Question', type: 'text' },
-      { key: 'faq_15_a', label: 'Question 15 — Réponse', type: 'text' },
+      { key: 'faq_questions', label: 'Questions — Liste modifiable (ajouter, retirer, réordonner)', type: 'list' },
       { key: 'seo_title', label: 'Référencement Google — Titre (onglet du navigateur et résultat Google)', type: 'text' },
       { key: 'seo_description', label: 'Référencement Google — Description (l’extrait sous le titre dans Google)', type: 'textarea' },
       { key: 'seo_image', label: 'Référencement Google — Image de partage (Facebook, LinkedIn, WhatsApp…)', type: 'image' },
@@ -1487,6 +1468,9 @@ export default function CMSAdmin() {
   const [dbStatus, setDbStatus] = useState<'ok' | 'down' | 'checking'>('checking');
   // Recherche de champ dans l'onglet Pages
   const [fieldSearch, setFieldSearch] = useState('');
+  // Champ à ouvrir et mettre en évidence, quand on arrive d'un résultat de l'onglet « 🔎 Contenu »
+  const [revealField, setRevealField] = useState<{ page: string; key: string } | null>(null);
+  const [highlightField, setHighlightField] = useState(false);
   // Historique + aperçu dans l'onglet Pages
   const [showHistory, setShowHistory] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
@@ -1536,6 +1520,28 @@ export default function CMSAdmin() {
   const cleanContent = React.useRef<Record<string, string>>({});          // contenu tel qu'enregistré (pour détecter les modifs non enregistrées)
   // Empreinte indépendante de l'ordre des clés
   const contentHash = (o: Record<string, string>) => JSON.stringify(Object.keys(o).sort().map(k => [k, o[k]]));
+
+  // Index de tous les textes du site (onglet « 🔎 Contenu ») : publiés + brouillons.
+  // Reconstruit à chaque changement de contenu ; logique pure et testée dans lib/cms-search.ts.
+  const contentIndex = React.useMemo(() => {
+    const defs = Object.entries(PAGES_CONFIG).flatMap(([page, cfg]) =>
+      cfg.sections.map(section => ({
+        page,
+        pageLabel: cfg.label,
+        emoji: cfg.emoji,
+        key: section.key,
+        label: section.label,
+        type: section.type,
+      })));
+    const rows = [
+      ...siteContent.map(row => ({ page: row.page, block_key: row.block_key, value: row.value })),
+      ...Object.entries(drafts).map(([id, value]) => {
+        const cut = id.indexOf('__');
+        return { page: draftPage(id.slice(0, cut)), block_key: id.slice(cut + 2), value };
+      }),
+    ];
+    return buildContentIndex(defs, rows, PAGE_DEFAULTS);
+  }, [siteContent, drafts]);
 
   const isArticleDirty = getArticleDraftSignature(editingArticle) !== articleBaseline;
   const articleWordCount = getWordCount(editingArticle?.content);
@@ -1872,7 +1878,7 @@ export default function CMSAdmin() {
   // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
   useEffect(() => { if (authed && tab === 'booking') { loadBookingSlots(); loadBookingRequests(); } }, [authed, tab, loadBookingSlots, loadBookingRequests]);
   // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
-  useEffect(() => { if (authed && (tab === 'settings' || tab === 'pages' || tab === 'fil-ariane')) loadSettings(); }, [authed, tab, loadSettings]);
+  useEffect(() => { if (authed && (tab === 'settings' || tab === 'pages' || tab === 'fil-ariane' || tab === 'contenu')) loadSettings(); }, [authed, tab, loadSettings]);
   // eslint-disable-next-line react-hooks/set-state-in-effect -- chargements cursor/onglet depuis l'API
   useEffect(() => { if (authed && (tab === 'messages' || tab === 'dashboard')) loadMessages(); }, [authed, tab, loadMessages]);
 
@@ -2001,6 +2007,10 @@ export default function CMSAdmin() {
         });
       } else {
         setBaseline(prev => ({ ...prev, ...persisted }));
+        // persisted est indexé « page__clé » ; l'index du contenu attend la clé seule.
+        indexPublished(pageKey, Object.fromEntries(
+          Object.entries(persisted).map(([id, value]) => [id.slice(pageKey.length + 2), value]),
+        ));
         bustCmsCache(pageKey);
       }
       markClean(persisted);
@@ -2019,6 +2029,17 @@ export default function CMSAdmin() {
     } finally {
       setSavingSettings(false);
     }
+  };
+
+  // Met à jour l'index « 🔎 Contenu » après une mise en ligne (sinon les compteurs attendraient un rechargement).
+  const indexPublished = (pageKey: string, values: Record<string, string>) => {
+    setSiteContent(prev => {
+      const next = prev.filter(row => !(row.page === pageKey && row.block_key in values));
+      for (const [block_key, value] of Object.entries(values)) {
+        next.push({ id: 0, page: pageKey, block_key, value, label: '', type: '' });
+      }
+      return next;
+    });
   };
 
   const publishPage = async (pageKey: string) => {
@@ -2040,8 +2061,14 @@ export default function CMSAdmin() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) { showToast(`❌ Publication impossible : ${data.error || res.status}`); return; }
       const nowLive: Record<string, string> = {};
-      for (const k of draftKeys) nowLive[`${pageKey}__${k}`] = editedContent[`${pageKey}__${k}`] ?? '';
+      const nowLiveBlocks: Record<string, string> = {};
+      for (const k of draftKeys) {
+        const value = editedContent[`${pageKey}__${k}`] ?? '';
+        nowLive[`${pageKey}__${k}`] = value;
+        nowLiveBlocks[k] = value;
+      }
       setBaseline(prev => ({ ...prev, ...nowLive }));
+      indexPublished(pageKey, nowLiveBlocks);
       setDrafts(prev => { const next = { ...prev }; for (const k of draftKeys) delete next[`${pageKey}__${k}`]; return next; });
       bustCmsCache(pageKey);
       setSavedOk(true); setTimeout(() => setSavedOk(false), 2000);
@@ -2081,7 +2108,125 @@ export default function CMSAdmin() {
     }
   };
 
+// ── Onglet « 🔎 Contenu » : ouvrir un texte précis, ou rétablir son original ──
+  // L'index et la recherche vivent dans lib/cms-search.ts ; ici on ne fait que naviguer et écrire.
+  const openContentField = (field: ContentField) => {
+    handleTabChange('pages');
+    setActivePage(field.page);
+    setFieldSearch('');
+    setRevealField({ page: field.page, key: field.key });
+    setHighlightField(true);
+  };
+
+  const openContentPage = (page: string) => {
+    handleTabChange('pages');
+    setActivePage(page);
+    setFieldSearch('');
+    setRevealField(null);
+  };
+
+  const resetContentField = async (field: ContentField) => {
+    const ok = confirm(`Rétablir l'original de « ${field.shortLabel} » (${field.pageLabel}) ?\n\nVotre version personnalisée sera retirée du site et le texte d'origine s'affichera à la place.`);
+    if (!ok) return;
+    try {
+      // Une valeur vide en base n'écrase rien : le site retombe sur le texte d'origine (lib/cms-defaults).
+      const res = await fetch('/api/cms/content', {
+        method: 'PUT',
+        headers: jsonHeaders,
+        body: JSON.stringify({ page: field.page, block_key: field.key, value: '' }),
+      });
+      if (handleUnauthorized(res)) return;
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        showToast(`❌ ${data.error || "Impossible de rétablir l'original"}`);
+        return;
+      }
+      const id = `${field.page}__${field.key}`;
+      setSiteContent(prev => prev.filter(row => !(row.page === field.page && row.block_key === field.key)));
+      setBaseline(prev => ({ ...prev, [id]: field.defaultValue }));
+      setEditedContent(prev => ({ ...prev, [id]: field.defaultValue }));
+      setDrafts(prev => {
+        if (!(id in prev)) return prev;
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
+      markClean({ [id]: field.defaultValue });
+      bustCmsCache(field.page);
+      showToast("✅ Texte d'origine rétabli.");
+    } catch {
+      showToast('Impossible de rétablir le texte : erreur réseau.');
+    }
+  };
+
+// ── Remplacer un mot dans plusieurs textes (onglet « 🔎 Contenu ») ──
+  // Tout part en brouillon : le site en ligne ne change pas avant « Publier ».
+  const replaceInContent = async (plan: ReplacementPlanItem[]) => {
+    if (!plan.length) return;
+    // Ne jamais écraser une saisie non enregistrée : on demande de l'enregistrer d'abord.
+    const unsaved = plan.filter(item => {
+      const id = `${item.field.page}__${item.field.key}`;
+      const saved = drafts[id] ?? baseline[id] ?? item.field.defaultValue;
+      return (editedContent[id] ?? '') !== saved;
+    });
+    if (unsaved.length > 0) {
+      showToast(`⚠️ ${unsaved.length} texte${plural(unsaved.length, '', 's')} de ce remplacement a des modifications non enregistrées — enregistrez-les d'abord (onglet Pages).`);
+      return;
+    }
+    // `plan.length` = champs écrits ; `summary.fields` = textes touchés (une carte de liste en compte plusieurs)
+    const summary = replacementStats(plan);
+    const ok = confirm(`Remplacer dans ${summary.fields} texte${plural(summary.fields, '', 's')} sur ${summary.pages} page${plural(summary.pages, '', 's')} ?\n\nLes changements sont enregistrés en brouillon : le site en ligne ne change pas tant que vous ne cliquez pas sur « Publier ».`);
+    if (!ok) return;
+    setSavingSettings(true);
+    try {
+      const responses = await Promise.all(plan.map(item => fetch('/api/cms/content', {
+        method: 'PUT',
+        headers: jsonHeaders,
+        body: JSON.stringify({ page: item.field.page, block_key: item.field.key, value: item.after, draft: true }),
+      })));
+      if (responses.some(res => handleUnauthorized(res))) return;
+      const failed = responses.find(res => !res.ok);
+      if (failed) {
+        const data = await failed.json().catch(() => ({}));
+        showToast(`❌ ${data.draftUnsupported ? 'Cette base ne gère pas les brouillons.' : (data.error || 'Remplacement impossible')}`);
+        return;
+      }
+      const changes: Record<string, string> = {};
+      for (const item of plan) changes[`${item.field.page}__${item.field.key}`] = item.after;
+      setDrafts(prev => ({ ...prev, ...changes }));
+      setEditedContent(prev => ({ ...prev, ...changes }));
+      markClean(changes);
+      for (const page of new Set(plan.map(item => item.field.page))) bustCmsCache(page);
+      showToast(`📝 ${summary.fields} texte${plural(summary.fields, '', 's')} remplacé${plural(summary.fields, '', 's')} en brouillon — rien n'est en ligne avant « Publier ».`);
+    } catch {
+      showToast('Remplacement impossible : erreur réseau.');
+    } finally {
+      setSavingSettings(false);
+    }
+  };
+
+  // ── Arrivée depuis « 🔎 Contenu » : défiler jusqu'au champ et le surligner un instant ──
+  useEffect(() => {
+    if (tab !== 'pages' || !revealField || revealField.page !== activePage) return;
+    const id = window.setTimeout(() => {
+      const el = document.getElementById(fieldAnchor(revealField.page, revealField.key));
+      if (!el) return;
+      el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      el.querySelector<HTMLElement>('input, textarea, select, button')?.focus({ preventScroll: true });
+    }, 150);
+    return () => window.clearTimeout(id);
+  }, [tab, revealField, activePage, loadingSettings]);
+
+  useEffect(() => {
+    if (!highlightField) return;
+    const id = window.setTimeout(() => {
+      setHighlightField(false);
+    }, 3000);
+    return () => window.clearTimeout(id);
+  }, [highlightField]);
+
   // ── Raccourci Cmd+S / Ctrl+S (après saveDraft/saveSettings pour respecter l'ordre de déclaration) ──
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 's') {
@@ -2256,6 +2401,7 @@ export default function CMSAdmin() {
     { id: 'articles', label: '📝 Articles', count: articles.length },
     { id: 'new',      label: '✏️ Nouvel article', count: null },
     { id: 'pages',    label: '🗂️ Pages', count: null },
+    { id: 'contenu',  label: '🔎 Contenu', count: contentIndex.filter(f => f.isPending).length || null },
     { id: 'menu',         label: '🧭 Menu', count: null },
     { id: 'fil-ariane',   label: '🔗 Fil d’Ariane', count: null },
     { id: 'custom-pages', label: '📄 Pages libres', count: null },
@@ -2918,6 +3064,22 @@ export default function CMSAdmin() {
         )}
 
         {/* ── PAGES ── */}
+        {tab === 'contenu' && (
+          loadingSettings ? (
+            <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement du contenu…</p>
+          ) : (
+            <ContentOverview
+              fields={contentIndex}
+              onOpen={openContentField}
+              onOpenPage={openContentPage}
+              onPublish={publishPage}
+              onReset={resetContentField}
+              onReplace={replaceInContent}
+              busy={savingSettings || publishing}
+            />
+          )
+        )}
+
         {tab === 'pages' && (
           <div>
             {loadingSettings ? <p style={{ textAlign: 'center', color: '#888', padding: '3rem' }}>Chargement…</p> : (
@@ -3093,17 +3255,21 @@ export default function CMSAdmin() {
                             if (visibleSections.length === 0) {
                               return <p style={{ color: '#aaa', textAlign: 'center', padding: '2rem' }}>Aucun champ ne correspond à « {fieldSearch} »</p>;
                             }
+                            // Groupe à ouvrir quand on arrive d'un résultat de « 🔎 Contenu »
+                            const revealedKey = revealField && revealField.page === activePage ? revealField.key : null;
+                            const revealedSection = revealedKey ? config.sections.find(sec => sec.key === revealedKey) : undefined;
+                            const revealGroup = revealedSection ? labelParts(revealedSection.label).group : null;
                             // Regrouper par préfixe de label (avant le « — »)
                             const groups: { name: string; sections: typeof visibleSections }[] = [];
                             for (const s of visibleSections) {
-                              const name = s.label.includes('—') ? s.label.split('—')[0].trim() : 'Général';
+                              const name = labelParts(s.label).group;
                               const existing = groups.find(g => g.name === name);
                               if (existing) existing.sections.push(s);
                               else groups.push({ name, sections: [s] });
                             }
                             const searching = q.length > 0;
                             return groups.map(group => (
-                              <details key={group.name} open={searching || groups.length <= 3 || group.name === 'Structure' || undefined}
+                              <details key={group.name} open={searching || groups.length <= 3 || group.name === 'Structure' || group.name === revealGroup || undefined}
                                 style={{ marginBottom: '.85rem', border: '1.5px solid #ece8e2', borderRadius: '.75rem', background: '#fdfcfa' }}>
                                 <summary style={{ padding: '.8rem 1.1rem', cursor: 'pointer', fontWeight: 700, fontSize: '.92rem', color: '#2d5f54', userSelect: 'none' }}>
                                   {group.name} <span style={{ fontWeight: 400, color: '#aaa', fontSize: '.8rem' }}>· {group.sections.length} champ{group.sections.length > 1 ? 's' : ''}</span>
@@ -3119,7 +3285,16 @@ export default function CMSAdmin() {
                                     const fieldId = `f-${activePage}-${section.key}`;
                                     const labelled = section.type === 'text' || section.type === 'textarea' || section.type === 'richtext';
                                     return (
-                                      <div key={key}>
+                                      <div
+                                        key={key}
+                                        id={fieldAnchor(activePage, section.key)}
+                                        style={{
+                                          scrollMarginTop: '6rem',
+                                          ...(highlightField && revealedKey === section.key
+                                            ? { outline: '2px solid #c9a96e', outlineOffset: '.5rem', borderRadius: '.5rem' }
+                                            : {}),
+                                        }}
+                                      >
                                         <label style={lbl} htmlFor={labelled ? fieldId : undefined}>
                                           {shortLabel}
                                           {(editedContent[key] ?? '') !== (baseline[key] ?? '') && (
@@ -3131,6 +3306,13 @@ export default function CMSAdmin() {
                                         {section.type === 'sections' ? (
                                           <SectionsEditor
                                             defs={[...(PAGE_SECTIONS[activePage] || []), ...customSectionDefs(parseBlocks(editedContent['custom_sections'] ?? ''))]}
+                                            value={editedContent[key] ?? ''}
+                                            onChange={v => setEditedContent(prev => ({ ...prev, [key]: v }))}
+                                          />
+                                        ) : section.type === 'list' ? (
+                                          <ListEditor
+                                            defKey={section.key}
+                                            initialItems={readList(pageContentOf(editedContent, activePage), section.key)}
                                             value={editedContent[key] ?? ''}
                                             onChange={v => setEditedContent(prev => ({ ...prev, [key]: v }))}
                                           />

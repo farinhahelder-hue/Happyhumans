@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import fs from 'node:fs'
 import path from 'node:path'
+import { LIST_DEFS } from '@/lib/cms-lists'
 
 /**
  * Garde-fou « tout le site est modifiable depuis le CMS ».
@@ -109,5 +110,14 @@ describe.each(Object.entries(PAGES))('CMS — page « %s »', (page, files) => {
       templates.some(([p, s]) => (p || s) && k.startsWith(p) && k.endsWith(s) && k.length > p.length + s.length)
     const dead = [...admin].filter(k => !covered(k))
     expect(dead, `Champs de PAGES_CONFIG.${page} que ${files.join(', ')} ne lit jamais`).toEqual([])
+  })
+})
+
+describe('CMS — listes répétables', () => {
+  it('chaque champ « list » de l’admin a une définition dans lib/cms-lists.ts', () => {
+    const admin = read('app/cms-admin/page.tsx')
+    const keys = [...admin.matchAll(/\{ key: '([^']+)',[^}]*type: 'list'/g)].map(m => m[1])
+    expect(keys.length).toBeGreaterThanOrEqual(6)
+    expect(keys.filter(k => !LIST_DEFS[k])).toEqual([])
   })
 })

@@ -7,6 +7,7 @@ import { useCalendly } from '@/hooks/useCalendly'
 import { COACHING_DEFAULTS } from '@/lib/cms-defaults/coaching'
 import { PAGE_SECTIONS, resolveSections } from '@/lib/cms-sections'
 import { customSectionDefs, customSectionId, isCustomSectionId, parseBlocks } from '@/lib/custom-sections'
+import { readList } from '@/lib/cms-lists'
 import { CustomBlockView } from '@/components/CustomSections'
 import { Fragment, type ReactNode } from 'react'
 import EditableImage from '@/components/EditableImage';
@@ -16,73 +17,26 @@ export default function CoachingPage() {
   // Lien du rendez-vous de découverte : réglage CMS (⚙️ Paramètres → 📅 Réservation)
   const { eventUrl: calendlyEventUrl } = useCalendly()
 
-  const programs = [
-    {
-      label: c.program_1_label,
-      price: c.program_1_price,
-      unit: c.program_1_unit,
-      desc: c.program_1_desc,
-      cta: c.program_1_cta,
-      href: calendlyEventUrl('coaching'),
-      calendly: true,
-      highlight: false,
-    },
-    {
-      label: c.program_2_label,
-      price: c.program_2_price,
-      unit: c.program_2_unit,
-      desc: c.program_2_desc,
-      cta: c.program_2_cta,
-      href: '/booking',
-      calendly: false,
-      highlight: false,
-    },
-    {
-      label: c.program_3_label,
-      subtitle: c.program_3_subtitle,
-      price: c.program_3_price,
-      unit: c.program_3_format,
-      desc: c.program_3_desc,
-      cta: c.program_3_cta,
-      href: '/booking',
-      calendly: false,
-      highlight: true,
-    },
-    {
-      label: c.program_4_label,
-      subtitle: c.program_4_subtitle,
-      price: c.program_4_price,
-      unit: c.program_4_format,
-      desc: c.program_4_desc,
-      cta: c.program_4_cta,
-      href: '/happiness-design',
-      calendly: false,
-      highlight: false,
-    },
-  ]
+  // Programmes et témoignages : listes modifiables dans le CMS (⚙️ Pages → Coaching).
+  // Chaque carte peut être ajoutée, retirée ou déplacée ; les anciens champs numérotés restent lus.
+  const programs = readList(c.content, 'coaching_programs')
+    .filter(p => (p.label ?? '').trim())
+    .map(p => ({
+      label: p.label,
+      subtitle: p.subtitle,
+      price: p.price,
+      unit: p.unit,
+      desc: p.desc,
+      cta: p.cta,
+      // « calendly » = agenda de réservation (Paramètres → Réservation) plutôt qu'une adresse figée
+      href: p.href === 'calendly' ? calendlyEventUrl('coaching') : (p.href || '/booking'),
+      calendly: p.href === 'calendly',
+      highlight: p.highlight === 'oui',
+    }))
 
-  const temoignages = [
-    {
-      quote: c.testimonial_1_quote,
-      name: c.testimonial_1_name,
-      role: c.testimonial_1_role,
-    },
-    {
-      quote: c.testimonial_2_quote,
-      name: c.testimonial_2_name,
-      role: c.testimonial_2_role,
-    },
-    {
-      quote: c.testimonial_3_quote,
-      name: c.testimonial_3_name,
-      role: c.testimonial_3_role,
-    },
-    {
-      quote: c.testimonial_4_quote,
-      name: c.testimonial_4_name,
-      role: c.testimonial_4_role,
-    },
-  ]
+  const temoignages = readList(c.content, 'coaching_testimonials')
+    .filter(t => (t.quote ?? '').trim() || (t.name ?? '').trim())
+    .map(t => ({ quote: t.quote ?? '', name: t.name ?? '', role: t.role ?? '' }))
 
   // ── Sections de la page : ordre et affichage modifiables dans le CMS (admin → page → Structure) ──
   const sections: Record<string, ReactNode> = {
@@ -186,15 +140,15 @@ export default function CoachingPage() {
             <h2 className="text-2xl font-serif font-light text-stone-900 md:text-3xl">{c.get('programs_title')}</h2>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {programs.map(({ label, subtitle, price, unit, desc, cta, href, calendly, highlight }) => (
-              <div key={label} className={`rounded-2xl p-6 flex flex-col ${highlight ? 'bg-[#2f6b61] text-white shadow-lg ring-2 ring-[#2f6b61]' : 'bg-[#f7f4ef] text-stone-900 shadow-sm'}`}>
+            {programs.map(({ label, subtitle, price, unit, desc, cta, href, calendly, highlight }, i) => (
+              <div key={`${label}-${i}`} className={`rounded-2xl p-6 flex flex-col ${highlight ? 'bg-[#2f6b61] text-white shadow-lg ring-2 ring-[#2f6b61]' : 'bg-[#f7f4ef] text-stone-900 shadow-sm'}`}>
                 <p className={`text-xs font-bold uppercase tracking-[0.15em] mb-1 ${highlight ? 'text-emerald-200' : 'text-amber-800'}`}>{label}</p>
                 {subtitle && <p className={`text-xs mb-3 ${highlight ? 'text-emerald-200' : 'text-stone-500'}`}>{subtitle}</p>}
                 {price && <p className={`text-2xl font-serif font-semibold mb-0.5 ${highlight ? 'text-white' : 'text-stone-900'}`}>{price}</p>}
                 <p className={`text-xs mb-4 ${highlight ? 'text-emerald-200' : 'text-stone-500'}`}>{unit}</p>
                 <p className={`text-sm leading-relaxed flex-1 mb-3 ${highlight ? 'text-emerald-100' : 'text-stone-600'}`}>{desc}</p>
                 {calendly ? (
-                  <a href={href} target="_blank" rel="noopener noreferrer" className={`mt-auto rounded-full py-2.5 text-center text-sm font-semibold transition bg-[#2f6b61] text-white hover:bg-[#235249]'}`}>
+                  <a href={href} target="_blank" rel="noopener noreferrer" className="mt-auto rounded-full py-2.5 text-center text-sm font-semibold transition bg-[#2f6b61] text-white hover:bg-[#235249]">
                     {cta}
                   </a>
                 ) : (

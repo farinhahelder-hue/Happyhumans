@@ -37,4 +37,6 @@ export const SPARRING_PARTNER_DEFAULTS: Record<string, string> = {
   // ── Disposition des sections (admin → Structure) : JSON {"order":[…],"hidden":[…]} ; vide = ordre d'origine ──
   sections_layout: '',
   custom_sections: '',
+  // ── Liste modifiable (admin → Sparring Partner) : JSON [{…}] ; vide = anciens champs numérotés ──
+  sparring_use_cases: '',
 }

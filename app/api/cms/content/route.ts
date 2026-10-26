@@ -93,10 +93,8 @@ export async function PUT(req: NextRequest) {
   // Une écriture directe en ligne est la plus récente : elle remplace un éventuel brouillon du même champ
   // (sinon « Publier » écraserait plus tard cette modification avec une version plus ancienne).
   try { await supabase.from('site_content').delete().eq('page', draftPage(page)).eq('block_key', block_key); } catch { /* sans incidence */ }
-  // Le SEO (titre, description, image) est calculé côté serveur dans generateMetadata : on régénère la page tout de
-  // suite pour que la modification soit visible sans attendre la revalidation automatique.
-  if (typeof block_key === 'string' && block_key.startsWith('seo_')) {
-    try { revalidatePath(pagePath(page)); } catch { /* sans incidence : la page se régénère au plus tard dans 5 min */ }
-  }
+  // Une écriture directe change la page publique : on la régénère tout de suite, sinon le texte (ou le SEO,
+  // calculé côté serveur) resterait l'ancien jusqu'à 5 minutes sur un site en cache.
+  try { revalidatePath(pagePath(page)); } catch { /* sans incidence : la page se régénère au plus tard dans 5 min */ }
   return NextResponse.json({ success: true, data });
 }
